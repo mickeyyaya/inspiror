@@ -7,16 +7,37 @@ interface ChatMessage {
   content: string;
 }
 
+const DEFAULT_MESSAGES: ChatMessage[] = [
+  {
+    role: "assistant",
+    content: "Hi! I'm your builder buddy. What do you want to create today?",
+  },
+];
+
+const DEFAULT_CODE =
+  '<!DOCTYPE html><html><body style="background:#111; color:#fff; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; font-family:sans-serif;"><h1>Your creation will appear here!</h1></body></html>';
+
+const STORAGE_KEYS = {
+  messages: "inspiror-messages",
+  currentCode: "inspiror-currentCode",
+} as const;
+
+function loadFromStorage<T>(key: string, fallback: T): T {
+  try {
+    const stored = localStorage.getItem(key);
+    return stored ? JSON.parse(stored) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 function App() {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      role: "assistant",
-      content: "Hi! I'm your builder buddy. What do you want to create today?",
-    },
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>(() =>
+    loadFromStorage(STORAGE_KEYS.messages, DEFAULT_MESSAGES),
+  );
   const [inputValue, setInputValue] = useState("");
   const [currentCode, setCurrentCode] = useState(
-    '<!DOCTYPE html><html><body style="background:#111; color:#fff; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; font-family:sans-serif;"><h1>Your creation will appear here!</h1></body></html>',
+    () => localStorage.getItem(STORAGE_KEYS.currentCode) || DEFAULT_CODE,
   );
   const [isGenerating, setIsGenerating] = useState(false);
   const [isChatVisible, setIsChatVisible] = useState(true);
@@ -108,6 +129,14 @@ function App() {
     window.addEventListener("message", handleIframeError);
     return () => window.removeEventListener("message", handleIframeError);
   }, [sendToApi]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.messages, JSON.stringify(messages));
+  }, [messages]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.currentCode, currentCode);
+  }, [currentCode]);
 
   return (
     <div className="w-screen h-screen bg-gray-900 relative overflow-hidden font-sans">

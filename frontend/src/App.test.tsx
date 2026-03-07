@@ -10,8 +10,34 @@ import App from "./App";
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
+const mockStorage: Record<string, string> = {};
+const mockLocalStorage = {
+  getItem: vi.fn((key: string) => mockStorage[key] ?? null),
+  setItem: vi.fn((key: string, value: string) => {
+    mockStorage[key] = value;
+  }),
+  removeItem: vi.fn((key: string) => {
+    delete mockStorage[key];
+  }),
+  clear: vi.fn(() => {
+    Object.keys(mockStorage).forEach((k) => delete mockStorage[k]);
+  }),
+  get length() {
+    return Object.keys(mockStorage).length;
+  },
+  key: vi.fn((i: number) => Object.keys(mockStorage)[i] ?? null),
+};
+
+Object.defineProperty(window, "localStorage", {
+  value: mockLocalStorage,
+  writable: true,
+});
+
 beforeEach(() => {
   mockFetch.mockReset();
+  mockLocalStorage.clear();
+  mockLocalStorage.getItem.mockClear();
+  mockLocalStorage.setItem.mockClear();
 });
 
 describe("Inspiror App", () => {
@@ -127,5 +153,49 @@ describe("Inspiror App", () => {
       );
       expect(errorMessage).toBeDefined();
     });
+  });
+
+  // Phase 4: Local Storage Persistence
+  it("saves messages and currentCode to localStorage when updated", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        reply: "Here is your app!",
+        code: "<html><body>App</body></html>",
+      }),
+    });
+
+    render(<App />);
+    const input = screen.getByPlaceholderText(/Type your idea here/i);
+    const button = screen.getByRole("button", { name: /Send/i });
+
+    fireEvent.change(input, { target: { value: "Build a calculator" } });
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(screen.getByText("Here is your app!")).toBeInTheDocument();
+    });
+
+    const savedMessages = JSON.parse(mockStorage["inspiror-messages"] || "[]");
+    const savedCode = mockStorage["inspiror-currentCode"];
+
+    expect(savedMessages.length).toBeGreaterThan(1);
+    expect(savedCode).toBe("<html><body>App</body></html>");
+  });
+
+  it("initializes state from localStorage on load", () => {
+    const storedMessages = [
+      { role: "assistant", content: "Welcome back!" },
+      { role: "user", content: "Continue my game" },
+    ];
+    const storedCode = "<html><body>Saved Game</body></html>";
+
+    mockStorage["inspiror-messages"] = JSON.stringify(storedMessages);
+    mockStorage["inspiror-currentCode"] = storedCode;
+
+    render(<App />);
+
+    expect(screen.getByText("Welcome back!")).toBeInTheDocument();
+    expect(screen.getByText("Continue my game")).toBeInTheDocument();
   });
 });
