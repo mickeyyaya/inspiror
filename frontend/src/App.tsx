@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { MessageCircle, X, Send, Sparkles } from "lucide-react";
 import "./index.css";
 
@@ -21,56 +21,93 @@ function App() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isChatVisible, setIsChatVisible] = useState(true);
 
+  const messagesRef = useRef(messages);
+  const currentCodeRef = useRef(currentCode);
+  messagesRef.current = messages;
+  currentCodeRef.current = currentCode;
+
+  const sendToApi = useCallback(
+    async (apiMessages: ChatMessage[], code: string) => {
+      setIsGenerating(true);
+      try {
+        const response = await fetch("http://localhost:3001/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages: apiMessages, currentCode: code }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setMessages([
+            ...apiMessages,
+            { role: "assistant", content: data.reply },
+          ]);
+          if (data.code) {
+            setCurrentCode(data.code);
+          }
+        } else {
+          setMessages([
+            ...apiMessages,
+            {
+              role: "assistant",
+              content:
+                "Oops, I made a little mistake! Let me fix that real quick...",
+            },
+          ]);
+        }
+      } catch (error) {
+        console.error(error);
+        setMessages([
+          ...apiMessages,
+          {
+            role: "assistant",
+            content: "Uh oh, my connection broke! Can we try again?",
+          },
+        ]);
+      } finally {
+        setIsGenerating(false);
+      }
+    },
+    [],
+  );
+
   const handleSend = async () => {
     if (!inputValue.trim()) return;
-
-    const newMessages = [
+    const newMessages: ChatMessage[] = [
       ...messages,
-      { role: "user" as const, content: inputValue },
+      { role: "user", content: inputValue },
     ];
     setMessages(newMessages);
     setInputValue("");
-    setIsGenerating(true);
-
-    try {
-      const response = await fetch("http://localhost:3001/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: newMessages, currentCode }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setMessages([
-          ...newMessages,
-          { role: "assistant", content: data.reply },
-        ]);
-        if (data.code) {
-          setCurrentCode(data.code);
-        }
-      } else {
-        setMessages([
-          ...newMessages,
-          {
-            role: "assistant",
-            content:
-              "Oops, I made a little mistake! Let me fix that real quick...",
-          },
-        ]);
-      }
-    } catch (error) {
-      console.error(error);
-      setMessages([
-        ...newMessages,
-        {
-          role: "assistant",
-          content: "Uh oh, my connection broke! Can we try again?",
-        },
-      ]);
-    } finally {
-      setIsGenerating(false);
-    }
+    await sendToApi(newMessages, currentCode);
   };
+
+  useEffect(() => {
+    const handleIframeError = (event: MessageEvent) => {
+      if (event.data?.type === "iframe-error") {
+        const errorMsg = event.data.message || "Unknown error";
+        const oopsMessage: ChatMessage = {
+          role: "assistant",
+          content:
+            "Oops, I made a little mistake! Let me fix that real quick...",
+        };
+        const errorContext: ChatMessage = {
+          role: "user",
+          content: `The code you generated caused this error: ${errorMsg}. Please fix it.`,
+        };
+        const updatedMessages = [
+          ...messagesRef.current,
+          oopsMessage,
+          errorContext,
+        ];
+        setMessages(updatedMessages);
+        sendToApi(updatedMessages, currentCodeRef.current);
+      }
+    };
+
+    window.addEventListener("message", handleIframeError);
+    return () => window.removeEventListener("message", handleIframeError);
+  }, [sendToApi]);
 
   return (
     <div className="w-screen h-screen bg-gray-900 relative overflow-hidden font-sans">
