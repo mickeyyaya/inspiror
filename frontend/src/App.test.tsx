@@ -325,7 +325,13 @@ describe("Inspiror App - Hacker Mode & UX", () => {
   // Reset
   it("renders a reset button and resets to defaults", () => {
     render(<App />);
-    expect(screen.getByRole("button", { name: /Reset/i })).toBeInTheDocument();
+    const input = screen.getByPlaceholderText(/Type your grand idea/i);
+    fireEvent.change(input, { target: { value: "Something else" } });
+    
+    const resetBtn = screen.getByRole("button", { name: /Reset/i });
+    fireEvent.click(resetBtn);
+    
+    expect(input).toHaveValue("");
   });
 
   // Preview sandbox
@@ -525,6 +531,106 @@ describe("Inspiror App - Hacker Mode & UX", () => {
       mockLocalStorage.getItem.mockReturnValueOnce("invalid-json{");
       render(<App />);
       expect(screen.getByText(/Hi! I'm your builder buddy/i)).toBeInTheDocument();
+    });
+
+    it("handleSend does nothing if input is empty", () => {
+      render(<App />);
+      const button = screen.getByRole("button", { name: /Send/i });
+      fireEvent.click(button);
+      expect(mockSubmit).not.toHaveBeenCalled();
+    });
+
+    it("handleSend does nothing if isLoading is true", () => {
+      (aiSdkReact.experimental_useObject as any).mockReturnValue({
+        object: undefined,
+        submit: mockSubmit,
+        isLoading: true,
+      });
+      render(<App />);
+      const input = screen.getByPlaceholderText(/Type your grand idea/i);
+      fireEvent.change(input, { target: { value: "Test" } });
+      const button = screen.getByRole("button", { name: /Send/i });
+      fireEvent.click(button);
+      expect(mockSubmit).not.toHaveBeenCalled();
+    });
+
+    it("onKeyDown ignores non-Enter keys", () => {
+      render(<App />);
+      const input = screen.getByPlaceholderText(/Type your grand idea/i);
+      fireEvent.change(input, { target: { value: "Test" } });
+      fireEvent.keyDown(input, { key: "a", code: "KeyA" });
+      expect(mockSubmit).not.toHaveBeenCalled();
+    });
+
+    it("renders confetti burst after loading finishes", () => {
+      const { rerender } = render(<App />);
+
+      // Simulate loading state
+      (aiSdkReact.experimental_useObject as any).mockReturnValue({
+        object: undefined,
+        submit: mockSubmit,
+        isLoading: true,
+      });
+      rerender(<App />);
+
+      // Simulate loading finished
+      (aiSdkReact.experimental_useObject as any).mockReturnValue({
+        object: undefined,
+        submit: mockSubmit,
+        isLoading: false,
+      });
+      rerender(<App />);
+
+      const confetti = screen.getByTestId("confetti-burst");
+      expect(confetti).toBeInTheDocument();
+      expect(confetti.children.length).toBe(20);
+    });
+    it("clears confetti timer on rapid generations and completes timer", () => {
+      vi.useFakeTimers();
+      const { rerender } = render(<App />);
+
+      // Trigger loading
+      (aiSdkReact.experimental_useObject as any).mockReturnValue({
+        object: undefined,
+        submit: mockSubmit,
+        isLoading: true,
+      });
+      rerender(<App />);
+
+      // Finish loading to start timer
+      (aiSdkReact.experimental_useObject as any).mockReturnValue({
+        object: undefined,
+        submit: mockSubmit,
+        isLoading: false,
+      });
+      rerender(<App />);
+
+      expect(screen.getByTestId("confetti-burst")).toBeInTheDocument();
+
+      // Trigger loading AGAIN before timer finishes (clears timeout)
+      (aiSdkReact.experimental_useObject as any).mockReturnValue({
+        object: undefined,
+        submit: mockSubmit,
+        isLoading: true,
+      });
+      rerender(<App />);
+
+      // Finish loading AGAIN
+      (aiSdkReact.experimental_useObject as any).mockReturnValue({
+        object: undefined,
+        submit: mockSubmit,
+        isLoading: false,
+      });
+      rerender(<App />);
+
+      // Fast forward the timer to trigger the timeout callback
+      act(() => {
+        vi.runAllTimers();
+      });
+
+      expect(screen.queryByTestId("confetti-burst")).not.toBeInTheDocument();
+      
+      vi.useRealTimers();
     });
   });
 });
