@@ -198,4 +198,56 @@ describe("Inspiror App", () => {
     expect(screen.getByText("Welcome back!")).toBeInTheDocument();
     expect(screen.getByText("Continue my game")).toBeInTheDocument();
   });
+
+  // Phase 2b: Suggestion Chips
+  it("renders suggestion chips when only the initial greeting is shown", () => {
+    render(<App />);
+    expect(
+      screen.getByRole("button", { name: /bouncing ball/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /neon paint/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("clicking a suggestion chip sends the message", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ reply: "Great choice!", code: "<html></html>" }),
+    });
+
+    render(<App />);
+    const chip = screen.getByRole("button", { name: /bouncing ball/i });
+    fireEvent.click(chip);
+
+    // User message from chip should appear
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+    });
+
+    // Chips should disappear after sending
+    expect(
+      screen.queryByRole("button", { name: /bouncing ball/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("does not render suggestion chips after user has sent a message", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ reply: "Done!", code: "<html></html>" }),
+    });
+
+    render(<App />);
+    const input = screen.getByPlaceholderText(/Type your idea here/i);
+    fireEvent.change(input, { target: { value: "Build something" } });
+    fireEvent.click(screen.getByRole("button", { name: /Send/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Done!")).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByRole("button", { name: /bouncing ball/i }),
+    ).not.toBeInTheDocument();
+  });
 });

@@ -17,6 +17,13 @@ const DEFAULT_MESSAGES: ChatMessage[] = [
 const DEFAULT_CODE =
   '<!DOCTYPE html><html><body style="background:#111; color:#fff; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; font-family:sans-serif;"><h1>Your creation will appear here!</h1></body></html>';
 
+const SUGGESTION_CHIPS = [
+  { emoji: "🏀", label: "Make a bouncing ball game" },
+  { emoji: "🎨", label: "Create a neon paint app" },
+  { emoji: "⏰", label: "Build a glowing clock" },
+  { emoji: "🚀", label: "Design a space adventure" },
+];
+
 const STORAGE_KEYS = {
   messages: "inspiror-messages",
   currentCode: "inspiror-currentCode",
@@ -102,6 +109,18 @@ function App() {
     setInputValue("");
     await sendToApi(newMessages, currentCode);
   };
+
+  const handleChipClick = async (label: string) => {
+    const newMessages: ChatMessage[] = [
+      ...messages,
+      { role: "user", content: label },
+    ];
+    setMessages(newMessages);
+    await sendToApi(newMessages, currentCode);
+  };
+
+  const showSuggestions =
+    messages.length === 1 && messages[0]?.role === "assistant" && !isGenerating;
 
   useEffect(() => {
     const handleIframeError = (event: MessageEvent) => {
@@ -196,6 +215,22 @@ function App() {
                 {msg.content}
               </div>
             ))}
+
+            {/* SUGGESTION CHIPS */}
+            {showSuggestions && (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {SUGGESTION_CHIPS.map((chip) => (
+                  <button
+                    key={chip.label}
+                    onClick={() => handleChipClick(chip.label)}
+                    className="bg-[#2a2a4a] text-[#00f0ff] border border-[#00f0ff] px-4 py-2 rounded-full hover:bg-[#00f0ff] hover:text-black transition-all shadow-[0_0_8px_rgba(0,240,255,0.3)] text-sm font-medium"
+                  >
+                    <span className="mr-1">{chip.emoji}</span>
+                    {chip.label}
+                  </button>
+                ))}
+              </div>
+            )}
 
             {/* LOADING STATE */}
             {isGenerating && (
