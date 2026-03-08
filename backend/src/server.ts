@@ -9,8 +9,11 @@ app.use(express.json());
 
 app.post("/api/generate", async (req, res) => {
   if (!req.body.messages || !Array.isArray(req.body.messages)) {
+    console.warn("[API] Rejected request: Missing messages array.");
     return res.status(400).json({ error: "messages array is required" });
   }
+
+  console.log(`[API] Generation request received | Messages: ${req.body.messages.length} | Code length: ${req.body.currentCode?.length || 0}`);
 
   try {
     const result = await llmService.generateStream(
@@ -19,7 +22,7 @@ app.post("/api/generate", async (req, res) => {
     );
     result.pipeTextStreamToResponse(res);
   } catch (error) {
-    console.error("Route Error:", error);
+    console.error("[API] Route Error during stream setup:", error);
     res.status(500).json({ error: "Internal server error during generation" });
   }
 });

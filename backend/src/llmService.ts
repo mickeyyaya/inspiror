@@ -43,7 +43,7 @@ CRITICAL:
         ? `${basePrompt}\n\nThe user's current app code is:\n${currentCode}\n\nModify this existing code based on the user's request. Keep all existing functionality unless told otherwise.`
         : basePrompt;
 
-      const result = streamObject({
+      const result = await streamObject({
         model: google("gemini-2.5-pro"),
         schema: generationSchema,
         messages: [
@@ -57,7 +57,7 @@ CRITICAL:
 
       return result; // Return the stream directly for pipeTextStreamToResponse
     } catch (error) {
-      console.error("LLM Generation Error:", error);
+      console.error("[LLM Service] Generation Error:", error);
       throw new Error("Failed to generate response from LLM.");
     }
   }

@@ -101,15 +101,20 @@ const CONFETTI_COUNT = 20;
 function injectErrorCatcher(code: string): string {
   const headClose = code.indexOf("</head>");
   if (headClose !== -1) {
-    return (
-      code.slice(0, headClose) + ERROR_CATCHER_SCRIPT + code.slice(headClose)
-    );
+    return code.slice(0, headClose) + ERROR_CATCHER_SCRIPT + code.slice(headClose);
   }
   const bodyOpen = code.indexOf("<body");
   if (bodyOpen !== -1) {
-    return (
-      code.slice(0, bodyOpen) + ERROR_CATCHER_SCRIPT + code.slice(bodyOpen)
-    );
+    return code.slice(0, bodyOpen) + ERROR_CATCHER_SCRIPT + code.slice(bodyOpen);
+  }
+  const htmlOpen = code.toLowerCase().indexOf("<html");
+  if (htmlOpen !== -1) {
+    const htmlEnd = code.indexOf(">", htmlOpen) + 1;
+    return code.slice(0, htmlEnd) + ERROR_CATCHER_SCRIPT + code.slice(htmlEnd);
+  }
+  const doctypeEnd = code.toLowerCase().indexOf("<!doctype html>");
+  if (doctypeEnd !== -1) {
+    return code.slice(0, doctypeEnd + 15) + ERROR_CATCHER_SCRIPT + code.slice(doctypeEnd + 15);
   }
   return ERROR_CATCHER_SCRIPT + code;
 }
@@ -136,11 +141,14 @@ function App() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const prevIsLoadingRef = useRef(false);
+  const autoFixCountRef = useRef(0); // Tracks consecutive auto-fixes to prevent infinite loops
 
   const { object, submit, isLoading } = useObject({
     api: "http://localhost:3001/api/generate",
     schema: generationSchema,
     onFinish({ object: finalObj }) {
+      // Reset the auto-fix counter ONLY when a user manually sends a message, 
+      // but we don't have direct access to that here. We handle it in handleSend.
       if (finalObj?.reply) {
         setMessages((prev) => [
           ...prev,
@@ -152,7 +160,7 @@ function App() {
       }
     },
     onError(err) {
-      console.error(err);
+      console.error("[UI] Stream error:", err);
       setMessages((prev) => [
         ...prev,
         {
@@ -165,6 +173,7 @@ function App() {
 
   const handleSend = () => {
     if (!inputValue.trim() || isLoading) return;
+    autoFixCountRef.current = 0; // Reset auto-fix protection on manual user input
     const newMessages: ChatMessage[] = [
       ...messages,
       { role: "user", content: inputValue },
@@ -176,6 +185,7 @@ function App() {
 
   const handleChipClick = (label: string) => {
     if (isLoading) return;
+    autoFixCountRef.current = 0; // Reset auto-fix protection on manual user input
     const newMessages: ChatMessage[] = [
       ...messages,
       { role: "user", content: label },
@@ -188,6 +198,7 @@ function App() {
     setMessages(DEFAULT_MESSAGES);
     setCurrentCode(DEFAULT_CODE);
     setInputValue("");
+    autoFixCountRef.current = 0;
   };
 
   const showSuggestions =
@@ -207,12 +218,26 @@ function App() {
     const handleIframeError = (event: MessageEvent) => {
       if (event.data?.type === "iframe-error") {
         const errorMsg = event.data.message || "Unknown error";
+        console.error(`[Sandbox Error] ${errorMsg}`);
+        
         if (isLoading) return;
+
+        if (autoFixCountRef.current >= 2) {
+          console.warn("[App] Auto-fix limit reached. Stopping infinite loop.");
+          const warningMessage: ChatMessage = {
+            role: "assistant",
+            content: "Hmm, this bug is really tricky! It keeps breaking. What should we try instead?",
+          };
+          setMessages((prev) => [...prev, warningMessage]);
+          return; // Abort automatic submit
+        }
+
+        autoFixCountRef.current += 1;
+        console.log(`[App] Triggering Auto-Fix (${autoFixCountRef.current}/2)`);
 
         const oopsMessage: ChatMessage = {
           role: "assistant",
-          content:
-            "Oops, I made a little mistake! Let me fix that real quick...",
+          content: "Oops, I made a little mistake! Let me fix that real quick...",
         };
         const errorContext: ChatMessage = {
           role: "user",

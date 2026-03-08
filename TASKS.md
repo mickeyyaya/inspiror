@@ -107,4 +107,8 @@ When implementing features in worktrees:
    - [ ] No hardcoded secrets
    - [ ] Lint passes with no errors
 4. Merge to `main` only after all checks pass
-5. Clean up worktree after merge
+5. After successful merge, delete the worktree and its branch:
+   ```bash
+   git worktree remove <worktree-path>
+   git branch -d <branch-name>
+   ```
