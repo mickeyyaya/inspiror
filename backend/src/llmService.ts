@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { generateObject, Message } from "ai";
+import { streamObject, Message } from "ai";
 import { google } from "@ai-sdk/google";
 
 // Define the exact schema we want the LLM to return
@@ -43,7 +43,7 @@ CRITICAL:
         ? `${basePrompt}\n\nThe user's current app code is:\n${currentCode}\n\nModify this existing code based on the user's request. Keep all existing functionality unless told otherwise.`
         : basePrompt;
 
-      const { object } = await generateObject({
+      const result = streamObject({
         model: google("gemini-2.5-pro"),
         schema: generationSchema,
         messages: [
@@ -55,7 +55,7 @@ CRITICAL:
         ],
       });
 
-      return object;
+      return await result.object;
     } catch (error) {
       console.error("LLM Generation Error:", error);
       throw new Error("Failed to generate response from LLM.");

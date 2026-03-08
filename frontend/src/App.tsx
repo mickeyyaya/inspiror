@@ -193,6 +193,31 @@ function App() {
         />
       </div>
 
+      {/* HACKER MODE OVERLAY */}
+      {isGenerating && (
+        <div
+          data-testid="hacker-mode-overlay"
+          className="absolute inset-0 z-10 bg-black/80 flex items-center justify-center overflow-hidden pointer-events-none"
+        >
+          <div className="w-full h-full p-8 overflow-hidden">
+            <pre className="text-[#39ff14] text-xs font-mono whitespace-pre-wrap opacity-70 animate-pulse leading-relaxed">
+              {currentCode}
+            </pre>
+          </div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-center">
+              <Sparkles
+                className="text-[#00f0ff] animate-spin mx-auto mb-4"
+                size={48}
+              />
+              <p className="text-[#00f0ff] text-2xl font-bold tracking-widest animate-pulse">
+                BUILDING...
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* FLOATING CHAT TOGGLE BUTTON */}
       {!isChatVisible && (
         <button

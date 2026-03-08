@@ -60,7 +60,7 @@ describe("Inspiror App", () => {
     fireEvent.click(button);
 
     expect(screen.getByText("Make a drawing app")).toBeInTheDocument();
-    expect(screen.getByText(/Building.../i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Building.../i).length).toBeGreaterThan(0);
   });
 
   it("can toggle the floating chat visibility", () => {
@@ -274,6 +274,40 @@ describe("Inspiror App", () => {
     expect(
       screen.getByRole("button", { name: /bouncing ball/i }),
     ).toBeInTheDocument();
+  });
+
+  // Phase 1.5: Hacker Mode UI
+  it("shows hacker mode code overlay during generation", () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ reply: "Here you go!", code: "<html></html>" }),
+    });
+
+    render(<App />);
+    const input = screen.getByPlaceholderText(/Type your idea here/i);
+    fireEvent.change(input, { target: { value: "Build a game" } });
+    fireEvent.click(screen.getByRole("button", { name: /Send/i }));
+
+    // Hacker mode overlay should appear during generation
+    expect(screen.getByTestId("hacker-mode-overlay")).toBeInTheDocument();
+  });
+
+  it("hides hacker mode overlay after generation completes", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ reply: "Done building!", code: "<html></html>" }),
+    });
+
+    render(<App />);
+    const input = screen.getByPlaceholderText(/Type your idea here/i);
+    fireEvent.change(input, { target: { value: "Build a game" } });
+    fireEvent.click(screen.getByRole("button", { name: /Send/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Done building!")).toBeInTheDocument();
+    });
+
+    expect(screen.queryByTestId("hacker-mode-overlay")).not.toBeInTheDocument();
   });
 
   it("does not render suggestion chips after user has sent a message", async () => {
