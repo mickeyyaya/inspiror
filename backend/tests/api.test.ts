@@ -55,4 +55,19 @@ describe("POST /api/generate", () => {
     );
     expect(systemMessage?.content).toContain(currentCode);
   });
+
+  it("should handle internal server errors from the LLM service", async () => {
+    mockedStreamObject.mockImplementationOnce(() => {
+      throw new Error("Mocked API failure");
+    });
+
+    const res = await request(app)
+      .post("/api/generate")
+      .send({
+        messages: [{ role: "user", content: "test message" }],
+      });
+
+    expect(res.status).toBe(500);
+    expect(res.body).toHaveProperty("error", "Internal server error during generation");
+  });
 });

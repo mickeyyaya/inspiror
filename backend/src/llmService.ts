@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { streamObject, Message } from "ai";
+import { streamObject } from "ai";
 import { google } from "@ai-sdk/google";
 
 // Define the exact schema we want the LLM to return
@@ -24,7 +24,7 @@ export class LLMService {
   }
 
   async generateStream(
-    messages: Message[],
+    messages: Array<{ role: string; content: string }>,
     currentCode?: string,
   ) {
     try {
@@ -55,10 +55,13 @@ CRITICAL - FORMATTING:
         schema: generationSchema,
         messages: [
           {
-            role: "system",
+            role: "system" as const,
             content: systemContent,
           },
-          ...messages,
+          ...messages.map((m) => ({
+            role: m.role as "user" | "assistant",
+            content: m.content,
+          })),
         ],
       });
 

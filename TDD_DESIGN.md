@@ -76,14 +76,14 @@ We use **Vitest** and **React Testing Library** for the frontend, and **Jest** +
 *   **Frontend Test 5:** Ensure the frontend sends `currentCode` alongside `messages` when making the API call. (GREEN)
 *   **Frontend Test 5b:** Ensure "Suggestion Chips" (Magic Buttons) render when the chat is empty or waiting for initial input, and clicking one populates and submits the input. (GREEN)
 
-### Phase 2.5: UX Polish & Visual Delight (PARTIALLY COMPLETED)
+### Phase 2.5: UX Polish & Visual Delight (COMPLETED)
 *   **Frontend Test - Buddy Avatar:** Verify `.buddy-avatar` class renders by default and switches to `.buddy-avatar-thinking` during loading. (GREEN)
 *   **Frontend Test - Chip Entrance:** Verify `.chip-enter` class on all 4 chips with staggered `animationDelay` (0ms, 100ms, 200ms, 300ms). (GREEN)
 *   **Frontend Test - Message Animations:** Verify `.msg-buddy` class on assistant messages and `.msg-user` on user messages. (GREEN)
 *   **Frontend Test - Input Glow:** Verify `.input-glow-active` class appears when input has text, absent when empty. (GREEN)
 *   **Frontend Test - Welcome Screen:** Verify default iframe `srcdoc` contains "What will YOU create today?" and "particle". (GREEN)
 *   **Frontend Test - Auto-scroll:** Verify `scrollIntoView` is called on render. (GREEN)
-*   **Frontend Test - Auditory Feedback:** Mock HTML5 Audio API and verify `useAudio` hook triggers correctly. (TODO)
+*   **Frontend Test - Auditory Feedback:** `useAudio` hook with 4 sounds, mute toggle, localStorage persistence. (GREEN)
 
 ### Phase 3: Educational Auto-Fix Error Handling (COMPLETED)
 *   **Frontend Test 6:** Simulate an `error` event from the `PreviewSandbox` iframe. The app must catch it, display a friendly "Oops, fixing it!" assistant message, and automatically trigger a hidden generation request with the error details. (GREEN)
@@ -157,14 +157,14 @@ We use **Vitest** and **React Testing Library** for the frontend, and **Jest** +
 
 | Severity | Issue | File | Status |
 |----------|-------|------|--------|
-| MEDIUM | `key={idx}` for message list - array index keys cause incorrect DOM reuse when messages are inserted non-append (iframe error handler) | `App.tsx` | TODO |
-| MEDIUM | Confetti timer doesn't reset on rapid-fire generations - first timer hides confetti prematurely | `App.tsx` | TODO |
-| MEDIUM | Hidden chat panel lacks `aria-hidden` - screen readers traverse off-screen content | `App.tsx` | TODO |
-| LOW | Confetti CSS uses hardcoded `nth-child` selectors coupled to `CONFETTI_COUNT` constant | `index.css` | TODO |
-| LOW | Favicon emoji may not render on all browsers/OS (Firefox Linux) | `index.html` | TODO |
+| MEDIUM | `key={idx}` for message list - replaced with `crypto.randomUUID()` stable keys | `App.tsx` | DONE |
+| MEDIUM | Confetti timer doesn't reset on rapid-fire generations - fixed with `confettiTimerRef` | `App.tsx` | DONE |
+| MEDIUM | Hidden chat panel lacks `aria-hidden` - added `aria-hidden={!isChatVisible}` | `App.tsx` | DONE |
+| LOW | Confetti CSS uses hardcoded `nth-child` selectors - refactored to inline styles | `index.css` | DONE |
+| LOW | Favicon emoji may not render on all browsers/OS - replaced with SVG rocket | `index.html` | DONE |
 
 ## 7. Implementation Steps (Next)
-1.  **Phase 2.5 (Next):** Implement `useAudio` hook for sound effects, add Play/Edit toggle.
-2.  **Phase 5:** CSS media queries for mobile/tablet, Docker containerization, Vercel deployment.
-3.  **Phase 6:** Sliding code editor ("Look Inside"), image upload, gamified achievements.
-4.  **Tech Debt:** Address code review findings (message keys, confetti timer, accessibility).
+1.  ~~**Phase 2.5:** Audio integration, Play/Edit toggle.~~ (DONE)
+2.  ~~**Phase 5:** CSS media queries, Docker, Vercel deployment.~~ (DONE)
+3.  ~~**Tech Debt:** Message keys, confetti timer, accessibility, favicon, CSS coupling.~~ (DONE)
+4.  **Phase 6 (Future):** Sliding code editor ("Look Inside"), image upload, gamified achievements.

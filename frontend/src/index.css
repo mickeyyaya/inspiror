@@ -42,26 +42,7 @@ code {
   pointer-events: none;
 }
 
-.confetti-piece:nth-child(1) { left: 5%; background: #ff007f; animation-delay: 0s; border-radius: 50%; }
-.confetti-piece:nth-child(2) { left: 12%; background: #00f0ff; animation-delay: 0.05s; }
-.confetti-piece:nth-child(3) { left: 20%; background: #39ff14; animation-delay: 0.1s; border-radius: 50%; }
-.confetti-piece:nth-child(4) { left: 27%; background: #ff007f; animation-delay: 0.15s; }
-.confetti-piece:nth-child(5) { left: 35%; background: #ffd700; animation-delay: 0.2s; border-radius: 50%; }
-.confetti-piece:nth-child(6) { left: 42%; background: #a855f7; animation-delay: 0.1s; }
-.confetti-piece:nth-child(7) { left: 50%; background: #00f0ff; animation-delay: 0.25s; border-radius: 50%; }
-.confetti-piece:nth-child(8) { left: 57%; background: #39ff14; animation-delay: 0.05s; }
-.confetti-piece:nth-child(9) { left: 65%; background: #ff007f; animation-delay: 0.3s; border-radius: 50%; }
-.confetti-piece:nth-child(10) { left: 72%; background: #ffd700; animation-delay: 0.15s; }
-.confetti-piece:nth-child(11) { left: 80%; background: #a855f7; animation-delay: 0.2s; border-radius: 50%; }
-.confetti-piece:nth-child(12) { left: 87%; background: #00f0ff; animation-delay: 0.1s; }
-.confetti-piece:nth-child(13) { left: 95%; background: #39ff14; animation-delay: 0.25s; border-radius: 50%; }
-.confetti-piece:nth-child(14) { left: 8%; background: #ffd700; animation-delay: 0.35s; }
-.confetti-piece:nth-child(15) { left: 30%; background: #a855f7; animation-delay: 0.12s; border-radius: 50%; }
-.confetti-piece:nth-child(16) { left: 45%; background: #ff007f; animation-delay: 0.18s; }
-.confetti-piece:nth-child(17) { left: 60%; background: #00f0ff; animation-delay: 0.08s; border-radius: 50%; }
-.confetti-piece:nth-child(18) { left: 75%; background: #39ff14; animation-delay: 0.22s; }
-.confetti-piece:nth-child(19) { left: 90%; background: #ffd700; animation-delay: 0.28s; border-radius: 50%; }
-.confetti-piece:nth-child(20) { left: 15%; background: #a855f7; animation-delay: 0.32s; }
+/* Confetti styles are applied inline via JS for decoupling from CONFETTI_COUNT */
 
 /* === Message Slide-In Animations === */
 @keyframes slide-in-left {

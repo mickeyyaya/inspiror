@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import App from "./App";
 import * as aiSdkReact from "@ai-sdk/react";
 
@@ -65,7 +65,9 @@ describe("Inspiror App - Hacker Mode & UX", () => {
 
     // Default mock behavior for useObject
     mockSubmit = vi.fn();
-    (aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>).mockReturnValue({
+    (
+      aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>
+    ).mockReturnValue({
       object: undefined,
       submit: mockSubmit,
       isLoading: false,
@@ -81,7 +83,9 @@ describe("Inspiror App - Hacker Mode & UX", () => {
   });
 
   it("shows vivid Hacker Mode overlay during generation", () => {
-    (aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>).mockReturnValue({
+    (
+      aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>
+    ).mockReturnValue({
       object: { code: "<html>MATRIX LOADING</html>" },
       submit: mockSubmit,
       isLoading: true,
@@ -117,7 +121,9 @@ describe("Inspiror App - Hacker Mode & UX", () => {
     const hideButton = screen.getByRole("button", { name: /Hide Chat/i });
     fireEvent.click(hideButton);
 
-    expect(screen.queryByText(/Hi! I'm your builder buddy/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/Hi! I'm your builder buddy/i),
+    ).not.toBeInTheDocument();
 
     const showButton = screen.getByRole("button", { name: /Show Chat/i });
     fireEvent.click(showButton);
@@ -125,6 +131,138 @@ describe("Inspiror App - Hacker Mode & UX", () => {
     expect(screen.getByText(/Hi! I'm your builder buddy/i)).toBeInTheDocument();
   });
 
+  describe("injectErrorCatcher branches", () => {
+    it("injects script after <head> if present", () => {
+      mockStorage["inspiror-currentCode"] =
+        "<html><head></head><body></body></html>";
+      render(<App />);
+      const iframe = screen.getByTitle("Preview Sandbox");
+      expect(iframe).toHaveAttribute(
+        "srcDoc",
+        expect.stringMatching(/<head><script>.*<\/script><\/head>/),
+      );
+    });
+
+    it("injects script after <body if present but no head", () => {
+      mockStorage["inspiror-currentCode"] = "<html><body></body></html>";
+      render(<App />);
+      const iframe = screen.getByTitle("Preview Sandbox");
+      expect(iframe).toHaveAttribute(
+        "srcDoc",
+        expect.stringMatching(/<html><script>.*<\/script><body>/),
+      );
+    });
+
+    it("injects script after <html if no body or head", () => {
+      mockStorage["inspiror-currentCode"] = "<html><div>hello</div></html>";
+      render(<App />);
+      const iframe = screen.getByTitle("Preview Sandbox");
+      expect(iframe).toHaveAttribute(
+        "srcDoc",
+        expect.stringMatching(/<html><script>.*<\/script><div>/),
+      );
+    });
+
+    it("injects script after doctype if no html tag", () => {
+      mockStorage["inspiror-currentCode"] = "<!DOCTYPE html><div>hello</div>";
+      render(<App />);
+      const iframe = screen.getByTitle("Preview Sandbox");
+      expect(iframe).toHaveAttribute(
+        "srcDoc",
+        expect.stringMatching(/<!DOCTYPE html><script>.*<\/script><div>/),
+      );
+    });
+
+    it("prepends script if no valid tags found", () => {
+      mockStorage["inspiror-currentCode"] = "<div>hello</div>";
+      render(<App />);
+      const iframe = screen.getByTitle("Preview Sandbox");
+      expect(iframe).toHaveAttribute(
+        "srcDoc",
+        expect.stringMatching(/^<script>.*<\/script><div>/),
+      );
+    });
+  });
+
+  describe("Error handling and auto-fix loop", () => {
+    it("handles stream onError callback", async () => {
+      let triggerError: (err: Error) => void;
+      (aiSdkReact.experimental_useObject as any).mockImplementation(
+        ({ onError }: any) => {
+          triggerError = onError;
+          return { object: undefined, submit: mockSubmit, isLoading: false };
+        },
+      );
+
+      render(<App />);
+      await act(async () => {
+        triggerError!(new Error("Network failure"));
+      });
+
+      expect(
+        await screen.findByText("Oops, my connection broke! Can we try again?"),
+      ).toBeInTheDocument();
+    });
+
+    it("auto-fixes iframe errors but limits to 2 consecutive attempts", async () => {
+      render(<App />);
+
+      // Trigger first error
+      await act(async () => {
+        window.dispatchEvent(
+          new MessageEvent("message", {
+            data: {
+              type: "iframe-error",
+              message: "SyntaxError: x is not defined",
+            },
+          }),
+        );
+      });
+
+      // Verify first auto-fix
+      expect(
+        await screen.findByText(
+          /Oops, I made a little mistake! Let me fix that/i,
+        ),
+      ).toBeInTheDocument();
+      expect(mockSubmit).toHaveBeenCalledTimes(1);
+
+      // Trigger second error
+      await act(async () => {
+        window.dispatchEvent(
+          new MessageEvent("message", {
+            data: {
+              type: "iframe-error",
+              message: "ReferenceError: y is not defined",
+            },
+          }),
+        );
+      });
+
+      // Verify second auto-fix attempt
+      expect(mockSubmit).toHaveBeenCalledTimes(2);
+
+      // Trigger third error (should hit limit)
+      await act(async () => {
+        window.dispatchEvent(
+          new MessageEvent("message", {
+            data: {
+              type: "iframe-error",
+              message: "TypeError: z is not a function",
+            },
+          }),
+        );
+      });
+
+      // Verify limit was reached, no new submit
+      expect(mockSubmit).toHaveBeenCalledTimes(2);
+      expect(
+        await screen.findByText(
+          /Hmm, this bug is really tricky! It keeps breaking/i,
+        ),
+      ).toBeInTheDocument();
+    });
+  });
   // Animated buddy avatar
   it("shows animated buddy avatar with bounce animation", () => {
     render(<App />);
@@ -133,7 +271,9 @@ describe("Inspiror App - Hacker Mode & UX", () => {
   });
 
   it("switches buddy avatar to thinking animation during loading", () => {
-    (aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>).mockReturnValue({
+    (
+      aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>
+    ).mockReturnValue({
       object: undefined,
       submit: mockSubmit,
       isLoading: true,
@@ -229,7 +369,9 @@ describe("Inspiror App - Hacker Mode & UX", () => {
       (c: string[]) => c[0] === "inspiror-messages",
     );
     const lastSaved = JSON.parse(setItemCalls[setItemCalls.length - 1][1]);
-    expect(lastSaved.every((m: { id: string }) => typeof m.id === "string")).toBe(true);
+    expect(
+      lastSaved.every((m: { id: string }) => typeof m.id === "string"),
+    ).toBe(true);
     const ids = lastSaved.map((m: { id: string }) => m.id);
     expect(new Set(ids).size).toBe(ids.length);
   });
@@ -297,9 +439,13 @@ describe("Inspiror App - Hacker Mode & UX", () => {
     // Chat should be hidden
     expect(screen.queryByText("Builder Buddy")).not.toBeInTheDocument();
     // Show Chat button should also be hidden
-    expect(screen.queryByRole("button", { name: /Show Chat/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /Show Chat/i }),
+    ).not.toBeInTheDocument();
     // Mode toggle should show "Back to Build"
-    expect(screen.getByTestId("mode-toggle")).toHaveTextContent("Back to Build");
+    expect(screen.getByTestId("mode-toggle")).toHaveTextContent(
+      "Back to Build",
+    );
   });
 
   it("returns to build mode with chat visible", () => {
@@ -311,5 +457,74 @@ describe("Inspiror App - Hacker Mode & UX", () => {
     // Return to build mode
     fireEvent.click(screen.getByTestId("mode-toggle"));
     expect(screen.getByText("Builder Buddy")).toBeInTheDocument();
+  });
+
+  describe("Additional Edge Cases", () => {
+    it("ignores iframe error if already loading", async () => {
+      (aiSdkReact.experimental_useObject as any).mockReturnValue({
+        object: undefined,
+        submit: mockSubmit,
+        isLoading: true,
+      });
+      render(<App />);
+      await act(async () => {
+        window.dispatchEvent(
+          new MessageEvent("message", {
+            data: { type: "iframe-error", message: "Error!" },
+          })
+        );
+      });
+      expect(mockSubmit).not.toHaveBeenCalled();
+    });
+
+    it("defaults to 'Unknown error' if message is missing in iframe event", async () => {
+      render(<App />);
+      await act(async () => {
+        window.dispatchEvent(
+          new MessageEvent("message", {
+            data: { type: "iframe-error" },
+          })
+        );
+      });
+      expect(await screen.findByText(/Unknown error/i)).toBeInTheDocument();
+    });
+
+    it("updates messages and currentCode when stream finishes", async () => {
+      let triggerFinish: (args: any) => void;
+      (aiSdkReact.experimental_useObject as any).mockImplementation(({ onFinish }: any) => {
+        triggerFinish = onFinish;
+        return { object: undefined, submit: mockSubmit, isLoading: false };
+      });
+
+      render(<App />);
+      
+      await act(async () => {
+        triggerFinish!({ object: { reply: "Done building!", code: "<html>SUCCESS</html>" } });
+      });
+
+      expect(await screen.findByText("Done building!")).toBeInTheDocument();
+    });
+
+    it("handles partial finish object gracefully", async () => {
+      let triggerFinish: (args: any) => void;
+      (aiSdkReact.experimental_useObject as any).mockImplementation(({ onFinish }: any) => {
+        triggerFinish = onFinish;
+        return { object: undefined, submit: mockSubmit, isLoading: false };
+      });
+
+      render(<App />);
+      
+      await act(async () => {
+        triggerFinish!({ object: {} });
+      });
+
+      expect(screen.queryByText("Done building!")).not.toBeInTheDocument();
+    });
+
+    it("falls back to default if JSON.parse throws in loadFromStorage", () => {
+      mockLocalStorage.getItem.mockReturnValueOnce("invalid-json{");
+      render(<App />);
+      expect(screen.getByText(/Hi! I'm your builder buddy/i)).toBeInTheDocument();
+    });
   });
 });

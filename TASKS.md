@@ -24,7 +24,7 @@
 **Goal:** Prevent blank-canvas syndrome and force the AI to build step-by-step (Iterative Visual Scaffolding).
 *(Completed)*
 
-## Phase 2.5: UX Polish, Visual Delight & Auditory Feedback [~]
+## Phase 2.5: UX Polish, Visual Delight & Auditory Feedback [x]
 **Goal:** Implement research findings on kids' UX (Visual Subtraction, Skeuomorphism, Animations, and Sound).
 
 ### Frontend Tasks - Visual Delight (COMPLETED)
@@ -39,16 +39,16 @@
 - [x] Hacker mode pulsing core: Dual blur circles (cyan/pink) + spinning Sparkles + gradient "BUILDING" text.
 - [x] Skeuomorphic buttons: 3D shadows with `active:translate-y-[4px]` press effect on chips and send button.
 
-### Frontend Tasks - Audio Integration (TODO)
-- [ ] Source or generate 4 kid-friendly royalty-free sound effects (e.g., `send-pop.mp3`, `chip-click.mp3`, `success-chime.mp3`, `error-buzzer.mp3`) and add them to `public/sounds/`.
-- [ ] Create a `useAudio` custom React hook to preload and play these sounds asynchronously without blocking the main thread.
-- [ ] Hook `send-pop` into the `handleSend` function.
-- [ ] Hook `chip-click` into the `handleChipClick` function.
-- [ ] Hook `success-chime` into the completion block of the generation stream.
-- [ ] Hook `error-buzzer` into the `window.onerror` iframe message listener.
+### Frontend Tasks - Audio Integration (COMPLETED)
+- [x] Source or generate 4 kid-friendly royalty-free sound effects (e.g., `send-pop.mp3`, `chip-click.mp3`, `success-chime.mp3`, `error-buzzer.mp3`) and add them to `public/sounds/`.
+- [x] Create a `useAudio` custom React hook to preload and play these sounds asynchronously without blocking the main thread.
+- [x] Hook `send-pop` into the `handleSend` function.
+- [x] Hook `chip-click` into the `handleChipClick` function.
+- [x] Hook `success-chime` into the completion block of the generation stream.
+- [x] Hook `error-buzzer` into the `window.onerror` iframe message listener.
 
-### Frontend Tasks - Play/Edit Toggle (TODO)
-- [ ] Add a prominent toggle at the top of the screen to switch between "Build Mode" (shows chat/hacker overlay) and "Play Mode" (hides UI, focuses iframe).
+### Frontend Tasks - Play/Edit Toggle (COMPLETED)
+- [x] Add a prominent toggle at the top of the screen to switch between "Build Mode" (shows chat/hacker overlay) and "Play Mode" (hides UI, focuses iframe).
 
 ## Phase 3: Educational Auto-Fix Error Handling [x]
 *(Completed)*
@@ -56,12 +56,12 @@
 ## Phase 4: Local Storage Persistence [x]
 *(Completed)*
 
-## Phase 5: Polish & Deployment [ ]
+## Phase 5: Polish & Deployment [x]
 - [x] Add "Clear/Reset Project" button in chat header.
 - [x] E2E test suite covering all features (22 Playwright tests).
-- [ ] CSS Media Queries: Add Tailwind classes (`md:`, `lg:`) to ensure the floating chat window scales down properly on tablets (e.g., iPad screens) and switches to a stacked layout on phones.
-- [ ] Containerize the backend with a `Dockerfile` for easy deployment to Railway/Render.
-- [ ] Add `vercel.json` and configure Vite for zero-config Vercel deployment.
+- [x] CSS Media Queries: Add Tailwind responsive classes for tablet/phone layouts.
+- [x] Containerize the backend with a `Dockerfile` for easy deployment to Railway/Render.
+- [x] Add `vercel.json` and configure Vite for zero-config Vercel deployment.
 
 ## Phase 6: Deep Engagement & Retention (Future) [ ]
 **Goal:** Implement features that keep kids coming back based on research of platforms like Scratch and Roblox.
@@ -86,13 +86,13 @@
 ## Technical Debt (from Code Review)
 
 ### Must Fix Before Next Feature
-- [ ] **Message list keys:** Replace `key={idx}` with stable keys (content hash or uuid) to prevent incorrect DOM reuse when iframe error handler inserts messages non-append.
-- [ ] **Confetti timer reset:** Reset confetti timer on rapid-fire generations so first timer doesn't prematurely hide confetti from second build.
-- [ ] **Accessibility:** Add `aria-hidden={!isChatVisible}` to hidden chat panel so screen readers don't traverse off-screen content.
+- [x] **Message list keys:** Replace `key={idx}` with stable keys (`crypto.randomUUID()` with migration) to prevent incorrect DOM reuse.
+- [x] **Confetti timer reset:** Reset confetti timer on rapid-fire generations using `confettiTimerRef` with `clearTimeout`.
+- [x] **Accessibility:** Add `aria-hidden={!isChatVisible}` to hidden chat panel so screen readers don't traverse off-screen content.
 
 ### Nice to Fix
-- [ ] **Confetti CSS coupling:** Refactor hardcoded `nth-child` selectors to use inline `style={{}}` like welcome particles, decoupling from `CONFETTI_COUNT`.
-- [ ] **Favicon fallback:** Replace emoji favicon with a real SVG rocket shape for cross-browser reliability (Firefox Linux renders blank).
+- [x] **Confetti CSS coupling:** Refactored to use inline `style={{}}` on each confetti piece, removed `nth-child` selectors.
+- [x] **Favicon fallback:** Replaced emoji favicon with SVG rocket shape for cross-browser reliability.
 
 ## Worktree Workflow
 

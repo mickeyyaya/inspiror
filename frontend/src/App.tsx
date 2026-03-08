@@ -371,12 +371,29 @@ function App() {
         </div>
       )}
 
-      {/* Confetti Burst */}
+      {/* Confetti Burst (inline styles decoupled from CSS nth-child) */}
       {showConfetti && (
         <div data-testid="confetti-burst">
-          {Array.from({ length: CONFETTI_COUNT }, (_, i) => (
-            <div key={i} className="confetti-piece" />
-          ))}
+          {Array.from({ length: CONFETTI_COUNT }, (_, i) => {
+            const colors = [
+              "#ff007f",
+              "#00f0ff",
+              "#39ff14",
+              "#ffd700",
+              "#a855f7",
+            ];
+            const left = `${5 + (i * 90) / CONFETTI_COUNT}%`;
+            const background = colors[i % colors.length] as string;
+            const animationDelay = `${(i * 0.04).toFixed(2)}s`;
+            const borderRadius = i % 2 === 0 ? "50%" : "0";
+            return (
+              <div
+                key={i}
+                className="confetti-piece"
+                style={{ left, background, animationDelay, borderRadius }}
+              />
+            );
+          })}
         </div>
       )}
 
@@ -413,7 +430,10 @@ function App() {
 
       {/* FLOATING CHAT WINDOW (build mode only) */}
       {!isPlayMode && isChatVisible && (
-        <div className="absolute top-4 right-4 bottom-4 w-96 max-w-[calc(100vw-2rem)] bg-[#0d0d1a]/90 backdrop-blur-xl border-2 border-[#00f0ff] rounded-3xl flex flex-col shadow-[0_0_40px_rgba(0,240,255,0.4)] z-50 overflow-hidden transition-all duration-300">
+        <div
+          className="absolute top-0 right-0 bottom-0 w-full sm:top-4 sm:right-4 sm:bottom-4 sm:w-80 lg:w-96 sm:max-w-[calc(100vw-2rem)] bg-[#0d0d1a]/90 backdrop-blur-xl sm:border-2 border-[#00f0ff] sm:rounded-3xl flex flex-col shadow-[0_0_40px_rgba(0,240,255,0.4)] z-50 overflow-hidden transition-all duration-300"
+          aria-hidden={!isChatVisible}
+        >
           {/* HEADER with Animated Buddy Avatar */}
           <div className="bg-gradient-to-r from-[#00f0ff] to-[#0099ff] text-black p-4 flex justify-between items-center font-bold shadow-md">
             <div className="flex items-center gap-3">
