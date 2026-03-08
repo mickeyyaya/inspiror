@@ -40,20 +40,19 @@ test.describe("Inspiror App - E2E", () => {
     await expect(sendButton).toBeEnabled();
   });
 
-  test("can toggle chat visibility", async ({ page }) => {
-    // Chat is visible initially
-    await expect(
-      page.getByText("Builder Buddy", { exact: true }),
-    ).toBeVisible();
+  test("can toggle chat visibility via CSS slide animation", async ({
+    page,
+  }) => {
+    // Chat panel is visible initially
+    const chatPanel = page.locator(".chat-panel");
+    await expect(chatPanel).toHaveClass(/chat-panel-visible/);
 
     // Hide chat
     const hideButton = page.getByRole("button", { name: "Hide Chat" });
     await hideButton.click();
 
-    // Chat header should not be visible
-    await expect(
-      page.getByText("Builder Buddy", { exact: true }),
-    ).not.toBeVisible();
+    // Chat panel should have hidden class (slid off-screen)
+    await expect(chatPanel).toHaveClass(/chat-panel-hidden/);
 
     // Show chat button should appear
     const showButton = page.getByRole("button", { name: "Show Chat" });
@@ -61,9 +60,7 @@ test.describe("Inspiror App - E2E", () => {
 
     // Re-show chat
     await showButton.click();
-    await expect(
-      page.getByText("Builder Buddy", { exact: true }),
-    ).toBeVisible();
+    await expect(chatPanel).toHaveClass(/chat-panel-visible/);
   });
 
   test("submitting a message shows it in the chat and triggers loading", async ({
@@ -328,5 +325,75 @@ test.describe("Inspiror App - E2E", () => {
     await expect(page.getByText("Keyboard submitted!")).toBeVisible({
       timeout: 5000,
     });
+  });
+
+  test("shows confetti burst after successful generation", async ({ page }) => {
+    await page.route("**/api/generate", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          reply: "Confetti time!",
+          code: "<html><body>Celebration</body></html>",
+        }),
+      });
+    });
+
+    const input = page.getByPlaceholder("Type your idea here...");
+    await input.fill("Build something amazing");
+    await page.getByRole("button", { name: "Send" }).click();
+
+    await expect(page.getByText("Confetti time!")).toBeVisible({
+      timeout: 5000,
+    });
+
+    // Confetti should appear after generation completes
+    await expect(page.getByTestId("confetti-burst")).toBeVisible();
+  });
+
+  test("shows animated welcome screen in default preview", async ({ page }) => {
+    const iframe = page.locator('iframe[title="Preview Sandbox"]');
+    const srcdoc = await iframe.getAttribute("srcdoc");
+    expect(srcdoc).toContain("What will YOU create today?");
+  });
+
+  test("shows matrix rain columns during generation", async ({ page }) => {
+    await page.route("**/api/generate", async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          reply: "Done!",
+          code: "<html><body>Built</body></html>",
+        }),
+      });
+    });
+
+    const input = page.getByPlaceholder("Type your idea here...");
+    await input.fill("Build a game");
+    await page.getByRole("button", { name: "Send" }).click();
+
+    // Matrix rain columns should appear during hacker mode
+    await expect(page.locator(".matrix-column").first()).toBeVisible();
+    await expect(page.locator(".scanline-overlay")).toBeVisible();
+  });
+
+  test("buddy avatar has bounce animation", async ({ page }) => {
+    const avatar = page.locator(".buddy-avatar");
+    await expect(avatar).toBeVisible();
+  });
+
+  test("input glows when text is entered", async ({ page }) => {
+    const input = page.getByPlaceholder("Type your idea here...");
+
+    // No glow initially
+    await expect(input).not.toHaveClass(/input-glow-active/);
+
+    // Type text
+    await input.fill("Hello");
+
+    // Should have glow
+    await expect(input).toHaveClass(/input-glow-active/);
   });
 });

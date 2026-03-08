@@ -23,10 +23,10 @@ export class LLMService {
     // The google() provider automatically picks up GOOGLE_GENERATIVE_AI_API_KEY
   }
 
-  async generate(
+  async generateStream(
     messages: Message[],
     currentCode?: string,
-  ): Promise<GenerationResult> {
+  ) {
     try {
       const basePrompt = `You are the "Builder Buddy", an encouraging, patient mentor for kids (ages 8-14) building visual apps.
 You are represented visually as a Cute Animal.
@@ -55,7 +55,7 @@ CRITICAL:
         ],
       });
 
-      return await result.object;
+      return result; // Return the stream directly for pipeTextStreamToResponse
     } catch (error) {
       console.error("LLM Generation Error:", error);
       throw new Error("Failed to generate response from LLM.");

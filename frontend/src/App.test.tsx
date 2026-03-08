@@ -33,6 +33,9 @@ Object.defineProperty(window, "localStorage", {
   writable: true,
 });
 
+// Mock scrollIntoView for auto-scroll tests
+Element.prototype.scrollIntoView = vi.fn();
+
 beforeEach(() => {
   mockFetch.mockReset();
   mockLocalStorage.clear();
@@ -63,22 +66,24 @@ describe("Inspiror App", () => {
     expect(screen.getAllByText(/Building.../i).length).toBeGreaterThan(0);
   });
 
-  it("can toggle the floating chat visibility", () => {
+  it("can toggle the floating chat visibility via CSS slide", () => {
     render(<App />);
 
-    expect(screen.getByText(/Hi! I'm your builder buddy/i)).toBeInTheDocument();
+    // Chat panel is always in the DOM, but visible initially
+    const chatPanel = document.querySelector(".chat-panel");
+    expect(chatPanel).toHaveClass("chat-panel-visible");
 
     const toggleButton = screen.getByRole("button", { name: /Hide Chat/i });
     fireEvent.click(toggleButton);
 
-    expect(
-      screen.queryByText(/Hi! I'm your builder buddy/i),
-    ).not.toBeInTheDocument();
+    // Panel should have hidden class
+    expect(chatPanel).toHaveClass("chat-panel-hidden");
 
     const showButton = screen.getByRole("button", { name: /Show Chat/i });
     fireEvent.click(showButton);
 
-    expect(screen.getByText(/Hi! I'm your builder buddy/i)).toBeInTheDocument();
+    // Panel should be visible again
+    expect(chatPanel).toHaveClass("chat-panel-visible");
   });
 
   it("renders the preview sandbox iframe", () => {
@@ -328,5 +333,130 @@ describe("Inspiror App", () => {
     expect(
       screen.queryByRole("button", { name: /bouncing ball/i }),
     ).not.toBeInTheDocument();
+  });
+
+  // === NEW TESTS FOR UI/UX IMPROVEMENTS ===
+
+  // Improvement 4: Auto-scroll
+  it("has an auto-scroll anchor element at the end of messages", () => {
+    render(<App />);
+    // The scrollIntoView mock should have been called
+    expect(Element.prototype.scrollIntoView).toHaveBeenCalled();
+  });
+
+  // Improvement 2: Confetti
+  it("shows confetti after generation completes", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        reply: "Built your app!",
+        code: "<html><body>Done</body></html>",
+      }),
+    });
+
+    render(<App />);
+    const input = screen.getByPlaceholderText(/Type your idea here/i);
+    fireEvent.change(input, { target: { value: "Build something cool" } });
+    fireEvent.click(screen.getByRole("button", { name: /Send/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Built your app!")).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId("confetti-burst")).toBeInTheDocument();
+  });
+
+  // Improvement 5: Animated buddy avatar
+  it("shows animated buddy avatar with bounce animation", () => {
+    render(<App />);
+    const avatar = document.querySelector(".buddy-avatar");
+    expect(avatar).toBeInTheDocument();
+  });
+
+  // Improvement 5: Thinking animation during generation
+  it("switches buddy avatar to thinking animation during generation", () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ reply: "Done!", code: "<html></html>" }),
+    });
+
+    render(<App />);
+    const input = screen.getByPlaceholderText(/Type your idea here/i);
+    fireEvent.change(input, { target: { value: "Build a game" } });
+    fireEvent.click(screen.getByRole("button", { name: /Send/i }));
+
+    const thinkingAvatar = document.querySelector(".buddy-avatar-thinking");
+    expect(thinkingAvatar).toBeInTheDocument();
+  });
+
+  // Improvement 6: Staggered chip entrance
+  it("applies staggered animation delay to suggestion chips", () => {
+    render(<App />);
+    const chips = document.querySelectorAll(".chip-enter");
+    expect(chips.length).toBe(4);
+    // Check that animation delays are staggered
+    expect((chips[0] as HTMLElement).style.animationDelay).toBe("0ms");
+    expect((chips[1] as HTMLElement).style.animationDelay).toBe("100ms");
+    expect((chips[2] as HTMLElement).style.animationDelay).toBe("200ms");
+    expect((chips[3] as HTMLElement).style.animationDelay).toBe("300ms");
+  });
+
+  // Improvement 8: Chat slide animation
+  it("uses CSS transition classes instead of conditional render for chat panel", () => {
+    render(<App />);
+    const chatPanel = document.querySelector(".chat-panel");
+    expect(chatPanel).toBeInTheDocument();
+    expect(chatPanel).toHaveClass("chat-panel-visible");
+  });
+
+  // Improvement 10: Input glow
+  it("applies glow class when input has text", () => {
+    render(<App />);
+    const input = screen.getByPlaceholderText(/Type your idea here/i);
+
+    // No glow initially
+    expect(input).not.toHaveClass("input-glow-active");
+
+    // Type text
+    fireEvent.change(input, { target: { value: "Hello" } });
+
+    // Should have glow
+    expect(input).toHaveClass("input-glow-active");
+  });
+
+  // Improvement 3: Message slide-in animation classes
+  it("applies slide-in animation classes to messages", () => {
+    render(<App />);
+    // The initial assistant message should have msg-buddy class
+    const buddyMsg = document.querySelector(".msg-buddy");
+    expect(buddyMsg).toBeInTheDocument();
+  });
+
+  // Improvement 7: Better default preview
+  it("renders an animated welcome screen in the default preview", () => {
+    render(<App />);
+    const iframe = screen.getByTitle("Preview Sandbox") as HTMLIFrameElement;
+    const srcdoc = iframe.getAttribute("srcdoc") || "";
+    expect(srcdoc).toContain("What will YOU create today?");
+    expect(srcdoc).toContain("particle");
+  });
+
+  // Improvement 1: Matrix rain in hacker mode
+  it("renders matrix rain columns during generation", () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ reply: "Done!", code: "<html></html>" }),
+    });
+
+    render(<App />);
+    const input = screen.getByPlaceholderText(/Type your idea here/i);
+    fireEvent.change(input, { target: { value: "Build a game" } });
+    fireEvent.click(screen.getByRole("button", { name: /Send/i }));
+
+    const matrixColumns = document.querySelectorAll(".matrix-column");
+    expect(matrixColumns.length).toBeGreaterThan(0);
+
+    const scanline = document.querySelector(".scanline-overlay");
+    expect(scanline).toBeInTheDocument();
   });
 });

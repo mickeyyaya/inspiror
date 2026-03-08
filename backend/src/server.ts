@@ -13,11 +13,11 @@ app.post("/api/generate", async (req, res) => {
   }
 
   try {
-    const result = await llmService.generate(
+    const result = await llmService.generateStream(
       req.body.messages,
       req.body.currentCode,
     );
-    res.status(200).json(result);
+    result.pipeTextStreamToResponse(res);
   } catch (error) {
     console.error("Route Error:", error);
     res.status(500).json({ error: "Internal server error during generation" });

@@ -14,8 +14,66 @@ const DEFAULT_MESSAGES: ChatMessage[] = [
   },
 ];
 
-const DEFAULT_CODE =
-  '<!DOCTYPE html><html><body style="background:#111; color:#fff; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; font-family:sans-serif;"><h1>Your creation will appear here!</h1></body></html>';
+const DEFAULT_CODE = `<!DOCTYPE html>
+<html>
+<head><style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #0a1a2e 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    font-family: sans-serif;
+    overflow: hidden;
+  }
+  .welcome { text-align: center; z-index: 2; position: relative; }
+  .welcome h1 {
+    font-size: 2.5rem;
+    background: linear-gradient(90deg, #00f0ff, #39ff14, #ff007f);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: glow-text 3s ease-in-out infinite alternate;
+  }
+  .welcome p { color: #888; margin-top: 12px; font-size: 1.1rem; }
+  @keyframes glow-text {
+    from { filter: brightness(1); }
+    to { filter: brightness(1.3); }
+  }
+  .particle {
+    position: absolute;
+    width: 4px; height: 4px;
+    background: #00f0ff;
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: drift 6s ease-in-out infinite;
+  }
+  @keyframes drift {
+    0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+    50% { transform: translateY(-40px) translateX(20px); opacity: 0.8; }
+  }
+</style></head>
+<body>
+  <div class="welcome">
+    <h1>What will YOU create today?</h1>
+    <p>Tell your builder buddy your idea ✨</p>
+  </div>
+  <script>
+    for(let i=0;i<15;i++){
+      const p=document.createElement('div');
+      p.className='particle';
+      p.style.left=Math.random()*100+'%';
+      p.style.top=Math.random()*100+'%';
+      p.style.animationDelay=Math.random()*6+'s';
+      p.style.animationDuration=(4+Math.random()*4)+'s';
+      p.style.background=['#00f0ff','#39ff14','#ff007f','#a855f7','#ffd700'][Math.floor(Math.random()*5)];
+      document.body.appendChild(p);
+    }
+  </script>
+</body>
+</html>`;
 
 const SUGGESTION_CHIPS = [
   { emoji: "🏀", label: "Make a bouncing ball game" },
@@ -24,12 +82,16 @@ const SUGGESTION_CHIPS = [
   { emoji: "🚀", label: "Design a space adventure" },
 ];
 
+const MATRIX_CHARS = "01アイウエオカキクケコサシスセソ{}[]<>/=;#@$%";
+
 const STORAGE_KEYS = {
   messages: "inspiror-messages",
   currentCode: "inspiror-currentCode",
 } as const;
 
 const ERROR_CATCHER_SCRIPT = `<script>window.onerror=function(msg,src,line,col,err){window.parent.postMessage({type:"iframe-error",message:msg+" (line "+line+")"},"*");return true;};</script>`;
+
+const CONFETTI_COUNT = 20;
 
 function injectErrorCatcher(code: string): string {
   const headClose = code.indexOf("</head>");
@@ -56,6 +118,14 @@ function loadFromStorage<T>(key: string, fallback: T): T {
   }
 }
 
+function generateMatrixColumn(index: number): string {
+  const length = 10 + Math.floor(Math.random() * 20);
+  return Array.from(
+    { length },
+    () => MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)],
+  ).join("");
+}
+
 function App() {
   const [messages, setMessages] = useState<ChatMessage[]>(() =>
     loadFromStorage(STORAGE_KEYS.messages, DEFAULT_MESSAGES),
@@ -66,11 +136,30 @@ function App() {
   );
   const [isGenerating, setIsGenerating] = useState(false);
   const [isChatVisible, setIsChatVisible] = useState(true);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const messagesRef = useRef(messages);
   const currentCodeRef = useRef(currentCode);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const prevIsGeneratingRef = useRef(false);
+
   messagesRef.current = messages;
   currentCodeRef.current = currentCode;
+
+  // Improvement 2: Confetti trigger on generation complete
+  useEffect(() => {
+    if (prevIsGeneratingRef.current && !isGenerating) {
+      setShowConfetti(true);
+      const timer = setTimeout(() => setShowConfetti(false), 2000);
+      return () => clearTimeout(timer);
+    }
+    prevIsGeneratingRef.current = isGenerating;
+  }, [isGenerating]);
+
+  // Improvement 4: Auto-scroll to latest message
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isGenerating]);
 
   const sendToApi = useCallback(
     async (apiMessages: ChatMessage[], code: string) => {
@@ -181,6 +270,14 @@ function App() {
     localStorage.setItem(STORAGE_KEYS.currentCode, currentCode);
   }, [currentCode]);
 
+  // Generate matrix rain columns (stable across renders during generation)
+  const matrixColumns = Array.from({ length: 20 }, (_, i) => ({
+    left: `${(i / 20) * 100}%`,
+    duration: `${2 + Math.random() * 4}s`,
+    delay: `${Math.random() * 2}s`,
+    chars: generateMatrixColumn(i),
+  }));
+
   return (
     <div className="w-screen h-screen bg-gray-900 relative overflow-hidden font-sans">
       {/* FULL SCREEN PREVIEW SANDBOX */}
@@ -193,18 +290,30 @@ function App() {
         />
       </div>
 
-      {/* HACKER MODE OVERLAY */}
+      {/* HACKER MODE OVERLAY - Improvement 1: Matrix Rain */}
       {isGenerating && (
         <div
           data-testid="hacker-mode-overlay"
-          className="absolute inset-0 z-10 bg-black/80 flex items-center justify-center overflow-hidden pointer-events-none"
+          className="absolute inset-0 z-10 bg-black/85 flex items-center justify-center overflow-hidden pointer-events-none"
         >
-          <div className="w-full h-full p-8 overflow-hidden">
-            <pre className="text-[#39ff14] text-xs font-mono whitespace-pre-wrap opacity-70 animate-pulse leading-relaxed">
-              {currentCode}
-            </pre>
-          </div>
-          <div className="absolute inset-0 flex items-center justify-center">
+          {/* Matrix rain columns */}
+          {matrixColumns.map((col, i) => (
+            <div
+              key={i}
+              className="matrix-column"
+              style={{
+                left: col.left,
+                animationDuration: col.duration,
+                animationDelay: col.delay,
+              }}
+            >
+              {col.chars}
+            </div>
+          ))}
+          {/* Scanline overlay */}
+          <div className="scanline-overlay" />
+          {/* Center message */}
+          <div className="absolute inset-0 flex items-center justify-center z-10">
             <div className="text-center">
               <Sparkles
                 className="text-[#00f0ff] animate-spin mx-auto mb-4"
@@ -218,7 +327,16 @@ function App() {
         </div>
       )}
 
-      {/* FLOATING CHAT TOGGLE BUTTON */}
+      {/* Improvement 2: Confetti Burst */}
+      {showConfetti && (
+        <div data-testid="confetti-burst">
+          {Array.from({ length: CONFETTI_COUNT }, (_, i) => (
+            <div key={i} className="confetti-piece" />
+          ))}
+        </div>
+      )}
+
+      {/* FLOATING CHAT TOGGLE BUTTON - Improvement 8: always rendered */}
       {!isChatVisible && (
         <button
           onClick={() => setIsChatVisible(true)}
@@ -229,97 +347,109 @@ function App() {
         </button>
       )}
 
-      {/* FLOATING CHAT WINDOW */}
-      {isChatVisible && (
-        <div className="absolute top-4 right-4 bottom-4 w-96 max-w-[calc(100vw-2rem)] bg-[#1a1a2e]/90 backdrop-blur-md border-2 border-[#00f0ff] rounded-2xl flex flex-col shadow-[0_0_30px_rgba(0,240,255,0.3)] z-50 overflow-hidden transition-all duration-300">
-          {/* HEADER */}
-          <div className="bg-[#00f0ff] text-black p-3 flex justify-between items-center font-bold">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">🐶</span>
-              <span>Builder Buddy</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <button
-                onClick={handleReset}
-                className="text-black hover:bg-black/20 p-1 rounded transition-colors"
-                aria-label="Reset"
-              >
-                <RotateCcw size={20} />
-              </button>
-              <button
-                onClick={() => setIsChatVisible(false)}
-                className="text-black hover:bg-black/20 p-1 rounded transition-colors"
-                aria-label="Hide Chat"
-              >
-                <X size={24} />
-              </button>
-            </div>
-          </div>
-
-          {/* MESSAGE LIST */}
-          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
-            {messages.map((msg, idx) => (
-              <div
-                key={idx}
-                className={`max-w-[85%] p-3 rounded-2xl ${
-                  msg.role === "user"
-                    ? "bg-[#ff007f] text-white self-end rounded-tr-sm shadow-[0_0_10px_#ff007f]"
-                    : "bg-[#2a2a4a] text-[#39ff14] self-start border border-[#39ff14] rounded-tl-sm shadow-[0_0_10px_rgba(57,255,20,0.2)]"
-                }`}
-              >
-                {msg.role === "assistant" && msg.content.includes("Hi!") && (
-                  <span className="text-xl mr-2">👋</span>
-                )}
-                {msg.content}
-              </div>
-            ))}
-
-            {/* SUGGESTION CHIPS */}
-            {showSuggestions && (
-              <div className="flex flex-wrap gap-2 mt-2">
-                {SUGGESTION_CHIPS.map((chip) => (
-                  <button
-                    key={chip.label}
-                    onClick={() => handleChipClick(chip.label)}
-                    className="bg-[#2a2a4a] text-[#00f0ff] border border-[#00f0ff] px-4 py-2 rounded-full hover:bg-[#00f0ff] hover:text-black transition-all shadow-[0_0_8px_rgba(0,240,255,0.3)] text-sm font-medium"
-                  >
-                    <span className="mr-1">{chip.emoji}</span>
-                    {chip.label}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {/* LOADING STATE */}
-            {isGenerating && (
-              <div className="bg-[#2a2a4a] text-[#00f0ff] self-start border border-[#00f0ff] p-3 rounded-2xl rounded-tl-sm shadow-[0_0_15px_#00f0ff] flex items-center gap-3 animate-pulse">
-                <Sparkles className="animate-spin" size={20} />
-                <span className="font-bold tracking-wider">Building...</span>
-              </div>
-            )}
-          </div>
-
-          {/* INPUT AREA */}
-          <div className="p-3 bg-[#111122] border-t border-[#00f0ff]/30 flex gap-2">
-            <input
-              type="text"
-              placeholder="Type your idea here..."
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              className="flex-1 bg-transparent text-white px-4 py-2 rounded-full border border-[#00f0ff] focus:outline-none focus:shadow-[0_0_10px_#00f0ff] placeholder-gray-500"
-            />
-            <button
-              onClick={handleSend}
-              disabled={isGenerating || !inputValue.trim()}
-              className="bg-[#39ff14] text-black p-3 rounded-full hover:bg-green-400 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_10px_#39ff14] transition-all flex items-center justify-center"
-              aria-label="Send"
+      {/* FLOATING CHAT WINDOW - Improvement 8: CSS slide instead of conditional render */}
+      <div
+        className={`absolute top-4 right-4 bottom-4 w-96 max-w-[calc(100vw-2rem)] bg-[#1a1a2e]/90 backdrop-blur-md border-2 border-[#00f0ff] rounded-2xl flex flex-col shadow-[0_0_30px_rgba(0,240,255,0.3)] z-50 overflow-hidden chat-panel ${
+          isChatVisible ? "chat-panel-visible" : "chat-panel-hidden"
+        }`}
+      >
+        {/* HEADER - Improvement 5: Animated Buddy Avatar */}
+        <div className="bg-[#00f0ff] text-black p-3 flex justify-between items-center font-bold">
+          <div className="flex items-center gap-2">
+            <span
+              className={`text-2xl ${isGenerating ? "buddy-avatar-thinking" : "buddy-avatar"}`}
             >
-              <Send size={20} />
+              🐶
+            </span>
+            <span>Builder Buddy</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={handleReset}
+              className="text-black hover:bg-black/20 p-1 rounded transition-colors"
+              aria-label="Reset"
+            >
+              <RotateCcw size={20} />
+            </button>
+            <button
+              onClick={() => setIsChatVisible(false)}
+              className="text-black hover:bg-black/20 p-1 rounded transition-colors"
+              aria-label="Hide Chat"
+            >
+              <X size={24} />
             </button>
           </div>
         </div>
-      )}
+
+        {/* MESSAGE LIST - Improvement 3: Slide-in animations */}
+        <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
+          {messages.map((msg, idx) => (
+            <div
+              key={idx}
+              className={`max-w-[85%] p-3 rounded-2xl ${
+                msg.role === "user"
+                  ? "bg-[#ff007f] text-white self-end rounded-tr-sm shadow-[0_0_10px_#ff007f] msg-user"
+                  : "bg-[#2a2a4a] text-[#39ff14] self-start border border-[#39ff14] rounded-tl-sm shadow-[0_0_10px_rgba(57,255,20,0.2)] msg-buddy"
+              }`}
+            >
+              {msg.role === "assistant" && msg.content.includes("Hi!") && (
+                <span className="text-xl mr-2">👋</span>
+              )}
+              {msg.content}
+            </div>
+          ))}
+
+          {/* SUGGESTION CHIPS - Improvement 6: Staggered entrance */}
+          {showSuggestions && (
+            <div className="flex flex-wrap gap-2 mt-2">
+              {SUGGESTION_CHIPS.map((chip, index) => (
+                <button
+                  key={chip.label}
+                  onClick={() => handleChipClick(chip.label)}
+                  className="chip-enter bg-[#2a2a4a] text-[#00f0ff] border border-[#00f0ff] px-4 py-2 rounded-full hover:bg-[#00f0ff] hover:text-black transition-all shadow-[0_0_8px_rgba(0,240,255,0.3)] text-sm font-medium"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <span className="mr-1">{chip.emoji}</span>
+                  {chip.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* LOADING STATE */}
+          {isGenerating && (
+            <div className="bg-[#2a2a4a] text-[#00f0ff] self-start border border-[#00f0ff] p-3 rounded-2xl rounded-tl-sm shadow-[0_0_15px_#00f0ff] flex items-center gap-3 animate-pulse msg-buddy">
+              <Sparkles className="animate-spin" size={20} />
+              <span className="font-bold tracking-wider">Building...</span>
+            </div>
+          )}
+
+          {/* Improvement 4: Auto-scroll anchor */}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* INPUT AREA - Improvement 10: Input glow */}
+        <div className="p-3 bg-[#111122] border-t border-[#00f0ff]/30 flex gap-2">
+          <input
+            type="text"
+            placeholder="Type your idea here..."
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            className={`flex-1 bg-transparent text-white px-4 py-2 rounded-full border border-[#00f0ff] focus:outline-none focus:shadow-[0_0_10px_#00f0ff] placeholder-gray-500 input-glow ${
+              inputValue.trim() ? "input-glow-active" : ""
+            }`}
+          />
+          <button
+            onClick={handleSend}
+            disabled={isGenerating || !inputValue.trim()}
+            className="bg-[#39ff14] text-black p-3 rounded-full hover:bg-green-400 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_10px_#39ff14] transition-all flex items-center justify-center"
+            aria-label="Send"
+          >
+            <Send size={20} />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
