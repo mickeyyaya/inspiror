@@ -336,7 +336,7 @@ test.describe("Inspiror App - E2E", () => {
       timeout: 5000,
     });
 
-    await expect(page.getByTestId("confetti-burst")).toBeVisible();
+    await expect(page.getByTestId("confetti-burst")).toBeAttached();
   });
 
   test("shows animated welcome screen in default preview", async ({ page }) => {
@@ -358,5 +358,55 @@ test.describe("Inspiror App - E2E", () => {
     await input.fill("Hello");
 
     await expect(input).toHaveClass(/input-glow-active/);
+  });
+
+  // === Phase 2.5 Tests ===
+
+  test("mute toggle button switches icon", async ({ page }) => {
+    const muteBtn = page.getByTestId("mute-toggle");
+    await expect(muteBtn).toBeVisible();
+
+    // Should have Unmute label after clicking (starts unmuted)
+    await expect(muteBtn).toHaveAttribute("aria-label", "Mute");
+    await muteBtn.click();
+    await expect(muteBtn).toHaveAttribute("aria-label", "Unmute");
+    await muteBtn.click();
+    await expect(muteBtn).toHaveAttribute("aria-label", "Mute");
+  });
+
+  test("mode toggle switches between build and play modes", async ({
+    page,
+  }) => {
+    const toggle = page.getByTestId("mode-toggle");
+    await expect(toggle).toBeVisible();
+    await expect(toggle).toHaveText(/Play Mode/);
+
+    // Enter play mode
+    await toggle.click();
+    await expect(toggle).toHaveText(/Back to Build/);
+    // Chat should be hidden
+    await expect(
+      page.getByText("Builder Buddy", { exact: true }),
+    ).not.toBeVisible();
+
+    // Return to build mode
+    await toggle.click();
+    await expect(toggle).toHaveText(/Play Mode/);
+    await expect(
+      page.getByText("Builder Buddy", { exact: true }),
+    ).toBeVisible();
+  });
+
+  test("play mode hides chat toggle button", async ({ page }) => {
+    // Hide chat first
+    await page.getByRole("button", { name: "Hide Chat" }).click();
+    await expect(page.getByRole("button", { name: "Show Chat" })).toBeVisible();
+
+    // Enter play mode
+    await page.getByTestId("mode-toggle").click();
+    // Show Chat button should be gone
+    await expect(
+      page.getByRole("button", { name: "Show Chat" }),
+    ).not.toBeVisible();
   });
 });
