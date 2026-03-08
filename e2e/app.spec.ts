@@ -90,16 +90,16 @@ test.describe("Inspiror App - E2E", () => {
     // User message should appear
     await expect(page.getByText("Make a drawing app")).toBeVisible();
 
-    // Loading state should show
-    await expect(page.getByText("Building...")).toBeVisible();
+    // Loading state should show (hacker mode overlay or chat indicator)
+    await expect(page.getByTestId("hacker-mode-overlay")).toBeVisible();
 
     // Wait for response
     await expect(page.getByText("Here is your drawing app!")).toBeVisible({
       timeout: 5000,
     });
 
-    // Loading should be gone
-    await expect(page.getByText("Building...")).not.toBeVisible();
+    // Hacker mode overlay should be gone
+    await expect(page.getByTestId("hacker-mode-overlay")).not.toBeVisible();
   });
 
   test("iframe updates with generated code after API response", async ({
@@ -198,6 +198,114 @@ test.describe("Inspiror App - E2E", () => {
     await expect(page.getByText(/Oops, I made a little mistake/i)).toBeVisible({
       timeout: 5000,
     });
+  });
+
+  test("displays suggestion chips on initial load", async ({ page }) => {
+    await expect(
+      page.getByRole("button", { name: /bouncing ball/i }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: /neon paint/i }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: /glowing clock/i }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: /space adventure/i }),
+    ).toBeVisible();
+  });
+
+  test("clicking a suggestion chip sends the message and hides chips", async ({
+    page,
+  }) => {
+    await page.route("**/api/generate", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          reply: "Great choice!",
+          code: "<html><body>Ball Game</body></html>",
+        }),
+      });
+    });
+
+    await page.getByRole("button", { name: /bouncing ball/i }).click();
+
+    // User message from chip should appear
+    await expect(page.getByText("Make a bouncing ball game")).toBeVisible();
+
+    // After response, chips should be gone
+    await expect(page.getByText("Great choice!")).toBeVisible({
+      timeout: 5000,
+    });
+    await expect(
+      page.getByRole("button", { name: /bouncing ball/i }),
+    ).not.toBeVisible();
+  });
+
+  test("reset button clears messages and restores defaults", async ({
+    page,
+  }) => {
+    await page.route("**/api/generate", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          reply: "Built it!",
+          code: "<html><body>Custom</body></html>",
+        }),
+      });
+    });
+
+    const input = page.getByPlaceholder("Type your idea here...");
+    await input.fill("Build something");
+    await page.getByRole("button", { name: "Send" }).click();
+
+    await expect(page.getByText("Built it!")).toBeVisible({ timeout: 5000 });
+
+    // Click reset
+    await page.getByRole("button", { name: "Reset" }).click();
+
+    // Initial greeting should reappear
+    await expect(page.getByText(/Hi! I'm your builder buddy/i)).toBeVisible();
+    // Custom message should be gone
+    await expect(page.getByText("Built it!")).not.toBeVisible();
+    // Suggestion chips should reappear
+    await expect(
+      page.getByRole("button", { name: /bouncing ball/i }),
+    ).toBeVisible();
+  });
+
+  test("shows hacker mode overlay during generation", async ({ page }) => {
+    await page.route("**/api/generate", async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          reply: "Done!",
+          code: "<html><body>Built</body></html>",
+        }),
+      });
+    });
+
+    const input = page.getByPlaceholder("Type your idea here...");
+    await input.fill("Build a game");
+    await page.getByRole("button", { name: "Send" }).click();
+
+    // Hacker mode overlay should appear
+    await expect(page.getByTestId("hacker-mode-overlay")).toBeVisible();
+
+    // After response, overlay should disappear
+    await expect(page.getByText("Done!")).toBeVisible({ timeout: 5000 });
+    await expect(page.getByTestId("hacker-mode-overlay")).not.toBeVisible();
+  });
+
+  test("iframe contains error-catching script", async ({ page }) => {
+    const iframe = page.locator('iframe[title="Preview Sandbox"]');
+    const srcdoc = await iframe.getAttribute("srcdoc");
+    expect(srcdoc).toContain("window.onerror");
+    expect(srcdoc).toContain("iframe-error");
   });
 
   test("supports keyboard submission with Enter key", async ({ page }) => {
