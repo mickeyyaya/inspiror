@@ -49,6 +49,7 @@ Inspiror follows a client-server architecture:
       "currentCode": "<html>...</html>"
     }
     ```
+*   **System Prompt Requirements:** The LLM is strictly instructed to follow **Iterative Visual Scaffolding**. It must not generate a complex app in one turn. Instead, it generates a foundational visual layer, explains it, and asks the user what to add next.
 *   **Response:**
     A chunked **Stream** of the JSON object using Vercel AI SDK's `streamObject`. The client receives partial updates of:
     ```json

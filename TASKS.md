@@ -20,7 +20,8 @@
 - [x] HTML Sandbox Safety: Ensure the `iframe`'s `srcDoc` uses a stable version of the code (e.g., only update `currentCode` when `isLoading` transitions to `false`). Do not feed partial HTML chunks into the iframe during generation to avoid visual glitching.
 - [x] Write tests ensuring `experimental_useObject` is called and UI renders partial streaming state.
 
-## Phase 2: Contextual Memory & Prompt Scaffolding (Magic Buttons) [x]
+## Phase 2: Contextual Memory, Iterative Scaffolding & Magic Buttons [x]
+**Goal:** Prevent blank-canvas syndrome and force the AI to build step-by-step (Iterative Visual Scaffolding).
 *(Completed)*
 
 ## Phase 2.5: UX Polish, Visual Delight & Auditory Feedback [~]

@@ -18,6 +18,7 @@ Successful platforms follow a specific loop:
 
 ## 3. The Role of AI (The "Sidekick")
 *   **Vibe Coding:** Platforms like Rosebud AI allow kids to describe the "vibe" or idea of a game, and the AI handles the complex logic.
+*   **Iterative Visual Scaffolding:** If an AI builds a complex game in one go, it feels like magic but bypasses learning. The AI should break complex requests down, generating one visual layer at a time, and asking the child for the next step.
 *   **Error as Learning:** Instead of silently fixing errors or showing raw logs, the AI should explain the error in simple terms ("Your robot bumped into a wall because of a missing stop command!") to foster AI literacy and coding logic.
 *   **Bounded Expressiveness:** The AI must remain a friendly, non-human sidekick to avoid uncanny valley effects while providing "just-in-time" tips.
 
