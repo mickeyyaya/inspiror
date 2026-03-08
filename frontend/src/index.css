@@ -20,57 +20,7 @@ code {
     monospace;
 }
 
-/* === Improvement 1: Matrix Rain === */
-@keyframes matrix-fall {
-  0% {
-    transform: translateY(-100%);
-    opacity: 1;
-  }
-  80% {
-    opacity: 0.7;
-  }
-  100% {
-    transform: translateY(100vh);
-    opacity: 0;
-  }
-}
-
-.matrix-column {
-  position: absolute;
-  top: 0;
-  font-family: "Courier New", monospace;
-  font-size: 14px;
-  color: #39ff14;
-  white-space: nowrap;
-  writing-mode: vertical-rl;
-  text-orientation: upright;
-  animation: matrix-fall linear infinite;
-  opacity: 0.7;
-  text-shadow: 0 0 8px #39ff14;
-  pointer-events: none;
-  letter-spacing: 4px;
-}
-
-.matrix-column:nth-child(odd) {
-  color: #00f0ff;
-  text-shadow: 0 0 8px #00f0ff;
-}
-
-.scanline-overlay {
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0.15) 0px,
-    rgba(0, 0, 0, 0.15) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* === Improvement 2: Confetti === */
+/* === Confetti Burst === */
 @keyframes confetti-fall {
   0% {
     transform: translateY(-10vh) rotate(0deg);
@@ -113,7 +63,7 @@ code {
 .confetti-piece:nth-child(19) { left: 90%; background: #ffd700; animation-delay: 0.28s; border-radius: 50%; }
 .confetti-piece:nth-child(20) { left: 15%; background: #a855f7; animation-delay: 0.32s; }
 
-/* === Improvement 3: Message Slide-In === */
+/* === Message Slide-In Animations === */
 @keyframes slide-in-left {
   from {
     transform: translateX(-30px);
@@ -144,7 +94,7 @@ code {
   animation: slide-in-right 0.3s ease-out;
 }
 
-/* === Improvement 5: Animated Buddy Avatar === */
+/* === Animated Buddy Avatar === */
 @keyframes buddy-bounce {
   0%, 100% {
     transform: translateY(0);
@@ -176,7 +126,7 @@ code {
   animation: buddy-think 0.6s ease-in-out infinite;
 }
 
-/* === Improvement 6: Staggered Chip Entrance === */
+/* === Staggered Chip Entrance === */
 @keyframes chip-pop-in {
   0% {
     transform: scale(0.5);
@@ -196,24 +146,7 @@ code {
   animation: chip-pop-in 0.4s ease-out forwards;
 }
 
-/* === Improvement 8: Chat Slide Animation === */
-.chat-panel {
-  transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1),
-              opacity 200ms ease;
-}
-
-.chat-panel-visible {
-  transform: translateX(0);
-  opacity: 1;
-}
-
-.chat-panel-hidden {
-  transform: translateX(110%);
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* === Improvement 10: Input Glow Effect === */
+/* === Input Glow Effect === */
 .input-glow {
   transition: box-shadow 0.3s ease;
 }

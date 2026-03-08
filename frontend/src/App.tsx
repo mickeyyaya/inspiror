@@ -16,8 +16,66 @@ const DEFAULT_MESSAGES: ChatMessage[] = [
   },
 ];
 
-const DEFAULT_CODE =
-  '<!DOCTYPE html><html><body style="background:#111; color:#fff; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; font-family:sans-serif;"><h1>Your creation will appear here!</h1></body></html>';
+const DEFAULT_CODE = `<!DOCTYPE html>
+<html>
+<head><style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #0a1a2e 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    font-family: sans-serif;
+    overflow: hidden;
+  }
+  .welcome { text-align: center; z-index: 2; position: relative; }
+  .welcome h1 {
+    font-size: 2.5rem;
+    background: linear-gradient(90deg, #00f0ff, #39ff14, #ff007f);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: glow-text 3s ease-in-out infinite alternate;
+  }
+  .welcome p { color: #888; margin-top: 12px; font-size: 1.1rem; }
+  @keyframes glow-text {
+    from { filter: brightness(1); }
+    to { filter: brightness(1.3); }
+  }
+  .particle {
+    position: absolute;
+    width: 4px; height: 4px;
+    background: #00f0ff;
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: drift 6s ease-in-out infinite;
+  }
+  @keyframes drift {
+    0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+    50% { transform: translateY(-40px) translateX(20px); opacity: 0.8; }
+  }
+</style></head>
+<body>
+  <div class="welcome">
+    <h1>What will YOU create today?</h1>
+    <p>Tell your builder buddy your idea</p>
+  </div>
+  <script>
+    for(let i=0;i<15;i++){
+      const p=document.createElement('div');
+      p.className='particle';
+      p.style.left=Math.random()*100+'%';
+      p.style.top=Math.random()*100+'%';
+      p.style.animationDelay=Math.random()*6+'s';
+      p.style.animationDuration=(4+Math.random()*4)+'s';
+      p.style.background=['#00f0ff','#39ff14','#ff007f','#a855f7','#ffd700'][Math.floor(Math.random()*5)];
+      document.body.appendChild(p);
+    }
+  </script>
+</body>
+</html>`;
 
 const SUGGESTION_CHIPS = [
   { emoji: "🏀", label: "Make a bouncing ball game" },
@@ -37,6 +95,8 @@ const generationSchema = z.object({
 });
 
 const ERROR_CATCHER_SCRIPT = `<script>window.onerror=function(msg,src,line,col,err){window.parent.postMessage({type:"iframe-error",message:msg+" (line "+line+")"},"*");return true;};</script>`;
+
+const CONFETTI_COUNT = 20;
 
 function injectErrorCatcher(code: string): string {
   const headClose = code.indexOf("</head>");
@@ -72,8 +132,10 @@ function App() {
     () => localStorage.getItem(STORAGE_KEYS.currentCode) || DEFAULT_CODE,
   );
   const [isChatVisible, setIsChatVisible] = useState(true);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const prevIsLoadingRef = useRef(false);
 
   const { object, submit, isLoading } = useObject({
     api: "http://localhost:3001/api/generate",
@@ -131,11 +193,21 @@ function App() {
   const showSuggestions =
     messages.length === 1 && messages[0]?.role === "assistant" && !isLoading;
 
+  // Confetti trigger on generation complete
+  useEffect(() => {
+    if (prevIsLoadingRef.current && !isLoading) {
+      setShowConfetti(true);
+      const timer = setTimeout(() => setShowConfetti(false), 2000);
+      return () => clearTimeout(timer);
+    }
+    prevIsLoadingRef.current = isLoading;
+  }, [isLoading]);
+
   useEffect(() => {
     const handleIframeError = (event: MessageEvent) => {
       if (event.data?.type === "iframe-error") {
         const errorMsg = event.data.message || "Unknown error";
-        if (isLoading) return; // Don't trigger if already generating
+        if (isLoading) return;
 
         const oopsMessage: ChatMessage = {
           role: "assistant",
@@ -164,6 +236,7 @@ function App() {
     localStorage.setItem(STORAGE_KEYS.currentCode, currentCode);
   }, [currentCode]);
 
+  // Auto-scroll to latest message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, object?.reply, isLoading]);
@@ -193,7 +266,7 @@ function App() {
               {object?.code || "INITIALIZING MATRIX..."}
             </pre>
           </div>
-          
+
           {/* Pulsing Core */}
           <div className="absolute flex flex-col items-center justify-center z-20 mix-blend-screen">
             <div className="relative flex items-center justify-center">
@@ -211,6 +284,15 @@ function App() {
         </div>
       )}
 
+      {/* Confetti Burst */}
+      {showConfetti && (
+        <div data-testid="confetti-burst">
+          {Array.from({ length: CONFETTI_COUNT }, (_, i) => (
+            <div key={i} className="confetti-piece" />
+          ))}
+        </div>
+      )}
+
       {/* FLOATING CHAT TOGGLE BUTTON */}
       {!isChatVisible && (
         <button
@@ -225,10 +307,14 @@ function App() {
       {/* FLOATING CHAT WINDOW */}
       {isChatVisible && (
         <div className="absolute top-4 right-4 bottom-4 w-96 max-w-[calc(100vw-2rem)] bg-[#0d0d1a]/90 backdrop-blur-xl border-2 border-[#00f0ff] rounded-3xl flex flex-col shadow-[0_0_40px_rgba(0,240,255,0.4)] z-50 overflow-hidden transition-all duration-300">
-          {/* HEADER */}
+          {/* HEADER with Animated Buddy Avatar */}
           <div className="bg-gradient-to-r from-[#00f0ff] to-[#0099ff] text-black p-4 flex justify-between items-center font-bold shadow-md">
             <div className="flex items-center gap-3">
-              <span className="text-3xl filter drop-shadow-md">🐶</span>
+              <span
+                className={`text-3xl filter drop-shadow-md ${isLoading ? "buddy-avatar-thinking" : "buddy-avatar"}`}
+              >
+                🐶
+              </span>
               <span className="text-xl tracking-tight font-extrabold text-black/90">Builder Buddy</span>
             </div>
             <div className="flex items-center gap-2">
@@ -249,15 +335,15 @@ function App() {
             </div>
           </div>
 
-          {/* MESSAGE LIST */}
+          {/* MESSAGE LIST with Slide-In Animations */}
           <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-5 bg-gradient-to-b from-transparent to-[#0a0a1a]/50">
             {messages.map((msg, idx) => (
               <div
                 key={idx}
                 className={`max-w-[85%] p-4 rounded-3xl text-[15px] leading-relaxed shadow-lg ${
                   msg.role === "user"
-                    ? "bg-gradient-to-br from-[#ff007f] to-[#cc0066] text-white self-end rounded-tr-sm shadow-[0_0_15px_rgba(255,0,127,0.4)]"
-                    : "bg-gradient-to-br from-[#1a1a3a] to-[#2a2a4a] text-[#39ff14] self-start border-2 border-[#39ff14]/50 rounded-tl-sm shadow-[0_0_15px_rgba(57,255,20,0.1)] font-medium"
+                    ? "bg-gradient-to-br from-[#ff007f] to-[#cc0066] text-white self-end rounded-tr-sm shadow-[0_0_15px_rgba(255,0,127,0.4)] msg-user"
+                    : "bg-gradient-to-br from-[#1a1a3a] to-[#2a2a4a] text-[#39ff14] self-start border-2 border-[#39ff14]/50 rounded-tl-sm shadow-[0_0_15px_rgba(57,255,20,0.1)] font-medium msg-buddy"
                 }`}
               >
                 {msg.role === "assistant" && msg.content.includes("Hi!") && (
@@ -269,22 +355,23 @@ function App() {
 
             {/* REAL-TIME STREAMING REPLY */}
             {isLoading && object?.reply && (
-              <div className="max-w-[85%] p-4 rounded-3xl text-[15px] leading-relaxed shadow-lg bg-gradient-to-br from-[#1a1a3a] to-[#2a2a4a] text-[#00f0ff] self-start border-2 border-[#00f0ff] rounded-tl-sm shadow-[0_0_20px_rgba(0,240,255,0.4)] font-medium animate-pulse">
+              <div className="max-w-[85%] p-4 rounded-3xl text-[15px] leading-relaxed shadow-lg bg-gradient-to-br from-[#1a1a3a] to-[#2a2a4a] text-[#00f0ff] self-start border-2 border-[#00f0ff] rounded-tl-sm shadow-[0_0_20px_rgba(0,240,255,0.4)] font-medium animate-pulse msg-buddy">
                 {object.reply}
                 <span className="inline-block w-2 h-4 ml-1 bg-[#00f0ff] animate-ping"></span>
               </div>
             )}
 
-            {/* SUGGESTION CHIPS */}
+            {/* SUGGESTION CHIPS with Staggered Entrance */}
             {showSuggestions && (
               <div className="flex flex-col gap-3 mt-4">
                 <p className="text-[#00f0ff]/70 text-sm font-bold ml-2 uppercase tracking-wider">Try a Magic Button!</p>
                 <div className="flex flex-wrap gap-2">
-                  {SUGGESTION_CHIPS.map((chip) => (
+                  {SUGGESTION_CHIPS.map((chip, index) => (
                     <button
                       key={chip.label}
                       onClick={() => handleChipClick(chip.label)}
-                      className="bg-gradient-to-r from-[#1a1a3a] to-[#2a2a4a] text-[#00f0ff] border-2 border-[#00f0ff]/50 px-4 py-3 rounded-2xl hover:bg-[#00f0ff] hover:text-black hover:border-[#00f0ff] hover:scale-105 active:scale-95 transition-all shadow-[0_4px_0_rgba(0,240,255,0.3)] active:shadow-none active:translate-y-[4px] text-sm font-bold flex items-center"
+                      className="chip-enter bg-gradient-to-r from-[#1a1a3a] to-[#2a2a4a] text-[#00f0ff] border-2 border-[#00f0ff]/50 px-4 py-3 rounded-2xl hover:bg-[#00f0ff] hover:text-black hover:border-[#00f0ff] hover:scale-105 active:scale-95 transition-all shadow-[0_4px_0_rgba(0,240,255,0.3)] active:shadow-none active:translate-y-[4px] text-sm font-bold flex items-center"
+                      style={{ animationDelay: `${index * 100}ms` }}
                     >
                       <span className="text-xl mr-2">{chip.emoji}</span>
                       {chip.label}
@@ -293,11 +380,11 @@ function App() {
                 </div>
               </div>
             )}
-            
+
             <div ref={messagesEndRef} />
           </div>
 
-          {/* INPUT AREA */}
+          {/* INPUT AREA with Glow Effect */}
           <div className="p-4 bg-[#0a0a1a] border-t-2 border-[#00f0ff]/20 flex gap-3 shadow-[0_-10px_20px_rgba(0,0,0,0.3)] relative z-10">
             <input
               type="text"
@@ -305,7 +392,9 @@ function App() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              className="flex-1 bg-[#111122] text-white px-5 py-3 rounded-full border-2 border-[#ff007f]/50 focus:outline-none focus:border-[#ff007f] focus:shadow-[0_0_15px_rgba(255,0,127,0.5)] placeholder-gray-500 text-[15px] font-medium transition-all"
+              className={`flex-1 bg-[#111122] text-white px-5 py-3 rounded-full border-2 border-[#ff007f]/50 focus:outline-none focus:border-[#ff007f] focus:shadow-[0_0_15px_rgba(255,0,127,0.5)] placeholder-gray-500 text-[15px] font-medium transition-all input-glow ${
+                inputValue.trim() ? "input-glow-active" : ""
+              }`}
             />
             <button
               onClick={handleSend}

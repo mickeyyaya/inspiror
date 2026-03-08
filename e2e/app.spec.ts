@@ -22,7 +22,7 @@ test.describe("Inspiror App - E2E", () => {
   });
 
   test("allows typing in the chat input", async ({ page }) => {
-    const input = page.getByPlaceholder("Type your idea here...");
+    const input = page.getByPlaceholder("Type your grand idea...");
     await expect(input).toBeVisible();
     await input.fill("Make a drawing app");
     await expect(input).toHaveValue("Make a drawing app");
@@ -34,25 +34,26 @@ test.describe("Inspiror App - E2E", () => {
   });
 
   test("send button is enabled when input has text", async ({ page }) => {
-    const input = page.getByPlaceholder("Type your idea here...");
+    const input = page.getByPlaceholder("Type your grand idea...");
     await input.fill("Hello");
     const sendButton = page.getByRole("button", { name: "Send" });
     await expect(sendButton).toBeEnabled();
   });
 
-  test("can toggle chat visibility via CSS slide animation", async ({
-    page,
-  }) => {
-    // Chat panel is visible initially
-    const chatPanel = page.locator(".chat-panel");
-    await expect(chatPanel).toHaveClass(/chat-panel-visible/);
+  test("can toggle chat visibility", async ({ page }) => {
+    // Chat is visible initially
+    await expect(
+      page.getByText("Builder Buddy", { exact: true }),
+    ).toBeVisible();
 
     // Hide chat
     const hideButton = page.getByRole("button", { name: "Hide Chat" });
     await hideButton.click();
 
-    // Chat panel should have hidden class (slid off-screen)
-    await expect(chatPanel).toHaveClass(/chat-panel-hidden/);
+    // Chat header should not be visible
+    await expect(
+      page.getByText("Builder Buddy", { exact: true }),
+    ).not.toBeVisible();
 
     // Show chat button should appear
     const showButton = page.getByRole("button", { name: "Show Chat" });
@@ -60,15 +61,15 @@ test.describe("Inspiror App - E2E", () => {
 
     // Re-show chat
     await showButton.click();
-    await expect(chatPanel).toHaveClass(/chat-panel-visible/);
+    await expect(
+      page.getByText("Builder Buddy", { exact: true }),
+    ).toBeVisible();
   });
 
   test("submitting a message shows it in the chat and triggers loading", async ({
     page,
   }) => {
-    // Intercept the API call to prevent real LLM calls
     await page.route("**/api/generate", async (route) => {
-      // Delay to verify loading state is shown
       await new Promise((resolve) => setTimeout(resolve, 500));
       await route.fulfill({
         status: 200,
@@ -80,14 +81,14 @@ test.describe("Inspiror App - E2E", () => {
       });
     });
 
-    const input = page.getByPlaceholder("Type your idea here...");
+    const input = page.getByPlaceholder("Type your grand idea...");
     await input.fill("Make a drawing app");
     await page.getByRole("button", { name: "Send" }).click();
 
     // User message should appear
     await expect(page.getByText("Make a drawing app")).toBeVisible();
 
-    // Loading state should show (hacker mode overlay or chat indicator)
+    // Loading state should show
     await expect(page.getByTestId("hacker-mode-overlay")).toBeVisible();
 
     // Wait for response
@@ -113,14 +114,12 @@ test.describe("Inspiror App - E2E", () => {
       });
     });
 
-    const input = page.getByPlaceholder("Type your idea here...");
+    const input = page.getByPlaceholder("Type your grand idea...");
     await input.fill("Build something");
     await page.getByRole("button", { name: "Send" }).click();
 
-    // Wait for the reply to confirm API responded
     await expect(page.getByText("Here you go!")).toBeVisible({ timeout: 5000 });
 
-    // Verify the iframe was updated via srcdoc
     const iframe = page.locator('iframe[title="Preview Sandbox"]');
     const srcdoc = await iframe.getAttribute("srcdoc");
     expect(srcdoc).toContain("Generated Content");
@@ -138,7 +137,7 @@ test.describe("Inspiror App - E2E", () => {
       });
     });
 
-    const input = page.getByPlaceholder("Type your idea here...");
+    const input = page.getByPlaceholder("Type your grand idea...");
     await input.fill("Test persistence");
     await page.getByRole("button", { name: "Send" }).click();
 
@@ -146,7 +145,6 @@ test.describe("Inspiror App - E2E", () => {
       timeout: 5000,
     });
 
-    // Check localStorage
     const savedMessages = await page.evaluate(() =>
       localStorage.getItem("inspiror-messages"),
     );
@@ -158,7 +156,6 @@ test.describe("Inspiror App - E2E", () => {
   test("loads persisted state from localStorage on page reload", async ({
     page,
   }) => {
-    // Set localStorage before navigating
     await page.evaluate(() => {
       const msgs = [
         { role: "assistant", content: "Welcome back, creator!" },
@@ -171,7 +168,6 @@ test.describe("Inspiror App - E2E", () => {
       );
     });
 
-    // Reload to trigger state initialization from localStorage
     await page.reload();
 
     await expect(page.getByText("Welcome back, creator!")).toBeVisible();
@@ -187,12 +183,11 @@ test.describe("Inspiror App - E2E", () => {
       });
     });
 
-    const input = page.getByPlaceholder("Type your idea here...");
+    const input = page.getByPlaceholder("Type your grand idea...");
     await input.fill("Break things");
     await page.getByRole("button", { name: "Send" }).click();
 
-    // Should show the friendly error message
-    await expect(page.getByText(/Oops, I made a little mistake/i)).toBeVisible({
+    await expect(page.getByText(/Oops/i)).toBeVisible({
       timeout: 5000,
     });
   });
@@ -228,10 +223,8 @@ test.describe("Inspiror App - E2E", () => {
 
     await page.getByRole("button", { name: /bouncing ball/i }).click();
 
-    // User message from chip should appear
     await expect(page.getByText("Make a bouncing ball game")).toBeVisible();
 
-    // After response, chips should be gone
     await expect(page.getByText("Great choice!")).toBeVisible({
       timeout: 5000,
     });
@@ -254,20 +247,16 @@ test.describe("Inspiror App - E2E", () => {
       });
     });
 
-    const input = page.getByPlaceholder("Type your idea here...");
+    const input = page.getByPlaceholder("Type your grand idea...");
     await input.fill("Build something");
     await page.getByRole("button", { name: "Send" }).click();
 
     await expect(page.getByText("Built it!")).toBeVisible({ timeout: 5000 });
 
-    // Click reset
     await page.getByRole("button", { name: "Reset" }).click();
 
-    // Initial greeting should reappear
     await expect(page.getByText(/Hi! I'm your builder buddy/i)).toBeVisible();
-    // Custom message should be gone
     await expect(page.getByText("Built it!")).not.toBeVisible();
-    // Suggestion chips should reappear
     await expect(
       page.getByRole("button", { name: /bouncing ball/i }),
     ).toBeVisible();
@@ -286,14 +275,12 @@ test.describe("Inspiror App - E2E", () => {
       });
     });
 
-    const input = page.getByPlaceholder("Type your idea here...");
+    const input = page.getByPlaceholder("Type your grand idea...");
     await input.fill("Build a game");
     await page.getByRole("button", { name: "Send" }).click();
 
-    // Hacker mode overlay should appear
     await expect(page.getByTestId("hacker-mode-overlay")).toBeVisible();
 
-    // After response, overlay should disappear
     await expect(page.getByText("Done!")).toBeVisible({ timeout: 5000 });
     await expect(page.getByTestId("hacker-mode-overlay")).not.toBeVisible();
   });
@@ -317,7 +304,7 @@ test.describe("Inspiror App - E2E", () => {
       });
     });
 
-    const input = page.getByPlaceholder("Type your idea here...");
+    const input = page.getByPlaceholder("Type your grand idea...");
     await input.fill("Enter key test");
     await input.press("Enter");
 
@@ -326,6 +313,8 @@ test.describe("Inspiror App - E2E", () => {
       timeout: 5000,
     });
   });
+
+  // UI/UX Improvement tests
 
   test("shows confetti burst after successful generation", async ({ page }) => {
     await page.route("**/api/generate", async (route) => {
@@ -339,7 +328,7 @@ test.describe("Inspiror App - E2E", () => {
       });
     });
 
-    const input = page.getByPlaceholder("Type your idea here...");
+    const input = page.getByPlaceholder("Type your grand idea...");
     await input.fill("Build something amazing");
     await page.getByRole("button", { name: "Send" }).click();
 
@@ -347,7 +336,6 @@ test.describe("Inspiror App - E2E", () => {
       timeout: 5000,
     });
 
-    // Confetti should appear after generation completes
     await expect(page.getByTestId("confetti-burst")).toBeVisible();
   });
 
@@ -357,43 +345,18 @@ test.describe("Inspiror App - E2E", () => {
     expect(srcdoc).toContain("What will YOU create today?");
   });
 
-  test("shows matrix rain columns during generation", async ({ page }) => {
-    await page.route("**/api/generate", async (route) => {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          reply: "Done!",
-          code: "<html><body>Built</body></html>",
-        }),
-      });
-    });
-
-    const input = page.getByPlaceholder("Type your idea here...");
-    await input.fill("Build a game");
-    await page.getByRole("button", { name: "Send" }).click();
-
-    // Matrix rain columns should appear during hacker mode
-    await expect(page.locator(".matrix-column").first()).toBeVisible();
-    await expect(page.locator(".scanline-overlay")).toBeVisible();
-  });
-
   test("buddy avatar has bounce animation", async ({ page }) => {
     const avatar = page.locator(".buddy-avatar");
     await expect(avatar).toBeVisible();
   });
 
   test("input glows when text is entered", async ({ page }) => {
-    const input = page.getByPlaceholder("Type your idea here...");
+    const input = page.getByPlaceholder("Type your grand idea...");
 
-    // No glow initially
     await expect(input).not.toHaveClass(/input-glow-active/);
 
-    // Type text
     await input.fill("Hello");
 
-    // Should have glow
     await expect(input).toHaveClass(/input-glow-active/);
   });
 });
