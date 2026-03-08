@@ -58,9 +58,57 @@ Traditional text-based programming can be intimidating and syntax-heavy for chil
 *   Average length of a session (number of conversational turns).
 *   User retention (returning users).
 
-## 8. Future Enhancements
+## 8. Competitive Landscape
+
+### Direct Competitors (AI-Powered Builders for Kids)
+
+| Platform | AI Buddy | Loading UX | Celebration | Key Differentiator |
+|----------|----------|------------|-------------|-------------------|
+| **Codorex** | Rex the Dino | Teaches coding facts during 20-40s wait | Minimal | Zero-signup, code transparency |
+| **Upit** | AVA | Standard spinner | Contest prizes ($2,500) | Generates graphics + sound + code |
+| **Rosebud** | Rosie | Live preview | Game jams | Specialized builders (RPG, visual novel) |
+| **Kodable** | CatBot | Standard | Certificates | Dual-mode (text + audio), multilingual |
+| **CodeCombat** | N/A (RPG heroes) | Quest progress | Loot drops, gear upgrades, XP | Learning IS the game |
+| **Codedex** | N/A | Standard | Region unlocking on fantasy map | 8-bit pixel art identity |
+| **Tynker** | N/A | Standard | Certificates | Block-to-text progression |
+
+### Inspiror's Competitive Advantages
+1. **Real-time streaming hacker mode** - Kids see code being written live (Codorex shows static facts; we show the actual build)
+2. **Zero-signup with local persistence** - Like Codorex, but with localStorage session continuity
+3. **Confetti celebration loop** - Every successful build triggers confetti (vs. CodeCombat's loot drops)
+4. **Animated AI buddy** - Bouncing/thinking avatar gives personality (vs. static emoji competitors)
+5. **Animated welcome screen** - Particle-effect landing vs. boring "Your creation will appear here"
+
+### Design Principles for Kids 8-14 (from competitive research)
+- **Not too babyish** - They want to feel "grown up" and like real hackers/creators
+- **Instant visual feedback** - Every action must produce visible change
+- **Named AI character** with personality (nearly universal in competitors)
+- **Bright, saturated colors** with rounded UI elements (current neon palette aligns)
+- **Large touch targets** and clear visual hierarchy
+- **Reward loops** - Small celebrations for every win
+
+## 9. UI/UX Improvements (Implemented)
+
+Based on competitive research, the following improvements have been shipped:
+
+| # | Improvement | Status | Impact |
+|---|------------|--------|--------|
+| 1 | Streaming hacker mode with pulsing core | Shipped | Kids see code being built in real-time |
+| 2 | Confetti burst on completion | Shipped | "TA-DA!" payoff moment after every build |
+| 3 | Message slide-in animations | Shipped | Chat feels alive with left/right slide-ins |
+| 4 | Auto-scroll to latest message | Shipped | Basic UX fix, no manual scrolling needed |
+| 5 | Animated buddy avatar (bounce + thinking) | Shipped | Buddy feels alive, wobbles when thinking |
+| 6 | Staggered chip entrance | Shipped | Suggestion buttons pop in with overshoot |
+| 7 | Animated welcome preview | Shipped | Gradient + floating particles first impression |
+| 8 | Chat panel toggle | Shipped | Smooth show/hide for distraction-free play |
+| 9 | Page title + favicon branding | Shipped | "Inspiror - Build Anything!" with rocket icon |
+| 10 | Input glow effect | Shipped | Cyan glow intensifies as kids type |
+
+## 10. Future Enhancements
 *   **"Look Inside" / Code Remixing:** A Scratch-like feature to expose the generated HTML/JS in a safe, readable panel so kids can learn how the AI built the game and manually tweak variables (e.g., speed, color).
 *   **Asset Upload & Personalization:** Allow kids to upload their own drawings or photos (e.g., "Make my pet dog the main character") to deeply personalize their creations.
 *   **Gamified Progression:** Implement an achievement system (e.g., "Code Ninja badge unlocked for making 5 games!") and unlockable AI Buddy avatars to drive long-term retention.
+*   **Auditory Feedback:** Sound effects for send, chip click, success, and error events (sourced as royalty-free MP3s).
+*   **Play/Edit Toggle:** Distinct visual mode for "Playing" vs "Building."
 *   **Visual block export:** Convert the generated code into Scratch-like blocks for further learning.
 *   **Multiplayer collaboration:** Kids building together.
