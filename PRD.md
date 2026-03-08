@@ -29,6 +29,7 @@ Traditional text-based programming can be intimidating and syntax-heavy for chil
 *   **Layout & Responsiveness:** On larger screens, the Live Preview will take up the **full screen**, and the Chat interface will be a **floating window** overlaid on top that can be **completely turned off (hidden)** by the user to view their creation without distractions. On mobile devices, the layout will gracefully adapt to ensure usability.
 
 ### 4.3. Iterative Development & Persistence
+*   **Iterative Visual Scaffolding (Step-by-Step):** If a child requests a complex project (e.g., "Make a Mario game"), the AI MUST NOT build the entire game at once. It must break the project down into small, visible steps. For example: Turn 1 builds the background and character. Turn 2 adds gravity and jumping. Turn 3 adds enemies. This ensures the child understands how the game is built and feels like an active participant rather than a passive observer.
 *   **Contextual Memory:** The AI must remember the state of the application and the history of the conversation so the child can make incremental changes.
 *   **Undo/Redo:** Ability to revert a change if the AI misunderstands or the child doesn't like the result.
 *   **Local Storage (No Accounts):** Projects and chat history will be saved directly in the browser's local storage to ensure privacy and remove friction (no sign-up required).
