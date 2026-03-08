@@ -16,9 +16,10 @@ Traditional text-based programming can be intimidating and syntax-heavy for chil
 
 ### 4.1. Conversational Interface (The "AI Buddy")
 *   **Kid-Friendly Persona & Avatar:** The AI must act as an encouraging, patient mentor, represented visually as a **Cute Animal**. It should use simple language, avoid heavy jargon, and praise the user's creativity. The tone should be fun and energetic.
+*   **Auditory Feedback:** Every significant action (sending a message, clicking a Magic Button, receiving a response, finishing a build) should feature satisfying, kid-friendly sound effects (e.g., pops, clicks, or magical chimes).
 *   **Prompt Scaffolding (Magic Buttons):** To prevent "Blank Canvas Syndrome," the chat interface must provide clickable "Suggestion Chips" or "Mad Libs" style starters (e.g., "Make a bouncing ball", "Create a neon clock"). These empower kids to start exploring immediately without needing to type a perfect prompt.
 *   **Guiding Prompts:** If a user's prompt is too vague (e.g., "make a game"), the AI should ask scaffolding questions (e.g., "Cool! What kind of game? Does it have spaceships or animals?").
-*   **Error Handling (Auto-Fix Communicated):** If the generated code causes a JavaScript error in the sandbox, the app will catch it, send it back to the AI. The AI will communicate the issue gracefully to the kid (e.g., "Oops, I made a little mistake! Let me fix that real quick...") and automatically attempt to resolve it without frustrating the user.
+*   **Educational Error Handling (Auto-Fix Communicated):** If the generated code causes a JavaScript error in the sandbox, the app will catch it, send it back to the AI. The AI will communicate the issue gracefully and educationally to the kid (e.g., "Oops, your character fell through the floor because of gravity! Let me fix that real quick...") and automatically attempt to resolve it. This fosters AI literacy without frustration.
 
 ### 4.2. Live Visual Preview (The "Sandbox")
 *   **Instant Rendering:** A dedicated panel that immediately displays the output of the AI's generated code as a single, unified HTML file (containing inline CSS/JS).
@@ -58,6 +59,8 @@ Traditional text-based programming can be intimidating and syntax-heavy for chil
 *   User retention (returning users).
 
 ## 8. Future Enhancements
-*   Visual block export (convert the generated code into Scratch-like blocks for further learning).
-*   Multiplayer collaboration (kids building together).
-*   Asset generation (generating custom sprites or sounds via AI).
+*   **"Look Inside" / Code Remixing:** A Scratch-like feature to expose the generated HTML/JS in a safe, readable panel so kids can learn how the AI built the game and manually tweak variables (e.g., speed, color).
+*   **Asset Upload & Personalization:** Allow kids to upload their own drawings or photos (e.g., "Make my pet dog the main character") to deeply personalize their creations.
+*   **Gamified Progression:** Implement an achievement system (e.g., "Code Ninja badge unlocked for making 5 games!") and unlockable AI Buddy avatars to drive long-term retention.
+*   **Visual block export:** Convert the generated code into Scratch-like blocks for further learning.
+*   **Multiplayer collaboration:** Kids building together.
