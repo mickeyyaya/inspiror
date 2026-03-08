@@ -55,20 +55,32 @@ We use **Vitest** and **React Testing Library** for the frontend, and **Jest** +
 *   **Backend Test 1-3:** Route existence, input validation, LLM Provider mocking. (GREEN)
 *   **Frontend Test 1-4:** Render initial chat, user input, loading animation, hide/show chat toggle, and iframe rendering. (GREEN)
 
-### Phase 2: Contextual Memory, Code Iteration, & Prompt Scaffolding (TODO)
-*   **Backend Test 4:** Ensure `POST /api/generate` accepts `currentCode` in the request body and passes it to the LLM system prompt.
-*   **Frontend Test 5:** Ensure the frontend sends `currentCode` alongside `messages` when making the API call.
-*   **Frontend Test 5b:** Ensure "Suggestion Chips" (Magic Buttons) render when the chat is empty or waiting for initial input, and clicking one populates and submits the input.
+### Phase 1.5: Real-Time Streaming & "Hacker Mode" UI (TODO)
+*   **Backend Test:** Ensure `/api/generate` returns a streamed chunked response using Vercel AI SDK.
+*   **Frontend Test:** Ensure the `experimental_useObject` hook processes the stream, rendering the "Hacker Mode" overlay with `object?.code` and updating the active chat bubble with `object?.reply`. 
 
-### Phase 3: Auto-Fix Error Handling (TODO)
-*   **Frontend Test 6:** Simulate an `error` event from the `PreviewSandbox` iframe. The app must catch it, display a friendly "Oops, fixing it!" assistant message, and automatically trigger a hidden generation request with the error details.
+### Phase 2: Contextual Memory & Prompt Scaffolding (COMPLETED)
+*   **Backend Test 4:** Ensure `POST /api/generate` accepts `currentCode` in the request body and passes it to the LLM system prompt. (GREEN)
+*   **Frontend Test 5:** Ensure the frontend sends `currentCode` alongside `messages` when making the API call. (GREEN)
+*   **Frontend Test 5b:** Ensure "Suggestion Chips" (Magic Buttons) render when the chat is empty or waiting for initial input, and clicking one populates and submits the input. (GREEN)
 
-### Phase 4: Local Storage Persistence (TODO)
-*   **Frontend Test 7:** Verify that `messages` and `currentCode` are saved to `localStorage` when updated.
-*   **Frontend Test 8:** Verify that the app initializes its state from `localStorage` on load instead of the default state.
+### Phase 2.5: UX Polish & Auditory Feedback (TODO)
+*   **Frontend Test:** Mock HTML5 Audio API and verify `useAudio` hook triggers correctly on message send, chip click, success, and error events.
+
+### Phase 3: Educational Auto-Fix Error Handling (COMPLETED)
+*   **Frontend Test 6:** Simulate an `error` event from the `PreviewSandbox` iframe. The app must catch it, display a friendly "Oops, fixing it!" assistant message, and automatically trigger a hidden generation request with the error details. (GREEN)
+
+### Phase 4: Local Storage Persistence (COMPLETED)
+*   **Frontend Test 7:** Verify that `messages` and `currentCode` are saved to `localStorage` when updated. (GREEN)
+*   **Frontend Test 8:** Verify that the app initializes its state from `localStorage` on load instead of the default state. (GREEN)
+
+### Phase 5 & 6: Deployment & Deep Engagement (Future)
+*   **Frontend Test:** Verify "Look Inside" panel toggles and allows code edits.
+*   **Frontend Test:** Verify image upload converts to Base64 and attaches to prompt payload.
+*   **Frontend Test:** Verify `gamesBuilt` state triggers achievement modals upon reaching thresholds.
 
 ## 5. Implementation Steps (TDD Loop)
-1.  **Phase 1 (Completed):** Scaffolding, LLM Provider Pattern (Vercel AI SDK), UI Layout (Vibrant Neon), Basic Chat.
-2.  **Phase 2 (Next):** Write failing tests for Contextual Memory and Prompt Scaffolding. Implement `currentCode` passing in the backend and frontend. Implement `SuggestionChips` (Magic Buttons) in the chat UI.
-3.  **Phase 3:** Write failing tests for iframe error catching, implement `postMessage` listener, implement auto-fix logic.
-4.  **Phase 4:** Write failing tests for `localStorage`, implement state persistence hooks.
+1.  **Phase 1.5 (Next):** Implement `pipeTextStreamToResponse` on backend, `experimental_useObject` on frontend, and bind partial streaming states to Hacker Mode UI.
+2.  **Phase 2.5:** Implement `useAudio` hook for sound effects and add skeuomorphic CSS classes to buttons.
+3.  **Phase 5:** Finalize E2E tests, optimize for mobile screens, and configure Vercel/Railway deployments.
+4.  **Phase 6:** Implement sliding code editor, image upload logic, and gamified achievement hooks.
