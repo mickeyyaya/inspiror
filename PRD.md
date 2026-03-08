@@ -24,7 +24,7 @@ Traditional text-based programming can be intimidating and syntax-heavy for chil
 *   **Instant Rendering:** A dedicated panel that immediately displays the output of the AI's generated code as a single, unified HTML file (containing inline CSS/JS).
 *   **Safe Execution:** Code must run in an isolated, secure environment (a sandboxed `<iframe>`) to prevent security risks.
 *   **Visual Appeal:** The application will use a **Vibrant Neon** color palette (high contrast, energetic colors like hot pink, electric blue, lime green) to maximize appeal to kids.
-*   **Progress Indicators:** It is crucial to always show a **live, visual building status** (e.g., showing exactly what part of the app is being constructed or displaying a live progress bar/sequence) while the AI is "thinking" to keep kids entertained and aware of the progress.
+*   **Progress Indicators & Real-Time "Hacker" Streaming:** To keep kids mesmerized and show them exactly what the AI is building, the platform MUST use **streaming generation**. Instead of a static loading spinner, the AI's chat replies must stream in real-time (typing effect), and the generated code must stream visibly on screen (like a fast-typing "Hacker Mode" overlay) before it instantly compiles into the final Live Preview. This demystifies the AI and makes it feel incredibly alive.
 *   **Layout & Responsiveness:** On larger screens, the Live Preview will take up the **full screen**, and the Chat interface will be a **floating window** overlaid on top that can be **completely turned off (hidden)** by the user to view their creation without distractions. On mobile devices, the layout will gracefully adapt to ensure usability.
 
 ### 4.3. Iterative Development & Persistence

@@ -3,7 +3,7 @@
 ## 1. Architecture Overview
 Inspiror follows a client-server architecture:
 *   **Frontend (Client):** React, TypeScript, Vite, Tailwind CSS. Handles the kid-friendly UI, chat interface, state management, and the sandboxed iframe for live previews.
-*   **Backend (Server):** Node.js, Express, TypeScript. Acts as a secure proxy to the LLM (e.g., Gemini API), injecting system prompts and parsing structured responses.
+*   **Backend (Server):** Node.js, Express, TypeScript. Acts as a secure proxy to the LLM (e.g., Gemini API), injecting system prompts and streaming structured responses back to the client in real-time.
 
 ## 2. Component Design (Frontend)
 
@@ -38,11 +38,12 @@ Inspiror follows a client-server architecture:
       "currentCode": "<html>...</html>" // Optional: For context on edits
     }
     ```
-*   **Response Body:**
+*   **Response:**
+    A chunked **Stream** of the JSON object using Vercel AI SDK's `streamObject`. The client receives partial updates of:
     ```json
     {
-      "reply": "Here is a blank canvas! What color should the brush be?",
-      "code": "<!DOCTYPE html><html><head><style>...</style></head><body><canvas></canvas><script>...</script></body></html>"
+      "reply": "Here is a...",
+      "code": "<!DOCTYPE html><html..."
     }
     ```
 
