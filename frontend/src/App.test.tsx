@@ -87,6 +87,14 @@ describe("Inspiror App", () => {
     expect(iframe).toBeInTheDocument();
   });
 
+  it("injects error-catching script into iframe srcDoc", () => {
+    render(<App />);
+    const iframe = screen.getByTitle("Preview Sandbox") as HTMLIFrameElement;
+    expect(iframe.getAttribute("srcdoc")).toContain("window.onerror");
+    expect(iframe.getAttribute("srcdoc")).toContain("postMessage");
+    expect(iframe.getAttribute("srcdoc")).toContain("iframe-error");
+  });
+
   // Phase 2: Contextual Memory
   it("sends currentCode alongside messages in the API call", async () => {
     mockFetch.mockResolvedValueOnce({

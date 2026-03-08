@@ -29,6 +29,24 @@ const STORAGE_KEYS = {
   currentCode: "inspiror-currentCode",
 } as const;
 
+const ERROR_CATCHER_SCRIPT = `<script>window.onerror=function(msg,src,line,col,err){window.parent.postMessage({type:"iframe-error",message:msg+" (line "+line+")"},"*");return true;};</script>`;
+
+function injectErrorCatcher(code: string): string {
+  const headClose = code.indexOf("</head>");
+  if (headClose !== -1) {
+    return (
+      code.slice(0, headClose) + ERROR_CATCHER_SCRIPT + code.slice(headClose)
+    );
+  }
+  const bodyOpen = code.indexOf("<body");
+  if (bodyOpen !== -1) {
+    return (
+      code.slice(0, bodyOpen) + ERROR_CATCHER_SCRIPT + code.slice(bodyOpen)
+    );
+  }
+  return ERROR_CATCHER_SCRIPT + code;
+}
+
 function loadFromStorage<T>(key: string, fallback: T): T {
   try {
     const stored = localStorage.getItem(key);
@@ -163,7 +181,7 @@ function App() {
       <div className="absolute inset-0 z-0">
         <iframe
           title="Preview Sandbox"
-          srcDoc={currentCode}
+          srcDoc={injectErrorCatcher(currentCode)}
           className="w-full h-full border-none bg-white"
           sandbox="allow-scripts"
         />
