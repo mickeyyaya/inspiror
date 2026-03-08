@@ -29,12 +29,14 @@ function withId(role: ChatMessage["role"], content: string): ChatMessage {
   return { id: makeId(), role, content };
 }
 
-const DEFAULT_MESSAGES: ChatMessage[] = [
-  withId(
-    "assistant",
-    "Hi! I'm your builder buddy. What do you want to create today?",
-  ),
-];
+function makeDefaultMessages(): ChatMessage[] {
+  return [
+    withId(
+      "assistant",
+      "Hi! I'm your builder buddy. What do you want to create today?",
+    ),
+  ];
+}
 
 const DEFAULT_CODE = `<!DOCTYPE html>
 <html>
@@ -147,12 +149,22 @@ function injectErrorCatcher(code: string): string {
   return ERROR_CATCHER_SCRIPT + code;
 }
 
+const VALID_ROLES = new Set<string>(["user", "assistant", "system"]);
+
 function migrateMessages(raw: unknown): ChatMessage[] {
-  if (!Array.isArray(raw)) return DEFAULT_MESSAGES;
-  return raw.map((msg) => ({
-    id: msg.id || makeId(),
-    role: msg.role,
-    content: msg.content,
+  if (!Array.isArray(raw)) return makeDefaultMessages();
+  const valid = raw.filter(
+    (msg) =>
+      msg !== null &&
+      typeof msg === "object" &&
+      typeof msg.content === "string" &&
+      VALID_ROLES.has(msg.role),
+  );
+  if (valid.length === 0) return makeDefaultMessages();
+  return valid.map((msg) => ({
+    id: typeof msg.id === "string" && msg.id ? msg.id : makeId(),
+    role: msg.role as ChatMessage["role"],
+    content: msg.content as string,
   }));
 }
 
@@ -168,7 +180,7 @@ function loadFromStorage<T>(key: string, fallback: T): T {
 function App() {
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
     const raw = loadFromStorage(STORAGE_KEYS.messages, null);
-    return raw ? migrateMessages(raw) : DEFAULT_MESSAGES;
+    return raw ? migrateMessages(raw) : makeDefaultMessages();
   });
   const [inputValue, setInputValue] = useState("");
   const [currentCode, setCurrentCode] = useState(
@@ -185,13 +197,13 @@ function App() {
 
   const { playPop, playChipClick, playChime, playBuzzer, isMuted, toggleMute } =
     useAudio();
+  const playChimeRef = useRef(playChime);
+  playChimeRef.current = playChime;
 
   const { object, submit, isLoading } = useObject({
     api: "http://localhost:3001/api/generate",
     schema: generationSchema,
     onFinish({ object: finalObj }) {
-      // Reset the auto-fix counter ONLY when a user manually sends a message,
-      // but we don't have direct access to that here. We handle it in handleSend.
       if (finalObj?.reply) {
         setMessages((prev) => [
           ...prev,
@@ -201,7 +213,7 @@ function App() {
       if (finalObj?.code) {
         setCurrentCode(finalObj.code as string);
       }
-      playChime();
+      playChimeRef.current();
     },
     onError(err) {
       console.error("[UI] Stream error:", err);
@@ -235,7 +247,7 @@ function App() {
   };
 
   const handleReset = () => {
-    setMessages(DEFAULT_MESSAGES);
+    setMessages(makeDefaultMessages());
     setCurrentCode(DEFAULT_CODE);
     setInputValue("");
     autoFixCountRef.current = 0;
