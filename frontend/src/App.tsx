@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { MessageCircle, X, Send, Sparkles } from "lucide-react";
+import { MessageCircle, X, Send, Sparkles, RotateCcw } from "lucide-react";
 import "./index.css";
 
 interface ChatMessage {
@@ -137,6 +137,12 @@ function App() {
     await sendToApi(newMessages, currentCode);
   };
 
+  const handleReset = () => {
+    setMessages(DEFAULT_MESSAGES);
+    setCurrentCode(DEFAULT_CODE);
+    setInputValue("");
+  };
+
   const showSuggestions =
     messages.length === 1 && messages[0]?.role === "assistant" && !isGenerating;
 
@@ -207,13 +213,22 @@ function App() {
               <span className="text-2xl">🐶</span>
               <span>Builder Buddy</span>
             </div>
-            <button
-              onClick={() => setIsChatVisible(false)}
-              className="text-black hover:bg-black/20 p-1 rounded transition-colors"
-              aria-label="Hide Chat"
-            >
-              <X size={24} />
-            </button>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={handleReset}
+                className="text-black hover:bg-black/20 p-1 rounded transition-colors"
+                aria-label="Reset"
+              >
+                <RotateCcw size={20} />
+              </button>
+              <button
+                onClick={() => setIsChatVisible(false)}
+                className="text-black hover:bg-black/20 p-1 rounded transition-colors"
+                aria-label="Hide Chat"
+              >
+                <X size={24} />
+              </button>
+            </div>
           </div>
 
           {/* MESSAGE LIST */}

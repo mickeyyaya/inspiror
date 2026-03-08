@@ -239,6 +239,43 @@ describe("Inspiror App", () => {
     ).not.toBeInTheDocument();
   });
 
+  // Phase 5: Clear/Reset
+  it("renders a clear/reset button in the chat header", () => {
+    render(<App />);
+    expect(screen.getByRole("button", { name: /Reset/i })).toBeInTheDocument();
+  });
+
+  it("clicking reset clears messages and code back to defaults", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        reply: "Built it!",
+        code: "<html><body>Custom</body></html>",
+      }),
+    });
+
+    render(<App />);
+    const input = screen.getByPlaceholderText(/Type your idea here/i);
+    fireEvent.change(input, { target: { value: "Build something" } });
+    fireEvent.click(screen.getByRole("button", { name: /Send/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Built it!")).toBeInTheDocument();
+    });
+
+    // Click reset
+    fireEvent.click(screen.getByRole("button", { name: /Reset/i }));
+
+    // Should show initial greeting again
+    expect(screen.getByText(/Hi! I'm your builder buddy/i)).toBeInTheDocument();
+    // Custom message should be gone
+    expect(screen.queryByText("Built it!")).not.toBeInTheDocument();
+    // Suggestion chips should reappear
+    expect(
+      screen.getByRole("button", { name: /bouncing ball/i }),
+    ).toBeInTheDocument();
+  });
+
   it("does not render suggestion chips after user has sent a message", async () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,
