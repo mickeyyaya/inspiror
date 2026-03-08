@@ -3,22 +3,22 @@
 ## Phase 1: Core Chat & Code Generation [x]
 *(Completed)*
 
-## Phase 1.5: Real-Time Streaming & "Hacker Mode" UI [ ]
+## Phase 1.5: Real-Time Streaming & "Hacker Mode" UI [x]
 **Goal:** Mesmerize kids by showing them exactly what the AI is building in real-time, character by character.
 
 ### Backend Tasks (Express API)
-- [ ] Refactor `llmService.ts`: Instead of `await result.object`, return the full `result` stream object from `streamObject()`.
-- [ ] Update `server.ts` `/api/generate`: Use Vercel AI SDK's streaming methods for Express. Call `result.pipeTextStreamToResponse(res)` to send chunked updates instead of a static JSON response.
-- [ ] Update API Tests: Mock the streaming interface in `backend/tests/api.test.ts` to expect chunked data or stream initialization.
+- [x] Refactor `llmService.ts`: Instead of `await result.object`, return the full `result` stream object from `streamObject()`.
+- [x] Update `server.ts` `/api/generate`: Use Vercel AI SDK's streaming methods for Express. Call `result.pipeTextStreamToResponse(res)` to send chunked updates instead of a static JSON response.
+- [x] Update API Tests: Mock the streaming interface in `backend/tests/api.test.ts` to expect chunked data or stream initialization.
 
 ### Frontend Tasks (React UI)
-- [ ] Run `npm install @ai-sdk/react` in the frontend directory.
-- [ ] Refactor `App.tsx` state management: Replace the manual `fetch` logic with the `experimental_useObject` hook from `@ai-sdk/react` to automatically consume the `toTextStreamResponse`.
-- [ ] UI - "Hacker Mode" Implementation: 
+- [x] Run `npm install @ai-sdk/react` in the frontend directory.
+- [x] Refactor `App.tsx` state management: Replace the manual `fetch` logic with the `experimental_useObject` hook from `@ai-sdk/react` to automatically consume the `toTextStreamResponse`.
+- [x] UI - "Hacker Mode" Implementation: 
     - Bind `object?.code` (the streaming string) to the Hacker Mode `pre` tag overlay. This will cause the text to fly onto the screen like matrix code.
     - Bind `object?.reply` to the active chat bubble to create a typewriter effect for the AI's response.
-- [ ] HTML Sandbox Safety: Ensure the `iframe`'s `srcDoc` uses a stable version of the code (e.g., only update `currentCode` when `isLoading` transitions to `false`). Do not feed partial HTML chunks into the iframe during generation to avoid visual glitching.
-- [ ] Write tests ensuring `experimental_useObject` is called and UI renders partial streaming state.
+- [x] HTML Sandbox Safety: Ensure the `iframe`'s `srcDoc` uses a stable version of the code (e.g., only update `currentCode` when `isLoading` transitions to `false`). Do not feed partial HTML chunks into the iframe during generation to avoid visual glitching.
+- [x] Write tests ensuring `experimental_useObject` is called and UI renders partial streaming state.
 
 ## Phase 2: Contextual Memory & Prompt Scaffolding (Magic Buttons) [x]
 *(Completed)*
