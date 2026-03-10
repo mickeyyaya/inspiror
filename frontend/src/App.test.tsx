@@ -567,30 +567,17 @@ describe("Inspiror App", () => {
       expect(mockToggleMute).toHaveBeenCalledTimes(1);
     });
 
-    it("shows mode toggle button defaulting to build mode", () => {
+    it("hides chat with X button and shows it again with Show Chat", () => {
       render(<App />);
-      const toggle = screen.getByTestId("mode-toggle");
-      expect(toggle).toBeInTheDocument();
-      expect(toggle).toHaveTextContent("Play Mode");
-    });
+      expect(screen.getByText("Builder Buddy")).toBeInTheDocument();
 
-    it("hides chat in play mode and shows Back to Build", () => {
-      render(<App />);
-      fireEvent.click(screen.getByTestId("mode-toggle"));
+      fireEvent.click(screen.getByRole("button", { name: /Hide Chat/i }));
       expect(screen.queryByText("Builder Buddy")).not.toBeInTheDocument();
       expect(
-        screen.queryByRole("button", { name: /Show Chat/i }),
-      ).not.toBeInTheDocument();
-      expect(screen.getByTestId("mode-toggle")).toHaveTextContent(
-        "Build Mode!",
-      );
-    });
+        screen.getByRole("button", { name: /Show Chat/i }),
+      ).toBeInTheDocument();
 
-    it("returns to build mode with chat visible", () => {
-      render(<App />);
-      fireEvent.click(screen.getByTestId("mode-toggle"));
-      expect(screen.queryByText("Builder Buddy")).not.toBeInTheDocument();
-      fireEvent.click(screen.getByTestId("mode-toggle"));
+      fireEvent.click(screen.getByRole("button", { name: /Show Chat/i }));
       expect(screen.getByText("Builder Buddy")).toBeInTheDocument();
     });
 

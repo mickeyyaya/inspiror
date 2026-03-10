@@ -7,8 +7,6 @@ import {
   RotateCcw,
   Volume2,
   VolumeX,
-  Play,
-  Code,
   ArrowLeft,
   Mic,
   MicOff,
@@ -211,7 +209,6 @@ function EditorView({
   const [isChatVisible, setIsChatVisible] = useState(true);
   const [showConfetti, setShowConfetti] = useState(false);
   const [suggestionChips, setSuggestionChips] = useState(pickRandomChips);
-  const [mode, setMode] = useState<"build" | "play">("build");
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -367,8 +364,6 @@ function EditorView({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, object?.reply, isLoading]);
 
-  const isPlayMode = mode === "play";
-
   return (
     <div className="w-screen h-screen bg-[#fdfbf7] flex font-sans overflow-hidden">
       {/* Confetti Burst */}
@@ -429,7 +424,7 @@ function EditorView({
       )}
 
       {/* LEFT PANEL: CHAT (collapsible) */}
-      {!isPlayMode && isChatVisible && (
+      {isChatVisible && (
         <div
           className="h-full w-full sm:w-[26rem] lg:w-[30rem] flex-shrink-0 bg-[#fdfbf7] border-r-4 border-[#222] flex flex-col z-20 relative shadow-[8px_0px_0px_rgba(0,0,0,0.1)]"
           aria-hidden="false"
@@ -472,7 +467,11 @@ function EditorView({
                 title={t.switch_language}
               >
                 <Languages size={18} strokeWidth={2.5} />
-                {language === "zh-TW" ? "TW" : language === "zh-CN" ? "CN" : "EN"}
+                {language === "zh-TW"
+                  ? "TW"
+                  : language === "zh-CN"
+                    ? "CN"
+                    : "EN"}
               </button>
               <button
                 onClick={toggleAutoSpeak}
@@ -681,9 +680,9 @@ function EditorView({
         {/* Decorative Grid Background in Preview when empty or loading */}
         <div className="absolute inset-0 bg-[radial-gradient(#ff6b6b_1px,transparent_1px),radial-gradient(#4ecdc4_1px,transparent_1px)] bg-[size:40px_40px] bg-[position:0_0,20px_20px] opacity-[0.15] pointer-events-none z-0"></div>
 
-        {/* MODE TOGGLE + SHOW CHAT BUTTONS */}
-        <div className="absolute top-8 left-8 z-30 flex items-center gap-3">
-          {!isPlayMode && !isChatVisible && (
+        {/* SHOW CHAT BUTTON (visible when chat is hidden) */}
+        {!isChatVisible && (
+          <div className="absolute top-8 left-8 z-30">
             <button
               onClick={() => setIsChatVisible(true)}
               className="bg-[var(--color-candy-pink)] border-4 border-[#222] text-[#222] p-3 rounded-full shadow-[4px_4px_0_#222] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none transition-all flex items-center justify-center btn-squish hover-wiggle"
@@ -691,26 +690,8 @@ function EditorView({
             >
               <MessageCircle size={28} strokeWidth={2.5} />
             </button>
-          )}
-          <button
-            onClick={() => setMode(isPlayMode ? "build" : "play")}
-            className="bg-[var(--color-candy-purple)] border-4 border-[#222] text-[#222] px-6 py-3 rounded-[2rem] shadow-[4px_4px_0_#222] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none transition-all flex items-center gap-2 font-extrabold text-lg btn-squish"
-            aria-label={isPlayMode ? t.back_to_build : t.mode_play}
-            data-testid="mode-toggle"
-          >
-            {isPlayMode ? (
-              <>
-                <Code size={24} strokeWidth={2.5} />
-                {t.mode_build}
-              </>
-            ) : (
-              <>
-                <Play size={24} strokeWidth={2.5} fill="#222" />
-                {t.mode_play}
-              </>
-            )}
-          </button>
-        </div>
+          </div>
+        )}
 
         {/* PREVIEW SANDBOX */}
         <div className="flex-1 w-full h-full relative z-10 bg-white border-4 border-[#222] rounded-[2rem] overflow-hidden shadow-[8px_8px_0_#222]">
@@ -719,7 +700,7 @@ function EditorView({
             title="Preview Sandbox"
             srcDoc={injectErrorCatcher(currentCode)}
             className={`w-full h-full border-none transition-all duration-300 ${
-              isLoading && !isPlayMode
+              isLoading
                 ? "opacity-30 blur-[2px] scale-105"
                 : "opacity-100 scale-100"
             }`}
@@ -728,7 +709,7 @@ function EditorView({
         </div>
 
         {/* FUN BUILDING MODE OVERLAY */}
-        {isLoading && !isPlayMode && (
+        {isLoading && (
           <div
             data-testid="hacker-mode-overlay"
             className="absolute inset-0 z-20 bg-white/60 backdrop-blur-sm flex items-center justify-center overflow-hidden pointer-events-none"

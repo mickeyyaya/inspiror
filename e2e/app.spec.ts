@@ -3,7 +3,9 @@ import { test, expect } from "@playwright/test";
 /** Helper: read current project's messages from the new localStorage structure */
 async function readProjectMessages(page: import("@playwright/test").Page) {
   return page.evaluate(() => {
-    const projects = JSON.parse(localStorage.getItem("inspiror_projects") || "[]");
+    const projects = JSON.parse(
+      localStorage.getItem("inspiror_projects") || "[]",
+    );
     const currentId = localStorage.getItem("inspiror_current_project_id");
     const current = projects.find((p: { id: string }) => p.id === currentId);
     return current?.messages ?? [];
@@ -13,7 +15,9 @@ async function readProjectMessages(page: import("@playwright/test").Page) {
 /** Helper: read current project's code from the new localStorage structure */
 async function readProjectCode(page: import("@playwright/test").Page) {
   return page.evaluate(() => {
-    const projects = JSON.parse(localStorage.getItem("inspiror_projects") || "[]");
+    const projects = JSON.parse(
+      localStorage.getItem("inspiror_projects") || "[]",
+    );
     const currentId = localStorage.getItem("inspiror_current_project_id");
     const current = projects.find((p: { id: string }) => p.id === currentId);
     return current?.currentCode ?? null;
@@ -147,7 +151,9 @@ test.describe("Inspiror App - E2E", () => {
     expect(srcdoc).toContain("Generated Content");
   });
 
-  test("persists messages in localStorage (project storage)", async ({ page }) => {
+  test("persists messages in localStorage (project storage)", async ({
+    page,
+  }) => {
     await page.route("**/api/generate", async (route) => {
       await route.fulfill({
         status: 200,
@@ -392,42 +398,6 @@ test.describe("Inspiror App - E2E", () => {
     await expect(muteBtn).toHaveAttribute("aria-label", "Mute");
   });
 
-  test("mode toggle switches between build and play modes", async ({
-    page,
-  }) => {
-    const toggle = page.getByTestId("mode-toggle");
-    await expect(toggle).toBeVisible();
-    await expect(toggle).toHaveText(/Play Mode/);
-
-    // Enter play mode
-    await toggle.click();
-    await expect(toggle).toHaveText(/Build Mode/);
-    // Chat should be hidden
-    await expect(
-      page.getByText("Builder Buddy", { exact: true }),
-    ).not.toBeVisible();
-
-    // Return to build mode
-    await toggle.click();
-    await expect(toggle).toHaveText(/Play Mode/);
-    await expect(
-      page.getByText("Builder Buddy", { exact: true }),
-    ).toBeVisible();
-  });
-
-  test("play mode hides chat toggle button", async ({ page }) => {
-    // Hide chat first
-    await page.getByRole("button", { name: "Hide Chat" }).click();
-    await expect(page.getByRole("button", { name: "Show Chat" })).toBeVisible();
-
-    // Enter play mode
-    await page.getByTestId("mode-toggle").click();
-    // Show Chat button should be gone
-    await expect(
-      page.getByRole("button", { name: "Show Chat" }),
-    ).not.toBeVisible();
-  });
-
   // === Confetti Details ===
 
   test("confetti burst has 80 pieces with inline styles", async ({ page }) => {
@@ -582,9 +552,9 @@ test.describe("Inspiror App - E2E", () => {
 
     // After migration, messages should now have IDs in the project storage
     const messages = await readProjectMessages(page);
-    expect(messages.every((m: { id: string }) => typeof m.id === "string")).toBe(
-      true,
-    );
+    expect(
+      messages.every((m: { id: string }) => typeof m.id === "string"),
+    ).toBe(true);
   });
 
   test("handles corrupted localStorage gracefully", async ({ page }) => {
@@ -816,59 +786,6 @@ test.describe("Inspiror App - E2E", () => {
     await expect(page.locator(".chip-enter")).toHaveCount(4);
   });
 
-  // === Play Mode Edge Cases ===
-
-  test("play mode keeps iframe content visible", async ({ page }) => {
-    const iframe = page.locator('iframe[title="Preview Sandbox"]');
-    await expect(iframe).toBeVisible();
-
-    // Enter play mode
-    await page.getByTestId("mode-toggle").click();
-
-    // Iframe should still be visible
-    await expect(iframe).toBeVisible();
-  });
-
-  test("mode toggle is always visible in both modes", async ({ page }) => {
-    const toggle = page.getByTestId("mode-toggle");
-    await expect(toggle).toBeVisible();
-
-    // In play mode
-    await toggle.click();
-    await expect(toggle).toBeVisible();
-
-    // Back to build mode
-    await toggle.click();
-    await expect(toggle).toBeVisible();
-  });
-
-  test("play mode does not show hacker mode overlay during loading", async ({
-    page,
-  }) => {
-    await page.route("**/api/generate", async (route) => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          reply: "Done!",
-          code: "<html><body>Built</body></html>",
-        }),
-      });
-    });
-
-    // Start a generation, then switch to play mode
-    const input = page.getByPlaceholder("Type your grand idea...");
-    await input.fill("Build a game");
-    await page.getByRole("button", { name: "Send" }).click();
-
-    // Switch to play mode while loading
-    await page.getByTestId("mode-toggle").click();
-
-    // Hacker overlay should NOT show in play mode
-    await expect(page.getByTestId("hacker-mode-overlay")).not.toBeVisible();
-  });
-
   // === Chat Panel Accessibility ===
 
   test("chat panel has aria-hidden attribute", async ({ page }) => {
@@ -893,9 +810,7 @@ test.describe("Inspiror App - E2E", () => {
     await expect(chatPanel).toHaveClass(/w-full/);
   });
 
-  test("chat panel has responsive width classes", async ({
-    page,
-  }) => {
+  test("chat panel has responsive width classes", async ({ page }) => {
     const chatPanel = page.locator("[aria-hidden]").filter({
       has: page.getByText("Builder Buddy"),
     });
@@ -942,9 +857,7 @@ test.describe("Inspiror App - E2E", () => {
     await expect(page.getByText("BUILDING")).toBeVisible();
   });
 
-  test("hacker mode shows code fragments while building", async ({
-    page,
-  }) => {
+  test("hacker mode shows code fragments while building", async ({ page }) => {
     await page.route("**/api/generate", async (route) => {
       await new Promise((resolve) => setTimeout(resolve, 500));
       await route.fulfill({
@@ -963,7 +876,9 @@ test.describe("Inspiror App - E2E", () => {
 
     // Should show floating code fragments
     await expect(page.getByTestId("hacker-mode-overlay")).toBeVisible();
-    await expect(page.locator("pre").filter({ hasText: "<div>" }).first()).toBeVisible({
+    await expect(
+      page.locator("pre").filter({ hasText: "<div>" }).first(),
+    ).toBeVisible({
       timeout: 2000,
     });
   });
