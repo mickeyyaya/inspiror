@@ -8,12 +8,11 @@ declare global {
   }
 }
 
-export type VoiceLanguage = "en-US" | "zh-CN";
+export type VoiceLanguage = "en-US" | "zh-CN" | "zh-TW";
 
-export function useVoice() {
+export function useVoice(language: VoiceLanguage) {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
-  const [language, setLanguage] = useState<VoiceLanguage>("en-US");
   const [isAutoSpeakEnabled, setIsAutoSpeakEnabled] = useState(true);
 
   const recognitionRef = useRef<any>(null);
@@ -115,10 +114,6 @@ export function useVoice() {
     [language, isAutoSpeakEnabled]
   );
 
-  const toggleLanguage = useCallback(() => {
-    setLanguage((prev) => (prev === "en-US" ? "zh-CN" : "en-US"));
-  }, []);
-
   const toggleAutoSpeak = useCallback(() => {
     setIsAutoSpeakEnabled((prev) => !prev);
     if (isAutoSpeakEnabled && synthRef.current) {
@@ -129,13 +124,10 @@ export function useVoice() {
   return {
     isListening,
     transcript,
-    language,
     isAutoSpeakEnabled,
     startListening,
     stopListening,
     speak,
-    toggleLanguage,
     toggleAutoSpeak,
-    setTranscript,
   };
 }

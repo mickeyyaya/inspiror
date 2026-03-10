@@ -1,24 +1,15 @@
-import { Plus, Trash2, FolderOpen, Clock } from "lucide-react";
+import { Plus, Trash2, FolderOpen, Clock, Languages } from "lucide-react";
 import type { Project } from "../types/project";
+import { translations } from "../i18n/translations";
+import type { VoiceLanguage } from "../hooks/useVoice";
 
 interface ProjectCatalogProps {
   projects: Project[];
   onOpen: (id: string) => void;
   onDelete: (id: string) => void;
   onCreate: () => void;
-}
-
-function timeAgo(timestamp: number): string {
-  const seconds = Math.floor((Date.now() - timestamp) / 1000);
-  if (seconds < 60) return "just now";
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}m ago`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  if (days < 30) return `${days}d ago`;
-  const months = Math.floor(days / 30);
-  return `${months}mo ago`;
+  language: VoiceLanguage;
+  onToggleLanguage: () => void;
 }
 
 export function ProjectCatalog({
@@ -26,8 +17,23 @@ export function ProjectCatalog({
   onOpen,
   onDelete,
   onCreate,
+  language,
+  onToggleLanguage,
 }: ProjectCatalogProps) {
+  const t = translations[language];
   const sorted = [...projects].sort((a, b) => b.updatedAt - a.updatedAt);
+
+  const timeAgo = (timestamp: number): string => {
+    const seconds = Math.floor((Date.now() - timestamp) / 1000);
+    if (seconds < 60) return t.time_just_now;
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}${t.time_min_ago}`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}${t.time_hour_ago}`;
+    const days = Math.floor(hours / 24);
+    if (days < 30) return `${days}${t.time_day_ago}`;
+    return t.last_edited;
+  };
 
   return (
     <div className="w-screen h-screen bg-[#fdfbf7] flex flex-col overflow-hidden relative">
@@ -41,23 +47,34 @@ export function ProjectCatalog({
           <span className="text-5xl buddy-avatar">🐶</span>
           <div>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-[#333] tracking-wide" style={{ textShadow: "2px 2px 0px var(--color-candy-yellow)" }}>
-              My Projects
+              {t.catalog_title}
             </h1>
             <p className="text-gray-600 font-bold mt-1 text-lg">
               {projects.length === 0
-                ? "Let's create something fun!"
-                : `${projects.length} project${projects.length !== 1 ? "s" : ""} waiting for you!`}
+                ? t.tell_buddy
+                : `${projects.length} ${projects.length === 1 ? "project" : "projects"} ${language === "en-US" ? "waiting for you!" : "正在等著你！"}`}
             </p>
           </div>
         </div>
-        <button
-          onClick={onCreate}
-          className="btn-squish bg-[var(--color-candy-green)] border-4 border-[#222] text-[#222] px-6 py-4 rounded-[2rem] font-bold text-lg flex items-center gap-2 shadow-[4px_4px_0px_#222] hover-wiggle"
-          data-testid="new-project-btn"
-        >
-          <Plus size={24} strokeWidth={3} />
-          New Magic!
-        </button>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={onToggleLanguage}
+            className={`border-4 border-[#222] px-4 py-3 rounded-full hover:scale-105 active:scale-95 transition-transform shadow-[4px_4px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none flex items-center gap-2 font-bold text-lg ${
+              language !== "en-US" ? "bg-[var(--color-candy-green)]" : "bg-white"
+            }`}
+          >
+            <Languages size={22} strokeWidth={2.5} />
+            {language === "zh-TW" ? "TW" : language === "zh-CN" ? "CN" : "EN"}
+          </button>
+          <button
+            onClick={onCreate}
+            className="btn-squish bg-[var(--color-candy-green)] border-4 border-[#222] text-[#222] px-6 py-4 rounded-[2rem] font-bold text-lg flex items-center gap-2 shadow-[4px_4px_0px_#222] hover-wiggle"
+            data-testid="new-project-btn"
+          >
+            <Plus size={24} strokeWidth={3} />
+            {t.create_new}
+          </button>
+        </div>
       </div>
 
       {/* Project Grid */}
@@ -66,17 +83,14 @@ export function ProjectCatalog({
           <div className="flex flex-col items-center justify-center h-full text-center">
             <div className="text-7xl mb-6 buddy-avatar">🚀</div>
             <h2 className="text-3xl font-extrabold text-[#333] mb-4">
-              Wow, so empty!
+              {t.empty_catalog}
             </h2>
-            <p className="text-gray-600 text-xl mb-8 max-w-md font-bold">
-              Click the "New Magic!" button to start building something amazing!
-            </p>
             <button
               onClick={onCreate}
               className="btn-squish bg-[var(--color-candy-pink)] border-4 border-[#222] text-[#222] px-8 py-4 rounded-[2rem] font-extrabold text-xl shadow-[6px_6px_0px_#222] flex items-center gap-3 hover-wiggle"
             >
               <Plus size={28} strokeWidth={3} />
-              Create First Project!
+              {t.create_new}
             </button>
           </div>
         ) : (
@@ -113,12 +127,12 @@ export function ProjectCatalog({
                         data-testid="open-project-btn"
                       >
                         <FolderOpen size={20} strokeWidth={2.5} />
-                        Play!
+                        {t.open_project}
                       </button>
                       <button
                         onClick={() => onDelete(project.id)}
                         className="bg-white border-4 border-[#222] text-[#222] p-3 rounded-2xl shadow-[3px_3px_0px_#222] active:translate-y-[3px] active:translate-x-[3px] active:shadow-none transition-all hover:bg-red-400 hover:text-white"
-                        aria-label={`Delete ${project.title}`}
+                        aria-label={`${t.delete_project} ${project.title}`}
                         data-testid="delete-project-btn"
                       >
                         <Trash2 size={20} strokeWidth={2.5} />

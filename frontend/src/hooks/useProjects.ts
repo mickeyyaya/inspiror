@@ -1,5 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import type { Project, ChatMessage } from "../types/project";
+import { translations } from "../i18n/translations";
+import type { VoiceLanguage } from "./useVoice";
 
 const STORAGE_KEYS = {
   projects: "inspiror_projects",
@@ -8,7 +10,9 @@ const STORAGE_KEYS = {
   legacyCode: "inspiror-currentCode",
 } as const;
 
-const DEFAULT_CODE = `<!DOCTYPE html>
+const getWelcomeCode = (language: VoiceLanguage) => {
+  const t = translations[language];
+  return `<!DOCTYPE html>
 <html>
 <head>
   <style>
@@ -31,7 +35,6 @@ const DEFAULT_CODE = `<!DOCTYPE html>
       border: 4px solid #222;
       padding: 3rem;
       border-radius: 2rem;
-      shadow: 8px 8px 0 #222;
       box-shadow: 8px 8px 0 #222;
     }
     .welcome h1 {
@@ -71,8 +74,8 @@ const DEFAULT_CODE = `<!DOCTYPE html>
 </head>
 <body>
   <div class="welcome">
-    <h1>What will <span style="color: #ff6b6b">YOU</span><br/>create today?</h1>
-    <p>Tell your builder buddy your idea! ✨</p>
+    <h1>${t.what_will_you_create}</h1>
+    <p>${t.tell_buddy}</p>
   </div>
   <script>
     const colors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#a8e6cf', '#c3aed6', '#ffb86c'];
@@ -101,13 +104,14 @@ const DEFAULT_CODE = `<!DOCTYPE html>
   </script>
 </body>
 </html>`;
+};
 
-function makeDefaultMessages(): ChatMessage[] {
+function makeDefaultMessages(language: VoiceLanguage): ChatMessage[] {
   return [
     {
       id: crypto.randomUUID(),
       role: "assistant",
-      content: "Hi! I'm your builder buddy. What do you want to create today?",
+      content: translations[language].greeting,
     },
   ];
 }
@@ -121,15 +125,21 @@ function loadJson<T>(key: string, fallback: T): T {
   }
 }
 
-function migrateLegacyData(): Project | null {
+function migrateLegacyData(language: VoiceLanguage): Project | null {
   const legacyMessages = localStorage.getItem(STORAGE_KEYS.legacyMessages);
   const legacyCode = localStorage.getItem(STORAGE_KEYS.legacyCode);
 
   if (!legacyMessages && !legacyCode) return null;
 
-  const messages: ChatMessage[] = legacyMessages
-    ? migrateRawMessages(JSON.parse(legacyMessages))
-    : makeDefaultMessages();
+  let parsedLegacy: unknown = null;
+  try {
+    parsedLegacy = legacyMessages ? JSON.parse(legacyMessages) : null;
+  } catch {
+    // Corrupted legacy data
+  }
+  const messages: ChatMessage[] = parsedLegacy
+    ? migrateRawMessages(parsedLegacy, language)
+    : makeDefaultMessages(language);
 
   const project: Project = {
     id: crypto.randomUUID(),
@@ -137,7 +147,7 @@ function migrateLegacyData(): Project | null {
     createdAt: Date.now(),
     updatedAt: Date.now(),
     messages,
-    currentCode: legacyCode || DEFAULT_CODE,
+    currentCode: legacyCode || getWelcomeCode(language),
   };
 
   // Clean up old keys
@@ -149,8 +159,8 @@ function migrateLegacyData(): Project | null {
 
 const VALID_ROLES = new Set<string>(["user", "assistant", "system"]);
 
-function migrateRawMessages(raw: unknown): ChatMessage[] {
-  if (!Array.isArray(raw)) return makeDefaultMessages();
+function migrateRawMessages(raw: unknown, language: VoiceLanguage): ChatMessage[] {
+  if (!Array.isArray(raw)) return makeDefaultMessages(language);
   const valid = raw.filter(
     (msg) =>
       msg !== null &&
@@ -158,7 +168,7 @@ function migrateRawMessages(raw: unknown): ChatMessage[] {
       typeof msg.content === "string" &&
       VALID_ROLES.has(msg.role),
   );
-  if (valid.length === 0) return makeDefaultMessages();
+  if (valid.length === 0) return makeDefaultMessages(language);
   return valid.map((msg) => ({
     id: typeof msg.id === "string" && msg.id ? msg.id : crypto.randomUUID(),
     role: msg.role as ChatMessage["role"],
@@ -170,12 +180,11 @@ function extractTitle(messages: ChatMessage[]): string {
   const firstUserMsg = messages.find((m) => m.role === "user");
   if (!firstUserMsg) return "Untitled Project";
   const text = firstUserMsg.content;
-  // Truncate to first ~40 chars at a word boundary
   if (text.length <= 40) return text;
   return text.slice(0, 40).replace(/\s+\S*$/, "") + "...";
 }
 
-function loadInitialState(): { projects: Project[]; currentId: string | null } {
+function loadInitialState(language: VoiceLanguage): { projects: Project[]; currentId: string | null } {
   const existing = loadJson<Project[]>(STORAGE_KEYS.projects, []);
 
   if (existing.length > 0) {
@@ -183,8 +192,7 @@ function loadInitialState(): { projects: Project[]; currentId: string | null } {
     return { projects: existing, currentId };
   }
 
-  // Try legacy migration
-  const legacy = migrateLegacyData();
+  const legacy = migrateLegacyData(language);
   if (legacy) {
     return { projects: [legacy], currentId: legacy.id };
   }
@@ -192,8 +200,8 @@ function loadInitialState(): { projects: Project[]; currentId: string | null } {
   return { projects: [], currentId: null };
 }
 
-export function useProjects() {
-  const [state, setState] = useState(loadInitialState);
+export function useProjects(language: VoiceLanguage) {
+  const [state, setState] = useState(() => loadInitialState(language));
   const stateRef = useRef(state);
 
   useEffect(() => {
@@ -205,7 +213,6 @@ export function useProjects() {
     ? (projects.find((p) => p.id === currentId) ?? null)
     : null;
 
-  // Persist to localStorage on change
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.projects, JSON.stringify(projects));
     if (currentId) {
@@ -215,13 +222,15 @@ export function useProjects() {
     }
   }, [projects, currentId]);
 
+  const DEFAULT_CODE = getWelcomeCode(language);
+
   const createProject = useCallback((): Project => {
     const newProject: Project = {
       id: crypto.randomUUID(),
       title: "Untitled Project",
       createdAt: Date.now(),
       updatedAt: Date.now(),
-      messages: makeDefaultMessages(),
+      messages: makeDefaultMessages(language),
       currentCode: DEFAULT_CODE,
     };
     setState((prev) => ({
@@ -229,7 +238,7 @@ export function useProjects() {
       currentId: newProject.id,
     }));
     return newProject;
-  }, []);
+  }, [language, DEFAULT_CODE]);
 
   const openProject = useCallback((id: string) => {
     setState((prev) => ({ ...prev, currentId: id }));
@@ -250,17 +259,17 @@ export function useProjects() {
   const updateProject = useCallback(
     (
       projectId: string,
-      updates: Partial<Pick<Project, "messages" | "currentCode">>,
+      updates: Partial<Pick<Project, "messages" | "currentCode" | "title">>,
     ) => {
       setState((prev) => {
         const updatedProjects = prev.projects.map((p) => {
           if (p.id !== projectId) return p;
-          const updated = { ...p, ...updates, updatedAt: Date.now() };
-          // Auto-generate title from first user message if still untitled
-          if (updated.title === "Untitled Project" && updates.messages) {
-            updated.title = extractTitle(updates.messages);
-          }
-          return updated;
+          const baseUpdated = { ...p, ...updates, updatedAt: Date.now() };
+          const shouldRename =
+            (baseUpdated.title === "Untitled Project" || baseUpdated.title === "未命名項目") && updates.messages;
+          return shouldRename
+            ? { ...baseUpdated, title: extractTitle(updates.messages!) }
+            : baseUpdated;
         });
         return { ...prev, projects: updatedProjects };
       });
@@ -279,10 +288,10 @@ export function useProjects() {
 
   const resetCurrentProject = useCallback(() => {
     updateCurrentProject({
-      messages: makeDefaultMessages(),
+      messages: makeDefaultMessages(language),
       currentCode: DEFAULT_CODE,
     });
-  }, [updateCurrentProject]);
+  }, [updateCurrentProject, language, DEFAULT_CODE]);
 
   return {
     projects,

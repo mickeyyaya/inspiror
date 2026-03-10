@@ -19,8 +19,9 @@ import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { z } from "zod";
 import { useAudio } from "./hooks/useAudio";
 import { useProjects } from "./hooks/useProjects";
-import { useVoice } from "./hooks/useVoice";
+import { useVoice, type VoiceLanguage } from "./hooks/useVoice";
 import { ProjectCatalog } from "./components/ProjectCatalog";
+import { translations } from "./i18n/translations";
 import type { ChatMessage } from "./types/project";
 import "./index.css";
 
@@ -117,6 +118,8 @@ function injectErrorCatcher(code: string): string {
 }
 
 function App() {
+  const [language, setLanguage] = useState<VoiceLanguage>("en-US");
+
   const {
     projects,
     currentProject,
@@ -127,7 +130,15 @@ function App() {
     updateProject,
     resetCurrentProject,
     DEFAULT_CODE,
-  } = useProjects();
+  } = useProjects(language);
+
+  const toggleLanguage = () => {
+    setLanguage((prev) => {
+      if (prev === "en-US") return "zh-TW";
+      if (prev === "zh-TW") return "zh-CN";
+      return "en-US";
+    });
+  };
 
   // If no project is selected, show catalog
   if (!currentProject) {
@@ -137,6 +148,8 @@ function App() {
         onOpen={openProject}
         onDelete={deleteProject}
         onCreate={createProject}
+        language={language}
+        onToggleLanguage={toggleLanguage}
       />
     );
   }
@@ -149,6 +162,8 @@ function App() {
       onUpdate={updateProject}
       onReset={resetCurrentProject}
       onBack={goToCatalog}
+      language={language}
+      onToggleLanguage={toggleLanguage}
     />
   );
 }
@@ -167,6 +182,8 @@ interface EditorViewProps {
   ) => void;
   onReset: () => void;
   onBack: () => void;
+  language: VoiceLanguage;
+  onToggleLanguage: () => void;
 }
 
 function EditorView({
@@ -175,8 +192,20 @@ function EditorView({
   onUpdate,
   onReset,
   onBack,
+  language,
+  onToggleLanguage,
 }: EditorViewProps) {
-  const [messages, setMessages] = useState<ChatMessage[]>(project.messages);
+  const t = translations[language];
+  const [messages, setMessages] = useState<ChatMessage[]>(() => {
+    if (
+      project.messages.length === 1 &&
+      project.messages[0].role === "assistant" &&
+      project.messages[0].content.includes("Hi! I'm your builder buddy")
+    ) {
+      return [withId("assistant", t.greeting)];
+    }
+    return project.messages;
+  });
   const [inputValue, setInputValue] = useState("");
   const [currentCode, setCurrentCode] = useState(project.currentCode);
   const [isChatVisible, setIsChatVisible] = useState(true);
@@ -195,14 +224,12 @@ function EditorView({
   const {
     isListening,
     transcript,
-    language,
     isAutoSpeakEnabled,
     startListening,
     stopListening,
     speak,
-    toggleLanguage,
     toggleAutoSpeak,
-  } = useVoice();
+  } = useVoice(language);
   const playChimeRef = useRef(playChime);
   const speakRef = useRef(speak);
 
@@ -222,7 +249,7 @@ function EditorView({
   }, [isListening, transcript]);
 
   const { object, submit, isLoading } = useObject({
-    api: "http://localhost:3001/api/generate",
+    api: import.meta.env.VITE_API_URL ?? "http://localhost:3001/api/generate",
     schema: generationSchema,
     onFinish({ object: finalObj }) {
       if (finalObj?.reply) {
@@ -249,10 +276,7 @@ function EditorView({
     },
     onError(err) {
       console.error("[UI] Stream error:", err);
-      setMessages((prev) => [
-        ...prev,
-        withId("assistant", "Oops, my connection broke! Can we try again?"),
-      ]);
+      setMessages((prev) => [...prev, withId("assistant", t.error_connection)]);
     },
   });
 
@@ -282,12 +306,7 @@ function EditorView({
 
   const handleReset = () => {
     onReset();
-    setMessages([
-      withId(
-        "assistant",
-        "Hi! I'm your builder buddy. What do you want to create today?",
-      ),
-    ]);
+    setMessages([withId("assistant", t.greeting)]);
     setCurrentCode(defaultCode);
     setInputValue("");
     setSuggestionChips(pickRandomChips());
@@ -319,10 +338,7 @@ function EditorView({
 
         if (autoFixCountRef.current >= 2) {
           console.warn("[App] Auto-fix limit reached. Stopping infinite loop.");
-          const warningMessage = withId(
-            "assistant",
-            "Hmm, this bug is really tricky! It keeps breaking. What should we try instead?",
-          );
+          const warningMessage = withId("assistant", t.error_autofix_limit);
           setMessages((prev) => [...prev, warningMessage]);
           return;
         }
@@ -331,10 +347,7 @@ function EditorView({
         console.log(`[App] Triggering Auto-Fix (${autoFixCountRef.current}/2)`);
 
         playBuzzer();
-        const oopsMessage = withId(
-          "assistant",
-          "Oops, I made a little mistake! Let me fix that real quick...",
-        );
+        const oopsMessage = withId("assistant", t.error_oops);
         const errorContext = withId(
           "user",
           `The code you generated caused this error: ${errorMsg}. Please fix it.`,
@@ -419,7 +432,7 @@ function EditorView({
       {!isPlayMode && isChatVisible && (
         <div
           className="h-full w-full sm:w-[26rem] lg:w-[30rem] flex-shrink-0 bg-[#fdfbf7] border-r-4 border-[#222] flex flex-col z-20 relative shadow-[8px_0px_0px_rgba(0,0,0,0.1)]"
-          aria-hidden={!isChatVisible}
+          aria-hidden="false"
           onMouseEnter={() => inputRef.current?.focus()}
         >
           {/* Decorative shapes behind chat */}
@@ -431,7 +444,7 @@ function EditorView({
               <button
                 onClick={onBack}
                 className="bg-white border-2 border-[#222] p-2 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none"
-                aria-label="My Projects"
+                aria-label={t.aria_my_projects}
                 data-testid="back-to-catalog"
               >
                 <ArrowLeft size={22} className="text-[#222]" strokeWidth={3} />
@@ -450,16 +463,16 @@ function EditorView({
             </div>
             <div className="flex items-center gap-3">
               <button
-                onClick={toggleLanguage}
+                onClick={onToggleLanguage}
                 className={`border-2 border-[#222] px-3 py-2 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none flex items-center gap-2 font-bold text-sm ${
-                  language === "zh-CN"
+                  language !== "en-US"
                     ? "bg-[var(--color-candy-green)]"
                     : "bg-white"
                 }`}
-                title="Switch Language"
+                title={t.switch_language}
               >
                 <Languages size={18} strokeWidth={2.5} />
-                {language === "zh-CN" ? "CN" : "EN"}
+                {language === "zh-TW" ? "TW" : language === "zh-CN" ? "CN" : "EN"}
               </button>
               <button
                 onClick={toggleAutoSpeak}
@@ -469,7 +482,9 @@ function EditorView({
                     : "bg-white text-[#222]"
                 }`}
                 aria-label={
-                  isAutoSpeakEnabled ? "Disable Voice" : "Enable Voice"
+                  isAutoSpeakEnabled
+                    ? t.aria_disable_voice
+                    : t.aria_enable_voice
                 }
               >
                 <MessageSquareQuote size={20} strokeWidth={2.5} />
@@ -477,7 +492,7 @@ function EditorView({
               <button
                 onClick={toggleMute}
                 className="bg-white border-2 border-[#222] p-2 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none"
-                aria-label={isMuted ? "Unmute" : "Mute"}
+                aria-label={isMuted ? t.aria_unmute : t.aria_mute}
                 data-testid="mute-toggle"
               >
                 {isMuted ? (
@@ -497,7 +512,7 @@ function EditorView({
               <button
                 onClick={handleReset}
                 className="bg-[var(--color-candy-orange)] border-2 border-[#222] p-2 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none hover-wiggle"
-                aria-label="Reset"
+                aria-label={t.aria_reset}
               >
                 <RotateCcw
                   size={20}
@@ -508,7 +523,7 @@ function EditorView({
               <button
                 onClick={() => setIsChatVisible(false)}
                 className="bg-[var(--color-candy-pink)] border-2 border-[#222] p-2 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none"
-                aria-label="Hide Chat"
+                aria-label={t.aria_hide_chat}
               >
                 <X size={20} className="text-[#222]" strokeWidth={3} />
               </button>
@@ -566,7 +581,7 @@ function EditorView({
                 >
                   .
                 </span>
-                <span className="ml-2 text-gray-500">Thinking</span>
+                <span className="ml-2 text-gray-500">{t.thinking}</span>
               </div>
             )}
 
@@ -574,9 +589,10 @@ function EditorView({
             {showSuggestions && (
               <div className="flex flex-col gap-3 mt-4">
                 <div className="flex items-center gap-2 ml-2">
-                  <p className="text-[#222] text-sm font-extrabold uppercase tracking-wider bg-white/50 w-fit px-3 py-1 rounded-full border-2 border-[#222]/20">
-                    Try a Magic Button! 👇
+                  <p className="text-[#222] text-sm font-extrabold ml-2 uppercase tracking-wider bg-white/50 w-fit px-3 py-1 rounded-full border-2 border-[#222]/20">
+                    {t.magic_button_prompt}
                   </p>
+
                   <button
                     onClick={() => setSuggestionChips(pickRandomChips())}
                     className="bg-white border-2 border-[#222] px-3 py-1 rounded-full text-sm font-bold text-[#222] hover:scale-105 active:scale-95 transition-all shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none"
@@ -624,7 +640,9 @@ function EditorView({
                   ? "bg-[var(--color-candy-pink)] animate-pulse"
                   : "bg-white"
               }`}
-              aria-label={isListening ? "Stop Listening" : "Start Listening"}
+              aria-label={
+                isListening ? t.aria_disable_voice : t.aria_enable_voice
+              }
             >
               {isListening ? (
                 <MicOff size={28} strokeWidth={2.5} className="text-[#222]" />
@@ -635,7 +653,7 @@ function EditorView({
             <input
               ref={inputRef}
               type="text"
-              placeholder="Type your grand idea..."
+              placeholder={t.input_placeholder}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
@@ -647,7 +665,7 @@ function EditorView({
               onClick={handleSend}
               disabled={isLoading || !inputValue.trim()}
               className="bg-[var(--color-candy-green)] text-[#222] border-4 border-[#222] p-3 rounded-full disabled:opacity-50 disabled:cursor-not-allowed shadow-[4px_4px_0_#222] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none transition-all flex items-center justify-center cursor-pointer btn-squish"
-              aria-label="Send"
+              aria-label={t.aria_send}
             >
               <Send size={28} className="ml-1" strokeWidth={2.5} />
             </button>
@@ -669,7 +687,7 @@ function EditorView({
             <button
               onClick={() => setIsChatVisible(true)}
               className="bg-[var(--color-candy-pink)] border-4 border-[#222] text-[#222] p-3 rounded-full shadow-[4px_4px_0_#222] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none transition-all flex items-center justify-center btn-squish hover-wiggle"
-              aria-label="Show Chat"
+              aria-label={t.aria_show_chat}
             >
               <MessageCircle size={28} strokeWidth={2.5} />
             </button>
@@ -677,18 +695,18 @@ function EditorView({
           <button
             onClick={() => setMode(isPlayMode ? "build" : "play")}
             className="bg-[var(--color-candy-purple)] border-4 border-[#222] text-[#222] px-6 py-3 rounded-[2rem] shadow-[4px_4px_0_#222] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none transition-all flex items-center gap-2 font-extrabold text-lg btn-squish"
-            aria-label={isPlayMode ? "Back to Build" : "Play Mode"}
+            aria-label={isPlayMode ? t.back_to_build : t.mode_play}
             data-testid="mode-toggle"
           >
             {isPlayMode ? (
               <>
                 <Code size={24} strokeWidth={2.5} />
-                Build Mode!
+                {t.mode_build}
               </>
             ) : (
               <>
                 <Play size={24} strokeWidth={2.5} fill="#222" />
-                Play Mode!
+                {t.mode_play}
               </>
             )}
           </button>
@@ -705,7 +723,7 @@ function EditorView({
                 ? "opacity-30 blur-[2px] scale-105"
                 : "opacity-100 scale-100"
             }`}
-            sandbox="allow-scripts allow-same-origin"
+            sandbox="allow-scripts"
           />
         </div>
 
@@ -735,7 +753,7 @@ function EditorView({
                 className="mt-10 text-[#222] text-5xl font-extrabold tracking-widest animate-pulse"
                 style={{ textShadow: "4px 4px 0px var(--color-candy-blue)" }}
               >
-                BUILDING!
+                {t.overlay_building}
               </p>
 
               {/* Floating code fragments */}
