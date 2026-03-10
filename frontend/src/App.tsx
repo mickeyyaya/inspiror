@@ -657,14 +657,14 @@ function EditorView({
 
       {/* RIGHT PANEL: PREVIEW + CONTROLS */}
       <div
-        className="flex-1 relative bg-white overflow-hidden flex flex-col"
+        className="flex-1 relative bg-[#fdfbf7] overflow-hidden flex flex-col p-4 sm:p-8"
         onMouseEnter={() => iframeRef.current?.focus()}
       >
         {/* Decorative Grid Background in Preview when empty or loading */}
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9IiM4ODgiIG9wYWNpdHk9IjAuMiIvPjwvc3ZnPg==')] pointer-events-none z-0"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(#ff6b6b_1px,transparent_1px),radial-gradient(#4ecdc4_1px,transparent_1px)] bg-[size:40px_40px] bg-[position:0_0,20px_20px] opacity-[0.15] pointer-events-none z-0"></div>
 
         {/* MODE TOGGLE + SHOW CHAT BUTTONS */}
-        <div className="absolute top-4 left-4 z-30 flex items-center gap-3">
+        <div className="absolute top-8 left-8 z-30 flex items-center gap-3">
           {!isPlayMode && !isChatVisible && (
             <button
               onClick={() => setIsChatVisible(true)}
@@ -695,17 +695,19 @@ function EditorView({
         </div>
 
         {/* PREVIEW SANDBOX */}
-        <iframe
-          ref={iframeRef}
-          title="Preview Sandbox"
-          srcDoc={injectErrorCatcher(currentCode)}
-          className={`w-full h-full border-none bg-white z-10 relative transition-all duration-300 ${
-            isLoading && !isPlayMode
-              ? "opacity-30 blur-[2px] scale-105"
-              : "opacity-100 scale-100"
-          }`}
-          sandbox="allow-scripts allow-same-origin"
-        />
+        <div className="flex-1 w-full h-full relative z-10 bg-white border-4 border-[#222] rounded-[2rem] overflow-hidden shadow-[8px_8px_0_#222]">
+          <iframe
+            ref={iframeRef}
+            title="Preview Sandbox"
+            srcDoc={injectErrorCatcher(currentCode)}
+            className={`w-full h-full border-none transition-all duration-300 ${
+              isLoading && !isPlayMode
+                ? "opacity-30 blur-[2px] scale-105"
+                : "opacity-100 scale-100"
+            }`}
+            sandbox="allow-scripts allow-same-origin"
+          />
+        </div>
 
         {/* FUN BUILDING MODE OVERLAY */}
         {isLoading && !isPlayMode && (

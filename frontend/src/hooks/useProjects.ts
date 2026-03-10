@@ -10,60 +10,93 @@ const STORAGE_KEYS = {
 
 const DEFAULT_CODE = `<!DOCTYPE html>
 <html>
-<head><style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #0a1a2e 100%);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    font-family: sans-serif;
-    overflow: hidden;
-  }
-  .welcome { text-align: center; z-index: 2; position: relative; }
-  .welcome h1 {
-    font-size: 2.5rem;
-    background: linear-gradient(90deg, #00f0ff, #39ff14, #ff007f);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: glow-text 3s ease-in-out infinite alternate;
-  }
-  .welcome p { color: #888; margin-top: 12px; font-size: 1.1rem; }
-  @keyframes glow-text {
-    from { filter: brightness(1); }
-    to { filter: brightness(1.3); }
-  }
-  .particle {
-    position: absolute;
-    width: 4px; height: 4px;
-    background: #00f0ff;
-    border-radius: 50%;
-    opacity: 0.6;
-    animation: drift 6s ease-in-out infinite;
-  }
-  @keyframes drift {
-    0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
-    50% { transform: translateY(-40px) translateX(20px); opacity: 0.8; }
-  }
-</style></head>
+<head>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background-color: #fdfbf7;
+      color: #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: 'Comic Neue', 'Comic Sans MS', sans-serif;
+      overflow: hidden;
+    }
+    .welcome {
+      text-align: center;
+      z-index: 2;
+      position: relative;
+      background: white;
+      border: 4px solid #222;
+      padding: 3rem;
+      border-radius: 2rem;
+      shadow: 8px 8px 0 #222;
+      box-shadow: 8px 8px 0 #222;
+    }
+    .welcome h1 {
+      font-size: 3rem;
+      color: #222;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+    .welcome p {
+      color: #555;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    .sparkle {
+      position: absolute;
+      font-size: 2rem;
+      animation: pop 2s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes pop {
+      0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
+      50% { transform: scale(1.5) rotate(15deg); opacity: 1; }
+    }
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      border: 3px solid #222;
+      opacity: 0.4;
+      z-index: 1;
+      animation: float 8s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateX(0); }
+      50% { transform: translateY(-30px) translateX(20px); }
+    }
+  </style>
+</head>
 <body>
   <div class="welcome">
-    <h1>What will YOU create today?</h1>
-    <p>Tell your builder buddy your idea</p>
+    <h1>What will <span style="color: #ff6b6b">YOU</span><br/>create today?</h1>
+    <p>Tell your builder buddy your idea! ✨</p>
   </div>
   <script>
-    for(let i=0;i<15;i++){
-      const p=document.createElement('div');
-      p.className='particle';
-      p.style.left=Math.random()*100+'%';
-      p.style.top=Math.random()*100+'%';
-      p.style.animationDelay=Math.random()*6+'s';
-      p.style.animationDuration=(4+Math.random()*4)+'s';
-      p.style.background=['#00f0ff','#39ff14','#ff007f','#a855f7','#ffd700'][Math.floor(Math.random()*5)];
-      document.body.appendChild(p);
+    const colors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#a8e6cf', '#c3aed6', '#ffb86c'];
+    for(let i=0; i<15; i++) {
+      const b = document.createElement('div');
+      b.className = 'bubble';
+      const size = 20 + Math.random() * 60;
+      b.style.width = size + 'px';
+      b.style.height = size + 'px';
+      b.style.left = Math.random() * 100 + '%';
+      b.style.top = Math.random() * 100 + '%';
+      b.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      b.style.animationDelay = Math.random() * 5 + 's';
+      b.style.animationDuration = (6 + Math.random() * 6) + 's';
+      document.body.appendChild(b);
+    }
+    for(let i=0; i<8; i++) {
+      const s = document.createElement('div');
+      s.className = 'sparkle';
+      s.innerText = '✨';
+      s.style.left = Math.random() * 100 + '%';
+      s.style.top = Math.random() * 100 + '%';
+      s.style.animationDelay = Math.random() * 2 + 's';
+      document.body.appendChild(s);
     }
   </script>
 </body>
