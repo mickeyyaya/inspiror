@@ -19,6 +19,7 @@ app.post("/api/generate", async (req, res) => {
     const result = await llmService.generateStream(
       req.body.messages,
       req.body.currentCode,
+      req.body.language,
     );
     result.pipeTextStreamToResponse(res);
   } catch (error) {

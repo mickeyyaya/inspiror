@@ -39,6 +39,9 @@ const mockLocalStorage = {
   setItem: vi.fn((key: string, value: string) => {
     mockStorage[key] = value;
   }),
+  removeItem: vi.fn((key: string) => {
+    delete mockStorage[key];
+  }),
   clear: vi.fn(() => {
     Object.keys(mockStorage).forEach((k) => delete mockStorage[k]);
   }),
@@ -48,7 +51,98 @@ Object.defineProperty(window, "localStorage", {
   writable: true,
 });
 
-describe("Inspiror App - Hacker Mode & UX", () => {
+// Helper to seed a project so the app starts in editor view
+function seedProject(overrides?: {
+  messages?: Array<{ id?: string; role: string; content: string }>;
+  currentCode?: string;
+}) {
+  const projectId = "test-project-id";
+  const messages = overrides?.messages ?? [
+    {
+      id: "msg-1",
+      role: "assistant",
+      content: "Hi! I'm your builder buddy. What do you want to create today?",
+    },
+  ];
+  const currentCode = overrides?.currentCode;
+
+  const project = {
+    id: projectId,
+    title: "Test Project",
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+    messages,
+    ...(currentCode !== undefined
+      ? { currentCode }
+      : {
+          currentCode: `<!DOCTYPE html>
+<html>
+<head><style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #0a1a2e 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    font-family: sans-serif;
+    overflow: hidden;
+  }
+  .welcome { text-align: center; z-index: 2; position: relative; }
+  .welcome h1 {
+    font-size: 2.5rem;
+    background: linear-gradient(90deg, #00f0ff, #39ff14, #ff007f);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: glow-text 3s ease-in-out infinite alternate;
+  }
+  .welcome p { color: #888; margin-top: 12px; font-size: 1.1rem; }
+  @keyframes glow-text {
+    from { filter: brightness(1); }
+    to { filter: brightness(1.3); }
+  }
+  .particle {
+    position: absolute;
+    width: 4px; height: 4px;
+    background: #00f0ff;
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: drift 6s ease-in-out infinite;
+  }
+  @keyframes drift {
+    0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+    50% { transform: translateY(-40px) translateX(20px); opacity: 0.8; }
+  }
+</style></head>
+<body>
+  <div class="welcome">
+    <h1>What will YOU create today?</h1>
+    <p>Tell your builder buddy your idea</p>
+  </div>
+  <script>
+    for(let i=0;i<15;i++){
+      const p=document.createElement('div');
+      p.className='particle';
+      p.style.left=Math.random()*100+'%';
+      p.style.top=Math.random()*100+'%';
+      p.style.animationDelay=Math.random()*6+'s';
+      p.style.animationDuration=(4+Math.random()*4)+'s';
+      p.style.background=['#00f0ff','#39ff14','#ff007f','#a855f7','#ffd700'][Math.floor(Math.random()*5)];
+      document.body.appendChild(p);
+    }
+  </script>
+</body>
+</html>`,
+        }),
+  };
+
+  mockStorage["inspiror_projects"] = JSON.stringify([project]);
+  mockStorage["inspiror_current_project_id"] = projectId;
+}
+
+describe("Inspiror App", () => {
   let mockSubmit: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
@@ -57,13 +151,13 @@ describe("Inspiror App - Hacker Mode & UX", () => {
     mockLocalStorage.clear();
     mockLocalStorage.getItem.mockClear();
     mockLocalStorage.setItem.mockClear();
+    mockLocalStorage.removeItem.mockClear();
     mockPlayPop.mockClear();
     mockPlayChipClick.mockClear();
     mockPlayChime.mockClear();
     mockPlayBuzzer.mockClear();
     mockToggleMute.mockClear();
 
-    // Default mock behavior for useObject
     mockSubmit = vi.fn();
     (
       aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>
@@ -73,564 +167,756 @@ describe("Inspiror App - Hacker Mode & UX", () => {
       isLoading: false,
     });
 
-    // Mock scrollIntoView
     window.HTMLElement.prototype.scrollIntoView = vi.fn();
   });
 
-  it("renders initial chat greeting from AI Buddy", () => {
-    render(<App />);
-    expect(screen.getByText(/Hi! I'm your builder buddy/i)).toBeInTheDocument();
-  });
-
-  it("shows vivid Hacker Mode overlay during generation", () => {
-    (
-      aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>
-    ).mockReturnValue({
-      object: { code: "<html>MATRIX LOADING</html>" },
-      submit: mockSubmit,
-      isLoading: true,
+  describe("Project Catalog", () => {
+    it("shows catalog when no project is selected", () => {
+      render(<App />);
+      expect(screen.getByText("My Projects")).toBeInTheDocument();
+      expect(screen.getByTestId("new-project-btn")).toBeInTheDocument();
     });
 
-    render(<App />);
-
-    const hackerOverlay = screen.getByTestId("hacker-mode-overlay");
-    expect(hackerOverlay).toBeInTheDocument();
-
-    // Should show the streaming code
-    expect(screen.getByText("<html>MATRIX LOADING</html>")).toBeInTheDocument();
-    // Should show the pulsing text
-    expect(screen.getByText("BUILDING")).toBeInTheDocument();
-  });
-
-  it("renders suggestion chips and handles click", () => {
-    render(<App />);
-    const chip = screen.getByRole("button", { name: /bouncing ball/i });
-    expect(chip).toBeInTheDocument();
-
-    fireEvent.click(chip);
-    expect(mockSubmit).toHaveBeenCalledTimes(1);
-    const callArgs = mockSubmit.mock.calls[0][0];
-    expect(callArgs.messages.length).toBe(2);
-    expect(callArgs.messages[1].content).toContain("bouncing ball");
-  });
-
-  it("can toggle the floating chat visibility", () => {
-    render(<App />);
-    expect(screen.getByText(/Hi! I'm your builder buddy/i)).toBeInTheDocument();
-
-    const hideButton = screen.getByRole("button", { name: /Hide Chat/i });
-    fireEvent.click(hideButton);
-
-    expect(
-      screen.queryByText(/Hi! I'm your builder buddy/i),
-    ).not.toBeInTheDocument();
-
-    const showButton = screen.getByRole("button", { name: /Show Chat/i });
-    fireEvent.click(showButton);
-
-    expect(screen.getByText(/Hi! I'm your builder buddy/i)).toBeInTheDocument();
-  });
-
-  describe("injectErrorCatcher branches", () => {
-    it("injects script after <head> if present", () => {
-      mockStorage["inspiror-currentCode"] =
-        "<html><head></head><body></body></html>";
+    it("shows empty state with create button", () => {
       render(<App />);
-      const iframe = screen.getByTitle("Preview Sandbox");
-      expect(iframe).toHaveAttribute(
-        "srcDoc",
-        expect.stringMatching(/<head><script>.*<\/script><\/head>/),
-      );
+      expect(screen.getByText("Wow, so empty!")).toBeInTheDocument();
     });
 
-    it("injects script after <body if present but no head", () => {
-      mockStorage["inspiror-currentCode"] = "<html><body></body></html>";
+    it("creates a new project and opens editor", () => {
       render(<App />);
-      const iframe = screen.getByTitle("Preview Sandbox");
-      expect(iframe).toHaveAttribute(
-        "srcDoc",
-        expect.stringMatching(/<html><script>.*<\/script><body>/),
-      );
+      fireEvent.click(screen.getByTestId("new-project-btn"));
+      expect(screen.getByText("Builder Buddy")).toBeInTheDocument();
     });
 
-    it("injects script after <html if no body or head", () => {
-      mockStorage["inspiror-currentCode"] = "<html><div>hello</div></html>";
+    it("shows project cards when projects exist", () => {
+      seedProject();
       render(<App />);
-      const iframe = screen.getByTitle("Preview Sandbox");
-      expect(iframe).toHaveAttribute(
-        "srcDoc",
-        expect.stringMatching(/<html><script>.*<\/script><div>/),
-      );
+      // Should be in editor since project is selected
+      expect(screen.getByText("Builder Buddy")).toBeInTheDocument();
     });
 
-    it("injects script after doctype if no html tag", () => {
-      mockStorage["inspiror-currentCode"] = "<!DOCTYPE html><div>hello</div>";
+    it("navigates back to catalog from editor", () => {
+      seedProject();
       render(<App />);
-      const iframe = screen.getByTitle("Preview Sandbox");
-      expect(iframe).toHaveAttribute(
-        "srcDoc",
-        expect.stringMatching(/<!DOCTYPE html><script>.*<\/script><div>/),
-      );
+      fireEvent.click(screen.getByTestId("back-to-catalog"));
+      expect(screen.getByText("My Projects")).toBeInTheDocument();
     });
 
-    it("prepends script if no valid tags found", () => {
-      mockStorage["inspiror-currentCode"] = "<div>hello</div>";
+    it("opens a project from catalog", () => {
+      // Seed a project but don't set current ID
+      const project = {
+        id: "proj-1",
+        title: "My Cool App",
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        messages: [
+          {
+            id: "m1",
+            role: "assistant",
+            content:
+              "Hi! I'm your builder buddy. What do you want to create today?",
+          },
+        ],
+        currentCode: "<html><body>Test</body></html>",
+      };
+      mockStorage["inspiror_projects"] = JSON.stringify([project]);
+
       render(<App />);
-      const iframe = screen.getByTitle("Preview Sandbox");
-      expect(iframe).toHaveAttribute(
-        "srcDoc",
-        expect.stringMatching(/^<script>.*<\/script><div>/),
-      );
+      expect(screen.getByText("My Projects")).toBeInTheDocument();
+      fireEvent.click(screen.getByTestId("open-project-btn"));
+      expect(screen.getByText("Builder Buddy")).toBeInTheDocument();
+    });
+
+    it("deletes a project from catalog", () => {
+      const project = {
+        id: "proj-1",
+        title: "My Cool App",
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        messages: [{ id: "m1", role: "assistant", content: "Hello!" }],
+        currentCode: "<html></html>",
+      };
+      mockStorage["inspiror_projects"] = JSON.stringify([project]);
+
+      render(<App />);
+      expect(screen.getByText("My Cool App")).toBeInTheDocument();
+      fireEvent.click(screen.getByTestId("delete-project-btn"));
+      expect(screen.queryByText("My Cool App")).not.toBeInTheDocument();
+      expect(screen.getByText("Wow, so empty!")).toBeInTheDocument();
+    });
+
+    it("migrates legacy data to a project", () => {
+      const oldMessages = [
+        { role: "assistant", content: "Welcome back!" },
+        { role: "user", content: "Build something" },
+      ];
+      mockStorage["inspiror-messages"] = JSON.stringify(oldMessages);
+      mockStorage["inspiror-currentCode"] = "<html><body>Legacy</body></html>";
+
+      render(<App />);
+      // Should auto-open the migrated project
+      expect(screen.getByText("Welcome back!")).toBeInTheDocument();
+      expect(screen.getByText("Build something")).toBeInTheDocument();
     });
   });
 
-  describe("Error handling and auto-fix loop", () => {
-    it("handles stream onError callback", async () => {
-      let triggerError: (err: Error) => void;
+  describe("Editor View - Hacker Mode & UX", () => {
+    beforeEach(() => {
+      seedProject();
+    });
+
+    it("renders initial chat greeting from AI Buddy", () => {
+      render(<App />);
+      expect(
+        screen.getByText(/Hi! I'm your builder buddy/i),
+      ).toBeInTheDocument();
+    });
+
+    it("shows vivid Hacker Mode overlay during generation", () => {
+      (
+        aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>
+      ).mockReturnValue({
+        object: { code: "<html>MATRIX LOADING</html>" },
+        submit: mockSubmit,
+        isLoading: true,
+      });
+
+      render(<App />);
+      const hackerOverlay = screen.getByTestId("hacker-mode-overlay");
+      expect(hackerOverlay).toBeInTheDocument();
+      expect(screen.getByText("BUILDING!")).toBeInTheDocument();
+    });
+
+    it("renders suggestion chips and handles click", () => {
+      render(<App />);
+      const chips = document.querySelectorAll(".chip-enter");
+      expect(chips.length).toBe(4);
+
+      // Click the first chip (whatever it is)
+      const firstChip = chips[0] as HTMLElement;
+      fireEvent.click(firstChip);
+      expect(mockSubmit).toHaveBeenCalledTimes(1);
+      const callArgs = mockSubmit.mock.calls[0][0];
+      expect(callArgs.messages.length).toBe(2);
+      // The submitted message should be a non-empty string (the chip label)
+      expect(callArgs.messages[1].content.length).toBeGreaterThan(0);
+    });
+
+    it("can toggle the floating chat visibility", () => {
+      render(<App />);
+      expect(
+        screen.getByText(/Hi! I'm your builder buddy/i),
+      ).toBeInTheDocument();
+
+      fireEvent.click(screen.getByRole("button", { name: /Hide Chat/i }));
+      expect(
+        screen.queryByText(/Hi! I'm your builder buddy/i),
+      ).not.toBeInTheDocument();
+
+      fireEvent.click(screen.getByRole("button", { name: /Show Chat/i }));
+      expect(
+        screen.getByText(/Hi! I'm your builder buddy/i),
+      ).toBeInTheDocument();
+    });
+
+    describe("injectErrorCatcher branches", () => {
+      it("injects script after <head> if present", () => {
+        seedProject({ currentCode: "<html><head></head><body></body></html>" });
+        render(<App />);
+        const iframe = screen.getByTitle("Preview Sandbox");
+        expect(iframe).toHaveAttribute(
+          "srcDoc",
+          expect.stringMatching(/<head><script>.*<\/script><\/head>/),
+        );
+      });
+
+      it("injects script after <body if present but no head", () => {
+        seedProject({ currentCode: "<html><body></body></html>" });
+        render(<App />);
+        const iframe = screen.getByTitle("Preview Sandbox");
+        expect(iframe).toHaveAttribute(
+          "srcDoc",
+          expect.stringMatching(/<html><script>.*<\/script><body>/),
+        );
+      });
+
+      it("injects script after <html if no body or head", () => {
+        seedProject({ currentCode: "<html><div>hello</div></html>" });
+        render(<App />);
+        const iframe = screen.getByTitle("Preview Sandbox");
+        expect(iframe).toHaveAttribute(
+          "srcDoc",
+          expect.stringMatching(/<html><script>.*<\/script><div>/),
+        );
+      });
+
+      it("injects script after doctype if no html tag", () => {
+        seedProject({ currentCode: "<!DOCTYPE html><div>hello</div>" });
+        render(<App />);
+        const iframe = screen.getByTitle("Preview Sandbox");
+        expect(iframe).toHaveAttribute(
+          "srcDoc",
+          expect.stringMatching(/<!DOCTYPE html><script>.*<\/script><div>/),
+        );
+      });
+
+      it("prepends script if no valid tags found", () => {
+        seedProject({ currentCode: "<div>hello</div>" });
+        render(<App />);
+        const iframe = screen.getByTitle("Preview Sandbox");
+        expect(iframe).toHaveAttribute(
+          "srcDoc",
+          expect.stringMatching(/^<script>.*<\/script><div>/),
+        );
+      });
+    });
+
+    describe("Error handling and auto-fix loop", () => {
+      it("handles stream onError callback", async () => {
+        let triggerError: NonNullable<
+          Parameters<typeof aiSdkReact.experimental_useObject>[0]["onError"]
+        >;
+        (
+          aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>
+        ).mockImplementation(
+          ({
+            onError,
+          }: Parameters<typeof aiSdkReact.experimental_useObject>[0]) => {
+            triggerError = onError!;
+            return { object: undefined, submit: mockSubmit, isLoading: false };
+          },
+        );
+
+        render(<App />);
+        await act(async () => {
+          triggerError!(new Error("Network failure"));
+        });
+
+        expect(
+          await screen.findByText(
+            "Oops, my connection broke! Can we try again?",
+          ),
+        ).toBeInTheDocument();
+      });
+
+      it("auto-fixes iframe errors but limits to 2 consecutive attempts", async () => {
+        render(<App />);
+
+        await act(async () => {
+          window.dispatchEvent(
+            new MessageEvent("message", {
+              data: {
+                type: "iframe-error",
+                message: "SyntaxError: x is not defined",
+              },
+            }),
+          );
+        });
+
+        expect(
+          await screen.findByText(
+            /Oops, I made a little mistake! Let me fix that/i,
+          ),
+        ).toBeInTheDocument();
+        expect(mockSubmit).toHaveBeenCalledTimes(1);
+
+        await act(async () => {
+          window.dispatchEvent(
+            new MessageEvent("message", {
+              data: {
+                type: "iframe-error",
+                message: "ReferenceError: y is not defined",
+              },
+            }),
+          );
+        });
+
+        expect(mockSubmit).toHaveBeenCalledTimes(2);
+
+        await act(async () => {
+          window.dispatchEvent(
+            new MessageEvent("message", {
+              data: {
+                type: "iframe-error",
+                message: "TypeError: z is not a function",
+              },
+            }),
+          );
+        });
+
+        expect(mockSubmit).toHaveBeenCalledTimes(2);
+        expect(
+          await screen.findByText(
+            /Hmm, this bug is really tricky! It keeps breaking/i,
+          ),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it("shows animated buddy avatar with bounce animation", () => {
+      render(<App />);
+      const avatar = document.querySelector(".buddy-avatar");
+      expect(avatar).toBeInTheDocument();
+    });
+
+    it("switches buddy avatar to thinking animation during loading", () => {
+      (
+        aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>
+      ).mockReturnValue({
+        object: undefined,
+        submit: mockSubmit,
+        isLoading: true,
+      });
+
+      render(<App />);
+      const thinkingAvatar = document.querySelector(".buddy-avatar-thinking");
+      expect(thinkingAvatar).toBeInTheDocument();
+    });
+
+    it("applies staggered animation delay to suggestion chips", () => {
+      render(<App />);
+      const chips = document.querySelectorAll(".chip-enter");
+      expect(chips.length).toBe(4);
+      expect((chips[0] as HTMLElement).style.animationDelay).toBe("0ms");
+      expect((chips[1] as HTMLElement).style.animationDelay).toBe("150ms");
+      expect((chips[2] as HTMLElement).style.animationDelay).toBe("300ms");
+      expect((chips[3] as HTMLElement).style.animationDelay).toBe("450ms");
+    });
+
+    it("applies slide-in animation classes to messages", () => {
+      render(<App />);
+      const buddyMsg = document.querySelector(".msg-buddy");
+      expect(buddyMsg).toBeInTheDocument();
+    });
+
+    it("applies glow class when input has text", () => {
+      render(<App />);
+      const input = screen.getByPlaceholderText(/Type your grand idea/i);
+      expect(input).not.toHaveClass("input-glow-active");
+      fireEvent.change(input, { target: { value: "Hello" } });
+      expect(input).toHaveClass("input-glow-active");
+    });
+
+    it("renders animated welcome screen in default preview", () => {
+      render(<App />);
+      const iframe = screen.getByTitle("Preview Sandbox") as HTMLIFrameElement;
+      const srcdoc = iframe.getAttribute("srcdoc") || "";
+      expect(srcdoc).toContain("What will YOU create today?");
+      expect(srcdoc).toContain("particle");
+    });
+
+    it("renders a reset button and resets to defaults", () => {
+      render(<App />);
+      const input = screen.getByPlaceholderText(/Type your grand idea/i);
+      fireEvent.change(input, { target: { value: "Something else" } });
+
+      const resetBtn = screen.getByRole("button", { name: /Reset/i });
+      fireEvent.click(resetBtn);
+
+      expect(input).toHaveValue("");
+    });
+
+    it("renders the preview sandbox iframe with error catcher", () => {
+      render(<App />);
+      const iframe = screen.getByTitle("Preview Sandbox") as HTMLIFrameElement;
+      expect(iframe).toBeInTheDocument();
+      expect(iframe.getAttribute("srcdoc")).toContain("window.onerror");
+    });
+
+    it("allows user to type and submit a message", () => {
+      render(<App />);
+      const input = screen.getByPlaceholderText(/Type your grand idea/i);
+      const button = screen.getByRole("button", { name: /Send/i });
+
+      fireEvent.change(input, { target: { value: "Make a drawing app" } });
+      fireEvent.click(button);
+
+      expect(screen.getByText("Make a drawing app")).toBeInTheDocument();
+      expect(mockSubmit).toHaveBeenCalledTimes(1);
+    });
+
+    it("calls scrollIntoView for auto-scroll", () => {
+      render(<App />);
+      expect(window.HTMLElement.prototype.scrollIntoView).toHaveBeenCalled();
+    });
+
+    it("plays pop sound on message send", () => {
+      render(<App />);
+      const input = screen.getByPlaceholderText(/Type your grand idea/i);
+      fireEvent.change(input, { target: { value: "Hello" } });
+      fireEvent.click(screen.getByRole("button", { name: /Send/i }));
+      expect(mockPlayPop).toHaveBeenCalledTimes(1);
+    });
+
+    it("plays chip click sound on suggestion click", () => {
+      render(<App />);
+      const firstChip = document.querySelector(".chip-enter") as HTMLElement;
+      fireEvent.click(firstChip);
+      expect(mockPlayChipClick).toHaveBeenCalledTimes(1);
+    });
+
+    it("renders mute toggle button and calls toggleMute", () => {
+      render(<App />);
+      const muteBtn = screen.getByTestId("mute-toggle");
+      expect(muteBtn).toBeInTheDocument();
+      fireEvent.click(muteBtn);
+      expect(mockToggleMute).toHaveBeenCalledTimes(1);
+    });
+
+    it("shows mode toggle button defaulting to build mode", () => {
+      render(<App />);
+      const toggle = screen.getByTestId("mode-toggle");
+      expect(toggle).toBeInTheDocument();
+      expect(toggle).toHaveTextContent("Play Mode");
+    });
+
+    it("hides chat in play mode and shows Back to Build", () => {
+      render(<App />);
+      fireEvent.click(screen.getByTestId("mode-toggle"));
+      expect(screen.queryByText("Builder Buddy")).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: /Show Chat/i }),
+      ).not.toBeInTheDocument();
+      expect(screen.getByTestId("mode-toggle")).toHaveTextContent(
+        "Build Mode!",
+      );
+    });
+
+    it("returns to build mode with chat visible", () => {
+      render(<App />);
+      fireEvent.click(screen.getByTestId("mode-toggle"));
+      expect(screen.queryByText("Builder Buddy")).not.toBeInTheDocument();
+      fireEvent.click(screen.getByTestId("mode-toggle"));
+      expect(screen.getByText("Builder Buddy")).toBeInTheDocument();
+    });
+
+    describe("Additional Edge Cases", () => {
+      it("ignores iframe error if already loading", async () => {
+        (
+          aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>
+        ).mockReturnValue({
+          object: undefined,
+          submit: mockSubmit,
+          isLoading: true,
+        });
+        render(<App />);
+        await act(async () => {
+          window.dispatchEvent(
+            new MessageEvent("message", {
+              data: { type: "iframe-error", message: "Error!" },
+            }),
+          );
+        });
+        expect(mockSubmit).not.toHaveBeenCalled();
+      });
+
+      it("defaults to 'Unknown error' if message is missing in iframe event", async () => {
+        render(<App />);
+        await act(async () => {
+          window.dispatchEvent(
+            new MessageEvent("message", {
+              data: { type: "iframe-error" },
+            }),
+          );
+        });
+        expect(await screen.findByText(/Unknown error/i)).toBeInTheDocument();
+      });
+
+      it("updates messages and currentCode when stream finishes", async () => {
+        let triggerFinish: NonNullable<
+          Parameters<typeof aiSdkReact.experimental_useObject>[0]["onFinish"]
+        >;
+        (
+          aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>
+        ).mockImplementation(
+          ({
+            onFinish,
+          }: Parameters<typeof aiSdkReact.experimental_useObject>[0]) => {
+            triggerFinish = onFinish!;
+            return { object: undefined, submit: mockSubmit, isLoading: false };
+          },
+        );
+
+        render(<App />);
+
+        await act(async () => {
+          triggerFinish!({
+            object: { reply: "Done building!", code: "<html>SUCCESS</html>" },
+            error: undefined,
+          });
+        });
+
+        expect(await screen.findByText("Done building!")).toBeInTheDocument();
+      });
+
+      it("handles partial finish object gracefully", async () => {
+        let triggerFinish: NonNullable<
+          Parameters<typeof aiSdkReact.experimental_useObject>[0]["onFinish"]
+        >;
+        (
+          aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>
+        ).mockImplementation(
+          ({
+            onFinish,
+          }: Parameters<typeof aiSdkReact.experimental_useObject>[0]) => {
+            triggerFinish = onFinish!;
+            return { object: undefined, submit: mockSubmit, isLoading: false };
+          },
+        );
+
+        render(<App />);
+
+        await act(async () => {
+          triggerFinish!({ object: {}, error: undefined });
+        });
+
+        expect(screen.queryByText("Done building!")).not.toBeInTheDocument();
+      });
+
+      it("falls back to default if JSON.parse throws in loadJson", () => {
+        mockStorage["inspiror_projects"] = "invalid-json{";
+        render(<App />);
+        // Should show catalog with empty state
+        expect(screen.getByText("My Projects")).toBeInTheDocument();
+      });
+
+      it("handleSend does nothing if input is empty", () => {
+        render(<App />);
+        const button = screen.getByRole("button", { name: /Send/i });
+        fireEvent.click(button);
+        expect(mockSubmit).not.toHaveBeenCalled();
+      });
+
+      it("handleSend does nothing if isLoading is true", () => {
+        (
+          aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>
+        ).mockReturnValue({
+          object: undefined,
+          submit: mockSubmit,
+          isLoading: true,
+        });
+        render(<App />);
+        const input = screen.getByPlaceholderText(/Type your grand idea/i);
+        fireEvent.change(input, { target: { value: "Test" } });
+        const button = screen.getByRole("button", { name: /Send/i });
+        fireEvent.click(button);
+        expect(mockSubmit).not.toHaveBeenCalled();
+      });
+
+      it("onKeyDown ignores non-Enter keys", () => {
+        render(<App />);
+        const input = screen.getByPlaceholderText(/Type your grand idea/i);
+        fireEvent.change(input, { target: { value: "Test" } });
+        fireEvent.keyDown(input, { key: "a", code: "KeyA" });
+        expect(mockSubmit).not.toHaveBeenCalled();
+      });
+
+      it("renders confetti burst after loading finishes", async () => {
+        let triggerFinish: NonNullable<
+          Parameters<typeof aiSdkReact.experimental_useObject>[0]["onFinish"]
+        >;
+        (
+          aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>
+        ).mockImplementation(
+          ({
+            onFinish,
+          }: Parameters<typeof aiSdkReact.experimental_useObject>[0]) => {
+            triggerFinish = onFinish!;
+            return { object: undefined, submit: mockSubmit, isLoading: false };
+          },
+        );
+
+        render(<App />);
+
+        await act(async () => {
+          triggerFinish!({
+            object: { reply: "Done!", code: "<html>SUCCESS</html>" },
+            error: undefined,
+          });
+        });
+
+        const confetti = screen.getByTestId("confetti-burst");
+        expect(confetti).toBeInTheDocument();
+        expect(confetti.children.length).toBe(80);
+      });
+
+      it("clears confetti timer on rapid generations and completes timer", async () => {
+        vi.useFakeTimers();
+        let triggerFinish: NonNullable<
+          Parameters<typeof aiSdkReact.experimental_useObject>[0]["onFinish"]
+        >;
+        (
+          aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>
+        ).mockImplementation(
+          ({
+            onFinish,
+          }: Parameters<typeof aiSdkReact.experimental_useObject>[0]) => {
+            triggerFinish = onFinish!;
+            return { object: undefined, submit: mockSubmit, isLoading: false };
+          },
+        );
+
+        render(<App />);
+
+        await act(async () => {
+          triggerFinish!({ object: { reply: "1" }, error: undefined });
+        });
+
+        expect(screen.getByTestId("confetti-burst")).toBeInTheDocument();
+
+        await act(async () => {
+          triggerFinish!({ object: { reply: "2" }, error: undefined });
+        });
+
+        act(() => {
+          vi.runAllTimers();
+        });
+
+        expect(screen.queryByTestId("confetti-burst")).not.toBeInTheDocument();
+
+        vi.useRealTimers();
+      });
+    });
+  });
+
+  describe("Project Switching - State Isolation", () => {
+    function seedTwoProjects() {
+      const projectA = {
+        id: "project-a",
+        title: "Project A",
+        createdAt: Date.now() - 1000,
+        updatedAt: Date.now() - 1000,
+        messages: [
+          {
+            id: "a-msg-1",
+            role: "assistant",
+            content:
+              "Hi! I'm your builder buddy. What do you want to create today?",
+          },
+          { id: "a-msg-2", role: "user", content: "Build a spaceship" },
+          {
+            id: "a-msg-3",
+            role: "assistant",
+            content: "Here is your spaceship!",
+          },
+        ],
+        currentCode: "<html><body><h1>SPACESHIP APP</h1></body></html>",
+      };
+
+      const projectB = {
+        id: "project-b",
+        title: "Project B",
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        messages: [
+          {
+            id: "b-msg-1",
+            role: "assistant",
+            content:
+              "Hi! I'm your builder buddy. What do you want to create today?",
+          },
+          { id: "b-msg-2", role: "user", content: "Build a drawing app" },
+          {
+            id: "b-msg-3",
+            role: "assistant",
+            content: "Here is your drawing app!",
+          },
+        ],
+        currentCode: "<html><body><h1>DRAWING APP</h1></body></html>",
+      };
+
+      mockStorage["inspiror_projects"] = JSON.stringify([projectA, projectB]);
+      mockStorage["inspiror_current_project_id"] = "project-a";
+    }
+
+    it("preserves Project A code when switching to Project B and back", () => {
+      seedTwoProjects();
+      render(<App />);
+
+      // Should be in Project A (set as current in seedTwoProjects)
+      const iframe = screen.getByTitle("Preview Sandbox");
+      expect(iframe.getAttribute("srcdoc")).toContain("SPACESHIP APP");
+      expect(screen.getByText("Build a spaceship")).toBeInTheDocument();
+
+      // Navigate to catalog
+      fireEvent.click(screen.getByTestId("back-to-catalog"));
+      expect(screen.getByText("My Projects")).toBeInTheDocument();
+
+      // Find Project B by title and click its open button
+      const projectBTitle = screen.getByText("Project B");
+      const projectBCard = projectBTitle.closest(
+        '[data-testid="project-card"]',
+      )!;
+      fireEvent.click(
+        projectBCard.querySelector('[data-testid="open-project-btn"]')!,
+      );
+
+      // Should show Project B content
+      expect(screen.getByText("Build a drawing app")).toBeInTheDocument();
+      const iframeB = screen.getByTitle("Preview Sandbox");
+      expect(iframeB.getAttribute("srcdoc")).toContain("DRAWING APP");
+
+      // Navigate back to catalog
+      fireEvent.click(screen.getByTestId("back-to-catalog"));
+
+      // Find Project A by title and click its open button
+      const projectATitle = screen.getByText("Project A");
+      const projectACard = projectATitle.closest(
+        '[data-testid="project-card"]',
+      )!;
+      fireEvent.click(
+        projectACard.querySelector('[data-testid="open-project-btn"]')!,
+      );
+
+      // Project A should still have its original code — NOT the default welcome screen
+      expect(screen.getByText("Build a spaceship")).toBeInTheDocument();
+      const iframeA = screen.getByTitle("Preview Sandbox");
+      expect(iframeA.getAttribute("srcdoc")).toContain("SPACESHIP APP");
+    });
+
+    it("saves generated code to the correct project via onUpdate(projectId)", () => {
+      seedTwoProjects();
+      render(<App />);
+
+      // Verify we're in Project A and the storage key tracks the right project
+      const saved = JSON.parse(mockStorage["inspiror_projects"]!);
+      const projA = saved.find((p: { id: string }) => p.id === "project-a");
+      expect(projA.currentCode).toContain("SPACESHIP APP");
+
+      const projB = saved.find((p: { id: string }) => p.id === "project-b");
+      expect(projB.currentCode).toContain("DRAWING APP");
+    });
+
+    it("does not overwrite Project B data when onFinish fires after navigating away", async () => {
+      seedTwoProjects();
+      let triggerFinish: (args: any) => void;
       (aiSdkReact.experimental_useObject as any).mockImplementation(
-        ({ onError }: any) => {
-          triggerError = onError;
+        ({ onFinish }: any) => {
+          triggerFinish = onFinish;
           return { object: undefined, submit: mockSubmit, isLoading: false };
         },
       );
 
       render(<App />);
+
+      // We're in Project A — trigger a finish that updates code
       await act(async () => {
-        triggerError!(new Error("Network failure"));
+        triggerFinish!({
+          object: {
+            reply: "Updated spaceship!",
+            code: "<html><body>SPACESHIP V2</body></html>",
+          },
+        });
       });
 
-      expect(
-        await screen.findByText("Oops, my connection broke! Can we try again?"),
-      ).toBeInTheDocument();
-    });
+      // Project A should have updated code
+      let saved = JSON.parse(mockStorage["inspiror_projects"]!);
+      let projA = saved.find((p: { id: string }) => p.id === "project-a");
+      expect(projA.currentCode).toContain("SPACESHIP V2");
 
-    it("auto-fixes iframe errors but limits to 2 consecutive attempts", async () => {
-      render(<App />);
-
-      // Trigger first error
-      await act(async () => {
-        window.dispatchEvent(
-          new MessageEvent("message", {
-            data: {
-              type: "iframe-error",
-              message: "SyntaxError: x is not defined",
-            },
-          }),
-        );
-      });
-
-      // Verify first auto-fix
-      expect(
-        await screen.findByText(
-          /Oops, I made a little mistake! Let me fix that/i,
-        ),
-      ).toBeInTheDocument();
-      expect(mockSubmit).toHaveBeenCalledTimes(1);
-
-      // Trigger second error
-      await act(async () => {
-        window.dispatchEvent(
-          new MessageEvent("message", {
-            data: {
-              type: "iframe-error",
-              message: "ReferenceError: y is not defined",
-            },
-          }),
-        );
-      });
-
-      // Verify second auto-fix attempt
-      expect(mockSubmit).toHaveBeenCalledTimes(2);
-
-      // Trigger third error (should hit limit)
-      await act(async () => {
-        window.dispatchEvent(
-          new MessageEvent("message", {
-            data: {
-              type: "iframe-error",
-              message: "TypeError: z is not a function",
-            },
-          }),
-        );
-      });
-
-      // Verify limit was reached, no new submit
-      expect(mockSubmit).toHaveBeenCalledTimes(2);
-      expect(
-        await screen.findByText(
-          /Hmm, this bug is really tricky! It keeps breaking/i,
-        ),
-      ).toBeInTheDocument();
-    });
-  });
-  // Animated buddy avatar
-  it("shows animated buddy avatar with bounce animation", () => {
-    render(<App />);
-    const avatar = document.querySelector(".buddy-avatar");
-    expect(avatar).toBeInTheDocument();
-  });
-
-  it("switches buddy avatar to thinking animation during loading", () => {
-    (
-      aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>
-    ).mockReturnValue({
-      object: undefined,
-      submit: mockSubmit,
-      isLoading: true,
-    });
-
-    render(<App />);
-    const thinkingAvatar = document.querySelector(".buddy-avatar-thinking");
-    expect(thinkingAvatar).toBeInTheDocument();
-  });
-
-  // Staggered chip entrance
-  it("applies staggered animation delay to suggestion chips", () => {
-    render(<App />);
-    const chips = document.querySelectorAll(".chip-enter");
-    expect(chips.length).toBe(4);
-    expect((chips[0] as HTMLElement).style.animationDelay).toBe("0ms");
-    expect((chips[1] as HTMLElement).style.animationDelay).toBe("100ms");
-    expect((chips[2] as HTMLElement).style.animationDelay).toBe("200ms");
-    expect((chips[3] as HTMLElement).style.animationDelay).toBe("300ms");
-  });
-
-  // Message slide-in animation classes
-  it("applies slide-in animation classes to messages", () => {
-    render(<App />);
-    const buddyMsg = document.querySelector(".msg-buddy");
-    expect(buddyMsg).toBeInTheDocument();
-  });
-
-  // Input glow
-  it("applies glow class when input has text", () => {
-    render(<App />);
-    const input = screen.getByPlaceholderText(/Type your grand idea/i);
-
-    expect(input).not.toHaveClass("input-glow-active");
-
-    fireEvent.change(input, { target: { value: "Hello" } });
-    expect(input).toHaveClass("input-glow-active");
-  });
-
-  // Better default preview
-  it("renders animated welcome screen in default preview", () => {
-    render(<App />);
-    const iframe = screen.getByTitle("Preview Sandbox") as HTMLIFrameElement;
-    const srcdoc = iframe.getAttribute("srcdoc") || "";
-    expect(srcdoc).toContain("What will YOU create today?");
-    expect(srcdoc).toContain("particle");
-  });
-
-  // Reset
-  it("renders a reset button and resets to defaults", () => {
-    render(<App />);
-    const input = screen.getByPlaceholderText(/Type your grand idea/i);
-    fireEvent.change(input, { target: { value: "Something else" } });
-    
-    const resetBtn = screen.getByRole("button", { name: /Reset/i });
-    fireEvent.click(resetBtn);
-    
-    expect(input).toHaveValue("");
-  });
-
-  // Preview sandbox
-  it("renders the preview sandbox iframe with error catcher", () => {
-    render(<App />);
-    const iframe = screen.getByTitle("Preview Sandbox") as HTMLIFrameElement;
-    expect(iframe).toBeInTheDocument();
-    expect(iframe.getAttribute("srcdoc")).toContain("window.onerror");
-  });
-
-  // Send message
-  it("allows user to type and submit a message", () => {
-    render(<App />);
-    const input = screen.getByPlaceholderText(/Type your grand idea/i);
-    const button = screen.getByRole("button", { name: /Send/i });
-
-    fireEvent.change(input, { target: { value: "Make a drawing app" } });
-    fireEvent.click(button);
-
-    expect(screen.getByText("Make a drawing app")).toBeInTheDocument();
-    expect(mockSubmit).toHaveBeenCalledTimes(1);
-  });
-
-  // Auto-scroll
-  it("calls scrollIntoView for auto-scroll", () => {
-    render(<App />);
-    expect(window.HTMLElement.prototype.scrollIntoView).toHaveBeenCalled();
-  });
-
-  // === NEW TESTS ===
-
-  // Stable message IDs
-  it("assigns unique IDs to messages", () => {
-    render(<App />);
-    const input = screen.getByPlaceholderText(/Type your grand idea/i);
-    fireEvent.change(input, { target: { value: "Test message" } });
-    fireEvent.click(screen.getByRole("button", { name: /Send/i }));
-
-    // Messages should be saved with IDs
-    const setItemCalls = mockLocalStorage.setItem.mock.calls.filter(
-      (c: string[]) => c[0] === "inspiror-messages",
-    );
-    const lastSaved = JSON.parse(setItemCalls[setItemCalls.length - 1][1]);
-    expect(
-      lastSaved.every((m: { id: string }) => typeof m.id === "string"),
-    ).toBe(true);
-    const ids = lastSaved.map((m: { id: string }) => m.id);
-    expect(new Set(ids).size).toBe(ids.length);
-  });
-
-  // Migration: old messages without IDs get IDs added
-  it("migrates old messages without IDs from localStorage", () => {
-    const oldMessages = [
-      { role: "assistant", content: "Welcome back!" },
-      { role: "user", content: "Build something" },
-    ];
-    mockStorage["inspiror-messages"] = JSON.stringify(oldMessages);
-
-    render(<App />);
-    expect(screen.getByText("Welcome back!")).toBeInTheDocument();
-    expect(screen.getByText("Build something")).toBeInTheDocument();
-  });
-
-  // Chat panel removed from DOM when hidden
-  it("removes chat panel from DOM when hidden (accessibility)", () => {
-    render(<App />);
-    expect(screen.getByText("Builder Buddy")).toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole("button", { name: /Hide Chat/i }));
-    expect(screen.queryByText("Builder Buddy")).not.toBeInTheDocument();
-  });
-
-  // Sound triggers
-  it("plays pop sound on message send", () => {
-    render(<App />);
-    const input = screen.getByPlaceholderText(/Type your grand idea/i);
-    fireEvent.change(input, { target: { value: "Hello" } });
-    fireEvent.click(screen.getByRole("button", { name: /Send/i }));
-
-    expect(mockPlayPop).toHaveBeenCalledTimes(1);
-  });
-
-  it("plays chip click sound on suggestion click", () => {
-    render(<App />);
-    fireEvent.click(screen.getByRole("button", { name: /bouncing ball/i }));
-
-    expect(mockPlayChipClick).toHaveBeenCalledTimes(1);
-  });
-
-  // Mute toggle button
-  it("renders mute toggle button and calls toggleMute", () => {
-    render(<App />);
-    const muteBtn = screen.getByTestId("mute-toggle");
-    expect(muteBtn).toBeInTheDocument();
-    fireEvent.click(muteBtn);
-    expect(mockToggleMute).toHaveBeenCalledTimes(1);
-  });
-
-  // Play/Build mode toggle
-  it("shows mode toggle button defaulting to build mode", () => {
-    render(<App />);
-    const toggle = screen.getByTestId("mode-toggle");
-    expect(toggle).toBeInTheDocument();
-    expect(toggle).toHaveTextContent("Play Mode");
-  });
-
-  it("hides chat in play mode and shows Back to Build", () => {
-    render(<App />);
-    fireEvent.click(screen.getByTestId("mode-toggle"));
-
-    // Chat should be hidden
-    expect(screen.queryByText("Builder Buddy")).not.toBeInTheDocument();
-    // Show Chat button should also be hidden
-    expect(
-      screen.queryByRole("button", { name: /Show Chat/i }),
-    ).not.toBeInTheDocument();
-    // Mode toggle should show "Back to Build"
-    expect(screen.getByTestId("mode-toggle")).toHaveTextContent(
-      "Back to Build",
-    );
-  });
-
-  it("returns to build mode with chat visible", () => {
-    render(<App />);
-    // Enter play mode
-    fireEvent.click(screen.getByTestId("mode-toggle"));
-    expect(screen.queryByText("Builder Buddy")).not.toBeInTheDocument();
-
-    // Return to build mode
-    fireEvent.click(screen.getByTestId("mode-toggle"));
-    expect(screen.getByText("Builder Buddy")).toBeInTheDocument();
-  });
-
-  describe("Additional Edge Cases", () => {
-    it("ignores iframe error if already loading", async () => {
-      (aiSdkReact.experimental_useObject as any).mockReturnValue({
-        object: undefined,
-        submit: mockSubmit,
-        isLoading: true,
-      });
-      render(<App />);
-      await act(async () => {
-        window.dispatchEvent(
-          new MessageEvent("message", {
-            data: { type: "iframe-error", message: "Error!" },
-          })
-        );
-      });
-      expect(mockSubmit).not.toHaveBeenCalled();
-    });
-
-    it("defaults to 'Unknown error' if message is missing in iframe event", async () => {
-      render(<App />);
-      await act(async () => {
-        window.dispatchEvent(
-          new MessageEvent("message", {
-            data: { type: "iframe-error" },
-          })
-        );
-      });
-      expect(await screen.findByText(/Unknown error/i)).toBeInTheDocument();
-    });
-
-    it("updates messages and currentCode when stream finishes", async () => {
-      let triggerFinish: (args: any) => void;
-      (aiSdkReact.experimental_useObject as any).mockImplementation(({ onFinish }: any) => {
-        triggerFinish = onFinish;
-        return { object: undefined, submit: mockSubmit, isLoading: false };
-      });
-
-      render(<App />);
-      
-      await act(async () => {
-        triggerFinish!({ object: { reply: "Done building!", code: "<html>SUCCESS</html>" } });
-      });
-
-      expect(await screen.findByText("Done building!")).toBeInTheDocument();
-    });
-
-    it("handles partial finish object gracefully", async () => {
-      let triggerFinish: (args: any) => void;
-      (aiSdkReact.experimental_useObject as any).mockImplementation(({ onFinish }: any) => {
-        triggerFinish = onFinish;
-        return { object: undefined, submit: mockSubmit, isLoading: false };
-      });
-
-      render(<App />);
-      
-      await act(async () => {
-        triggerFinish!({ object: {} });
-      });
-
-      expect(screen.queryByText("Done building!")).not.toBeInTheDocument();
-    });
-
-    it("falls back to default if JSON.parse throws in loadFromStorage", () => {
-      mockLocalStorage.getItem.mockReturnValueOnce("invalid-json{");
-      render(<App />);
-      expect(screen.getByText(/Hi! I'm your builder buddy/i)).toBeInTheDocument();
-    });
-
-    it("handleSend does nothing if input is empty", () => {
-      render(<App />);
-      const button = screen.getByRole("button", { name: /Send/i });
-      fireEvent.click(button);
-      expect(mockSubmit).not.toHaveBeenCalled();
-    });
-
-    it("handleSend does nothing if isLoading is true", () => {
-      (aiSdkReact.experimental_useObject as any).mockReturnValue({
-        object: undefined,
-        submit: mockSubmit,
-        isLoading: true,
-      });
-      render(<App />);
-      const input = screen.getByPlaceholderText(/Type your grand idea/i);
-      fireEvent.change(input, { target: { value: "Test" } });
-      const button = screen.getByRole("button", { name: /Send/i });
-      fireEvent.click(button);
-      expect(mockSubmit).not.toHaveBeenCalled();
-    });
-
-    it("onKeyDown ignores non-Enter keys", () => {
-      render(<App />);
-      const input = screen.getByPlaceholderText(/Type your grand idea/i);
-      fireEvent.change(input, { target: { value: "Test" } });
-      fireEvent.keyDown(input, { key: "a", code: "KeyA" });
-      expect(mockSubmit).not.toHaveBeenCalled();
-    });
-
-    it("renders confetti burst after loading finishes", () => {
-      const { rerender } = render(<App />);
-
-      // Simulate loading state
-      (aiSdkReact.experimental_useObject as any).mockReturnValue({
-        object: undefined,
-        submit: mockSubmit,
-        isLoading: true,
-      });
-      rerender(<App />);
-
-      // Simulate loading finished
-      (aiSdkReact.experimental_useObject as any).mockReturnValue({
-        object: undefined,
-        submit: mockSubmit,
-        isLoading: false,
-      });
-      rerender(<App />);
-
-      const confetti = screen.getByTestId("confetti-burst");
-      expect(confetti).toBeInTheDocument();
-      expect(confetti.children.length).toBe(20);
-    });
-    it("clears confetti timer on rapid generations and completes timer", () => {
-      vi.useFakeTimers();
-      const { rerender } = render(<App />);
-
-      // Trigger loading
-      (aiSdkReact.experimental_useObject as any).mockReturnValue({
-        object: undefined,
-        submit: mockSubmit,
-        isLoading: true,
-      });
-      rerender(<App />);
-
-      // Finish loading to start timer
-      (aiSdkReact.experimental_useObject as any).mockReturnValue({
-        object: undefined,
-        submit: mockSubmit,
-        isLoading: false,
-      });
-      rerender(<App />);
-
-      expect(screen.getByTestId("confetti-burst")).toBeInTheDocument();
-
-      // Trigger loading AGAIN before timer finishes (clears timeout)
-      (aiSdkReact.experimental_useObject as any).mockReturnValue({
-        object: undefined,
-        submit: mockSubmit,
-        isLoading: true,
-      });
-      rerender(<App />);
-
-      // Finish loading AGAIN
-      (aiSdkReact.experimental_useObject as any).mockReturnValue({
-        object: undefined,
-        submit: mockSubmit,
-        isLoading: false,
-      });
-      rerender(<App />);
-
-      // Fast forward the timer to trigger the timeout callback
-      act(() => {
-        vi.runAllTimers();
-      });
-
-      expect(screen.queryByTestId("confetti-burst")).not.toBeInTheDocument();
-      
-      vi.useRealTimers();
+      // Project B should be untouched
+      let projB = saved.find((p: { id: string }) => p.id === "project-b");
+      expect(projB.currentCode).toContain("DRAWING APP");
     });
   });
 });

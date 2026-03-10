@@ -7,20 +7,36 @@ Inspiror follows a client-server architecture:
 
 ## 2. Component Design (Frontend)
 
-### `App` (Root)
-*   **Responsibility:** Layout container (Full screen preview with a floating chat window that can be hidden/turned off on desktop; stacked or adaptive on mobile). Manages global state (messages, current code).
+### `App` (Root — `App.tsx`)
+*   **Responsibility:** Routes between `ProjectCatalog` (when no project is selected) and `EditorView` (when a project is open).
+*   **Hooks:**
+    *   `useProjects`: Manages multi-project state (CRUD, persistence, legacy migration).
+
+### `ProjectCatalog` (`components/ProjectCatalog.tsx`)
+*   **Responsibility:** Displays a grid of project cards with create, open, and delete actions. Shows empty state for new users.
+*   **Features:**
+    *   Projects sorted by `updatedAt` (most recent first).
+    *   `timeAgo` helper for relative timestamps.
+    *   Responsive grid: 1 col (mobile) → 2 (sm) → 3 (lg) → 4 (xl).
+
+### `EditorView` (in `App.tsx`)
+*   **Responsibility:** Full editor with chat panel, preview sandbox, hacker mode overlay, and confetti. Mounted with `key={project.id}` to reset state when switching projects.
 *   **State:**
-    *   `messages`: Array of chat messages (`{ role: 'user' | 'assistant', content: string }`).
+    *   `messages`: Array of chat messages (`ChatMessage` — `{ id, role, content }`).
     *   `currentCode`: String containing the generated HTML/CSS/JS payload.
     *   `isChatVisible`: Boolean to toggle the floating chat panel.
     *   `showConfetti`: Boolean to trigger confetti burst on completion.
     *   `inputValue`: String for the chat input field.
+    *   `mode`: `"build" | "play"` — Build/Play mode toggle.
 *   **Hooks:**
     *   `useObject` (from `@ai-sdk/react`): Manages streaming API calls, provides `object`, `submit`, `isLoading`.
+    *   `useAudio`: Sound effects (pop, chip click, chime, buzzer) with mute toggle and localStorage persistence.
     *   `useRef(messagesEndRef)`: Auto-scroll anchor at bottom of message list.
     *   `useRef(prevIsLoadingRef)`: Tracks loading transitions for confetti trigger.
+    *   `useRef(autoFixCountRef)`: Limits auto-fix retries to 2 consecutive attempts.
+    *   `useRef(confettiTimerRef)`: Prevents confetti timer overlap on rapid generations.
 
-### `ChatPanel`
+### `ChatPanel` (inline in `EditorView`)
 *   **Responsibility:** Displays the conversation history, suggestion chips, and input field.
 *   **Components:**
     *   `MessageList`: Renders individual `MessageBubble` components with slide-in animations (`msg-user`, `msg-buddy` CSS classes).
@@ -28,14 +44,22 @@ Inspiror follows a client-server architecture:
     *   `StreamingReply`: Shows real-time `object?.reply` with typing cursor during generation.
     *   `MessageInput`: Text input with glow effect (`input-glow-active` CSS class when text present).
 
-### `PreviewSandbox`
+### `PreviewSandbox` (inline in `EditorView`)
 *   **Responsibility:** Renders the generated code securely.
-*   **Implementation:** An `<iframe>` using the `srcdoc` attribute bound to `currentCode`. Includes a sandbox attribute (`sandbox="allow-scripts"`) for safety. Error catcher script injected for auto-fix flow.
+*   **Implementation:** An `<iframe>` using the `srcdoc` attribute bound to `currentCode`. Includes a sandbox attribute (`sandbox="allow-scripts"`) for safety. Error catcher script injected via `injectErrorCatcher()` for auto-fix flow.
 *   **Default State:** Animated welcome screen with gradient background, floating particles, and "What will YOU create today?" text.
 
-### `BuddyAvatar`
+### `BuddyAvatar` (inline in chat header)
 *   **Responsibility:** Animated emoji avatar in chat header.
 *   **Implementation:** `buddy-avatar` CSS class (bounce animation, 2s loop) switches to `buddy-avatar-thinking` (wobble animation, 0.6s loop) when `isLoading` is true.
+
+### Types (`types/project.ts`)
+*   `ChatMessage`: `{ id: string, role: "user" | "assistant" | "system", content: string }`
+*   `Project`: `{ id, title, createdAt, updatedAt, messages: ChatMessage[], currentCode: string }`
+
+### Custom Hooks
+*   **`useProjects`** (`hooks/useProjects.ts`): Multi-project CRUD, localStorage persistence, legacy data migration, auto-title extraction.
+*   **`useAudio`** (`hooks/useAudio.ts`): Preloads 4 sound effects, provides play functions, mute toggle persisted to localStorage.
 
 ## 3. API Contract (Backend)
 
@@ -99,23 +123,68 @@ We use **Vitest** and **React Testing Library** for the frontend, and **Jest** +
 
 ## 5. Current Test Coverage
 
-### Unit Tests (14 tests - Vitest)
+### Unit Tests (35+ tests - Vitest)
+
+#### Project Catalog Tests
 | # | Test | Status |
 |---|------|--------|
-| 1 | Renders initial chat greeting | GREEN |
-| 2 | Shows vivid Hacker Mode overlay during generation | GREEN |
-| 3 | Renders suggestion chips and handles click | GREEN |
-| 4 | Can toggle floating chat visibility | GREEN |
-| 5 | Shows animated buddy avatar with bounce | GREEN |
-| 6 | Switches buddy to thinking animation during loading | GREEN |
-| 7 | Applies staggered animation delay to chips | GREEN |
-| 8 | Applies slide-in animation classes to messages | GREEN |
-| 9 | Applies glow class when input has text | GREEN |
-| 10 | Renders animated welcome screen in default preview | GREEN |
-| 11 | Renders reset button | GREEN |
-| 12 | Renders preview sandbox with error catcher | GREEN |
-| 13 | Allows user to type and submit a message | GREEN |
-| 14 | Calls scrollIntoView for auto-scroll | GREEN |
+| 1 | Shows catalog when no project is selected | GREEN |
+| 2 | Shows empty state with create button | GREEN |
+| 3 | Creates a new project and opens editor | GREEN |
+| 4 | Shows project cards when projects exist | GREEN |
+| 5 | Navigates back to catalog from editor | GREEN |
+| 6 | Opens a project from catalog | GREEN |
+| 7 | Deletes a project from catalog | GREEN |
+| 8 | Migrates legacy data to a project | GREEN |
+
+#### Editor View Tests
+| # | Test | Status |
+|---|------|--------|
+| 9 | Renders initial chat greeting from AI Buddy | GREEN |
+| 10 | Shows vivid Hacker Mode overlay during generation | GREEN |
+| 11 | Renders suggestion chips and handles click | GREEN |
+| 12 | Can toggle floating chat visibility | GREEN |
+| 13 | Shows animated buddy avatar with bounce | GREEN |
+| 14 | Switches buddy to thinking animation during loading | GREEN |
+| 15 | Applies staggered animation delay to chips | GREEN |
+| 16 | Applies slide-in animation classes to messages | GREEN |
+| 17 | Applies glow class when input has text | GREEN |
+| 18 | Renders animated welcome screen in default preview | GREEN |
+| 19 | Renders reset button and resets to defaults | GREEN |
+| 20 | Renders preview sandbox with error catcher | GREEN |
+| 21 | Allows user to type and submit a message | GREEN |
+| 22 | Calls scrollIntoView for auto-scroll | GREEN |
+| 23 | Plays pop sound on message send | GREEN |
+| 24 | Plays chip click sound on suggestion click | GREEN |
+| 25 | Renders mute toggle and calls toggleMute | GREEN |
+| 26 | Shows mode toggle defaulting to build mode | GREEN |
+| 27 | Hides chat in play mode | GREEN |
+| 28 | Returns to build mode with chat visible | GREEN |
+
+#### Error Handling & Edge Case Tests
+| # | Test | Status |
+|---|------|--------|
+| 29 | Handles stream onError callback | GREEN |
+| 30 | Auto-fixes iframe errors, limits to 2 attempts | GREEN |
+| 31 | Ignores iframe error if already loading | GREEN |
+| 32 | Defaults to "Unknown error" if message missing | GREEN |
+| 33 | Updates messages/code when stream finishes | GREEN |
+| 34 | Handles partial finish object gracefully | GREEN |
+| 35 | Falls back to default if JSON.parse throws | GREEN |
+| 36 | handleSend does nothing if input is empty | GREEN |
+| 37 | handleSend does nothing if isLoading is true | GREEN |
+| 38 | onKeyDown ignores non-Enter keys | GREEN |
+| 39 | Renders confetti burst after loading finishes | GREEN |
+| 40 | Clears confetti timer on rapid generations | GREEN |
+
+#### injectErrorCatcher Branch Tests
+| # | Test | Status |
+|---|------|--------|
+| 41 | Injects after `<head>` if present | GREEN |
+| 42 | Injects before `<body` if no head | GREEN |
+| 43 | Injects after `<html` if no body or head | GREEN |
+| 44 | Injects after doctype if no html tag | GREEN |
+| 45 | Prepends script if no valid tags found | GREEN |
 
 ### Backend Tests (4 tests - Jest)
 | # | Test | Status |
@@ -125,7 +194,7 @@ We use **Vitest** and **React Testing Library** for the frontend, and **Jest** +
 | 3 | Returns chunked stream when messages provided | GREEN |
 | 4 | Accepts currentCode and passes to LLM system prompt | GREEN |
 
-### E2E Tests (22 tests - Playwright)
+### E2E Tests (45+ tests - Playwright)
 | # | Test | Status |
 |---|------|--------|
 | 1 | Displays initial greeting | GREEN |
@@ -150,6 +219,41 @@ We use **Vitest** and **React Testing Library** for the frontend, and **Jest** +
 | 20 | Shows animated welcome screen in default preview | GREEN |
 | 21 | Buddy avatar has bounce animation | GREEN |
 | 22 | Input glows when text is entered | GREEN |
+| 23 | Mute toggle switches icon | GREEN |
+| 24 | Mode toggle switches build/play modes | GREEN |
+| 25 | Play mode hides chat toggle button | GREEN |
+| 26 | Confetti burst has 20 pieces with inline styles | GREEN |
+| 27 | Confetti disappears after timeout | GREEN |
+| 28 | Persists currentCode in localStorage | GREEN |
+| 29 | Reset restores default code in iframe | GREEN |
+| 30 | Reset clears localStorage | GREEN |
+| 31 | Migrates old messages without IDs on reload | GREEN |
+| 32 | Handles corrupted localStorage gracefully | GREEN |
+| 33 | Mute state persists across page reloads | GREEN |
+| 34 | Enter key on empty input does not send | GREEN |
+| 35 | Input is cleared after sending a message | GREEN |
+| 36 | Input glow deactivates when text is cleared | GREEN |
+| 37 | User/assistant messages have correct CSS classes | GREEN |
+| 38 | Initial greeting shows wave emoji | GREEN |
+| 39 | Supports multi-turn conversation flow | GREEN |
+| 40 | Suggestion chips have staggered animation delays | GREEN |
+| 41 | Suggestion chips disappear after message sent | GREEN |
+| 42 | Suggestion chips reappear after reset | GREEN |
+| 43 | Play mode keeps iframe content visible | GREEN |
+| 44 | Mode toggle is always visible in both modes | GREEN |
+| 45 | Play mode does not show hacker overlay during loading | GREEN |
+| 46 | Chat panel has aria-hidden attribute | GREEN |
+| 47 | Chat panel is full-width on mobile viewport | GREEN |
+| 48 | Chat panel has responsive width classes | GREEN |
+| 49 | Page has SVG favicon | GREEN |
+| 50 | Hacker mode shows BUILDING text and sparkles | GREEN |
+| 51 | Hacker mode shows INITIALIZING MATRIX when no code | GREEN |
+| 52 | Buddy avatar switches to thinking during loading | GREEN |
+| 53 | Reset clears input field | GREEN |
+| 54 | Each suggestion chip sends its specific label | GREEN |
+| 55 | Page title is set correctly | GREEN |
+| 56 | Iframe sandbox only allows scripts | GREEN |
+| 57 | Messages have unique IDs in localStorage | GREEN |
 
 ## 6. Code Review Findings & Technical Debt
 
@@ -167,4 +271,5 @@ We use **Vitest** and **React Testing Library** for the frontend, and **Jest** +
 1.  ~~**Phase 2.5:** Audio integration, Play/Edit toggle.~~ (DONE)
 2.  ~~**Phase 5:** CSS media queries, Docker, Vercel deployment.~~ (DONE)
 3.  ~~**Tech Debt:** Message keys, confetti timer, accessibility, favicon, CSS coupling.~~ (DONE)
-4.  **Phase 6 (Future):** Sliding code editor ("Look Inside"), image upload, gamified achievements.
+4.  ~~**Multi-Project Support:** Project catalog, CRUD, legacy migration, auto-titles.~~ (DONE)
+5.  **Phase 6 (Future):** Sliding code editor ("Look Inside"), image upload, gamified achievements.

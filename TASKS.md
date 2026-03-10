@@ -63,6 +63,21 @@
 - [x] Containerize the backend with a `Dockerfile` for easy deployment to Railway/Render.
 - [x] Add `vercel.json` and configure Vite for zero-config Vercel deployment.
 
+## Phase 5.5: Multi-Project Support [x]
+**Goal:** Allow kids to manage multiple projects from a catalog, each with independent chat + code state.
+
+### Frontend Tasks
+- [x] Create `types/project.ts`: `ChatMessage` (with `id` field) and `Project` interfaces.
+- [x] Create `hooks/useProjects.ts`: Multi-project CRUD hook with localStorage persistence.
+- [x] Legacy data migration: Auto-migrate old `inspiror-messages` / `inspiror-currentCode` to new `inspiror_projects` format.
+- [x] Auto-title extraction from first user message (truncated to 40 chars at word boundary).
+- [x] Create `components/ProjectCatalog.tsx`: Grid of project cards with Open, Delete, and New Project actions. Responsive grid (1→4 cols). Empty state with rocket emoji.
+- [x] Refactor `App.tsx`: Split into `App` (router between catalog and editor) + `EditorView` (full editor). Mount `EditorView` with `key={project.id}` to reset state per project.
+- [x] Add "Back to Projects" button in chat header (`ArrowLeft` icon).
+- [x] Unit tests: 8 project catalog tests (empty state, create, open, delete, migrate legacy, navigate back).
+- [x] Expanded E2E test suite to 57 tests covering all new and existing features.
+- [x] Expanded unit test suite to 45+ tests covering edge cases (error catcher branches, error handling, partial finishes, JSON parse failures).
+
 ## Phase 6: Deep Engagement & Retention (Future) [ ]
 **Goal:** Implement features that keep kids coming back based on research of platforms like Scratch and Roblox.
 

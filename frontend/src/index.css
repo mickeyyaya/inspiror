@@ -1,137 +1,173 @@
 @import "tailwindcss";
 
 @theme {
-  --color-neon-pink: #ff007f;
-  --color-neon-blue: #00f0ff;
-  --color-neon-green: #39ff14;
+  --color-candy-pink: #ff6b6b;
+  --color-candy-blue: #4ecdc4;
+  --color-candy-yellow: #ffe66d;
+  --color-candy-green: #a8e6cf;
+  --color-candy-purple: #c3aed6;
+  --color-candy-orange: #ffb86c;
+}
+
+@font-face {
+  font-family: 'Comic Neue';
+  src: url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
 }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family: 'Comic Neue', 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #fdfbf7;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
 /* === Confetti Burst === */
-@keyframes confetti-fall {
+@keyframes confetti-explode {
   0% {
-    transform: translateY(-10vh) rotate(0deg);
+    transform: translate3d(-50%, -50%, 0) scale(0) rotate(0deg);
+    opacity: 1;
+  }
+  15% {
+    /* Explode out and up */
+    transform: translate3d(calc(-50% + var(--tx) * 0.8), calc(-50% + var(--ty)), 0) scale(1.2) rotate(calc(var(--rot) + 180deg));
     opacity: 1;
   }
   100% {
-    transform: translateY(100vh) rotate(720deg);
+    /* Fall down */
+    transform: translate3d(calc(-50% + var(--tx)), calc(50vh + 100px), 0) scale(0.5) rotate(calc(var(--rot) + 720deg));
     opacity: 0;
   }
 }
 
 .confetti-piece {
-  position: fixed;
-  width: 10px;
-  height: 10px;
-  top: -10px;
-  z-index: 9999;
-  animation: confetti-fall 2s ease-in forwards;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  animation: confetti-explode cubic-bezier(0.25, 1, 0.5, 1) forwards;
   pointer-events: none;
 }
 
-/* Confetti styles are applied inline via JS for decoupling from CONFETTI_COUNT */
-
 /* === Message Slide-In Animations === */
-@keyframes slide-in-left {
-  from {
-    transform: translateX(-30px);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+@keyframes slide-in-left-bounce {
+  0% { transform: translateX(-50px) scale(0.8); opacity: 0; }
+  60% { transform: translateX(10px) scale(1.05); opacity: 1; }
+  80% { transform: translateX(-5px) scale(0.98); }
+  100% { transform: translateX(0) scale(1); opacity: 1; }
 }
 
-@keyframes slide-in-right {
-  from {
-    transform: translateX(30px);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+@keyframes slide-in-right-bounce {
+  0% { transform: translateX(50px) scale(0.8); opacity: 0; }
+  60% { transform: translateX(-10px) scale(1.05); opacity: 1; }
+  80% { transform: translateX(5px) scale(0.98); }
+  100% { transform: translateX(0) scale(1); opacity: 1; }
 }
 
 .msg-buddy {
-  animation: slide-in-left 0.3s ease-out;
+  animation: slide-in-left-bounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  transform-origin: left center;
 }
 
 .msg-user {
-  animation: slide-in-right 0.3s ease-out;
+  animation: slide-in-right-bounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  transform-origin: right center;
 }
 
 /* === Animated Buddy Avatar === */
 @keyframes buddy-bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-3px);
-  }
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-8px) scale(1.1); }
 }
 
 @keyframes buddy-think {
-  0%, 100% {
-    transform: translateX(0) rotate(0deg);
-  }
-  25% {
-    transform: translateX(-3px) rotate(-5deg);
-  }
-  75% {
-    transform: translateX(3px) rotate(5deg);
-  }
+  0%, 100% { transform: translateX(0) rotate(0deg) scale(1); }
+  25% { transform: translateX(-4px) rotate(-10deg) scale(1.05); }
+  75% { transform: translateX(4px) rotate(10deg) scale(1.05); }
 }
 
 .buddy-avatar {
   display: inline-block;
-  animation: buddy-bounce 2s ease-in-out infinite;
+  animation: buddy-bounce 1.5s ease-in-out infinite;
+  filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.1));
 }
 
 .buddy-avatar-thinking {
   display: inline-block;
   animation: buddy-think 0.6s ease-in-out infinite;
+  filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.1));
 }
 
 /* === Staggered Chip Entrance === */
 @keyframes chip-pop-in {
-  0% {
-    transform: scale(0.5);
-    opacity: 0;
-  }
-  70% {
-    transform: scale(1.05);
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+  0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+  60% { transform: scale(1.2) rotate(5deg); opacity: 1; }
+  80% { transform: scale(0.9) rotate(-2deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
 }
 
 .chip-enter {
   opacity: 0;
-  animation: chip-pop-in 0.4s ease-out forwards;
+  animation: chip-pop-in 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* === Fun Button Hover === */
+.btn-squish {
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s ease;
+}
+
+.btn-squish:hover {
+  transform: scale(1.05) translateY(-2px);
+}
+
+.btn-squish:active {
+  transform: scale(0.95) translateY(2px);
+  box-shadow: none !important;
 }
 
 /* === Input Glow Effect === */
 .input-glow {
-  transition: box-shadow 0.3s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 0px rgba(0,0,0,0.1) inset;
 }
 
 .input-glow-active {
-  box-shadow: 0 0 15px #00f0ff, 0 0 30px rgba(0, 240, 255, 0.2);
+  box-shadow: 0 0 0px 4px #ffe66d, 0 4px 15px rgba(255, 230, 109, 0.5);
+  transform: scale(1.01);
+}
+
+/* === Wiggle Animation === */
+@keyframes wiggle {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+  75% { transform: rotate(-5deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.hover-wiggle:hover {
+  animation: wiggle 0.4s ease-in-out infinite;
+}
+
+/* Kids UI specific scrollbars */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ffb86c;
+  border-radius: 10px;
+  border: 3px solid #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff8c42;
 }

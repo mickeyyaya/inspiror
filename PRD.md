@@ -32,7 +32,9 @@ Traditional text-based programming can be intimidating and syntax-heavy for chil
 *   **Iterative Visual Scaffolding (Step-by-Step):** If a child requests a complex project (e.g., "Make a Mario game"), the AI MUST NOT build the entire game at once. It must break the project down into small, visible steps. For example: Turn 1 builds the background and character. Turn 2 adds gravity and jumping. Turn 3 adds enemies. This ensures the child understands how the game is built and feels like an active participant rather than a passive observer.
 *   **Contextual Memory:** The AI must remember the state of the application and the history of the conversation so the child can make incremental changes.
 *   **Undo/Redo:** Ability to revert a change if the AI misunderstands or the child doesn't like the result.
-*   **Local Storage (No Accounts):** Projects and chat history will be saved directly in the browser's local storage to ensure privacy and remove friction (no sign-up required).
+*   **Multi-Project Support:** Users can create, open, and delete multiple projects from a Project Catalog screen. Each project has its own independent chat history and code state.
+*   **Auto-Generated Titles:** Project titles are automatically derived from the first user message, so kids don't need to name their projects manually.
+*   **Local Storage (No Accounts):** Projects and chat history will be saved directly in the browser's local storage to ensure privacy and remove friction (no sign-up required). Legacy single-project data is auto-migrated to the new multi-project format.
 
 ### 4.4. Safety & Moderation
 *   **Content Filtering:** Strict guardrails to prevent the generation or discussion of inappropriate, harmful, or unsafe content.
@@ -104,12 +106,14 @@ Based on competitive research, the following improvements have been shipped:
 | 8 | Chat panel toggle | Shipped | Smooth show/hide for distraction-free play |
 | 9 | Page title + favicon branding | Shipped | "Inspiror - Build Anything!" with rocket icon |
 | 10 | Input glow effect | Shipped | Cyan glow intensifies as kids type |
+| 11 | Auditory feedback (4 sounds) | Shipped | Pop, chip click, chime, buzzer with mute toggle |
+| 12 | Play/Edit mode toggle | Shipped | Distinct Build vs Play modes with chat hidden in Play |
+| 13 | Multi-project catalog | Shipped | Create, open, delete multiple projects with auto-titles |
+| 14 | Legacy data migration | Shipped | Old single-project data auto-migrates to multi-project format |
 
 ## 10. Future Enhancements
 *   **"Look Inside" / Code Remixing:** A Scratch-like feature to expose the generated HTML/JS in a safe, readable panel so kids can learn how the AI built the game and manually tweak variables (e.g., speed, color).
 *   **Asset Upload & Personalization:** Allow kids to upload their own drawings or photos (e.g., "Make my pet dog the main character") to deeply personalize their creations.
 *   **Gamified Progression:** Implement an achievement system (e.g., "Code Ninja badge unlocked for making 5 games!") and unlockable AI Buddy avatars to drive long-term retention.
-*   **Auditory Feedback:** Sound effects for send, chip click, success, and error events (sourced as royalty-free MP3s).
-*   **Play/Edit Toggle:** Distinct visual mode for "Playing" vs "Building."
 *   **Visual block export:** Convert the generated code into Scratch-like blocks for further learning.
 *   **Multiplayer collaboration:** Kids building together.
