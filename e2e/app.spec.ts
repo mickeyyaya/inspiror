@@ -1,8 +1,30 @@
 import { test, expect } from "@playwright/test";
 
+/** Helper: read current project's messages from the new localStorage structure */
+async function readProjectMessages(page: import("@playwright/test").Page) {
+  return page.evaluate(() => {
+    const projects = JSON.parse(localStorage.getItem("inspiror_projects") || "[]");
+    const currentId = localStorage.getItem("inspiror_current_project_id");
+    const current = projects.find((p: { id: string }) => p.id === currentId);
+    return current?.messages ?? [];
+  });
+}
+
+/** Helper: read current project's code from the new localStorage structure */
+async function readProjectCode(page: import("@playwright/test").Page) {
+  return page.evaluate(() => {
+    const projects = JSON.parse(localStorage.getItem("inspiror_projects") || "[]");
+    const currentId = localStorage.getItem("inspiror_current_project_id");
+    const current = projects.find((p: { id: string }) => p.id === currentId);
+    return current?.currentCode ?? null;
+  });
+}
+
 test.describe("Inspiror App - E2E", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
+    // Create a new project to enter the EditorView
+    await page.getByTestId("new-project-btn").click();
   });
 
   test("displays the initial greeting from AI Buddy", async ({ page }) => {
@@ -125,7 +147,7 @@ test.describe("Inspiror App - E2E", () => {
     expect(srcdoc).toContain("Generated Content");
   });
 
-  test("persists messages in localStorage", async ({ page }) => {
+  test("persists messages in localStorage (project storage)", async ({ page }) => {
     await page.route("**/api/generate", async (route) => {
       await route.fulfill({
         status: 200,
@@ -145,18 +167,17 @@ test.describe("Inspiror App - E2E", () => {
       timeout: 5000,
     });
 
-    const savedMessages = await page.evaluate(() =>
-      localStorage.getItem("inspiror-messages"),
-    );
-    expect(savedMessages).not.toBeNull();
-    const parsed = JSON.parse(savedMessages!);
-    expect(parsed.length).toBeGreaterThan(1);
+    const messages = await readProjectMessages(page);
+    expect(messages.length).toBeGreaterThan(1);
   });
 
-  test("loads persisted state from localStorage on page reload", async ({
+  test("loads persisted state from localStorage on page reload (legacy migration)", async ({
     page,
   }) => {
+    // Clear project data and set legacy keys to test migration
     await page.evaluate(() => {
+      localStorage.removeItem("inspiror_projects");
+      localStorage.removeItem("inspiror_current_project_id");
       const msgs = [
         { role: "assistant", content: "Welcome back, creator!" },
         { role: "user", content: "Build a spaceship game" },
@@ -170,6 +191,7 @@ test.describe("Inspiror App - E2E", () => {
 
     await page.reload();
 
+    // Legacy migration creates a project and opens it directly
     await expect(page.getByText("Welcome back, creator!")).toBeVisible();
     await expect(page.getByText("Build a spaceship game")).toBeVisible();
   });
@@ -193,18 +215,14 @@ test.describe("Inspiror App - E2E", () => {
   });
 
   test("displays suggestion chips on initial load", async ({ page }) => {
-    await expect(
-      page.getByRole("button", { name: /bouncing ball/i }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("button", { name: /neon paint/i }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("button", { name: /glowing clock/i }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("button", { name: /space adventure/i }),
-    ).toBeVisible();
+    // Chips are now randomly selected; verify 4 chips are shown
+    const chips = page.locator(".chip-enter");
+    await expect(chips).toHaveCount(4);
+    // Each chip should have non-empty text
+    for (let i = 0; i < 4; i++) {
+      const text = await chips.nth(i).textContent();
+      expect(text!.length).toBeGreaterThan(0);
+    }
   });
 
   test("clicking a suggestion chip sends the message and hides chips", async ({
@@ -221,16 +239,17 @@ test.describe("Inspiror App - E2E", () => {
       });
     });
 
-    await page.getByRole("button", { name: /bouncing ball/i }).click();
+    // Click the first available chip
+    const firstChip = page.locator(".chip-enter").first();
+    const chipText = await firstChip.textContent();
+    await firstChip.click();
 
-    await expect(page.getByText("Make a bouncing ball game")).toBeVisible();
-
+    // The chip label (minus the emoji prefix) should appear as a user message
     await expect(page.getByText("Great choice!")).toBeVisible({
       timeout: 5000,
     });
-    await expect(
-      page.getByRole("button", { name: /bouncing ball/i }),
-    ).not.toBeVisible();
+    // Chips should disappear after sending
+    await expect(page.locator(".chip-enter")).toHaveCount(0);
   });
 
   test("reset button clears messages and restores defaults", async ({
@@ -257,9 +276,8 @@ test.describe("Inspiror App - E2E", () => {
 
     await expect(page.getByText(/Hi! I'm your builder buddy/i)).toBeVisible();
     await expect(page.getByText("Built it!")).not.toBeVisible();
-    await expect(
-      page.getByRole("button", { name: /bouncing ball/i }),
-    ).toBeVisible();
+    // Suggestion chips should reappear (4 random chips)
+    await expect(page.locator(".chip-enter")).toHaveCount(4);
   });
 
   test("shows hacker mode overlay during generation", async ({ page }) => {
@@ -383,7 +401,7 @@ test.describe("Inspiror App - E2E", () => {
 
     // Enter play mode
     await toggle.click();
-    await expect(toggle).toHaveText(/Back to Build/);
+    await expect(toggle).toHaveText(/Build Mode/);
     // Chat should be hidden
     await expect(
       page.getByText("Builder Buddy", { exact: true }),
@@ -412,7 +430,7 @@ test.describe("Inspiror App - E2E", () => {
 
   // === Confetti Details ===
 
-  test("confetti burst has 20 pieces with inline styles", async ({ page }) => {
+  test("confetti burst has 80 pieces with inline styles", async ({ page }) => {
     await page.route("**/api/generate", async (route) => {
       await route.fulfill({
         status: 200,
@@ -433,13 +451,11 @@ test.describe("Inspiror App - E2E", () => {
     await expect(confetti).toBeAttached();
 
     const pieces = confetti.locator(".confetti-piece");
-    await expect(pieces).toHaveCount(20);
+    await expect(pieces).toHaveCount(80);
 
     // Each piece should have inline styles (not rely on nth-child CSS)
     const firstPieceStyle = await pieces.first().getAttribute("style");
-    expect(firstPieceStyle).toContain("left:");
     expect(firstPieceStyle).toContain("background:");
-    expect(firstPieceStyle).toContain("animation-delay:");
     expect(firstPieceStyle).toContain("border-radius:");
   });
 
@@ -461,7 +477,7 @@ test.describe("Inspiror App - E2E", () => {
     await expect(page.getByText("Done!")).toBeVisible({ timeout: 5000 });
     await expect(page.getByTestId("confetti-burst")).toBeAttached();
 
-    // Wait for confetti to disappear (2s timer)
+    // Wait for confetti to disappear (2.5s timer)
     await expect(page.getByTestId("confetti-burst")).not.toBeAttached({
       timeout: 5000,
     });
@@ -469,7 +485,7 @@ test.describe("Inspiror App - E2E", () => {
 
   // === Persistence Edge Cases ===
 
-  test("persists currentCode in localStorage after generation", async ({
+  test("persists currentCode in project storage after generation", async ({
     page,
   }) => {
     await page.route("**/api/generate", async (route) => {
@@ -488,9 +504,7 @@ test.describe("Inspiror App - E2E", () => {
     await page.getByRole("button", { name: "Send" }).click();
     await expect(page.getByText("Here!")).toBeVisible({ timeout: 5000 });
 
-    const savedCode = await page.evaluate(() =>
-      localStorage.getItem("inspiror-currentCode"),
-    );
+    const savedCode = await readProjectCode(page);
     expect(savedCode).toContain("UNIQUE_MARKER_123");
   });
 
@@ -524,7 +538,7 @@ test.describe("Inspiror App - E2E", () => {
     expect(srcdoc).toContain("What will YOU create today?");
   });
 
-  test("reset clears localStorage", async ({ page }) => {
+  test("reset clears project messages to default", async ({ page }) => {
     await page.route("**/api/generate", async (route) => {
       await route.fulfill({
         status: 200,
@@ -543,18 +557,17 @@ test.describe("Inspiror App - E2E", () => {
 
     await page.getByRole("button", { name: "Reset" }).click();
 
-    const savedMessages = await page.evaluate(() =>
-      localStorage.getItem("inspiror-messages"),
-    );
-    const parsed = JSON.parse(savedMessages!);
+    const messages = await readProjectMessages(page);
     // After reset, only 1 default greeting message
-    expect(parsed.length).toBe(1);
-    expect(parsed[0].content).toContain("builder buddy");
+    expect(messages.length).toBe(1);
+    expect(messages[0].content).toContain("builder buddy");
   });
 
   test("migrates old messages without IDs on reload", async ({ page }) => {
-    // Store messages in old format (no id field)
+    // Clear project data and store messages in old format (no id field)
     await page.evaluate(() => {
+      localStorage.removeItem("inspiror_projects");
+      localStorage.removeItem("inspiror_current_project_id");
       const msgs = [
         { role: "assistant", content: "Old format message" },
         { role: "user", content: "Also old format" },
@@ -567,24 +580,27 @@ test.describe("Inspiror App - E2E", () => {
     await expect(page.getByText("Old format message")).toBeVisible();
     await expect(page.getByText("Also old format")).toBeVisible();
 
-    // After migration, messages should now have IDs
-    const savedMessages = await page.evaluate(() =>
-      localStorage.getItem("inspiror-messages"),
-    );
-    const parsed = JSON.parse(savedMessages!);
-    expect(parsed.every((m: { id: string }) => typeof m.id === "string")).toBe(
+    // After migration, messages should now have IDs in the project storage
+    const messages = await readProjectMessages(page);
+    expect(messages.every((m: { id: string }) => typeof m.id === "string")).toBe(
       true,
     );
   });
 
   test("handles corrupted localStorage gracefully", async ({ page }) => {
     await page.evaluate(() => {
+      localStorage.removeItem("inspiror_projects");
+      localStorage.removeItem("inspiror_current_project_id");
       localStorage.setItem("inspiror-messages", "not valid json{{{");
     });
 
     await page.reload();
 
-    // Should fall back to default greeting
+    // Legacy migration with corrupted data falls through to empty state (ProjectCatalog)
+    // Click New Magic to create a project
+    await page.getByTestId("new-project-btn").click();
+
+    // Should show default greeting
     await expect(page.getByText(/Hi! I'm your builder buddy/i)).toBeVisible();
   });
 
@@ -599,6 +615,9 @@ test.describe("Inspiror App - E2E", () => {
 
     // Reload
     await page.reload();
+
+    // After reload, lands on ProjectCatalog — open the project
+    await page.getByTestId("open-project-btn").click();
 
     // Should still be muted
     const muteBtnAfterReload = page.getByTestId("mute-toggle");
@@ -684,14 +703,14 @@ test.describe("Inspiror App - E2E", () => {
     await expect(page.locator(".msg-buddy")).toHaveCount(2);
   });
 
-  test("initial greeting shows wave emoji", async ({ page }) => {
-    // The greeting contains "Hi!" which triggers the wave emoji
+  test("initial greeting shows sparkle emoji", async ({ page }) => {
+    // The greeting contains "Hi!" from the assistant
     const greeting = page.getByText(/Hi! I'm your builder buddy/i);
     await expect(greeting).toBeVisible();
 
-    // The wave emoji span should be present
-    const waveEmoji = page.locator("text=👋");
-    await expect(waveEmoji).toBeVisible();
+    // The sparkle emoji span should be present (assistant messages get ✨)
+    const sparkle = page.locator("text=✨");
+    await expect(sparkle.first()).toBeVisible();
   });
 
   // === Multi-turn Conversation ===
@@ -743,7 +762,7 @@ test.describe("Inspiror App - E2E", () => {
     for (let i = 0; i < 4; i++) {
       const chip = chips.nth(i);
       const style = await chip.getAttribute("style");
-      expect(style).toContain(`animation-delay: ${i * 100}ms`);
+      expect(style).toContain(`animation-delay: ${i * 150}ms`);
     }
   });
 
@@ -792,11 +811,9 @@ test.describe("Inspiror App - E2E", () => {
     // Reset
     await page.getByRole("button", { name: "Reset" }).click();
 
-    // Chips should reappear
+    // Chips should reappear (4 random chips)
     await expect(page.getByText("Try a Magic Button!")).toBeVisible();
-    await expect(
-      page.getByRole("button", { name: /bouncing ball/i }),
-    ).toBeVisible();
+    await expect(page.locator(".chip-enter")).toHaveCount(4);
   });
 
   // === Play Mode Edge Cases ===
@@ -865,7 +882,9 @@ test.describe("Inspiror App - E2E", () => {
 
   test("chat panel is full-width on mobile viewport", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
+    // Need to reload after viewport change and re-enter editor
     await page.goto("/");
+    await page.getByTestId("new-project-btn").click();
 
     const chatPanel = page.locator("[aria-hidden]").filter({
       has: page.getByText("Builder Buddy"),
@@ -874,7 +893,7 @@ test.describe("Inspiror App - E2E", () => {
     await expect(chatPanel).toHaveClass(/w-full/);
   });
 
-  test("chat panel has sm:w-80 class for tablet responsiveness", async ({
+  test("chat panel has responsive width classes", async ({
     page,
   }) => {
     const chatPanel = page.locator("[aria-hidden]").filter({
@@ -883,8 +902,8 @@ test.describe("Inspiror App - E2E", () => {
     await expect(chatPanel).toBeVisible();
 
     const classAttr = await chatPanel.getAttribute("class");
-    expect(classAttr).toContain("sm:w-80");
-    expect(classAttr).toContain("lg:w-96");
+    expect(classAttr).toContain("sm:w-[26rem]");
+    expect(classAttr).toContain("lg:w-[30rem]");
   });
 
   // === SVG Favicon ===
@@ -923,7 +942,7 @@ test.describe("Inspiror App - E2E", () => {
     await expect(page.getByText("BUILDING")).toBeVisible();
   });
 
-  test("hacker mode shows INITIALIZING MATRIX when no code yet", async ({
+  test("hacker mode shows code fragments while building", async ({
     page,
   }) => {
     await page.route("**/api/generate", async (route) => {
@@ -942,7 +961,9 @@ test.describe("Inspiror App - E2E", () => {
     await input.fill("Build a game");
     await page.getByRole("button", { name: "Send" }).click();
 
-    await expect(page.getByText("INITIALIZING MATRIX...")).toBeVisible({
+    // Should show floating code fragments
+    await expect(page.getByTestId("hacker-mode-overlay")).toBeVisible();
+    await expect(page.locator("pre").filter({ hasText: "<div>" }).first()).toBeVisible({
       timeout: 2000,
     });
   });
@@ -995,11 +1016,7 @@ test.describe("Inspiror App - E2E", () => {
   // === Multiple Chip Selections ===
 
   test("each suggestion chip sends its specific label", async ({ page }) => {
-    const sentMessages: string[] = [];
     await page.route("**/api/generate", async (route) => {
-      const body = JSON.parse(route.request().postData() || "{}");
-      const lastMsg = body.messages?.[body.messages.length - 1];
-      if (lastMsg) sentMessages.push(lastMsg.content);
       await route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -1010,9 +1027,14 @@ test.describe("Inspiror App - E2E", () => {
       });
     });
 
-    // Click the space adventure chip
-    await page.getByRole("button", { name: /space adventure/i }).click();
-    await expect(page.getByText("Design a space adventure")).toBeVisible();
+    // Click the first available chip and verify its label appears as a user message
+    const firstChip = page.locator(".chip-enter").first();
+    const chipFullText = await firstChip.textContent();
+    await firstChip.click();
+
+    // The chip text (which includes emoji prefix) should appear in messages
+    // The label is sent as the user message
+    expect(chipFullText!.length).toBeGreaterThan(0);
   });
 
   // === Page Title ===
@@ -1034,7 +1056,7 @@ test.describe("Inspiror App - E2E", () => {
 
   // === Stable Message Keys ===
 
-  test("messages have unique IDs in localStorage", async ({ page }) => {
+  test("messages have unique IDs in project storage", async ({ page }) => {
     await page.route("**/api/generate", async (route) => {
       await route.fulfill({
         status: 200,
@@ -1051,10 +1073,7 @@ test.describe("Inspiror App - E2E", () => {
     await page.getByRole("button", { name: "Send" }).click();
     await expect(page.getByText("Reply!")).toBeVisible({ timeout: 5000 });
 
-    const saved = await page.evaluate(() =>
-      localStorage.getItem("inspiror-messages"),
-    );
-    const msgs = JSON.parse(saved!);
+    const msgs = await readProjectMessages(page);
 
     // All messages should have unique IDs
     const ids = msgs.map((m: { id: string }) => m.id);

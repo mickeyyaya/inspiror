@@ -1,23 +1,36 @@
 import express from "express";
 import cors from "cors";
+import rateLimit from "express-rate-limit";
+import { z } from "zod";
 import { llmService } from "./llmService";
 
 export const app = express();
 
-app.use(cors());
+const allowedOrigins = (process.env.FRONTEND_URL || "http://localhost:5173,http://localhost:5174,http://localhost:5175,http://localhost:5176").split(",");
+app.use(cors({ origin: allowedOrigins }));
 app.use(express.json());
 
-app.post("/api/generate", async (req, res) => {
-  if (!req.body.messages || !Array.isArray(req.body.messages)) {
-    console.warn("[API] Rejected request: Missing messages array.");
-    return res.status(400).json({ error: "messages array is required" });
+const limiter = rateLimit({ windowMs: 60_000, max: 30 });
+
+const messageSchema = z.array(
+  z.object({
+    role: z.enum(["user", "assistant"]),
+    content: z.string().max(10_000),
+  }),
+);
+
+app.post("/api/generate", limiter, async (req, res) => {
+  const parsed = messageSchema.safeParse(req.body.messages);
+  if (!parsed.success) {
+    console.warn("[API] Rejected request: Invalid messages.", parsed.error.message);
+    return res.status(400).json({ error: "messages array is required with valid role and content" });
   }
 
-  console.log(`[API] Generation request received | Messages: ${req.body.messages.length} | Code length: ${req.body.currentCode?.length || 0}`);
+  console.log(`[API] Generation request received | Messages: ${parsed.data.length} | Code length: ${req.body.currentCode?.length || 0}`);
 
   try {
     const result = await llmService.generateStream(
-      req.body.messages,
+      parsed.data,
       req.body.currentCode,
       req.body.language,
     );

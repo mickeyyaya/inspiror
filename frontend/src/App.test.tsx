@@ -173,13 +173,15 @@ describe("Inspiror App", () => {
   describe("Project Catalog", () => {
     it("shows catalog when no project is selected", () => {
       render(<App />);
-      expect(screen.getByText("My Projects")).toBeInTheDocument();
+      expect(screen.getByText("My Creations")).toBeInTheDocument();
       expect(screen.getByTestId("new-project-btn")).toBeInTheDocument();
     });
 
     it("shows empty state with create button", () => {
       render(<App />);
-      expect(screen.getByText("Wow, so empty!")).toBeInTheDocument();
+      expect(
+        screen.getByText(/You haven't built anything yet/),
+      ).toBeInTheDocument();
     });
 
     it("creates a new project and opens editor", () => {
@@ -199,7 +201,7 @@ describe("Inspiror App", () => {
       seedProject();
       render(<App />);
       fireEvent.click(screen.getByTestId("back-to-catalog"));
-      expect(screen.getByText("My Projects")).toBeInTheDocument();
+      expect(screen.getByText("My Creations")).toBeInTheDocument();
     });
 
     it("opens a project from catalog", () => {
@@ -222,7 +224,7 @@ describe("Inspiror App", () => {
       mockStorage["inspiror_projects"] = JSON.stringify([project]);
 
       render(<App />);
-      expect(screen.getByText("My Projects")).toBeInTheDocument();
+      expect(screen.getByText("My Creations")).toBeInTheDocument();
       fireEvent.click(screen.getByTestId("open-project-btn"));
       expect(screen.getByText("Builder Buddy")).toBeInTheDocument();
     });
@@ -242,7 +244,9 @@ describe("Inspiror App", () => {
       expect(screen.getByText("My Cool App")).toBeInTheDocument();
       fireEvent.click(screen.getByTestId("delete-project-btn"));
       expect(screen.queryByText("My Cool App")).not.toBeInTheDocument();
-      expect(screen.getByText("Wow, so empty!")).toBeInTheDocument();
+      expect(
+        screen.getByText(/You haven't built anything yet/),
+      ).toBeInTheDocument();
     });
 
     it("migrates legacy data to a project", () => {
@@ -677,7 +681,7 @@ describe("Inspiror App", () => {
         mockStorage["inspiror_projects"] = "invalid-json{";
         render(<App />);
         // Should show catalog with empty state
-        expect(screen.getByText("My Projects")).toBeInTheDocument();
+        expect(screen.getByText("My Creations")).toBeInTheDocument();
       });
 
       it("handleSend does nothing if input is empty", () => {
@@ -840,7 +844,7 @@ describe("Inspiror App", () => {
 
       // Navigate to catalog
       fireEvent.click(screen.getByTestId("back-to-catalog"));
-      expect(screen.getByText("My Projects")).toBeInTheDocument();
+      expect(screen.getByText("My Creations")).toBeInTheDocument();
 
       // Find Project B by title and click its open button
       const projectBTitle = screen.getByText("Project B");

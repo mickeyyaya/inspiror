@@ -5,12 +5,18 @@ import { streamObject } from "ai";
 jest.mock("ai", () => ({
   streamObject: jest.fn().mockReturnValue({
     pipeTextStreamToResponse: (res: any) => {
-      res.status(200).send('{"reply":"Mocked reply from AI buddy","code":"<html>mocked code</html>"}');
-    }
+      res
+        .status(200)
+        .send(
+          '{"reply":"Mocked reply from AI buddy","code":"<html>mocked code</html>"}',
+        );
+    },
   }),
 }));
 
-const mockedStreamObject = streamObject as jest.MockedFunction<typeof streamObject>;
+const mockedStreamObject = streamObject as jest.MockedFunction<
+  typeof streamObject
+>;
 
 describe("POST /api/generate", () => {
   beforeEach(() => {
@@ -25,7 +31,10 @@ describe("POST /api/generate", () => {
   it("should return 400 if messages array is missing", async () => {
     const res = await request(app).post("/api/generate").send({});
     expect(res.status).toBe(400);
-    expect(res.body).toHaveProperty("error", "messages array is required");
+    expect(res.body).toHaveProperty(
+      "error",
+      "messages array is required with valid role and content",
+    );
   });
 
   it("should return a chunked stream when messages are provided", async () => {
@@ -68,6 +77,9 @@ describe("POST /api/generate", () => {
       });
 
     expect(res.status).toBe(500);
-    expect(res.body).toHaveProperty("error", "Internal server error during generation");
+    expect(res.body).toHaveProperty(
+      "error",
+      "Internal server error during generation",
+    );
   });
 });
