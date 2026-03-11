@@ -125,6 +125,24 @@ describe("POST /api/generate", () => {
     expect(res.body.error).toMatch(/must be an object/i);
   });
 
+  it("should reject empty messages array", async () => {
+    const res = await request(app).post("/api/generate").send({ messages: [] });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/at least one message/i);
+  });
+
+  it("should reject whitespace-only message content", async () => {
+    const res = await request(app)
+      .post("/api/generate")
+      .send({
+        messages: [{ role: "user", content: "   " }],
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/content.*required/i);
+  });
+
   it("should reject currentCode exceeding size limit", async () => {
     const res = await request(app)
       .post("/api/generate")

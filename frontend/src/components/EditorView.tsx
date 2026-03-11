@@ -83,6 +83,7 @@ export function EditorView({
     dismissUnlock,
     recordBuild,
     recordDebug,
+    recordExplore,
     selectedAvatar,
     unlockedAvatars,
     selectAvatar,
@@ -166,6 +167,7 @@ export function EditorView({
     stopListening();
     autoFixCountRef.current = 0;
     playChipClick();
+    recordExplore();
     const newMessages: ChatMessage[] = [...messages, withId("user", label)];
     setMessages(newMessages);
     submit({ messages: newMessages, currentCode, language });

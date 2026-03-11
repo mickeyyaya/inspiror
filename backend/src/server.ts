@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { llmService } from "./llmService";
 
@@ -11,6 +12,7 @@ const MAX_MESSAGES = 50;
 const MAX_CONTENT_LENGTH = 5000;
 const MAX_CODE_LENGTH = 50000;
 
+app.use(helmet());
 app.use(cors({ origin: ALLOWED_ORIGIN }));
 app.use(express.json({ limit: "512kb" }));
 
@@ -37,6 +39,10 @@ function validateMessages(messages: unknown): {
     return { valid: false, error: "messages array is required" };
   }
 
+  if (messages.length === 0) {
+    return { valid: false, error: "At least one message is required" };
+  }
+
   if (messages.length > MAX_MESSAGES) {
     return { valid: false, error: "Too many messages (max 50)" };
   }
@@ -52,7 +58,7 @@ function validateMessages(messages: unknown): {
         error: `Invalid role "${role}". Allowed: user, assistant`,
       };
     }
-    if (typeof content !== "string" || content.length === 0) {
+    if (typeof content !== "string" || content.trim().length === 0) {
       return {
         valid: false,
         error: "Message content is required and must be a string",
