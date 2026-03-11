@@ -1,6 +1,9 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import type { Project, ChatMessage } from "../types/project";
+import type { Block } from "../types/block";
 import { translations } from "../i18n/translations";
+import { DEFAULT_BLOCKS } from "../constants/defaultBlocks";
+import { compileBlocks } from "../compiler/compileBlocks";
 import type { VoiceLanguage } from "./useVoice";
 
 const STORAGE_KEYS = {
@@ -159,7 +162,10 @@ function migrateLegacyData(language: VoiceLanguage): Project | null {
 
 const VALID_ROLES = new Set<string>(["user", "assistant", "system"]);
 
-function migrateRawMessages(raw: unknown, language: VoiceLanguage): ChatMessage[] {
+function migrateRawMessages(
+  raw: unknown,
+  language: VoiceLanguage,
+): ChatMessage[] {
   if (!Array.isArray(raw)) return makeDefaultMessages(language);
   const valid = raw.filter(
     (msg) =>
@@ -184,7 +190,10 @@ function extractTitle(messages: ChatMessage[]): string {
   return text.slice(0, 40).replace(/\s+\S*$/, "") + "...";
 }
 
-function loadInitialState(language: VoiceLanguage): { projects: Project[]; currentId: string | null } {
+function loadInitialState(language: VoiceLanguage): {
+  projects: Project[];
+  currentId: string | null;
+} {
   const existing = loadJson<Project[]>(STORAGE_KEYS.projects, []);
 
   if (existing.length > 0) {
@@ -225,20 +234,23 @@ export function useProjects(language: VoiceLanguage) {
   const DEFAULT_CODE = getWelcomeCode(language);
 
   const createProject = useCallback((): Project => {
+    const blocks = DEFAULT_BLOCKS.map((b) => ({ ...b }));
     const newProject: Project = {
       id: crypto.randomUUID(),
       title: "Untitled Project",
       createdAt: Date.now(),
       updatedAt: Date.now(),
       messages: makeDefaultMessages(language),
-      currentCode: DEFAULT_CODE,
+      currentCode: compileBlocks(blocks),
+      blocks,
+      version: 2,
     };
     setState((prev) => ({
       projects: [newProject, ...prev.projects],
       currentId: newProject.id,
     }));
     return newProject;
-  }, [language, DEFAULT_CODE]);
+  }, [language]);
 
   const openProject = useCallback((id: string) => {
     setState((prev) => ({ ...prev, currentId: id }));
@@ -259,14 +271,18 @@ export function useProjects(language: VoiceLanguage) {
   const updateProject = useCallback(
     (
       projectId: string,
-      updates: Partial<Pick<Project, "messages" | "currentCode" | "title">>,
+      updates: Partial<
+        Pick<Project, "messages" | "currentCode" | "title" | "blocks">
+      >,
     ) => {
       setState((prev) => {
         const updatedProjects = prev.projects.map((p) => {
           if (p.id !== projectId) return p;
           const baseUpdated = { ...p, ...updates, updatedAt: Date.now() };
           const shouldRename =
-            (baseUpdated.title === "Untitled Project" || baseUpdated.title === "未命名項目") && updates.messages;
+            (baseUpdated.title === "Untitled Project" ||
+              baseUpdated.title === "未命名項目") &&
+            updates.messages;
           return shouldRename
             ? { ...baseUpdated, title: extractTitle(updates.messages!) }
             : baseUpdated;
@@ -278,7 +294,9 @@ export function useProjects(language: VoiceLanguage) {
   );
 
   const updateCurrentProject = useCallback(
-    (updates: Partial<Pick<Project, "messages" | "currentCode">>) => {
+    (
+      updates: Partial<Pick<Project, "messages" | "currentCode" | "blocks">>,
+    ) => {
       const id = stateRef.current.currentId;
       if (!id) return;
       updateProject(id, updates);
@@ -287,11 +305,13 @@ export function useProjects(language: VoiceLanguage) {
   );
 
   const resetCurrentProject = useCallback(() => {
+    const blocks = DEFAULT_BLOCKS.map((b) => ({ ...b }));
     updateCurrentProject({
       messages: makeDefaultMessages(language),
-      currentCode: DEFAULT_CODE,
+      currentCode: compileBlocks(blocks),
+      blocks,
     });
-  }, [updateCurrentProject, language, DEFAULT_CODE]);
+  }, [updateCurrentProject, language]);
 
   return {
     projects,

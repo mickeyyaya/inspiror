@@ -61,6 +61,56 @@ Inspiror follows a client-server architecture:
 *   **`useProjects`** (`hooks/useProjects.ts`): Multi-project CRUD, localStorage persistence, legacy data migration, auto-title extraction.
 *   **`useAudio`** (`hooks/useAudio.ts`): Preloads 4 sound effects, provides play functions, mute toggle persisted to localStorage.
 
+### `BlockEditor` (`components/BlockEditor.tsx`)
+*   **Responsibility:** Renders the visual block panel and orchestrates drag-and-drop reordering. Integrates with `EditorView` via an `isOpen` prop and an `onBlocksChange` callback.
+*   **Library:** dnd-kit (`@dnd-kit/core`, `@dnd-kit/sortable`). Wrapped in a `DndContext` + `SortableContext` for sortable list semantics.
+*   **State:** Owns the ordered `BlockDefinition[]` array. Delegates individual block mutations to `BlockCard` via an `onUpdateBlock` callback.
+*   **Accessibility:** Custom `announcements` prop on `DndContext` with kid-friendly language. `aria-hidden` applied when panel is closed.
+*   **Known risk:** dnd-kit maintenance activity has slowed (see issue #1194). Interface abstraction planned to allow library swap.
+
+### `BlockCard` (`components/BlockCard.tsx`)
+*   **Responsibility:** Renders a single draggable block card: category chip, block label, and a list of `ParamEditor` widgets for each parameter.
+*   **Implementation:** Wraps `useSortable` from `@dnd-kit/sortable`. Applies `transform` and `transition` styles from `CSS.Transform.toString`.
+*   **Props:** `block: BlockDefinition`, `onUpdate: (updated: BlockDefinition) => void`, `dragHandleProps`.
+
+### `ParamEditor` (`components/ParamEditor.tsx`)
+*   **Responsibility:** Renders a labeled range slider for a single numeric block parameter. Fires `onUpdate` on change, triggering a recompile.
+*   **Performance note:** `onChange` is debounced at 50-100ms to avoid recompiling on every slider tick event.
+
+### Block Runtime Engine
+*   **Location:** `src/runtime/compileBlocks.ts`
+*   **Purpose:** Converts an ordered `BlockDefinition[]` into a standalone HTML string that can be injected into the preview `<iframe>` via `srcdoc`.
+*   **Pipeline:**
+    1. `parseBlocks(blocks)` — validates each block's category and param types.
+    2. `resolveParams(block)` — substitutes slider values into block templates.
+    3. `assembleHTML(resolvedBlocks)` — wraps resolved snippets in a full HTML shell with the same error-catcher script used by the chat-based code path.
+    4. Returns the assembled string; caller sets `iframe.srcdoc`.
+*   **Template format:** Each `BlockDefinition` carries a `template` string with `{{paramName}}` placeholders. `resolveParams` does a single-pass string replacement.
+*   **Minification:** `RUNTIME_ENGINE` shell (shared boilerplate injected into every iframe) is currently unminified. Minification is planned as a low-priority optimization.
+
+### Block Data Model (`types/block.ts`)
+```typescript
+type BlockCategory = "motion" | "appearance" | "sound" | "control" | "event";
+
+interface BlockParam {
+  name: string;
+  type: "number" | "color" | "string";
+  value: number | string;
+  min?: number;
+  max?: number;
+  step?: number;
+}
+
+interface BlockDefinition {
+  id: string;          // stable UUID
+  category: BlockCategory;
+  label: string;       // human-readable, e.g. "Move right"
+  template: string;    // code template with {{param}} placeholders
+  params: BlockParam[];
+}
+```
+*   **Schema duplication risk:** `BlockCategory` is currently defined in three places (frontend types, backend `llmService.ts`, Zod schema). Planned consolidation to a single source.
+
 ## 3. API Contract (Backend)
 
 ### `POST /api/generate`
@@ -82,6 +132,17 @@ Inspiror follows a client-server architecture:
       "code": "<!DOCTYPE html><html..."
     }
     ```
+
+### `POST /api/convert-to-blocks`
+*   **Request Body:**
+    ```json
+    {
+      "code": "<!DOCTYPE html><html>...</html>"
+    }
+    ```
+*   **Purpose:** Sends the current generated HTML/JS to Gemini and asks it to decompose the code into a `BlockDefinition[]` array. Enables legacy projects to enter the block editor without a full regeneration.
+*   **Response:** A JSON array of `BlockDefinition` objects matching the shared schema.
+*   **Security gap:** No rate limiter currently applied. `express-rate-limit` guard is a tracked HIGH issue.
 
 ## 4. Test-Driven Development (TDD) Strategy
 
@@ -116,7 +177,18 @@ We use **Vitest** and **React Testing Library** for the frontend, and **Jest** +
 *   **Frontend Test 7:** Verify that `messages` and `currentCode` are saved to `localStorage` when updated. (GREEN)
 *   **Frontend Test 8:** Verify that the app initializes its state from `localStorage` on load instead of the default state. (GREEN)
 
-### Phase 5 & 6: Deployment & Deep Engagement (Future)
+### Phase 6: Visual Block Editor (COMPLETED)
+*   **BlockEditor test — renders block list:** Verify `BlockCard` components render for each block in the `blocks` prop array. (GREEN planned)
+*   **BlockEditor test — reorder via dnd-kit:** Simulate `DragEndEvent`; verify `onBlocksChange` called with reordered array. (GREEN planned)
+*   **BlockCard test — renders params:** Verify a `ParamEditor` renders for each `BlockParam` in the block definition. (GREEN planned)
+*   **BlockCard test — calls onUpdate on param change:** Simulate slider input; verify `onUpdate` called with updated `BlockDefinition`. (GREEN planned)
+*   **ParamEditor test — renders range slider:** Verify `<input type="range">` renders with correct `min`, `max`, `step`, `value`. (GREEN planned)
+*   **ParamEditor test — debounce fires onUpdate:** Simulate rapid slider events; verify `onUpdate` called at most once per debounce window. (GREEN planned)
+*   **compileBlocks test — produces valid HTML:** Verify output string contains `<!DOCTYPE html>` and the resolved param values. (GREEN planned)
+*   **compileBlocks test — substitutes all params:** Verify no `{{placeholder}}` strings remain in output. (GREEN planned)
+*   **Backend test — `/api/convert-to-blocks` returns block array:** Mock Gemini response; verify endpoint returns `BlockDefinition[]` with correct shape. (GREEN planned)
+
+### Phase 7 & Beyond: Deep Engagement (Future)
 *   **Frontend Test:** Verify "Look Inside" panel toggles and allows code edits.
 *   **Frontend Test:** Verify image upload converts to Base64 and attaches to prompt payload.
 *   **Frontend Test:** Verify `gamesBuilt` state triggers achievement modals upon reaching thresholds.
@@ -282,4 +354,6 @@ We use **Vitest** and **React Testing Library** for the frontend, and **Jest** +
 2.  ~~**Phase 5:** CSS media queries, Docker, Vercel deployment.~~ (DONE)
 3.  ~~**Tech Debt:** Message keys, confetti timer, accessibility, favicon, CSS coupling.~~ (DONE)
 4.  ~~**Multi-Project Support:** Project catalog, CRUD, legacy migration, auto-titles.~~ (DONE)
-5.  **Phase 6 (Future):** Sliding code editor ("Look Inside"), image upload, gamified achievements.
+5.  ~~**Phase 6:** Visual block editor — BlockEditor, BlockCard, ParamEditor, compileBlocks runtime engine, `/api/convert-to-blocks`.~~ (DONE)
+6.  **Cycle 7 Tech Debt (Next):** Write unit tests for block editor components; add rate limiter to `/api/convert-to-blocks`; remove dead `@google/genai` and orphaned `CodePanel.tsx`; debounce `compileBlocks`; wire legacy project auto-conversion.
+7.  **Phase 7 (Future):** Gamified progression (badges, XP, buddy skins); image upload; voice-guided coding; publish & share.

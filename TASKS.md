@@ -78,7 +78,20 @@
 - [x] Expanded E2E test suite to 57 tests covering all new and existing features.
 - [x] Expanded unit test suite to 45+ tests covering edge cases (error catcher branches, error handling, partial finishes, JSON parse failures).
 
-## Phase 6: Deep Engagement & Retention (Future) [ ]
+## Phase 6: Visual Block Editor [x]
+**Goal:** Add a Scratch-inspired visual block editor so kids can manipulate generated code through draggable blocks instead of raw text.
+
+### Completed
+- [x] `BlockEditor` component: dnd-kit-powered drag-and-drop block reordering with `DndContext` + `SortableContext`.
+- [x] `BlockCard` component: visual card per block with color-coded category chips, param sliders, and live value display.
+- [x] `ParamEditor` component: slider-based numeric param editing that recompiles the block to code on change.
+- [x] `compileBlocks` runtime engine: converts `BlockDefinition[]` into a valid HTML/JS string executed in the preview iframe.
+- [x] `BlockCategory` enum shared between frontend and backend schemas.
+- [x] `/api/convert-to-blocks` backend endpoint: sends current code to Gemini, returns structured `BlockDefinition[]`.
+- [x] Block panel slide-in UI integrated into `EditorView` with open/close toggle.
+- [x] `recordRemix` hook wired to block edits so changes feed back into conversation history.
+
+## Phase 7: Deep Engagement & Retention (Future) [ ]
 **Goal:** Implement features that keep kids coming back based on research of platforms like Scratch and Roblox.
 
 ### Feature 1: "Look Inside" / Code Remixing
@@ -97,6 +110,43 @@
 - [ ] State: Track a `gamesBuilt` integer in `localStorage`. Increment this every time `isGenerating` completes successfully.
 - [ ] Logic: Create a `useAchievements` hook that checks `gamesBuilt` against thresholds. If a new threshold is crossed, trigger a global `react-confetti` overlay and display a congratulatory modal.
 - [ ] UI: Add an "Avatar/Badges" menu where kids can swap their AI Buddy (🐶) for newly unlocked avatars (e.g., 🐉 Dragon, 🤖 Robot).
+
+## Cycle 7 Audit: Block Editor — New Issues [ ]
+
+### CRITICAL / HIGH
+
+- [ ] **No tests for BlockEditor, BlockCard, ParamEditor** — Three new components shipped with zero unit tests. Write Vitest tests for all three before any further feature work. (Code Quality)
+- [ ] **No rate limiter on `/api/convert-to-blocks`** — New endpoint has no `express-rate-limit` guard; one kid spamming the button can exhaust the Gemini quota. Add per-IP rate limiting matching the `/api/generate` policy. (Security) [`server.ts`]
+- [ ] **Remove dead `@google/genai` dependency** — Still present in `backend/package.json` after Cycle 3 audit; now confirmed unused. Remove to reduce install size and supply-chain surface. (Code Quality) [`backend/package.json`]
+- [ ] **Debounce `compileBlocks` on param slider changes** — Every slider `onChange` event triggers a full recompile and iframe reload with no debounce. Add 50-100ms debounce to prevent jank on rapid slider drags. (Performance) [`ParamEditor`]
+- [ ] **Add `aria-hidden` to block panel when closed** — Block panel stays in the DOM when closed; screen readers traverse off-screen block cards. Add `aria-hidden={!isBlockPanelOpen}`. (Accessibility) [`EditorView`]
+- [ ] **Wire `/api/convert-to-blocks` into frontend for legacy project auto-conversion** — Existing projects that predate the block editor never get their code converted. Trigger conversion on first block panel open when `blocks` state is empty. (Architecture)
+- [ ] **Extract Gemini model name to constant/env var in `llmService.ts`** — Model identifier still hardcoded as a string literal (carried from Cycle 3 audit). Extract to `GEMINI_MODEL` constant or environment variable. (Code Quality) [`llmService.ts`]
+- [ ] **Remove orphaned `CodePanel.tsx`** — `CodePanel` was superseded by `BlockEditor` but the file was not deleted. Dead code increases bundle size and causes confusion. (Code Quality)
+
+### MEDIUM
+
+- [ ] **Migrate `experimental_useObject` to stable `useObject`** — Carried from Cycle 3 audit. AI SDK 6 promotes this to a stable export; the experimental import will break in a future release. (Code Quality) [`App.tsx`]
+- [ ] **Add kid-friendly ARIA announcements for dnd-kit drag operations** — Default dnd-kit announcements are developer-facing ("Item 1 was picked up"). Replace with custom `announcements` prop using child-appropriate language ("Block picked up! Drop it where you want it to go."). (Accessibility) [`BlockEditor`]
+- [ ] **Add block deletion to `BlockCard`** — There is currently no way to remove a block once it has been added. Add a delete button (trash icon, large touch target). (Playability) [`BlockCard`]
+- [ ] **Add "Ask AI to add a block" button in block panel** — Kids can reorder and edit existing blocks but cannot add new ones without leaving the panel. Add a chat-passthrough button that sends a request to the AI Buddy. (Playability)
+- [ ] **Block panel close button is hardcoded English** — `"Close"` label is not translated. Add i18n key. (i18n) [`BlockEditor`]
+- [ ] **`CodePanel` hardcoded English strings** — Several strings in the now-orphaned `CodePanel.tsx` are not translated. Moot once the file is deleted, but confirm removal before de-prioritizing. (i18n) [`CodePanel.tsx`]
+- [ ] **ProjectCatalog delete confirmation dialog** — Instant project deletion on button click with no undo. Catastrophic for kids (also noted in Cycle 3). (Playability) [`ProjectCatalog.tsx`]
+- [ ] **`useMemo` for `sortedBlocks` in `BlockEditor`** — Block array is sorted on every render without memoization. Wrap in `useMemo` with `[blocks]` dependency. (Performance) [`BlockEditor`]
+- [ ] **Abstract dnd-kit behind an interface layer** — dnd-kit issue #1194 and reduced maintainer activity signal maintenance risk. Wrapping drag-and-drop behind a `DragContext` interface allows a library swap without touching every component. (Architecture) [`BlockEditor`]
+- [ ] **Focus trap for `AchievementModal` and `BadgeGallery`** — Modal dialogs do not trap keyboard focus; tab key escapes to background content. (Accessibility)
+- [ ] **`useAudio` `cloneNode` memory leak** — Carried from Cycle 2/3 audits. `cloneNode` accumulates `HTMLAudioElement` instances on rapid interactions with no cleanup. (Performance) [`useAudio.ts`]
+- [ ] **`handleRunCode` missing `isLoading` guard** — If a user triggers run while generation is in progress, the iframe state can become inconsistent. Add an `isLoading` guard matching the pattern used in `handleSend`. (Stability)
+- [ ] **Add Express global error middleware** — Carried from Cycle 3 audit. Uncaught async errors in route handlers return empty responses. Add `(err, req, res, next)` middleware at the end of `server.ts`. (Stability) [`server.ts`]
+
+### LOW
+
+- [ ] **Block panel empty state message** — When no blocks are present (new project or failed conversion), the panel shows a blank area with no guidance. Add a short instructional message. (Playability) [`BlockEditor`]
+- [ ] **Schema duplication for `BlockCategory`** — `BlockCategory` is defined in three places: frontend `types/`, backend `llmService.ts`, and the Zod schema. Extract to a single shared package or generate one from the other. (Code Quality)
+- [ ] **Minify `RUNTIME_ENGINE` string** — The compiled runtime engine string embedded in each iframe is not minified, adding unnecessary bytes to every preview reload. (Performance)
+- [ ] **Enforce Vitest coverage thresholds** — `vitest.config.ts` still lacks `coverage.thresholds` (carried from Cycle 3 audit). CI can pass with arbitrarily low coverage. (Code Quality) [`vitest.config.ts`]
+- [ ] **Add high-contrast block color mode** — Scratch uses distinct, high-contrast block colors per category for accessibility. Add a toggle or auto-detect `prefers-contrast: more` for block panel colors. (Accessibility)
 
 ## Backlog: New Features [ ]
 
