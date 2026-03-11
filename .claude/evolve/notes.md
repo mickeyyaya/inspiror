@@ -41,3 +41,15 @@
 - **Tests:** 98 total (86 frontend + 12 backend), all passing
 - **Warnings deferred:** AchievementModal/BadgeGallery a11y (no dialog role, Escape key), no aria-live for streaming, useAudio cloneNode leak, translations.ts typed as any, font @font-face broken, ProjectCatalog delete no confirmation
 - **Next cycle should consider:** A11y pass (dialog roles, aria-live, keyboard traps), useAudio memory leak fix, translations type safety, font loading fix, ProjectCatalog delete confirmation
+
+## Cycle 6 — 2026-03-11
+- **Items:** TranslationKeys type safety + A11y fixes (modals, streaming, i18n)
+- **Type:** Type Safety + Accessibility
+- **TranslationKeys:** Replaced `Record<Language, any>` with explicit `TranslationKeys` interface (47 keys). Compile-time checking for all 3 locales.
+- **A11y:** Added `role="dialog"`, `aria-modal="true"`, `aria-labelledby` to AchievementModal and BadgeGallery. Added Escape key handlers and auto-focus management. Added `aria-live="polite"` to streaming reply in MessageList.
+- **i18n modals:** Replaced 8 hardcoded English strings in AchievementModal and BadgeGallery with translation keys (EN/TW/CN). Fixed ChatHeader badge button aria-label.
+- **Security:** PASS (no new vulnerabilities)
+- **Architecture:** WARN → PASS after fixes (i18n consistency + tests added)
+- **Tests:** 104 total (18 new: 7 AchievementModal + 7 BadgeGallery + 4 MessageList), all passing
+- **Warnings deferred:** Focus trap not implemented (Tab can escape modals), useAudio cloneNode leak, font @font-face broken, ProjectCatalog delete no confirmation, EditorView still ~347 lines, flat TranslationKeys may need nesting at ~60+ keys, handleRunCode missing isLoading guard, CodePanel "Look Inside"/"Reset to AI Version"/"Run My Code" hardcoded English
+- **Next cycle should consider:** Focus trap for modals, CodePanel i18n, handleRunCode isLoading guard, useAudio memory leak, ProjectCatalog delete confirmation, template gallery
