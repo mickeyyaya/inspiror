@@ -515,7 +515,7 @@ describe("Inspiror App", () => {
       const input = screen.getByPlaceholderText(/Type your grand idea/i);
       fireEvent.change(input, { target: { value: "Something else" } });
 
-      const resetBtn = screen.getByRole("button", { name: /Reset/i });
+      const resetBtn = screen.getByRole("button", { name: /^Reset$/i });
       fireEvent.click(resetBtn);
 
       expect(confirmSpy).toHaveBeenCalled();

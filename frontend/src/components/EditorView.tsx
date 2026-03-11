@@ -14,6 +14,7 @@ import { MessageInput } from "./MessageInput";
 import { PreviewPanel } from "./PreviewPanel";
 import { AchievementModal } from "./AchievementModal";
 import { BadgeGallery } from "./BadgeGallery";
+import { CodePanel } from "./CodePanel";
 
 export interface EditorViewProps {
   project: Pick<Project, "id" | "messages" | "currentCode">;
@@ -85,11 +86,13 @@ export function EditorView({
     recordBuild,
     recordDebug,
     recordExplore,
+    recordRemix,
     selectedAvatar,
     unlockedAvatars,
     selectAvatar,
   } = useAchievements();
   const [isBadgeGalleryOpen, setIsBadgeGalleryOpen] = useState(false);
+  const [isCodePanelOpen, setIsCodePanelOpen] = useState(false);
   const codingFacts = useMemo(() => getCodingFacts(language), [language]);
   const recordBuildRef = useRef(recordBuild);
   const recordDebugRef = useRef(recordDebug);
@@ -190,6 +193,11 @@ export function EditorView({
     setInputValue("");
     setSuggestionChips(pickRandomChips());
     autoFixCountRef.current = 0;
+  };
+
+  const handleRunCode = (code: string) => {
+    setCurrentCode(code);
+    recordRemix();
   };
 
   const showSuggestions =
@@ -309,9 +317,17 @@ export function EditorView({
         isLoading={isLoading}
         isChatVisible={isChatVisible}
         onShowChat={() => setIsChatVisible(true)}
+        onLookInside={() => setIsCodePanelOpen(true)}
         iframeRef={iframeRef}
         codingFacts={codingFacts}
         t={t}
+      />
+
+      <CodePanel
+        code={currentCode}
+        isOpen={isCodePanelOpen}
+        onClose={() => setIsCodePanelOpen(false)}
+        onRunCode={handleRunCode}
       />
 
       <AchievementModal achievement={newlyUnlocked} onDismiss={dismissUnlock} />
