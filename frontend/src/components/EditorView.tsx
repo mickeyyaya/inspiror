@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { useAudio } from "../hooks/useAudio";
 import { useVoice, type VoiceLanguage } from "../hooks/useVoice";
+import { useAchievements } from "../hooks/useAchievements";
 import { translations } from "../i18n/translations";
 import type { ChatMessage } from "../types/project";
 import { generationSchema, pickRandomChips, withId } from "../constants";
@@ -10,6 +11,8 @@ import { ChatHeader } from "./ChatHeader";
 import { MessageList } from "./MessageList";
 import { MessageInput } from "./MessageInput";
 import { PreviewPanel } from "./PreviewPanel";
+import { AchievementModal } from "./AchievementModal";
+import { BadgeGallery } from "./BadgeGallery";
 
 export interface EditorViewProps {
   project: { id: string; messages: ChatMessage[]; currentCode: string };
@@ -77,8 +80,31 @@ export function EditorView({
     speak,
     toggleAutoSpeak,
   } = useVoice(language);
+  const {
+    achievements,
+    unlockedIds,
+    stats,
+    newlyUnlocked,
+    dismissUnlock,
+    recordBuild,
+    recordDebug,
+    selectedAvatar,
+    unlockedAvatars,
+    selectAvatar,
+  } = useAchievements();
+  const [isBadgeGalleryOpen, setIsBadgeGalleryOpen] = useState(false);
+  const recordBuildRef = useRef(recordBuild);
+  const recordDebugRef = useRef(recordDebug);
   const playChimeRef = useRef(playChime);
   const speakRef = useRef(speak);
+
+  useEffect(() => {
+    recordBuildRef.current = recordBuild;
+  }, [recordBuild]);
+
+  useEffect(() => {
+    recordDebugRef.current = recordDebug;
+  }, [recordDebug]);
 
   useEffect(() => {
     playChimeRef.current = playChime;
@@ -109,6 +135,7 @@ export function EditorView({
         setCurrentCode(finalObj.code as string);
       }
       playChimeRef.current();
+      recordBuildRef.current();
 
       if (confettiTimerRef.current) {
         clearTimeout(confettiTimerRef.current);
@@ -199,6 +226,7 @@ export function EditorView({
         console.log(`[App] Triggering Auto-Fix (${autoFixCountRef.current}/2)`);
 
         playBuzzer();
+        recordDebugRef.current();
         const oopsMessage = withId("assistant", t.error_oops);
         const errorContext = withId(
           "user",
@@ -235,12 +263,14 @@ export function EditorView({
             isMuted={isMuted}
             isAutoSpeakEnabled={isAutoSpeakEnabled}
             language={language}
+            buddyEmoji={selectedAvatar.emoji}
             onBack={onBack}
             onToggleLanguage={onToggleLanguage}
             onToggleAutoSpeak={toggleAutoSpeak}
             onToggleMute={toggleMute}
             onReset={handleReset}
             onHideChat={() => setIsChatVisible(false)}
+            onOpenBadges={() => setIsBadgeGalleryOpen(true)}
             t={t}
           />
 
@@ -276,6 +306,18 @@ export function EditorView({
         onShowChat={() => setIsChatVisible(true)}
         iframeRef={iframeRef}
         t={t}
+      />
+
+      <AchievementModal achievement={newlyUnlocked} onDismiss={dismissUnlock} />
+
+      <BadgeGallery
+        isOpen={isBadgeGalleryOpen}
+        onClose={() => setIsBadgeGalleryOpen(false)}
+        unlockedIds={unlockedIds}
+        stats={stats}
+        selectedAvatar={selectedAvatar}
+        unlockedAvatars={unlockedAvatars}
+        onSelectAvatar={selectAvatar}
       />
     </div>
   );
