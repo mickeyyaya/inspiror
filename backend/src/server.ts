@@ -144,6 +144,19 @@ app.post("/api/convert-to-blocks", async (req, res) => {
   }
 });
 
+// Global error handler — catches unhandled errors in route handlers
+app.use(
+  (
+    err: Error,
+    _req: express.Request,
+    res: express.Response,
+    _next: express.NextFunction,
+  ) => {
+    console.error("[API] Unhandled error:", err);
+    res.status(500).json({ error: "Internal server error" });
+  },
+);
+
 if (require.main === module) {
   const PORT = process.env.PORT || 3001;
   app.listen(PORT, () => {
