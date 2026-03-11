@@ -31,3 +31,13 @@
 - **Tests:** 98 total (86 frontend + 12 backend), all passing. 6 new BuildingOverlay tests + 2 new backend validation tests
 - **Warnings deferred:** Rate limiter needs Redis for multi-instance; experimental_useObject not migrated; EditorView still 282 lines
 - **Next cycle should consider:** Content moderation, EditorView decomposition, template gallery, share/export feature, onboarding tutorial
+
+## Cycle 5 — 2026-03-11
+- **Items:** Re-enable Look Inside CodePanel + Backend test script & zh-TW language hint
+- **Type:** Feature regression fix + Stability
+- **CodePanel:** Re-wired orphaned CodePanel component back into EditorView. Added "Look Inside" button to PreviewPanel with i18n labels (EN/TW/CN). Connected recordRemix achievement when user runs edited code.
+- **Backend:** Fixed npm test script (was placeholder echo), added zh-TW Traditional Chinese branch to LLM language hint (was defaulting to English).
+- **Security:** PASS (no new attack vectors — CodePanel was already built and tested)
+- **Tests:** 98 total (86 frontend + 12 backend), all passing
+- **Warnings deferred:** AchievementModal/BadgeGallery a11y (no dialog role, Escape key), no aria-live for streaming, useAudio cloneNode leak, translations.ts typed as any, font @font-face broken, ProjectCatalog delete no confirmation
+- **Next cycle should consider:** A11y pass (dialog roles, aria-live, keyboard traps), useAudio memory leak fix, translations type safety, font loading fix, ProjectCatalog delete confirmation
