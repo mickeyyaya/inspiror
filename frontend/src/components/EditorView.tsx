@@ -65,6 +65,8 @@ export function EditorView({
   const [showConfetti, setShowConfetti] = useState(false);
   const [suggestionChips, setSuggestionChips] = useState(pickRandomChips);
 
+  const isLegacyProject = useRef(project.blocks === undefined);
+
   const inputRef = useRef<HTMLInputElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const autoFixCountRef = useRef(0);
@@ -232,9 +234,14 @@ export function EditorView({
     [recordRemix],
   );
 
-  // Debounced compile: derive currentCode from blocks to avoid torn state
+  // Debounced compile: derive currentCode from blocks to avoid torn state.
+  // Skip initial compile for legacy projects (no blocks field) to preserve saved currentCode.
   const compileTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
+    if (isLegacyProject.current) {
+      isLegacyProject.current = false;
+      return;
+    }
     if (compileTimerRef.current) clearTimeout(compileTimerRef.current);
     compileTimerRef.current = setTimeout(() => {
       setCurrentCode(compileBlocks(blocks));

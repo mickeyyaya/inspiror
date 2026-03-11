@@ -30,7 +30,9 @@ const blockSchema = z.object({
       "custom",
     ])
     .describe("Block category"),
-  label: z.string().describe("Short human-readable label, e.g. 'Bouncing Ball'"),
+  label: z
+    .string()
+    .describe("Short human-readable label, e.g. 'Bouncing Ball'"),
   emoji: z.string().describe("Single emoji representing this block"),
   enabled: z.boolean().describe("Whether this block is active"),
   params: z
@@ -58,6 +60,14 @@ export const generationSchema = z.object({
 });
 
 export type GenerationResult = z.infer<typeof generationSchema>;
+
+const conversionSchema = z.object({
+  blocks: z
+    .array(blockSchema)
+    .describe(
+      "Array of self-contained logic blocks converted from the provided HTML/JS code. Each block must use the game.* runtime API.",
+    ),
+});
 
 // --- Runtime API reference for the system prompt ---
 const RUNTIME_API_REFERENCE = `
@@ -263,10 +273,7 @@ When the user has existing blocks and asks for changes:
     }
   }
 
-  async convertToBlocks(
-    code: string,
-    language: string = "en-US",
-  ) {
+  async convertToBlocks(code: string, language: string = "en-US") {
     try {
       const prompt = `You are converting a legacy HTML/CSS/JS app into the block-based format.
 Analyze the code and create equivalent blocks using the game.* runtime API.
@@ -287,7 +294,7 @@ ${code}`;
             thinkingConfig: { thinkingLevel: "medium" },
           },
         },
-        schema: generationSchema,
+        schema: conversionSchema,
         messages: [
           {
             role: "user" as const,
