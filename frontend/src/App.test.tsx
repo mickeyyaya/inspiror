@@ -510,6 +510,7 @@ describe("Inspiror App", () => {
     });
 
     it("renders a reset button and resets to defaults", () => {
+      const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(true);
       render(<App />);
       const input = screen.getByPlaceholderText(/Type your grand idea/i);
       fireEvent.change(input, { target: { value: "Something else" } });
@@ -517,7 +518,9 @@ describe("Inspiror App", () => {
       const resetBtn = screen.getByRole("button", { name: /Reset/i });
       fireEvent.click(resetBtn);
 
+      expect(confirmSpy).toHaveBeenCalled();
       expect(input).toHaveValue("");
+      confirmSpy.mockRestore();
     });
 
     it("renders the preview sandbox iframe with error catcher", () => {

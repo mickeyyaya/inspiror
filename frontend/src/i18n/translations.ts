@@ -4,7 +4,8 @@ export const translations: Record<Language, any> = {
   "en-US": {
     greeting: "Hi! I'm your builder buddy. What do you want to create today?",
     error_connection: "Oops, my connection broke! Can we try again?",
-    error_autofix_limit: "Hmm, this bug is really tricky! It keeps breaking. What should we try instead?",
+    error_autofix_limit:
+      "Hmm, this bug is really tricky! It keeps breaking. What should we try instead?",
     error_oops: "Oops, I made a little mistake! Let me fix that real quick...",
     aria_my_projects: "My Projects",
     aria_hide_chat: "Hide Chat",
@@ -33,16 +34,19 @@ export const translations: Record<Language, any> = {
     time_hours_ago: "hours ago",
     time_day_ago: "day ago",
     time_days_ago: "days ago",
-    empty_catalog: "You haven't built anything yet! Let's create your first app! ✨",
+    empty_catalog:
+      "You haven't built anything yet! Let's create your first app! ✨",
     what_will_you_create: "What will YOU create today?",
     tell_buddy: "Tell your builder buddy your idea! ✨",
     back_to_build: "Back to Build",
     switch_language: "Switch Language",
+    confirm_reset: "Reset this project? Your current work will be cleared.",
   },
   "zh-TW": {
     greeting: "嗨！我是你的建築夥伴。今天你想創造什麼呢？",
     error_connection: "哎呀，連線中斷了！我們可以再試一次嗎？",
-    error_autofix_limit: "嗯，這個問題有點棘手！一直修不好。我們改試別的方法好嗎？",
+    error_autofix_limit:
+      "嗯，這個問題有點棘手！一直修不好。我們改試別的方法好嗎？",
     error_oops: "哎呀，我犯了個小錯誤！讓我趕快修正一下...",
     aria_my_projects: "我的專案",
     aria_hide_chat: "隱藏聊天",
@@ -76,11 +80,13 @@ export const translations: Record<Language, any> = {
     tell_buddy: "告訴你的建築夥伴你的點子吧！ ✨",
     back_to_build: "回到建造",
     switch_language: "切換語言",
+    confirm_reset: "要重設這個專案嗎？目前的作品會被清除。",
   },
   "zh-CN": {
     greeting: "嗨！我是你的建筑夥伴。今天你想创造什么呢？",
     error_connection: "哎呀，连线中断了！我们可以再试一次吗？",
-    error_autofix_limit: "嗯，这个问题有点棘手！一直修不好。我们改试别的方法好吗？",
+    error_autofix_limit:
+      "嗯，这个问题有点棘手！一直修不好。我们改试别的方法好吗？",
     error_oops: "哎呀，我犯了个小错误！让我赶快修正一下...",
     aria_my_projects: "我的项目",
     aria_hide_chat: "隐藏聊天",
@@ -114,5 +120,6 @@ export const translations: Record<Language, any> = {
     tell_buddy: "告诉你的建筑夥伴你的点子吧！ ✨",
     back_to_build: "回到建造",
     switch_language: "切换语言",
-  }
+    confirm_reset: "要重置这个项目吗？目前的作品会被清除。",
+  },
 };
