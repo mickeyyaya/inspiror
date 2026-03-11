@@ -55,6 +55,7 @@ Object.defineProperty(window, "localStorage", {
 function seedProject(overrides?: {
   messages?: Array<{ id?: string; role: string; content: string }>;
   currentCode?: string;
+  blocks?: unknown[];
 }) {
   const projectId = "test-project-id";
   const messages = overrides?.messages ?? [
@@ -72,6 +73,7 @@ function seedProject(overrides?: {
     createdAt: Date.now(),
     updatedAt: Date.now(),
     messages,
+    blocks: overrides?.blocks ?? [],
     ...(currentCode !== undefined
       ? { currentCode }
       : {

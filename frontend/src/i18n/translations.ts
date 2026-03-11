@@ -41,6 +41,8 @@ export interface TranslationKeys {
   back_to_build: string;
   switch_language: string;
   confirm_reset: string;
+  block_panel_close: string;
+  converting_blocks: string;
   achievement_unlocked: string;
   achievement_awesome: string;
   badge_title: string;
@@ -95,6 +97,8 @@ export const translations: Record<Language, TranslationKeys> = {
     back_to_build: "Back to Build",
     switch_language: "Switch Language",
     confirm_reset: "Reset this project? Your current work will be cleared.",
+    block_panel_close: "Close",
+    converting_blocks: "Converting your code to blocks...",
     achievement_unlocked: "Achievement Unlocked!",
     achievement_awesome: "Awesome!",
     badge_title: "My Badges",
@@ -146,6 +150,8 @@ export const translations: Record<Language, TranslationKeys> = {
     back_to_build: "回到建造",
     switch_language: "切換語言",
     confirm_reset: "要重設這個專案嗎？目前的作品會被清除。",
+    block_panel_close: "關閉",
+    converting_blocks: "正在將您的程式碼轉換為積木...",
     achievement_unlocked: "成就解鎖！",
     achievement_awesome: "太棒了！",
     badge_title: "我的徽章",
@@ -197,6 +203,8 @@ export const translations: Record<Language, TranslationKeys> = {
     back_to_build: "回到建造",
     switch_language: "切换语言",
     confirm_reset: "要重置这个项目吗？目前的作品会被清除。",
+    block_panel_close: "关闭",
+    converting_blocks: "正在将您的代码转换为积木...",
     achievement_unlocked: "成就解锁！",
     achievement_awesome: "太棒了！",
     badge_title: "我的徽章",

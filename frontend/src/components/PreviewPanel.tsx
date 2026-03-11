@@ -12,6 +12,7 @@ interface PreviewPanelProps {
   iframeRef: React.RefObject<HTMLIFrameElement | null>;
   codingFacts: string[];
   blockCount?: number;
+  convertingText?: string;
   t: {
     aria_show_chat: string;
     aria_look_inside: string;
@@ -29,6 +30,7 @@ export function PreviewPanel({
   iframeRef,
   codingFacts,
   blockCount,
+  convertingText,
   t,
 }: PreviewPanelProps) {
   const srcDoc = useMemo(() => injectErrorCatcher(currentCode), [currentCode]);
@@ -83,7 +85,7 @@ export function PreviewPanel({
 
       <BuildingOverlay
         isLoading={isLoading}
-        buildingText={t.overlay_building}
+        buildingText={convertingText ?? t.overlay_building}
         didYouKnowLabel={t.overlay_did_you_know}
         facts={codingFacts}
       />

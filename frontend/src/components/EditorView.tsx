@@ -64,6 +64,7 @@ export function EditorView({
   const [isBlockPanelOpen, setIsBlockPanelOpen] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [suggestionChips, setSuggestionChips] = useState(pickRandomChips);
+  const [isConverting, setIsConverting] = useState(false);
 
   const isLegacyProject = useRef(project.blocks === undefined);
 
@@ -252,6 +253,57 @@ export function EditorView({
     };
   }, [blocks]);
 
+  // Auto-convert legacy projects (no blocks field) on mount
+  const hasAttemptedConversion = useRef(false);
+  useEffect(() => {
+    if (hasAttemptedConversion.current) return;
+    if (project.blocks !== undefined) return;
+    // Only convert if the project has non-trivial code (not the default starter)
+    const code = project.currentCode;
+    if (!code || code.length < 100) return;
+    hasAttemptedConversion.current = true;
+    setIsConverting(true);
+
+    const base = import.meta.env.VITE_API_URL
+      ? new URL(import.meta.env.VITE_API_URL).origin
+      : "http://localhost:3001";
+    const apiUrl = `${base}/api/convert-to-blocks`;
+
+    fetch(apiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code, language }),
+    })
+      .then(async (res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const parsed = await res.json();
+        if (
+          parsed?.blocks &&
+          Array.isArray(parsed.blocks) &&
+          parsed.blocks.length > 0 &&
+          parsed.blocks.every(
+            (b: unknown) =>
+              b !== null &&
+              typeof b === "object" &&
+              "id" in b &&
+              "code" in b &&
+              "enabled" in b,
+          )
+        ) {
+          setBlocks(parsed.blocks as Block[]);
+          setCurrentCode(compileBlocks(parsed.blocks as Block[]));
+        }
+      })
+      .catch((err) => {
+        console.error("[EditorView] Legacy conversion failed:", err);
+        // Keep DEFAULT_BLOCKS — already initialized in state
+      })
+      .finally(() => {
+        setIsConverting(false);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const showSuggestions =
     messages.length === 1 && messages[0]?.role === "assistant" && !isLoading;
 
@@ -376,7 +428,7 @@ export function EditorView({
 
       <PreviewPanel
         currentCode={currentCode}
-        isLoading={isLoading}
+        isLoading={isLoading || isConverting}
         isChatVisible={isChatVisible}
         onShowChat={() => setIsChatVisible(true)}
         onLookInside={() => setIsBlockPanelOpen(true)}
@@ -384,6 +436,7 @@ export function EditorView({
         codingFacts={codingFacts}
         blockCount={blockCount}
         t={t}
+        convertingText={isConverting ? t.converting_blocks : undefined}
       />
 
       {/* Block Editor Panel (replaces CodePanel for block-mode projects) */}
@@ -410,7 +463,7 @@ export function EditorView({
               border-2 border-[#222] shadow-[4px_4px_0_rgba(0,0,0,0.2)]
               active:translate-y-[4px] active:shadow-none transition-all"
           >
-            Close
+            {t.block_panel_close}
           </button>
         </div>
       </div>

@@ -1,10 +1,33 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 
-// Add global type definitions for SpeechRecognition
+// SpeechRecognition types (Web Speech API)
+interface SpeechRecognitionEvent extends Event {
+  readonly results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognitionErrorEvent extends Event {
+  readonly error: string;
+}
+
+interface SpeechRecognitionInstance extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  onresult: ((event: SpeechRecognitionEvent) => void) | null;
+  onend: (() => void) | null;
+  onerror: ((event: SpeechRecognitionErrorEvent) => void) | null;
+  start(): void;
+  stop(): void;
+}
+
+interface SpeechRecognitionConstructor {
+  new (): SpeechRecognitionInstance;
+}
+
 declare global {
   interface Window {
-    SpeechRecognition: any;
-    webkitSpeechRecognition: any;
+    SpeechRecognition?: SpeechRecognitionConstructor;
+    webkitSpeechRecognition?: SpeechRecognitionConstructor;
   }
 }
 
@@ -15,21 +38,21 @@ export function useVoice(language: VoiceLanguage) {
   const [transcript, setTranscript] = useState("");
   const [isAutoSpeakEnabled, setIsAutoSpeakEnabled] = useState(true);
 
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
   const synthRef = useRef<SpeechSynthesis | null>(null);
 
   useEffect(() => {
-    // Initialize SpeechRecognition
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = true;
 
-      recognitionRef.current.onresult = (event: any) => {
+      recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
         const currentTranscript = Array.from(event.results)
-          .map((result: any) => result[0])
-          .map((result: any) => result.transcript)
+          .map((result: SpeechRecognitionResult) => result[0])
+          .map((alt: SpeechRecognitionAlternative) => alt.transcript)
           .join("");
         setTranscript(currentTranscript);
       };
@@ -38,13 +61,12 @@ export function useVoice(language: VoiceLanguage) {
         setIsListening(false);
       };
 
-      recognitionRef.current.onerror = (event: any) => {
+      recognitionRef.current.onerror = (event: SpeechRecognitionErrorEvent) => {
         console.error("Speech recognition error", event.error);
         setIsListening(false);
       };
     }
 
-    // Initialize SpeechSynthesis
     if (typeof window !== "undefined") {
       synthRef.current = window.speechSynthesis;
     }
@@ -59,7 +81,6 @@ export function useVoice(language: VoiceLanguage) {
     };
   }, []);
 
-  // Update recognition language when it changes
   useEffect(() => {
     if (recognitionRef.current) {
       recognitionRef.current.lang = language;
@@ -89,29 +110,29 @@ export function useVoice(language: VoiceLanguage) {
     (text: string) => {
       if (!synthRef.current || !isAutoSpeakEnabled) return;
 
-      // Cancel any ongoing speech
       synthRef.current.cancel();
 
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = language;
 
-      // Try to find a good voice for the language
       const voices = synthRef.current.getVoices();
-      const preferredVoice = voices.find(
-        (v) => v.lang.startsWith(language.split("-")[0]) && v.name.includes("Google")
-      ) || voices.find((v) => v.lang.startsWith(language.split("-")[0]));
+      const preferredVoice =
+        voices.find(
+          (v) =>
+            v.lang.startsWith(language.split("-")[0]) &&
+            v.name.includes("Google"),
+        ) || voices.find((v) => v.lang.startsWith(language.split("-")[0]));
 
       if (preferredVoice) {
         utterance.voice = preferredVoice;
       }
 
-      // Adjust pitch and rate for a kid-friendly feel
       utterance.pitch = 1.2;
       utterance.rate = 1.0;
 
       synthRef.current.speak(utterance);
     },
-    [language, isAutoSpeakEnabled]
+    [language, isAutoSpeakEnabled],
   );
 
   const toggleAutoSpeak = useCallback(() => {

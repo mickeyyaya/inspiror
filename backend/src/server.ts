@@ -133,11 +133,18 @@ app.post("/api/convert-to-blocks", async (req, res) => {
 
   const language = VALID_LANGUAGES.has(reqLanguage) ? reqLanguage : "en-US";
 
+  if (!VALID_LANGUAGES.has(reqLanguage)) {
+    console.warn(
+      `[API] Invalid language "${reqLanguage}", defaulting to en-US`,
+    );
+  }
+
   console.log(`[API] Convert-to-blocks request | Code length: ${code.length}`);
 
   try {
     const result = await llmService.convertToBlocks(code, language);
-    result.pipeTextStreamToResponse(res);
+    const finalObject = await result.object;
+    res.json(finalObject);
   } catch (error) {
     console.error("[API] Route Error during conversion:", error);
     res.status(500).json({ error: "Internal server error during conversion" });
@@ -158,6 +165,10 @@ app.use(
 );
 
 if (require.main === module) {
+  if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+    console.error("[FATAL] GOOGLE_GENERATIVE_AI_API_KEY is not set. Exiting.");
+    process.exit(1);
+  }
   const PORT = process.env.PORT || 3001;
   app.listen(PORT, () => {
     console.log(`Backend server listening on port ${PORT}`);
