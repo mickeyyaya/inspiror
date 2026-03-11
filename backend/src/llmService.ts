@@ -2,6 +2,9 @@ import { z } from "zod";
 import { streamObject } from "ai";
 import { google } from "@ai-sdk/google";
 
+const GEMINI_MODEL =
+  process.env.GEMINI_MODEL || "gemini-3.1-flash-lite-preview";
+
 // --- Block schema for structured block generation ---
 const blockParamSchema = z.object({
   key: z.string().describe("Parameter key used in {{key}} placeholders"),
@@ -247,7 +250,7 @@ When the user has existing blocks and asks for changes:
         : basePrompt;
 
       const result = await streamObject({
-        model: google("gemini-3.1-flash-lite-preview"),
+        model: google(GEMINI_MODEL),
         providerOptions: {
           google: {
             thinkingConfig: { thinkingLevel: "medium" },
@@ -288,7 +291,7 @@ The HTML code to convert:
 ${code}`;
 
       const result = await streamObject({
-        model: google("gemini-3.1-flash-lite-preview"),
+        model: google(GEMINI_MODEL),
         providerOptions: {
           google: {
             thinkingConfig: { thinkingLevel: "medium" },

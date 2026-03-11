@@ -2,6 +2,9 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useAudio } from "./useAudio";
 
+const POOL_SIZE = 4;
+const SOUND_COUNT = 4;
+
 const mockPlay = vi.fn().mockResolvedValue(undefined);
 const mockLoad = vi.fn();
 
@@ -10,7 +13,10 @@ vi.stubGlobal(
   vi.fn().mockImplementation(function () {
     return {
       load: mockLoad,
-      cloneNode: vi.fn().mockReturnValue({ play: mockPlay }),
+      play: mockPlay,
+      pause: vi.fn(),
+      currentTime: 0,
+      removeAttribute: vi.fn(),
     };
   }),
 );
@@ -38,10 +44,10 @@ describe("useAudio", () => {
     (globalThis.Audio as ReturnType<typeof vi.fn>).mockClear();
   });
 
-  it("preloads 4 audio files on mount", () => {
+  it("creates a bounded pool of audio elements on mount", () => {
     renderHook(() => useAudio());
-    expect(globalThis.Audio).toHaveBeenCalledTimes(4);
-    expect(mockLoad).toHaveBeenCalledTimes(4);
+    expect(globalThis.Audio).toHaveBeenCalledTimes(SOUND_COUNT * POOL_SIZE);
+    expect(mockLoad).toHaveBeenCalledTimes(SOUND_COUNT * POOL_SIZE);
   });
 
   it("plays pop sound when not muted", () => {
@@ -72,8 +78,20 @@ describe("useAudio", () => {
     const { result } = renderHook(() => useAudio());
     act(() => result.current.toggleMute());
     expect(result.current.isMuted).toBe(true);
+    mockPlay.mockClear();
     act(() => result.current.playPop());
     expect(mockPlay).not.toHaveBeenCalled();
+  });
+
+  it("cycles through pool elements on repeated plays", () => {
+    const { result } = renderHook(() => useAudio());
+    act(() => result.current.playPop());
+    act(() => result.current.playPop());
+    act(() => result.current.playPop());
+    act(() => result.current.playPop());
+    act(() => result.current.playPop());
+    // 5 plays should cycle back to the first pool element
+    expect(mockPlay).toHaveBeenCalledTimes(5);
   });
 
   it("toggles mute and persists to localStorage", () => {

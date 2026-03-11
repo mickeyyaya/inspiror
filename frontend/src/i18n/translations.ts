@@ -25,6 +25,7 @@ export interface TranslationKeys {
   catalog_title: string;
   create_new: string;
   delete_project: string;
+  confirm_delete: string;
   open_project: string;
   last_edited: string;
   time_just_now: string;
@@ -77,6 +78,7 @@ export const translations: Record<Language, TranslationKeys> = {
     catalog_title: "My Creations",
     create_new: "Create New Project",
     delete_project: "Delete Project",
+    confirm_delete: "Delete this project? This cannot be undone.",
     open_project: "Open Project",
     last_edited: "Last edited",
     time_just_now: "Just now",
@@ -128,6 +130,7 @@ export const translations: Record<Language, TranslationKeys> = {
     catalog_title: "我的創作",
     create_new: "建立新專案",
     delete_project: "刪除專案",
+    confirm_delete: "確定要刪除這個專案嗎？此操作無法復原。",
     open_project: "開啟專案",
     last_edited: "最後編輯於",
     time_just_now: "剛剛",
@@ -178,6 +181,7 @@ export const translations: Record<Language, TranslationKeys> = {
     catalog_title: "我的创作",
     create_new: "建立新项目",
     delete_project: "删除项目",
+    confirm_delete: "确定要删除这个项目吗？此操作无法撤销。",
     open_project: "开启项目",
     last_edited: "最后编辑于",
     time_just_now: "刚刚",

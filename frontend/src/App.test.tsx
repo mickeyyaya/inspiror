@@ -242,6 +242,7 @@ describe("Inspiror App", () => {
 
       render(<App />);
       expect(screen.getByText("My Cool App")).toBeInTheDocument();
+      vi.spyOn(window, "confirm").mockReturnValueOnce(true);
       fireEvent.click(screen.getByTestId("delete-project-btn"));
       expect(screen.queryByText("My Cool App")).not.toBeInTheDocument();
       expect(
