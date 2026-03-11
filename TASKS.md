@@ -94,6 +94,38 @@
 - [ ] **Confetti CSS coupling:** Refactor hardcoded `nth-child` selectors to use inline `style={{}}` like welcome particles, decoupling from `CONFETTI_COUNT`.
 - [ ] **Favicon fallback:** Replace emoji favicon with a real SVG rocket shape for cross-browser reliability (Firefox Linux renders blank).
 
+## Backlog (March 2026)
+
+### HIGH PRIORITY
+
+- [ ] **Gamified Progression System** — Badges, XP, unlockable buddy skins, and a visible skill progression map. Direct competitive gap vs. CodeCombat (loot + gear) and Codedex (fantasy map with region unlocking). See Phase 6 Feature 3 for initial implementation sketch.
+- [ ] **Educational Loading Screen** — Teach coding facts (variable definitions, loop concepts, etc.) during the 20-40s AI generation wait time. Direct competitive gap vs. Codorex (Rex the Dino teaches facts during wait). High perceived value for educators.
+
+### MEDIUM PRIORITY
+
+- [ ] **Expressive AI Buddy** — Expand emotion states beyond bounce/think: proud animation on successful build, encouraging on debug/error, curious head-tilt when asking questions. Supported by CHI 2025 research: expressive mascots significantly improve engagement.
+- [ ] **"My Games" Gallery / Portfolio** — Personal showcase screen listing all completed projects with thumbnails. Gives kids a sense of ownership and a portfolio to share with parents/teachers.
+- [ ] **Upgrade to AI SDK 6 stable API** — Replace `experimental_useObject` import with stable `useObject` from `@ai-sdk/react`. Also adopt agent abstraction and tool approval system for future multi-step workflows.
+
+### LOW PRIORITY
+
+- [ ] **Parent / Teacher Dashboard** — Lightweight classroom-management view: see student projects, monitor session frequency, set content guardrails. Capitalizes directly on Replit's K-12 exit (Fall 2024).
+- [ ] **Publish & Share Feature** — Generate a public read-only URL for a completed game. Word-of-mouth growth driver; inspired by Rosebud's community flywheel (2.2M+ user-created games).
+
+### SECURITY
+
+- [ ] Run `npm audit` in `frontend/` and `backend/`.
+- [ ] Verify React >= 19.2.1 (CVE-2025-55182 precaution).
+- [ ] Verify Vite >= 7.0.8 (CVE-2025-58752 fix).
+
+---
+
+## Branch Reconciliation Note
+
+**IMPORTANT (March 2026):** The `feature/test-coverage` branch diverged from `main` and is missing features that exist on `main`: multi-project support (ProjectCatalog, useProjects), multi-language i18n (EN/TW/CN), and voice input. Before merging `feature/test-coverage` into `main`, these features must be reconciled — either cherry-picked forward or merged carefully to avoid regression. Do NOT merge `feature/test-coverage` directly without a diff review against `main`.
+
+---
+
 ## Worktree Workflow
 
 When implementing features in worktrees:

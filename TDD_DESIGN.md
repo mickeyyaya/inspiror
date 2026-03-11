@@ -163,7 +163,37 @@ We use **Vitest** and **React Testing Library** for the frontend, and **Jest** +
 | LOW | Confetti CSS uses hardcoded `nth-child` selectors coupled to `CONFETTI_COUNT` constant | `index.css` | TODO |
 | LOW | Favicon emoji may not render on all browsers/OS (Firefox Linux) | `index.html` | TODO |
 
-## 7. Implementation Steps (Next)
+## 7. Security Advisories (March 2026)
+
+| CVE / Advisory | Severity | Description | Inspiror Impact | Action |
+|---------------|----------|-------------|-----------------|--------|
+| CVE-2025-55182 "React2Shell" | CVSS 10.0 Critical | RCE in React Server Components (RSC). | Inspiror uses client-side React with no RSC — NOT directly affected. | Upgrade to React 19.2.1+ as a precaution. |
+| CVE-2025-58752 | High | Vite serves HTML files regardless of `server.fs` settings in Vite < 7.0.7. | Affects dev server. Verify current Vite version and upgrade to 7.0.8+ if below threshold. | Run `npm ls vite` and upgrade if needed. |
+| Express | No critical CVEs | No critical new CVEs at time of writing. | No immediate action required. | Run `npm audit` periodically to stay current. |
+| @ai-sdk/react | No known CVEs | No known CVEs at time of writing. | No immediate action required. | Monitor with `npm audit`. |
+
+**Recommended immediate action:** Run `npm audit` in both `frontend/` and `backend/`. Confirm React >= 19.2.1 and Vite >= 7.0.8.
+
+## 8. SDK Updates (March 2026)
+
+### Vercel AI SDK 6
+
+- **Agent abstraction:** First-class agent primitives with tool approval flows.
+- **Stable `useObject`:** `experimental_useObject` is now the stable `useObject` export — Inspiror's frontend currently uses the `experimental_` prefix and should be updated.
+- **MCP support:** Model Context Protocol integration for external tool/data sources.
+- **Migration note:** Replace `import { experimental_useObject } from '@ai-sdk/react'` with `import { useObject } from '@ai-sdk/react'` (see TASKS.md backlog).
+
+### Gemini Updates (March 2026)
+
+| Model | Change |
+|-------|--------|
+| Gemini 3.1 Flash-Lite | 2.5x faster TTFT, 45% faster output, $0.25/1M input tokens |
+| `thinking_level` parameter | New parameter to tune cost vs. quality per request — useful for scaffolding cheap vs. complex turns |
+| Thought Signatures | Maintain chain-of-reasoning across multi-turn sessions, improving iterative scaffolding coherence |
+
+**Migration note:** Update `backend/src/llmService.ts` to pass `thinking_level` where appropriate (e.g., low for simple error-fix turns, high for initial project generation).
+
+## 9. Implementation Steps (Next)
 1.  **Phase 2.5 (Next):** Implement `useAudio` hook for sound effects, add Play/Edit toggle.
 2.  **Phase 5:** CSS media queries for mobile/tablet, Docker containerization, Vercel deployment.
 3.  **Phase 6:** Sliding code editor ("Look Inside"), image upload, gamified achievements.

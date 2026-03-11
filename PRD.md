@@ -59,7 +59,27 @@ Traditional text-based programming can be intimidating and syntax-heavy for chil
 *   Average length of a session (number of conversational turns).
 *   User retention (returning users).
 
-## 8. Competitive Landscape
+## 8. Market Opportunity
+
+### Replit K-12 Exit (Fall 2024)
+
+Replit deprecated Teams for Education in Fall 2024, explicitly exiting the K-12 classroom market to focus on adult developers (Replit Agent drove 10x revenue growth). This created a direct displacement gap: educators and students who built workflows around Replit now need an alternative. Inspiror is positioned to fill this gap — the combination of zero-signup, conversational AI, and kid-friendly UX directly addresses what Replit abandoned.
+
+**Action items:** Target displaced Replit educators in marketing. Consider a lightweight "Classroom Mode" or teacher dashboard (see TASKS.md backlog) as a medium-term feature.
+
+### AI Literacy Trend (2024-2025)
+
+Global student AI usage jumped from 66% (2024) to 92% (2025). The education consensus is shifting from "learn to code" to "learn to guide and evaluate AI." Inspiror's chat-to-code model aligns directly with this trajectory — kids are learning the most relevant skill: prompting, iterating, and evaluating AI output.
+
+### UX Research Signal (CHI 2025)
+
+AI tutor mascots with expressive faces and emotional responses significantly improve student engagement. Personalized adaptive gamification (progress tied to the individual's history) outperforms generic badge systems. Both findings directly inform the Expressive AI Buddy and Gamified Progression backlog items.
+
+---
+
+## 9. Competitive Landscape
+
+*Last updated: March 2026*
 
 ### Direct Competitors (AI-Powered Builders for Kids)
 
@@ -67,11 +87,20 @@ Traditional text-based programming can be intimidating and syntax-heavy for chil
 |----------|----------|------------|-------------|-------------------|
 | **Codorex** | Rex the Dino | Teaches coding facts during 20-40s wait | Minimal | Zero-signup, code transparency |
 | **Upit** | AVA | Standard spinner | Contest prizes ($2,500) | Generates graphics + sound + code |
-| **Rosebud** | Rosie | Live preview | Game jams | Specialized builders (RPG, visual novel) |
+| **Rosebud** | Rosie | Live preview | Game jams | Pivoted to "vibe coding" games; 3D enhancements; 2.2M+ user-created games; added tipping/monetization |
 | **Kodable** | CatBot | Standard | Certificates | Dual-mode (text + audio), multilingual |
 | **CodeCombat** | N/A (RPG heroes) | Quest progress | Loot drops, gear upgrades, XP | Learning IS the game |
 | **Codedex** | N/A | Standard | Region unlocking on fantasy map | 8-bit pixel art identity |
 | **Tynker** | N/A | Standard | Certificates | Block-to-text progression |
+
+### Competitor Status Updates (March 2026)
+
+| Competitor | Update |
+|-----------|--------|
+| **Rosebud AI** | Pivoted to "vibe coding" games; added 3D enhancements; 2.2M+ user-created games; introduced tipping and creator monetization. Growing community flywheel is their moat. |
+| **Bolt.new** | Switched default LLM to Claude Sonnet 4.6; added built-in database, auth, and analytics. Now a professional full-stack tool — no longer competing for kids. |
+| **Replit** | Exited K-12 education (Teams for Education deprecated Fall 2024); 10x revenue growth driven by Replit Agent targeting adult developers. Left a gap Inspiror can fill. |
+| **OpenAI Codex** | CLI and desktop app released; GPT-5.3-Codex with parallel agents. Targeting professional developers — not kids. |
 
 ### Inspiror's Competitive Advantages
 1. **Real-time streaming hacker mode** - Kids see code being written live (Codorex shows static facts; we show the actual build)
@@ -88,7 +117,7 @@ Traditional text-based programming can be intimidating and syntax-heavy for chil
 - **Large touch targets** and clear visual hierarchy
 - **Reward loops** - Small celebrations for every win
 
-## 9. UI/UX Improvements (Implemented)
+## 10. UI/UX Improvements (Implemented)
 
 Based on competitive research, the following improvements have been shipped:
 
@@ -105,7 +134,7 @@ Based on competitive research, the following improvements have been shipped:
 | 9 | Page title + favicon branding | Shipped | "Inspiror - Build Anything!" with rocket icon |
 | 10 | Input glow effect | Shipped | Cyan glow intensifies as kids type |
 
-## 10. Future Enhancements
+## 11. Future Enhancements
 *   **"Look Inside" / Code Remixing:** A Scratch-like feature to expose the generated HTML/JS in a safe, readable panel so kids can learn how the AI built the game and manually tweak variables (e.g., speed, color).
 *   **Asset Upload & Personalization:** Allow kids to upload their own drawings or photos (e.g., "Make my pet dog the main character") to deeply personalize their creations.
 *   **Gamified Progression:** Implement an achievement system (e.g., "Code Ninja badge unlocked for making 5 games!") and unlockable AI Buddy avatars to drive long-term retention.
