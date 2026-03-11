@@ -4,6 +4,7 @@ import { Sparkles } from "lucide-react";
 interface BuildingOverlayProps {
   isLoading: boolean;
   buildingText: string;
+  didYouKnowLabel?: string;
   facts: string[];
 }
 
@@ -12,6 +13,7 @@ const FACT_CYCLE_MS = 4000;
 export function BuildingOverlay({
   isLoading,
   buildingText,
+  didYouKnowLabel = "Did you know?",
   facts,
 }: BuildingOverlayProps) {
   const [factIndex, setFactIndex] = useState(0);
@@ -66,7 +68,7 @@ export function BuildingOverlay({
             className="mt-6 bg-white/90 border-4 border-[#222] rounded-2xl px-6 py-4 shadow-[4px_4px_0_#222] text-center animate-fade-in"
           >
             <p className="text-sm font-bold text-[var(--color-candy-purple)] uppercase tracking-wider mb-1">
-              Did you know?
+              {didYouKnowLabel}
             </p>
             <p className="text-[15px] font-bold text-[#222] leading-relaxed">
               {currentFact}

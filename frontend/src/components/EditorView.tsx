@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { useAudio } from "../hooks/useAudio";
 import { useVoice, type VoiceLanguage } from "../hooks/useVoice";
@@ -90,6 +90,7 @@ export function EditorView({
     selectAvatar,
   } = useAchievements();
   const [isBadgeGalleryOpen, setIsBadgeGalleryOpen] = useState(false);
+  const codingFacts = useMemo(() => getCodingFacts(language), [language]);
   const recordBuildRef = useRef(recordBuild);
   const recordDebugRef = useRef(recordDebug);
   const playChimeRef = useRef(playChime);
@@ -309,7 +310,7 @@ export function EditorView({
         isChatVisible={isChatVisible}
         onShowChat={() => setIsChatVisible(true)}
         iframeRef={iframeRef}
-        codingFacts={getCodingFacts(language)}
+        codingFacts={codingFacts}
         t={t}
       />
 

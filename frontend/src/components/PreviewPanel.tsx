@@ -13,6 +13,7 @@ interface PreviewPanelProps {
   t: {
     aria_show_chat: string;
     overlay_building: string;
+    overlay_did_you_know: string;
   };
 }
 
@@ -63,6 +64,7 @@ export function PreviewPanel({
       <BuildingOverlay
         isLoading={isLoading}
         buildingText={t.overlay_building}
+        didYouKnowLabel={t.overlay_did_you_know}
         facts={codingFacts}
       />
     </div>
