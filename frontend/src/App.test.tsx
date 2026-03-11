@@ -283,7 +283,21 @@ describe("Inspiror App", () => {
       (
         aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>
       ).mockReturnValue({
-        object: { code: "<html>MATRIX LOADING</html>" },
+        object: {
+          reply: "Building...",
+          blocks: [
+            {
+              id: "bg",
+              type: "setup",
+              label: "Background",
+              emoji: "🎨",
+              enabled: true,
+              params: [],
+              code: 'game.setBackground("#000");',
+              order: 0,
+            },
+          ],
+        },
         submit: mockSubmit,
         isLoading: true,
       });
@@ -638,7 +652,21 @@ describe("Inspiror App", () => {
 
         await act(async () => {
           triggerFinish!({
-            object: { reply: "Done building!", code: "<html>SUCCESS</html>" },
+            object: {
+              reply: "Done building!",
+              blocks: [
+                {
+                  id: "bg",
+                  type: "setup",
+                  label: "Background",
+                  emoji: "🎨",
+                  enabled: true,
+                  params: [],
+                  code: 'game.setBackground("#000");',
+                  order: 0,
+                },
+              ],
+            },
             error: undefined,
           });
         });
@@ -727,7 +755,21 @@ describe("Inspiror App", () => {
 
         await act(async () => {
           triggerFinish!({
-            object: { reply: "Done!", code: "<html>SUCCESS</html>" },
+            object: {
+              reply: "Done!",
+              blocks: [
+                {
+                  id: "bg",
+                  type: "setup",
+                  label: "Background",
+                  emoji: "🎨",
+                  enabled: true,
+                  params: [],
+                  code: 'game.setBackground("#000");',
+                  order: 0,
+                },
+              ],
+            },
             error: undefined,
           });
         });
@@ -756,13 +798,19 @@ describe("Inspiror App", () => {
         render(<App />);
 
         await act(async () => {
-          triggerFinish!({ object: { reply: "1" }, error: undefined });
+          triggerFinish!({
+            object: { reply: "1", blocks: [] },
+            error: undefined,
+          });
         });
 
         expect(screen.getByTestId("confetti-burst")).toBeInTheDocument();
 
         await act(async () => {
-          triggerFinish!({ object: { reply: "2" }, error: undefined });
+          triggerFinish!({
+            object: { reply: "2", blocks: [] },
+            error: undefined,
+          });
         });
 
         act(() => {

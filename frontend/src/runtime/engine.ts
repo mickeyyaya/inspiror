@@ -117,6 +117,7 @@ export const RUNTIME_ENGINE = `
         delete blockListeners[blockId];
       }
       delete updateCallbacks[blockId];
+      collisionCallbacks = collisionCallbacks.filter(function(cc) { return cc.blockId !== blockId; });
     },
 
     onCollision: function(entityA, entityB, blockId, fn) {

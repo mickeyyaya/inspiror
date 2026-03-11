@@ -55,4 +55,11 @@ describe("RUNTIME_ENGINE", () => {
     expect(RUNTIME_ENGINE).toContain("disabledBlocks");
     expect(RUNTIME_ENGINE).toContain("disabledBlocks[blockId] = true");
   });
+
+  it("cleans up collision callbacks in game.off()", () => {
+    // game.off() must filter collisionCallbacks to prevent accumulation
+    expect(RUNTIME_ENGINE).toContain(
+      "collisionCallbacks = collisionCallbacks.filter",
+    );
+  });
 });
