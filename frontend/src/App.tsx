@@ -341,7 +341,7 @@ function App() {
   const isPlayMode = mode === "play";
 
   return (
-    <div className="w-screen h-screen bg-gray-900 relative overflow-hidden font-sans">
+    <div className="w-screen h-dvh bg-gray-900 relative overflow-hidden font-sans">
       {/* FULL SCREEN PREVIEW SANDBOX */}
       <div className="absolute inset-0 z-0 bg-[#000]">
         <iframe
@@ -373,14 +373,14 @@ function App() {
           {/* Pulsing Core */}
           <div className="absolute flex flex-col items-center justify-center z-20 mix-blend-screen">
             <div className="relative flex items-center justify-center">
-              <div className="absolute w-48 h-48 bg-[#00f0ff] rounded-full blur-[60px] animate-pulse opacity-60"></div>
-              <div className="absolute w-32 h-32 bg-[#ff007f] rounded-full blur-[40px] animate-ping opacity-60"></div>
+              <div className="absolute w-32 h-32 sm:w-48 sm:h-48 bg-[#00f0ff] rounded-full blur-[60px] animate-pulse opacity-60"></div>
+              <div className="absolute w-20 h-20 sm:w-32 sm:h-32 bg-[#ff007f] rounded-full blur-[40px] animate-ping opacity-60"></div>
               <Sparkles
                 className="text-[#ffffff] animate-spin relative z-10 drop-shadow-[0_0_15px_#fff]"
                 size={64}
               />
             </div>
-            <p className="mt-8 text-transparent bg-clip-text bg-gradient-to-r from-[#00f0ff] to-[#39ff14] text-4xl font-extrabold tracking-[0.3em] animate-pulse drop-shadow-[0_0_10px_#00f0ff]">
+            <p className="mt-8 text-transparent bg-clip-text bg-gradient-to-r from-[#00f0ff] to-[#39ff14] text-2xl sm:text-4xl font-extrabold tracking-[0.3em] animate-pulse drop-shadow-[0_0_10px_#00f0ff]">
               BUILDING
             </p>
           </div>
@@ -400,7 +400,7 @@ function App() {
       {!isPlayMode && (
         <button
           onClick={() => setIsCodePanelOpen((prev) => !prev)}
-          className="absolute top-4 left-4 z-30 bg-gradient-to-r from-[#1a1a3a] to-[#2a2a4a] text-[#a855f7] px-4 py-2 rounded-full border-2 border-[#a855f7]/60 shadow-[0_0_15px_rgba(168,85,247,0.3)] hover:scale-105 hover:border-[#a855f7] active:scale-95 transition-all flex items-center gap-2 font-bold text-sm"
+          className="absolute top-2 left-2 sm:top-4 sm:left-4 z-30 bg-gradient-to-r from-[#1a1a3a] to-[#2a2a4a] text-[#a855f7] px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border-2 border-[#a855f7]/60 shadow-[0_0_15px_rgba(168,85,247,0.3)] hover:scale-105 hover:border-[#a855f7] active:scale-95 transition-all flex items-center gap-1.5 sm:gap-2 font-bold text-xs sm:text-sm"
           aria-label="Look Inside"
         >
           <Code2 size={18} />
@@ -411,7 +411,7 @@ function App() {
       {/* MODE TOGGLE BUTTON */}
       <button
         onClick={() => setMode(isPlayMode ? "build" : "play")}
-        className="absolute top-4 left-1/2 -translate-x-1/2 z-30 bg-gradient-to-r from-[#a855f7] to-[#7c3aed] text-white px-5 py-2 rounded-full shadow-[0_0_20px_rgba(168,85,247,0.5)] hover:scale-105 active:scale-95 transition-all flex items-center gap-2 font-bold text-sm"
+        className="absolute top-2 left-1/2 -translate-x-1/2 sm:top-4 z-30 bg-gradient-to-r from-[#a855f7] to-[#7c3aed] text-white px-3 py-1.5 sm:px-5 sm:py-2 rounded-full shadow-[0_0_20px_rgba(168,85,247,0.5)] hover:scale-105 active:scale-95 transition-all flex items-center gap-1.5 sm:gap-2 font-bold text-xs sm:text-sm"
         aria-label={isPlayMode ? "Back to Build" : "Play Mode"}
         data-testid="mode-toggle"
       >
@@ -432,7 +432,7 @@ function App() {
       {!isPlayMode && !isChatVisible && (
         <button
           onClick={() => setIsChatVisible(true)}
-          className="absolute bottom-6 right-6 z-50 bg-gradient-to-r from-[#ff007f] to-[#ff003c] text-white p-5 rounded-full shadow-[0_0_25px_#ff007f] hover:scale-110 active:scale-95 transition-all flex items-center justify-center"
+          className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 bg-gradient-to-r from-[#ff007f] to-[#ff003c] text-white p-4 sm:p-5 rounded-full shadow-[0_0_25px_#ff007f] hover:scale-110 active:scale-95 transition-all flex items-center justify-center"
           aria-label="Show Chat"
         >
           <MessageCircle size={36} className="drop-shadow-[0_0_5px_#fff]" />
@@ -451,7 +451,7 @@ function App() {
 
       {/* FLOATING CHAT WINDOW (build mode only) */}
       {!isPlayMode && isChatVisible && (
-        <div className="absolute top-4 right-4 bottom-4 w-96 max-w-[calc(100vw-2rem)] bg-[#0d0d1a]/90 backdrop-blur-xl border-2 border-[#00f0ff] rounded-3xl flex flex-col shadow-[0_0_40px_rgba(0,240,255,0.4)] z-50 overflow-hidden transition-all duration-300">
+        <div className="absolute inset-2 sm:inset-auto sm:top-4 sm:right-4 sm:bottom-4 sm:w-96 sm:max-w-[calc(100vw-2rem)] bg-[#0d0d1a]/95 sm:bg-[#0d0d1a]/90 backdrop-blur-xl border-2 border-[#00f0ff] rounded-3xl flex flex-col shadow-[0_0_40px_rgba(0,240,255,0.4)] z-50 overflow-hidden transition-all duration-300">
           {/* HEADER with Animated Buddy Avatar */}
           <div className="bg-gradient-to-r from-[#00f0ff] to-[#0099ff] text-black p-4 flex justify-between items-center font-bold shadow-md">
             <div className="flex items-center gap-3">
