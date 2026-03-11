@@ -1,19 +1,95 @@
 import express from "express";
 import cors from "cors";
+import rateLimit from "express-rate-limit";
 import { llmService } from "./llmService";
 
 export const app = express();
 
-app.use(cors());
-app.use(express.json());
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "http://localhost:5173";
+const VALID_ROLES = new Set(["user", "assistant"]);
+const MAX_MESSAGES = 50;
+const MAX_CONTENT_LENGTH = 5000;
+const MAX_CODE_LENGTH = 50000;
 
-app.post("/api/generate", async (req, res) => {
-  if (!req.body.messages || !Array.isArray(req.body.messages)) {
-    console.warn("[API] Rejected request: Missing messages array.");
-    return res.status(400).json({ error: "messages array is required" });
+app.use(cors({ origin: ALLOWED_ORIGIN }));
+app.use(express.json({ limit: "512kb" }));
+
+const generateLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many requests, please try again later" },
+});
+
+app.use("/api/generate", generateLimiter);
+
+interface ChatMessage {
+  role: string;
+  content: string;
+}
+
+function validateMessages(messages: unknown): {
+  valid: boolean;
+  error?: string;
+} {
+  if (!messages || !Array.isArray(messages)) {
+    return { valid: false, error: "messages array is required" };
   }
 
-  console.log(`[API] Generation request received | Messages: ${req.body.messages.length} | Code length: ${req.body.currentCode?.length || 0}`);
+  if (messages.length > MAX_MESSAGES) {
+    return { valid: false, error: "Too many messages (max 50)" };
+  }
+
+  for (const msg of messages) {
+    if (msg === null || typeof msg !== "object") {
+      return { valid: false, error: "Each message must be an object" };
+    }
+    const { role, content } = msg as ChatMessage;
+    if (!VALID_ROLES.has(role)) {
+      return {
+        valid: false,
+        error: `Invalid role "${role}". Allowed: user, assistant`,
+      };
+    }
+    if (typeof content !== "string" || content.length === 0) {
+      return {
+        valid: false,
+        error: "Message content is required and must be a string",
+      };
+    }
+    if (content.length > MAX_CONTENT_LENGTH) {
+      return {
+        valid: false,
+        error: `Message content exceeds ${MAX_CONTENT_LENGTH} characters`,
+      };
+    }
+  }
+
+  return { valid: true };
+}
+
+app.post("/api/generate", async (req, res) => {
+  const validation = validateMessages(req.body.messages);
+  if (!validation.valid) {
+    console.warn(`[API] Rejected request: ${validation.error}`);
+    return res.status(400).json({ error: validation.error });
+  }
+
+  if (
+    req.body.currentCode !== undefined &&
+    (typeof req.body.currentCode !== "string" ||
+      req.body.currentCode.length > MAX_CODE_LENGTH)
+  ) {
+    console.warn("[API] Rejected request: currentCode exceeds size limit");
+    return res
+      .status(400)
+      .json({ error: `currentCode exceeds ${MAX_CODE_LENGTH} characters` });
+  }
+
+  console.log(
+    `[API] Generation request received | Messages: ${req.body.messages.length} | Code length: ${req.body.currentCode?.length || 0}`,
+  );
 
   try {
     const result = await llmService.generateStream(

@@ -4,13 +4,21 @@ import { streamObject } from "ai";
 
 jest.mock("ai", () => ({
   streamObject: jest.fn().mockReturnValue({
-    pipeTextStreamToResponse: (res: any) => {
-      res.status(200).send('{"reply":"Mocked reply from AI buddy","code":"<html>mocked code</html>"}');
-    }
+    pipeTextStreamToResponse: (res: {
+      status: (code: number) => { send: (body: string) => void };
+    }) => {
+      res
+        .status(200)
+        .send(
+          '{"reply":"Mocked reply from AI buddy","code":"<html>mocked code</html>"}',
+        );
+    },
   }),
 }));
 
-const mockedStreamObject = streamObject as jest.MockedFunction<typeof streamObject>;
+const mockedStreamObject = streamObject as jest.MockedFunction<
+  typeof streamObject
+>;
 
 describe("POST /api/generate", () => {
   beforeEach(() => {
@@ -49,10 +57,83 @@ describe("POST /api/generate", () => {
       });
 
     expect(mockedStreamObject).toHaveBeenCalledTimes(1);
-    const callArgs = mockedStreamObject.mock.calls[0]![0] as any;
-    const systemMessage = callArgs.messages.find(
-      (m: any) => m.role === "system",
-    );
+    const callArgs = mockedStreamObject.mock.calls[0]![0] as Record<
+      string,
+      unknown
+    >;
+    const messages = callArgs.messages as Array<{
+      role: string;
+      content: string;
+    }>;
+    const systemMessage = messages.find((m) => m.role === "system");
     expect(systemMessage?.content).toContain(currentCode);
+  });
+
+  it("should reject messages with invalid role", async () => {
+    const res = await request(app)
+      .post("/api/generate")
+      .send({
+        messages: [{ role: "hacker", content: "bad role" }],
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/invalid.*role/i);
+  });
+
+  it("should reject messages with content exceeding 5000 characters", async () => {
+    const res = await request(app)
+      .post("/api/generate")
+      .send({
+        messages: [{ role: "user", content: "x".repeat(5001) }],
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/content.*exceed/i);
+  });
+
+  it("should reject requests with more than 50 messages", async () => {
+    const messages = Array.from({ length: 51 }, (_, i) => ({
+      role: i % 2 === 0 ? "user" : "assistant",
+      content: `message ${i}`,
+    }));
+
+    const res = await request(app).post("/api/generate").send({ messages });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/too many messages/i);
+  });
+
+  it("should reject messages missing content field", async () => {
+    const res = await request(app)
+      .post("/api/generate")
+      .send({
+        messages: [{ role: "user" }],
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/content.*required/i);
+  });
+
+  it("should reject non-object items in messages array", async () => {
+    const res = await request(app)
+      .post("/api/generate")
+      .send({
+        messages: [null, 42, "string"],
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/must be an object/i);
+  });
+
+  it("should reject currentCode exceeding size limit", async () => {
+    const res = await request(app)
+      .post("/api/generate")
+      .send({
+        messages: [{ role: "user", content: "hello" }],
+        currentCode: "x".repeat(50001),
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/currentCode.*exceed/i);
   });
 });

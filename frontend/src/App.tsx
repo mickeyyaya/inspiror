@@ -205,7 +205,7 @@ function App() {
   playChimeRef.current = playChime;
 
   const { object, submit, isLoading } = useObject({
-    api: "http://localhost:3001/api/generate",
+    api: import.meta.env.VITE_API_URL || "http://localhost:3001/api/generate",
     schema: generationSchema,
     onFinish({ object: finalObj }) {
       if (finalObj?.reply) {
