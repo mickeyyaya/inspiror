@@ -1,22 +1,42 @@
+import { useState, useEffect } from "react";
 import { Sparkles } from "lucide-react";
 
 interface BuildingOverlayProps {
   isLoading: boolean;
   buildingText: string;
+  facts: string[];
 }
+
+const FACT_CYCLE_MS = 4000;
 
 export function BuildingOverlay({
   isLoading,
   buildingText,
+  facts,
 }: BuildingOverlayProps) {
+  const [factIndex, setFactIndex] = useState(0);
+
+  useEffect(() => {
+    if (!isLoading || facts.length === 0) return;
+
+    setFactIndex(0);
+    const interval = setInterval(() => {
+      setFactIndex((prev) => (prev + 1) % facts.length);
+    }, FACT_CYCLE_MS);
+
+    return () => clearInterval(interval);
+  }, [isLoading, facts]);
+
   if (!isLoading) return null;
+
+  const currentFact = facts[factIndex] ?? "";
 
   return (
     <div
       data-testid="hacker-mode-overlay"
       className="absolute inset-0 z-20 bg-white/60 backdrop-blur-sm flex items-center justify-center overflow-hidden pointer-events-none"
     >
-      <div className="absolute flex flex-col items-center justify-center z-20">
+      <div className="absolute flex flex-col items-center justify-center z-20 max-w-lg px-6">
         <div className="relative flex items-center justify-center">
           <div className="absolute w-64 h-64 bg-[var(--color-candy-yellow)] rounded-full blur-[40px] animate-pulse opacity-80"></div>
           <div
@@ -39,30 +59,20 @@ export function BuildingOverlay({
           {buildingText}
         </p>
 
-        <div className="absolute inset-0 pointer-events-none overflow-hidden flex items-center justify-center">
-          <pre
-            className="text-[var(--color-candy-purple)] text-2xl font-bold font-mono opacity-50 absolute left-[10%] top-[20%] animate-bounce"
-            style={{ animationDelay: "0.1s" }}
+        {currentFact && (
+          <div
+            key={factIndex}
+            data-testid="coding-fact"
+            className="mt-6 bg-white/90 border-4 border-[#222] rounded-2xl px-6 py-4 shadow-[4px_4px_0_#222] text-center animate-fade-in"
           >
-            &lt;div&gt;
-          </pre>
-          <pre
-            className="text-[var(--color-candy-green)] text-3xl font-bold font-mono opacity-50 absolute right-[20%] top-[30%] animate-bounce"
-            style={{ animationDelay: "0.5s" }}
-          >{`{}`}</pre>
-          <pre
-            className="text-[var(--color-candy-orange)] text-2xl font-bold font-mono opacity-50 absolute left-[30%] bottom-[20%] animate-bounce"
-            style={{ animationDelay: "0.3s" }}
-          >
-            function()
-          </pre>
-          <pre
-            className="text-[var(--color-candy-pink)] text-4xl font-bold font-mono opacity-50 absolute right-[10%] bottom-[30%] animate-bounce"
-            style={{ animationDelay: "0.7s" }}
-          >
-            const
-          </pre>
-        </div>
+            <p className="text-sm font-bold text-[var(--color-candy-purple)] uppercase tracking-wider mb-1">
+              Did you know?
+            </p>
+            <p className="text-[15px] font-bold text-[#222] leading-relaxed">
+              {currentFact}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

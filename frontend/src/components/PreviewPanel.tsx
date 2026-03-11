@@ -9,6 +9,7 @@ interface PreviewPanelProps {
   isChatVisible: boolean;
   onShowChat: () => void;
   iframeRef: React.RefObject<HTMLIFrameElement | null>;
+  codingFacts: string[];
   t: {
     aria_show_chat: string;
     overlay_building: string;
@@ -21,12 +22,10 @@ export function PreviewPanel({
   isChatVisible,
   onShowChat,
   iframeRef,
+  codingFacts,
   t,
 }: PreviewPanelProps) {
-  const srcDoc = useMemo(
-    () => injectErrorCatcher(currentCode),
-    [currentCode],
-  );
+  const srcDoc = useMemo(() => injectErrorCatcher(currentCode), [currentCode]);
 
   return (
     <div
@@ -64,6 +63,7 @@ export function PreviewPanel({
       <BuildingOverlay
         isLoading={isLoading}
         buildingText={t.overlay_building}
+        facts={codingFacts}
       />
     </div>
   );

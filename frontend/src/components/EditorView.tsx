@@ -6,6 +6,7 @@ import { useAchievements } from "../hooks/useAchievements";
 import { translations } from "../i18n/translations";
 import type { ChatMessage, Project } from "../types/project";
 import { generationSchema, pickRandomChips, withId } from "../constants";
+import { getCodingFacts } from "../constants/codingFacts";
 import { ConfettiBurst } from "./ConfettiBurst";
 import { ChatHeader } from "./ChatHeader";
 import { MessageList } from "./MessageList";
@@ -308,6 +309,7 @@ export function EditorView({
         isChatVisible={isChatVisible}
         onShowChat={() => setIsChatVisible(true)}
         iframeRef={iframeRef}
+        codingFacts={getCodingFacts(language)}
         t={t}
       />
 
