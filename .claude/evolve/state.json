@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-11T20:06:00Z",
+  "lastUpdated": "2026-03-11T20:36:00Z",
   "research": {
     "queries": [
       {
@@ -35,78 +35,23 @@
     ]
   },
   "evaluatedTasks": [
-    {
-      "task": "Core Chat & Code Generation",
-      "date": "2026-01-01",
-      "decision": "completed",
-      "cycle": 0
-    },
-    {
-      "task": "Real-Time Streaming & Hacker Mode",
-      "date": "2026-01-01",
-      "decision": "completed",
-      "cycle": 0
-    },
-    {
-      "task": "Contextual Memory & Magic Buttons",
-      "date": "2026-01-01",
-      "decision": "completed",
-      "cycle": 0
-    },
-    {
-      "task": "Visual Delight + Audio + Animations",
-      "date": "2026-01-01",
-      "decision": "completed",
-      "cycle": 0
-    },
-    {
-      "task": "Educational Auto-Fix Error Handling",
-      "date": "2026-01-01",
-      "decision": "completed",
-      "cycle": 0
-    },
-    {
-      "task": "Local Storage Persistence",
-      "date": "2026-01-01",
-      "decision": "completed",
-      "cycle": 0
-    },
-    {
-      "task": "Look Inside Code Panel",
-      "date": "2026-02-01",
-      "decision": "completed",
-      "cycle": 1
-    },
-    {
-      "task": "Multi-Project Support",
-      "date": "2026-02-15",
-      "decision": "completed",
-      "cycle": 0
-    },
-    {
-      "task": "Multi-Language Support (i18n)",
-      "date": "2026-03-01",
-      "decision": "completed",
-      "cycle": 0
-    },
-    {
-      "task": "Candy Neubrutalism UI",
-      "date": "2026-03-01",
-      "decision": "completed",
-      "cycle": 0
-    },
-    {
-      "task": "Backend Security Hardening (CORS, rate limit, input validation, env URL)",
-      "date": "2026-03-11",
-      "decision": "completed",
-      "cycle": 2
-    },
-    {
-      "task": "Mobile Responsive Layout",
-      "date": "2026-03-11",
-      "decision": "completed",
-      "cycle": 2
-    }
+    { "task": "Core Chat & Code Generation", "date": "2026-01-01", "decision": "completed", "cycle": 0 },
+    { "task": "Real-Time Streaming & Hacker Mode", "date": "2026-01-01", "decision": "completed", "cycle": 0 },
+    { "task": "Contextual Memory & Magic Buttons", "date": "2026-01-01", "decision": "completed", "cycle": 0 },
+    { "task": "Visual Delight + Audio + Animations", "date": "2026-01-01", "decision": "completed", "cycle": 0 },
+    { "task": "Educational Auto-Fix Error Handling", "date": "2026-01-01", "decision": "completed", "cycle": 0 },
+    { "task": "Local Storage Persistence", "date": "2026-01-01", "decision": "completed", "cycle": 0 },
+    { "task": "Look Inside Code Panel", "date": "2026-02-01", "decision": "completed", "cycle": 1 },
+    { "task": "Multi-Project Support", "date": "2026-02-15", "decision": "completed", "cycle": 0 },
+    { "task": "Multi-Language Support (i18n)", "date": "2026-03-01", "decision": "completed", "cycle": 0 },
+    { "task": "Candy Neubrutalism UI", "date": "2026-03-01", "decision": "completed", "cycle": 0 },
+    { "task": "Backend Security Hardening (CORS, rate limit, input validation, env URL)", "date": "2026-03-11", "decision": "completed", "cycle": 2 },
+    { "task": "Mobile Responsive Layout", "date": "2026-03-11", "decision": "completed", "cycle": 2 },
+    { "task": "App.tsx Decomposition + Stability Fixes", "date": "2026-03-11", "decision": "completed", "cycle": 3 },
+    { "task": "Gamified Progression System", "date": "2026-03-11", "decision": "completed", "cycle": 3 },
+    { "task": "Branch Reconciliation (feature/test-coverage into main)", "date": "2026-03-11", "decision": "completed", "cycle": 3 },
+    { "task": "Educational Loading Screen", "date": "2026-03-11", "decision": "deferred", "revisitAfter": "2026-03-18", "cycle": 3 },
+    { "task": "Content Moderation", "date": "2026-03-11", "decision": "deferred", "revisitAfter": "2026-03-18", "cycle": 3 }
   ],
   "failedApproaches": [],
   "nothingToDoCount": 0

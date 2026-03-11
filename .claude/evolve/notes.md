@@ -8,3 +8,15 @@
 - **Tests:** 62 total (10 backend + 52 frontend), all passing
 - **Warnings deferred:** Rate limiter needs Redis for multi-instance; no helmet security headers; VITE_API_URL fallback in prod; whitespace-only content passes validation; empty messages array passes to LLM
 - **Next cycle should consider:** Gamified Progression System (highest-impact feature gap), Educational Loading Screen, App.tsx decomposition (575 lines), content moderation on backend
+
+## Cycle 3 — 2026-03-11
+- **Items:** App.tsx Decomposition + Stability Fixes, Gamified Progression System, Branch Reconciliation
+- **Type:** Architecture + Feature + Stability
+- **Branch reconciliation:** Merged diverged feature/test-coverage into main (multi-project, i18n, voice, candy UI + security hardening + responsive)
+- **Decomposition:** App.tsx 773 → 58 lines. Extracted 7 components: EditorView (282), ChatHeader (144), MessageList (134), MessageInput (70), PreviewPanel (70), BuildingOverlay (69), ConfettiBurst (59). Plus constants.ts (64) and utils/injectErrorCatcher.ts (30).
+- **Stability fixes:** Reset confirmation dialog, messagesRef for stale closure, useMemo for injectErrorCatcher, postMessage origin validation, error message truncation (200 chars)
+- **Gamification:** 8 achievements (builds, debugs, remixes, explores), 5 unlockable buddy avatars, badge gallery, achievement unlock modal, useAchievements hook with localStorage persistence
+- **Security:** PASS after fixes (2 CRITICAL: postMessage origin validation + error truncation for prompt injection)
+- **Tests:** 80 total (14 new useAchievements tests + 66 existing), all passing
+- **Warnings deferred:** Rate limiter needs Redis; no helmet headers; whitespace validation; empty messages; VITE_API_URL fallback; experimental_useObject not migrated (stable export not available in current @ai-sdk/react version)
+- **Next cycle should consider:** Educational Loading Screen, content moderation, helmet security headers, whitespace/empty message validation fixes, App.tsx further decomposition (EditorView still 282 lines)
