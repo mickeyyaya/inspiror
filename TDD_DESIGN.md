@@ -193,7 +193,51 @@ We use **Vitest** and **React Testing Library** for the frontend, and **Jest** +
 
 **Migration note:** Update `backend/src/llmService.ts` to pass `thinking_level` where appropriate (e.g., low for simple error-fix turns, high for initial project generation).
 
-## 9. Implementation Steps (Next)
+## 9. Architecture Audit (March 2026)
+
+### Component Decomposition — Overdue
+
+`App.tsx` has grown to 575 lines and contains layout, state management, event handling, streaming logic, iframe error catching, localStorage serialization, and audio triggering. The component design from Section 2 envisioned six distinct components that have not been extracted:
+
+| Component | Responsibility | Current State |
+|-----------|---------------|---------------|
+| `ChatPanel` | Conversation history, input, chips | Inline in `App.tsx` |
+| `PreviewSandbox` | Sandboxed iframe + error catcher injection | Inline in `App.tsx` |
+| `BuddyAvatar` | Animated avatar with state-driven CSS class | Inline in `App.tsx` |
+| `SuggestionChips` | Staggered chip rendering and click handling | Inline in `App.tsx` |
+| `MessageInput` | Controlled input with glow effect | Inline in `App.tsx` |
+| `StreamingReply` | Real-time partial reply with typing cursor | Inline in `App.tsx` |
+
+Recommended extraction order (highest impact first): `PreviewSandbox` (contains complex iframe + error handler logic), then `ChatPanel`, then the remaining four.
+
+### currentCode State Duplication
+
+`App.currentCode` and the `CodePanel`'s internal editable state are not kept in sync. When a user edits code in `CodePanel` and runs it, `App.currentCode` retains the last AI-generated version. The next AI generation call therefore ignores the user's edits entirely. Resolution requires either lifting `CodePanel` editor state into `App` or introducing a `useCurrentCode` shared context/hook.
+
+### Backend Middleware Layer — Missing
+
+The Express server handles all concerns (CORS, input parsing, LLM proxying) inside a single route handler with no middleware chain. Required additions before production deployment:
+
+1. `express-rate-limit` — per-IP request throttling on `/api/generate`
+2. Restricted CORS origin — replace `cors()` with `cors({ origin: process.env.ALLOWED_ORIGIN })`
+3. Input validation middleware — enforce message count cap, per-message content length limit, and valid role values (`user` | `assistant` only)
+4. Content moderation hook — block or sanitize prompts before forwarding to the LLM
+
+### AI SDK Migration
+
+`experimental_useObject` was a provisional export. AI SDK 6 promotes it to the stable `useObject` export. Migration is a one-line import change with no API surface changes:
+
+```ts
+// Before
+import { experimental_useObject } from '@ai-sdk/react'
+
+// After
+import { useObject } from '@ai-sdk/react'
+```
+
+Replace the hook reference name throughout `App.tsx` and update the corresponding test mock in `App.test.tsx`.
+
+## 10. Implementation Steps (Next)
 1.  **Phase 2.5 (Next):** Implement `useAudio` hook for sound effects, add Play/Edit toggle.
 2.  **Phase 5:** CSS media queries for mobile/tablet, Docker containerization, Vercel deployment.
 3.  **Phase 6:** Sliding code editor ("Look Inside"), image upload, gamified achievements.

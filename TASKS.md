@@ -126,6 +126,55 @@
 
 ---
 
+## 8-Dimension Audit Findings (March 2026 — Cycle 2)
+
+Audit covers: Performance, Stability, UI/UX, Playability, Code Quality, Security, Architecture, and Accessibility.
+Audited against actual source on `feature/test-coverage` branch.
+
+### CRITICAL
+
+- [ ] **No mobile layout** — `ChatPanel` is `w-96` (384px fixed), overflows on phones and tablets. Kids use tablets heavily. Add responsive stacked layout for screens <640px. (UI/UX) [`App.tsx:453`]
+
+### HIGH — Must Fix
+
+- [ ] **Hardcoded localhost API URL** — `api: "http://localhost:3001/api/generate"` breaks any deployment. Replace with `import.meta.env.VITE_API_URL`. (Stability) [`App.tsx:208`]
+- [ ] **CORS fully open** — `app.use(cors())` allows any origin. Restrict to deployed frontend origin via `ALLOWED_ORIGIN` env var. (Security) [`server.ts:7`]
+- [ ] **No input validation on backend** — No message count limit, no content length limit, no role validation. Attackers can send huge payloads to inflate LLM costs. (Security) [`server.ts:10-14`]
+- [ ] **No rate limiting** — No per-IP rate limit on `/api/generate`. Add `express-rate-limit`. (Security) [`server.ts`]
+- [ ] **Audio cloneNode memory leak** — `useAudio.ts` creates cloned `HTMLAudioElement` nodes that are never released. Accumulates on rapid interactions. (Performance) [`useAudio.ts:17-23`]
+- [ ] **Race condition in iframe error handler** — Handler captures stale `messages` state in closure. Auto-fix sends outdated context to the LLM. (Stability) [`App.tsx:285-326`]
+- [ ] **Partial code persisted during streaming** — `currentCode` written to localStorage on every change including mid-stream; a cancelled stream saves invalid HTML. (Stability) [`App.tsx:332-334`]
+- [ ] **`currentCode` not updated on user remix** — When user edits in CodePanel and runs, `App.currentCode` stays as the AI version. Next AI generation ignores user edits. (Architecture) [`App.tsx:262-265`]
+- [ ] **Reset button has no confirmation** — Instantly destroys conversation and code with no undo. Catastrophic for kids. (Playability)
+- [ ] **App.tsx is 575 lines** — Violates the 400-line rule. TDD_DESIGN envisioned 6 separate components (`ChatPanel`, `PreviewSandbox`, `BuddyAvatar`, `SuggestionChips`, `MessageInput`, `StreamingReply`) — none have been extracted. (Code Quality)
+- [ ] **No content moderation** — User input goes directly to Gemini with no guardrails. Kids can prompt inappropriate content. (Security) [`llmService.ts`]
+- [ ] **Color contrast likely fails WCAG AA** — Green `#39ff14` on dark background. No contrast audit performed. (UI/UX)
+
+### MEDIUM
+
+- [ ] **`injectErrorCatcher` runs every render** — Called inline in JSX without `useMemo`. Recomputes string injection on every state change. (Performance) [`App.tsx:349`]
+- [ ] **No focus management on chat open/close** — Keyboard users lose focus context when chat panel toggles. (UI/UX)
+- [ ] **Hacker Mode "BUILDING" has no educational content** — 20-40s dead wait time with no learning value. Competitors teach during wait. (Playability)
+- [ ] **"Look Inside" shows raw HTML** — Overwhelming for 8-10 year olds. No syntax highlighting or annotations. (Playability)
+- [ ] **No onboarding/tutorial** — First-time users see a greeting and 4 chips, with no explanation of features. (Playability)
+- [ ] **Error messages too technical for kids** — Raw JS error strings shown verbatim in conversation. (Playability)
+- [ ] **No "dirty" indicator after code edit** — Kids cannot tell whether they are viewing their own code or AI-generated code. (Playability)
+- [ ] **`experimental_useObject` is stale** — AI SDK 6 exports a stable `useObject`. (Code Quality)
+- [ ] **Backend has no middleware architecture** — No auth, sanitization, or rate-limiting layers. Everything runs in a single route handler. (Architecture)
+- [ ] **Shared types/constants not extracted** — `ChatMessage`, `STORAGE_KEYS`, and `SUGGESTION_CHIPS` are all defined inline in `App.tsx`. (Code Quality)
+
+### LOW
+
+- [ ] **Confetti timer not cleared on unmount** — Potential state update on an unmounted component. (Stability)
+- [ ] **No E2E test for auto-fix flow** — Critical feature path is untested at the E2E level. (Stability)
+- [ ] **Audio files loaded eagerly on mount** — 4 network requests before the user interacts with anything. (Performance)
+- [ ] **Unicode escapes for emojis** — Use raw emoji chars instead of `\u{1F3C0}` escape sequences. (Code Quality)
+- [ ] **DEFAULT_CODE is 60 lines of HTML inline in App.tsx** — Extract to a separate `defaultCode.ts` file. (Code Quality)
+- [ ] **Suggestion chips disappear forever after first message** — Could reasonably reappear after a reset. (Playability)
+- [ ] **Emoji favicon fails on Firefox Linux** — Known; no SVG fallback provided. (UI/UX)
+
+---
+
 ## Worktree Workflow
 
 When implementing features in worktrees:
