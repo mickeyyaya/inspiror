@@ -242,3 +242,69 @@ Replace the hook reference name throughout `App.tsx` and update the correspondin
 2.  **Phase 5:** CSS media queries for mobile/tablet, Docker containerization, Vercel deployment.
 3.  **Phase 6:** Sliding code editor ("Look Inside"), image upload, gamified achievements.
 4.  **Tech Debt:** Address code review findings (message keys, confetti timer, accessibility).
+
+## 11. Cycle 3 Holistic Audit (March 2026)
+
+**Scope:** Full 8-dimension audit (Performance, Stability, UI/UX, Playability, Code Quality, Security, Architecture, Accessibility) across both `feature/test-coverage` and `main` branches.
+**Total issues found:** 46
+
+### Branch Divergence — Blocking Issue
+
+The two active branches have diverged to the point where they are mutual exclusive supersets:
+
+| Dimension | `feature/test-coverage` | `main` |
+|-----------|------------------------|--------|
+| Test coverage | Higher (45+ unit tests) | Lower |
+| Multi-project support | Missing | Present (ProjectCatalog, useProjects) |
+| i18n (EN/TW/CN) | Missing | Present |
+| Voice input | Missing | Present |
+| Stability fixes | Present | Partial |
+
+A reconciliation merge (not a fast-forward) is required before any new feature work. The recommended approach is to merge `main` into `feature/test-coverage` (bringing in multi-project, i18n, voice), resolve conflicts, ensure all test suites pass, and then merge forward to `main`.
+
+### New Stability Issues Found
+
+| Severity | Issue | File | Root Cause |
+|----------|-------|------|------------|
+| CRITICAL | `EditorView` declared as local function inside `App` | `App.tsx` | React sees new component type on every render; forces full unmount/remount of the iframe |
+| HIGH | Stale closure in iframe error handler | `App.tsx` | `messages` captured at registration time; auto-fix sends outdated context |
+| HIGH | `currentCode` not updated after user remix | `App.tsx`, `CodePanel` | Editor state not lifted; next AI turn ignores user edits |
+| HIGH | `cloneNode` audio leak | `useAudio.ts` | No cleanup; cloned elements accumulate indefinitely |
+| MEDIUM | No Express global error handler | `server.ts` | Async errors produce empty client responses |
+| MEDIUM | `injectErrorCatcher` called every render | `App.tsx` | Missing `useMemo`; unnecessary string recomputation |
+
+### App.tsx Monolith — Growing Problem
+
+`App.tsx` has grown to **773 lines** on the `feature/test-coverage` branch (up from 575 lines noted in Cycle 2). The component design in Section 2 of this document envisioned six extracted components; none have been extracted. The addition of `EditorView` as a local function inside `App` made the situation significantly worse by introducing a React identity bug.
+
+Revised extraction priority (highest impact first):
+
+1. **`EditorView`** — extract as a module-level component immediately to fix the CRITICAL unmount/remount bug
+2. **`PreviewSandbox`** — contains iframe + error handler (complex, high isolation value)
+3. **`ChatPanel`** — conversation history, input, chips
+4. **`SuggestionChips`**, **`BuddyAvatar`**, **`MessageInput`**, **`StreamingReply`** — remaining leaf components
+
+The 773-line file now encompasses layout, routing, state management, event handling, streaming logic, iframe error catching, localStorage serialization, audio triggering, code panel toggling, and EditorView rendering. This violates the 400-line guideline by almost 2x and makes isolated testing of any single concern difficult.
+
+### Infrastructure Gaps Found
+
+| Area | Gap | Recommended Fix |
+|------|-----|-----------------|
+| Backend | No global error handler middleware | Add `(err, req, res, next)` middleware at end of `server.ts` |
+| Backend | `@google/genai` unused dependency | Remove from `backend/package.json` |
+| Backend | Hardcoded model name | Extract to `GEMINI_MODEL` env var in `llmService.ts` |
+| Backend | `package.json` test script incorrect | Verify `npx jest` runs against `tests/` directory |
+| Frontend | Vitest coverage thresholds not enforced | Add `coverage.thresholds` to `vitest.config.ts` |
+| Frontend | `App.css` empty but imported | Delete or consolidate into `index.css` |
+
+### Priority Order for Next Sprint
+
+1. Resolve branch divergence (blocking all other work)
+2. Extract `EditorView` to top-level component (CRITICAL bug fix)
+3. Fix stale closure in iframe error handler (HIGH stability)
+4. Add reset confirmation dialog (HIGH UX)
+5. Fix `currentCode` sync after remix (HIGH architecture)
+6. Add `useMemo` to `injectErrorCatcher` (MEDIUM performance)
+7. Add Express global error handler (MEDIUM stability)
+8. Remove unused `@google/genai` dependency (MEDIUM cleanliness)
+9. Enforce Vitest coverage thresholds (LOW, prevents regression)

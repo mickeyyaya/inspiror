@@ -124,6 +124,46 @@
 
 **IMPORTANT (March 2026):** The `feature/test-coverage` branch diverged from `main` and is missing features that exist on `main`: multi-project support (ProjectCatalog, useProjects), multi-language i18n (EN/TW/CN), and voice input. Before merging `feature/test-coverage` into `main`, these features must be reconciled — either cherry-picked forward or merged carefully to avoid regression. Do NOT merge `feature/test-coverage` directly without a diff review against `main`.
 
+**Cycle 3 Audit Update:** The divergence is now confirmed as a mutual exclusion — the two branches are supersets of each other in different dimensions. `feature/test-coverage` has higher test coverage and stability fixes; `main` has multi-project, i18n, and voice input. A proper reconciliation merge (not a simple fast-forward) is required before any new feature work proceeds.
+
+---
+
+## 8-Dimension Audit Findings (March 2026 — Cycle 3)
+
+Audit covers: Performance, Stability, UI/UX, Playability, Code Quality, Security, Architecture, and Accessibility.
+Audited against actual source on both `feature/test-coverage` and `main` branches.
+Total issues found: 46 across 8 dimensions.
+
+### CRITICAL
+
+- [ ] **Branch divergence — mutual exclusive supersets** — `feature/test-coverage` and `main` have diverged so that each is a superset of the other. Neither branch can be deployed as-is without losing significant work. Must reconcile before any new feature work. (Architecture / Process)
+- [ ] **EditorView defined as local function inside App component** — On `feature/test-coverage`, `EditorView` is declared as a function inside `App`, causing React to treat it as a new component type on every render. This forces a full unmount/remount of `EditorView` (including the iframe) on every state change. Extract `EditorView` as a top-level module export. (Stability) [`App.tsx`]
+
+### HIGH — Must Fix
+
+- [ ] **Race condition in iframe error handler (stale closure)** — The `window.addEventListener('message', ...)` handler in the iframe error catcher closes over the `messages` array at registration time. Auto-fix calls use stale conversation context; if multiple messages have been added since registration, the LLM receives an outdated history. Use a ref (`messagesRef`) to always read the latest value. (Stability) [`App.tsx`]
+- [ ] **`currentCode` not updated on user remix** — When the user edits code in `CodePanel` and runs it, `App.currentCode` retains the last AI-generated version. The next AI generation call ignores all user edits. Lift editor state or introduce a shared `useCurrentCode` hook. (Architecture) [`App.tsx`, `CodePanel`] *(also listed in Cycle 2)*
+- [ ] **Audio `cloneNode` memory leak** — `useAudio.ts` creates cloned `HTMLAudioElement` nodes on every play call that are never released. Accumulates on rapid interactions; no cleanup in the hook teardown. (Performance) [`useAudio.ts`] *(also listed in Cycle 2)*
+- [ ] **Suggestion chips disappear forever after first message** — Chips are hidden after the user's first interaction and never shown again, even after a reset. They should reappear when the conversation is cleared. (Playability) [`App.tsx`] *(noted in Cycle 2 as LOW, re-classified HIGH)*
+- [ ] **`experimental_useObject` not migrated to stable** — AI SDK 6 promotes `experimental_useObject` to the stable `useObject` export. The current import will eventually break. (Code Quality) [`App.tsx`] *(also listed in Cycle 2)*
+- [ ] **Reset without confirmation** — "Clear/Reset Project" instantly destroys conversation and code with no undo or confirmation dialog. Catastrophic data loss for kids. (Playability) *(also listed in Cycle 2)*
+
+### MEDIUM
+
+- [ ] **`injectErrorCatcher` called every render** — The function is called inline in JSX without `useMemo`, recomputing the injected string on every state change. Wrap in `useMemo` with `[currentCode]` dependency. (Performance) [`App.tsx`] *(also listed in Cycle 2)*
+- [ ] **Audio eager loading on mount** — `useAudio` fires 4 network requests for sound files before the user has interacted with anything. Lazy-load on first use or after first interaction. (Performance) [`useAudio.ts`] *(also listed in Cycle 2 as LOW, re-classified MEDIUM)*
+- [ ] **No focus management on chat open/close** — Keyboard users lose focus context when the chat panel toggles. Focus should move to the chat input on open and to the toggle button on close. (Accessibility) *(also listed in Cycle 2)*
+- [ ] **`CodePanel` missing `aria-hidden`** — When the code panel is closed, it remains in the DOM without `aria-hidden`, allowing screen readers to traverse off-screen content. (Accessibility) [`App.tsx`]
+- [ ] **No Express error handler middleware** — Uncaught async errors in route handlers are not caught by a global error handler; Express logs them but the client receives an empty response. Add a `(err, req, res, next)` middleware at the end of `server.ts`. (Stability) [`server.ts`]
+- [ ] **Backend `package.json` test script incorrect** — The `test` script in `backend/package.json` does not correctly invoke Jest for the TypeScript source. Verify it runs `npx jest` or `ts-jest` against `tests/` and that it is wired to CI. (Code Quality) [`backend/package.json`]
+- [ ] **`@google/genai` unused dependency** — `@google/genai` is listed in `backend/package.json` but Inspiror uses `@ai-sdk/google`. The unused package adds install weight and a potential supply-chain surface. Remove it. (Code Quality) [`backend/package.json`]
+- [ ] **Hardcoded model name in `llmService.ts`** — The Gemini model identifier is hardcoded as a string literal. Extract to a named constant or environment variable (`GEMINI_MODEL`) so it can be swapped per environment without a code change. (Code Quality) [`llmService.ts`]
+
+### LOW
+
+- [ ] **Vitest coverage thresholds not enforced** — `vitest.config.ts` does not set `coverage.thresholds`, so CI can pass even if coverage drops below 80%. Add thresholds for `branches`, `functions`, `lines`, and `statements`. (Code Quality) [`vitest.config.ts`]
+- [ ] **`App.css` empty/unused** — The file exists but contains no styles. It is imported in `main.tsx`, adding a pointless network request. Either delete it or consolidate with `index.css`. (Code Quality) [`App.css`]
+
 ---
 
 ## 8-Dimension Audit Findings (March 2026 — Cycle 2)
