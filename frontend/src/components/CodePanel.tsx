@@ -33,7 +33,7 @@ export function CodePanel({
     <div
       data-testid="code-panel"
       className={`fixed top-0 right-0 h-full z-40 flex flex-col
-        w-full md:w-[480px]
+        w-full sm:w-[480px]
         bg-[#0d0d1a]/95 backdrop-blur-xl
         border-l-2 border-[#a855f7]
         shadow-[-10px_0_40px_rgba(168,85,247,0.3)]

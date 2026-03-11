@@ -432,7 +432,7 @@ function App() {
       {!isPlayMode && !isChatVisible && (
         <button
           onClick={() => setIsChatVisible(true)}
-          className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 bg-gradient-to-r from-[#ff007f] to-[#ff003c] text-white p-4 sm:p-5 rounded-full shadow-[0_0_25px_#ff007f] hover:scale-110 active:scale-95 transition-all flex items-center justify-center"
+          className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 bg-gradient-to-r from-[#ff007f] to-[#ff003c] text-white p-5 rounded-full shadow-[0_0_25px_#ff007f] hover:scale-110 active:scale-95 transition-all flex items-center justify-center"
           aria-label="Show Chat"
         >
           <MessageCircle size={36} className="drop-shadow-[0_0_5px_#fff]" />
@@ -451,7 +451,7 @@ function App() {
 
       {/* FLOATING CHAT WINDOW (build mode only) */}
       {!isPlayMode && isChatVisible && (
-        <div className="absolute inset-2 sm:inset-auto sm:top-4 sm:right-4 sm:bottom-4 sm:w-96 sm:max-w-[calc(100vw-2rem)] bg-[#0d0d1a]/95 sm:bg-[#0d0d1a]/90 backdrop-blur-xl border-2 border-[#00f0ff] rounded-3xl flex flex-col shadow-[0_0_40px_rgba(0,240,255,0.4)] z-50 overflow-hidden transition-all duration-300">
+        <div className="absolute inset-2 sm:inset-auto sm:top-4 sm:right-4 sm:bottom-4 sm:w-96 sm:max-w-[calc(100vw-2rem)] bg-[#0d0d1a]/90 backdrop-blur-xl border-2 border-[#00f0ff] rounded-3xl flex flex-col shadow-[0_0_40px_rgba(0,240,255,0.4)] z-50 overflow-hidden transition-all duration-300">
           {/* HEADER with Animated Buddy Avatar */}
           <div className="bg-gradient-to-r from-[#00f0ff] to-[#0099ff] text-black p-4 flex justify-between items-center font-bold shadow-md">
             <div className="flex items-center gap-3">
