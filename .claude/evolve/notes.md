@@ -20,3 +20,14 @@
 - **Tests:** 80 total (14 new useAchievements tests + 66 existing), all passing
 - **Warnings deferred:** Rate limiter needs Redis; no helmet headers; whitespace validation; empty messages; VITE_API_URL fallback; experimental_useObject not migrated (stable export not available in current @ai-sdk/react version)
 - **Next cycle should consider:** Educational Loading Screen, content moderation, helmet security headers, whitespace/empty message validation fixes, App.tsx further decomposition (EditorView still 282 lines)
+
+## Cycle 4 — 2026-03-11
+- **Items:** Quick Fixes Bundle (helmet, validation, achievement wiring) + Educational Loading Screen
+- **Type:** Stability + Feature
+- **Quick fixes:** Added helmet security headers, empty messages array rejection, whitespace-only content validation, wired achievement recordBuild/recordDebug/recordExplore into EditorView
+- **Educational Loading Screen:** 18 coding facts in EN/TW/CN, cycling every 4s during code generation wait. BuildingOverlay rewritten with facts prop, fade-in animation, "Did you know?" cards
+- **Security:** PASS (no new vulnerabilities found by review agents)
+- **Architecture:** PASS (clean prop threading, isolated components)
+- **Tests:** 98 total (86 frontend + 12 backend), all passing. 6 new BuildingOverlay tests + 2 new backend validation tests
+- **Warnings deferred:** Rate limiter needs Redis for multi-instance; experimental_useObject not migrated; EditorView still 282 lines
+- **Next cycle should consider:** Content moderation, EditorView decomposition, template gallery, share/export feature, onboarding tutorial
