@@ -8,9 +8,7 @@ interface MessageListProps {
   streamingReply: string | undefined;
   showSuggestions: boolean;
   suggestionChips: { emoji: string; label: string }[];
-  onSuggestionChipsShuffle: (
-    chips: { emoji: string; label: string }[],
-  ) => void;
+  onSuggestionChipsShuffle: (chips: { emoji: string; label: string }[]) => void;
   onChipClick: (label: string) => void;
   thinkingText: string;
   magicButtonPrompt: string;
@@ -54,7 +52,10 @@ export function MessageList({
       ))}
 
       {isLoading && streamingReply && (
-        <div className="max-w-[85%] p-4 rounded-[1.5rem] text-[17px] leading-relaxed font-bold shadow-[4px_4px_0_#222] border-4 border-[#222] bg-white text-[#222] self-start rounded-tl-sm msg-buddy relative">
+        <div
+          aria-live="polite"
+          className="max-w-[85%] p-4 rounded-[1.5rem] text-[17px] leading-relaxed font-bold shadow-[4px_4px_0_#222] border-4 border-[#222] bg-white text-[#222] self-start rounded-tl-sm msg-buddy relative"
+        >
           <div className="absolute top-[-15px] left-[-15px] text-2xl rotate-[-15deg] drop-shadow-sm animate-pulse">
             ✨
           </div>

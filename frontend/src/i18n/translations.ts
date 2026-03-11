@@ -1,6 +1,56 @@
 export type Language = "en-US" | "zh-TW" | "zh-CN";
 
-export const translations: Record<Language, any> = {
+export interface TranslationKeys {
+  greeting: string;
+  error_connection: string;
+  error_autofix_limit: string;
+  error_oops: string;
+  aria_my_projects: string;
+  aria_hide_chat: string;
+  aria_reset: string;
+  aria_mute: string;
+  aria_unmute: string;
+  aria_enable_voice: string;
+  aria_disable_voice: string;
+  aria_send: string;
+  aria_show_chat: string;
+  aria_look_inside: string;
+  magic_button_prompt: string;
+  input_placeholder: string;
+  mode_build: string;
+  mode_play: string;
+  overlay_building: string;
+  overlay_did_you_know: string;
+  thinking: string;
+  catalog_title: string;
+  create_new: string;
+  delete_project: string;
+  open_project: string;
+  last_edited: string;
+  time_just_now: string;
+  time_min_ago: string;
+  time_mins_ago: string;
+  time_hour_ago: string;
+  time_hours_ago: string;
+  time_day_ago: string;
+  time_days_ago: string;
+  empty_catalog: string;
+  what_will_you_create: string;
+  tell_buddy: string;
+  back_to_build: string;
+  switch_language: string;
+  confirm_reset: string;
+  achievement_unlocked: string;
+  achievement_awesome: string;
+  badge_title: string;
+  badge_builds: string;
+  badge_bugs_fixed: string;
+  badge_achievements: string;
+  badge_buddy_avatars: string;
+  aria_close_gallery: string;
+}
+
+export const translations: Record<Language, TranslationKeys> = {
   "en-US": {
     greeting: "Hi! I'm your builder buddy. What do you want to create today?",
     error_connection: "Oops, my connection broke! Can we try again?",
@@ -43,6 +93,14 @@ export const translations: Record<Language, any> = {
     back_to_build: "Back to Build",
     switch_language: "Switch Language",
     confirm_reset: "Reset this project? Your current work will be cleared.",
+    achievement_unlocked: "Achievement Unlocked!",
+    achievement_awesome: "Awesome!",
+    badge_title: "My Badges",
+    badge_builds: "Builds",
+    badge_bugs_fixed: "Bugs Fixed",
+    badge_achievements: "Achievements",
+    badge_buddy_avatars: "Buddy Avatars",
+    aria_close_gallery: "Close gallery",
   },
   "zh-TW": {
     greeting: "嗨！我是你的建築夥伴。今天你想創造什麼呢？",
@@ -85,6 +143,14 @@ export const translations: Record<Language, any> = {
     back_to_build: "回到建造",
     switch_language: "切換語言",
     confirm_reset: "要重設這個專案嗎？目前的作品會被清除。",
+    achievement_unlocked: "成就解鎖！",
+    achievement_awesome: "太棒了！",
+    badge_title: "我的徽章",
+    badge_builds: "建造次數",
+    badge_bugs_fixed: "修復次數",
+    badge_achievements: "成就",
+    badge_buddy_avatars: "夥伴頭像",
+    aria_close_gallery: "關閉徽章",
   },
   "zh-CN": {
     greeting: "嗨！我是你的建筑夥伴。今天你想创造什么呢？",
@@ -127,5 +193,13 @@ export const translations: Record<Language, any> = {
     back_to_build: "回到建造",
     switch_language: "切换语言",
     confirm_reset: "要重置这个项目吗？目前的作品会被清除。",
+    achievement_unlocked: "成就解锁！",
+    achievement_awesome: "太棒了！",
+    badge_title: "我的徽章",
+    badge_builds: "建造次数",
+    badge_bugs_fixed: "修复次数",
+    badge_achievements: "成就",
+    badge_buddy_avatars: "伙伴头像",
+    aria_close_gallery: "关闭徽章",
   },
 };

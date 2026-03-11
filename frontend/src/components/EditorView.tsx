@@ -330,7 +330,11 @@ export function EditorView({
         onRunCode={handleRunCode}
       />
 
-      <AchievementModal achievement={newlyUnlocked} onDismiss={dismissUnlock} />
+      <AchievementModal
+        achievement={newlyUnlocked}
+        onDismiss={dismissUnlock}
+        t={t}
+      />
 
       <BadgeGallery
         isOpen={isBadgeGalleryOpen}
@@ -340,6 +344,7 @@ export function EditorView({
         selectedAvatar={selectedAvatar}
         unlockedAvatars={unlockedAvatars}
         onSelectAvatar={selectAvatar}
+        t={t}
       />
     </div>
   );

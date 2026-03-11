@@ -32,6 +32,7 @@ interface ChatHeaderProps {
     aria_unmute: string;
     aria_reset: string;
     aria_hide_chat: string;
+    badge_title: string;
   };
 }
 
@@ -77,7 +78,7 @@ export function ChatHeader({
         <button
           onClick={onOpenBadges}
           className="bg-[var(--color-candy-yellow)] border-2 border-[#222] p-2 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none"
-          aria-label="My Badges"
+          aria-label={t.badge_title}
           data-testid="badge-gallery-btn"
         >
           <Trophy size={20} className="text-[#222]" strokeWidth={2.5} />
