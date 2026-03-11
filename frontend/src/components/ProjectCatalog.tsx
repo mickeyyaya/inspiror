@@ -46,7 +46,10 @@ export function ProjectCatalog({
         <div className="flex items-center gap-3">
           <span className="text-5xl buddy-avatar">🐶</span>
           <div>
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-[#333] tracking-wide" style={{ textShadow: "2px 2px 0px var(--color-candy-yellow)" }}>
+            <h1
+              className="text-3xl sm:text-4xl font-extrabold text-[#333] tracking-wide"
+              style={{ textShadow: "2px 2px 0px var(--color-candy-yellow)" }}
+            >
               {t.catalog_title}
             </h1>
             <p className="text-gray-600 font-bold mt-1 text-lg">
@@ -60,7 +63,9 @@ export function ProjectCatalog({
           <button
             onClick={onToggleLanguage}
             className={`border-4 border-[#222] px-4 py-3 rounded-full hover:scale-105 active:scale-95 transition-transform shadow-[4px_4px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none flex items-center gap-2 font-bold text-lg ${
-              language !== "en-US" ? "bg-[var(--color-candy-green)]" : "bg-white"
+              language !== "en-US"
+                ? "bg-[var(--color-candy-green)]"
+                : "bg-white"
             }`}
           >
             <Languages size={22} strokeWidth={2.5} />
@@ -113,7 +118,10 @@ export function ProjectCatalog({
                   data-testid="project-card"
                 >
                   <div className="p-6 flex-1 flex flex-col">
-                    <h3 className="text-[#222] font-extrabold text-2xl truncate mb-3" title={project.title}>
+                    <h3
+                      className="text-[#222] font-extrabold text-2xl truncate mb-3"
+                      title={project.title}
+                    >
                       {project.title}
                     </h3>
                     <div className="flex items-center gap-2 text-[#222]/70 font-bold text-sm mb-6 bg-white/30 w-fit px-3 py-1 rounded-full border-2 border-[#222]/20">
@@ -130,7 +138,11 @@ export function ProjectCatalog({
                         {t.open_project}
                       </button>
                       <button
-                        onClick={() => onDelete(project.id)}
+                        onClick={() => {
+                          if (window.confirm(t.confirm_delete)) {
+                            onDelete(project.id);
+                          }
+                        }}
                         className="bg-white border-4 border-[#222] text-[#222] p-3 rounded-2xl shadow-[3px_3px_0px_#222] active:translate-y-[3px] active:translate-x-[3px] active:shadow-none transition-all hover:bg-red-400 hover:text-white"
                         aria-label={`${t.delete_project} ${project.title}`}
                         data-testid="delete-project-btn"

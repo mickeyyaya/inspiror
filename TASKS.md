@@ -328,3 +328,44 @@ When implementing features in worktrees:
    git worktree remove <worktree-path>
    git branch -d <branch-name>
    ```
+
+---
+
+## Cycle 8 Audit [ ]
+
+Audit covers: Safety, Security, Architecture, Code Quality, Performance, Accessibility, Playability, and i18n.
+Audited against actual source on `main` branch (March 2026 — Cycle 8).
+
+### HIGH
+
+- [ ] **No content moderation in system prompt** — No guardrails against inappropriate content generation. Critical gap for a platform targeting ages 8-14. Add explicit safety instructions to `basePrompt` in `llmService.ts`. (Safety) [`llmService.ts`] *(carried from Cycle 2)*
+- [ ] **`@google/genai` unused dependency** — `"@google/genai": "^1.44.0"` present in `backend/package.json`; project uses `@ai-sdk/google`. Dead dependency adds supply-chain risk and install weight. Remove it. (Security) [`backend/package.json`] *(carried from Cycle 3 and Cycle 7)*
+- [ ] **Gemini model name hardcoded twice** — `google("gemini-3.1-flash-lite-preview")` appears at lines 250 and 291 of `llmService.ts`. Extract to a `GEMINI_MODEL` constant or `GEMINI_MODEL` env var to allow environment-specific overrides without code changes. (Code Quality) [`llmService.ts`] *(carried from Cycle 3 and Cycle 7)*
+- [ ] **Schema duplication frontend/backend** — `generationSchema`, `blockSchema`, and `blockParamSchema` are defined identically in both `constants.ts` (frontend) and `llmService.ts` (backend). Any schema change must be applied in two places; divergence is inevitable. Extract to a shared package or generate one from the other. (Architecture)
+- [ ] **`experimental_useObject` deprecation risk** — `EditorView.tsx` line 2 imports from the experimental path. Stable `useObject` is available in `@ai-sdk/react`. The experimental import will break on a future SDK release. (Code Quality) [`EditorView.tsx`] *(carried from Cycle 3 and Cycle 7)*
+- [ ] **No Express global error handler** — Uncaught async errors in route handlers return empty responses to the client. Add a `(err, req, res, next)` middleware at the end of `server.ts`. (Stability) [`server.ts`] *(carried from Cycle 3 and Cycle 7)*
+- [ ] **Project delete has no confirmation dialog** — `ProjectCatalog.tsx` line 133 deletes a project instantly on click with no undo. A mis-tap permanently destroys a kid's work. (Playability) [`ProjectCatalog.tsx`] *(carried from Cycle 3 and Cycle 7)*
+- [ ] **Legacy project blocks mismatch** — Block panel shows `DEFAULT_BLOCKS` for projects created before the block editor instead of converting their code. The `/api/convert-to-blocks` endpoint exists but is never called on panel open for legacy projects. Trigger conversion on first block panel open when `blocks` state is empty. (Architecture) *(carried from Cycle 7)*
+- [ ] **`useAudio` cloneNode memory leak** — `createPlayer` creates unbounded `HTMLAudioElement` clones on every play call with no cleanup. Accumulates on rapid interactions and is never released in the hook teardown. (Performance) [`useAudio.ts`] *(carried from Cycle 2, Cycle 3, and Cycle 7)*
+
+### MEDIUM
+
+- [ ] **Dead `CodePanel.tsx` and its tests** — `CodePanel` was superseded by `BlockEditor` but the file and associated tests were not deleted. Dead code increases bundle size and causes confusion. Remove both. (Code Quality) *(carried from Cycle 7)*
+- [ ] **`useVoice.ts` has 6 `any` types** — Six `any` annotations in voice input hook; replace with proper `SpeechRecognition` and `SpeechRecognitionEvent` types from `@types/dom-speech-recognition`. (Code Quality) [`useVoice.ts`]
+- [ ] **No `prefers-reduced-motion` media query** — CSS animations in `index.css` run unconditionally. Users who have enabled reduced motion in their OS settings still see all animations. Wrap keyframe animations in `@media (prefers-reduced-motion: no-preference)`. (Accessibility) [`index.css`]
+- [ ] **Block panel "Close" button hardcoded English** — `"Close"` label is not passed through the i18n system. Add an i18n key. (i18n) [`BlockEditor`] *(carried from Cycle 7)*
+- [ ] **No block deletion UI** — Once added, blocks cannot be removed from the panel. They accumulate indefinitely. Add a delete button to `BlockCard`. (Playability) *(carried from Cycle 7)*
+- [ ] **Vitest coverage thresholds not enforced** — `vitest.config.ts` lacks `coverage.thresholds`; current branch coverage is 74.79%, below the 80% target. CI passes with arbitrarily low coverage. Add thresholds for `branches`, `functions`, `lines`, and `statements`. (Code Quality) [`vitest.config.ts`] *(carried from Cycle 3 and Cycle 7)*
+- [ ] **`EditorView.tsx` is 436 lines** — Exceeds the 400-line soft ceiling. Extract block panel logic or param editor wiring into a dedicated hook or sub-component. (Code Quality) [`EditorView.tsx`]
+- [ ] **No E2E tests for block editor, achievements, or voice features** — Three significant feature areas have no Playwright coverage. Add E2E tests for the block panel open/close flow, param slider interaction, and voice input toggle. (Code Quality)
+- [ ] **No CSP header on frontend** — No `Content-Security-Policy` header is set. Add a CSP that restricts `script-src` and `frame-src` to prevent XSS and iframe injection attacks. (Security)
+- [ ] **No startup validation of `GOOGLE_GENERATIVE_AI_API_KEY`** — The backend does not check for the presence of the API key at startup. Missing key causes a cryptic runtime error on the first request. Add a startup check that exits with a clear message if the key is absent. (Stability) [`server.ts`]
+- [ ] **No focus management on block panel open/close** — Opening the block panel does not move keyboard focus into it; closing it does not return focus to the trigger button. (Accessibility) [`EditorView.tsx`]
+
+### LOW
+
+- [ ] **`ProjectCatalog` hardcodes bilingual "waiting for you!"** — The empty-state string is a hardcoded bilingual literal instead of an i18n key. Replace with the translation system. (i18n) [`ProjectCatalog.tsx`]
+- [ ] **No "dirty" indicator after block edits** — After editing block params, the UI gives no visual cue that the project has unsaved or unsynced changes relative to the AI-generated code. (Playability)
+- [ ] **`getWelcomeCode` 90-line template in `useProjects.ts`** — Large inline HTML template inflates the hook file. Extract to `src/constants/welcomeCode.ts`. (Code Quality) [`useProjects.ts`]
+- [ ] **Color contrast of `#39ff14` neon green fails WCAG AA** — Neon green text on dark backgrounds does not meet the 4.5:1 contrast ratio. Replace with a WCAG-compliant green or add a high-contrast mode. (Accessibility) *(carried from Cycle 2)*
+- [ ] **Block panel empty state has no guidance message** — When the panel is empty (new project or failed conversion), kids see a blank area with no instructions. Add a short message explaining how to populate blocks. (Playability) *(carried from Cycle 7)*
