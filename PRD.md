@@ -69,7 +69,7 @@ Traditional text-based programming can be intimidating and syntax-heavy for chil
 |----------|----------|------------|-------------|-------------------|
 | **Codorex** | Rex the Dino | Teaches coding facts during 20-40s wait | Minimal | Zero-signup, code transparency |
 | **Upit** | AVA | Standard spinner | Contest prizes ($2,500) | Generates graphics + sound + code |
-| **Rosebud** | Rosie | Live preview | Game jams | Specialized builders (RPG, visual novel) |
+| **Rosebud** | Rosie | Live preview | Game jams | Specialized builders (RPG, visual novel), 3D vibe coding |
 | **Kodable** | CatBot | Standard | Certificates | Dual-mode (text + audio), multilingual |
 | **CodeCombat** | N/A (RPG heroes) | Quest progress | Loot drops, gear upgrades, XP | Learning IS the game |
 | **Codedex** | N/A | Standard | Region unlocking on fantasy map | 8-bit pixel art identity |
@@ -81,6 +81,12 @@ Traditional text-based programming can be intimidating and syntax-heavy for chil
 3. **Confetti celebration loop** - Every successful build triggers confetti (vs. CodeCombat's loot drops)
 4. **Animated AI buddy** - Bouncing/thinking avatar gives personality (vs. static emoji competitors)
 5. **Animated welcome screen** - Particle-effect landing vs. boring "Your creation will appear here"
+
+### Market Trends (Updated March 2026)
+- **"Vibe coding" is Collins Word of the Year 2026** — mainstream awareness of AI-assisted coding is accelerating
+- **Bolt.new hit $40M ARR** — proves massive demand for AI code generation platforms
+- **Scratch 4.0 delayed to 2027-2028** — window of opportunity for next-gen tools to capture young creators
+- **44% of children actively use generative AI** — target audience is already AI-literate, raising the bar for UX quality
 
 ### Design Principles for Kids 8-14 (from competitive research)
 - **Not too babyish** - They want to feel "grown up" and like real hackers/creators
@@ -117,3 +123,5 @@ Based on competitive research, the following improvements have been shipped:
 *   **Gamified Progression:** Implement an achievement system (e.g., "Code Ninja badge unlocked for making 5 games!") and unlockable AI Buddy avatars to drive long-term retention.
 *   **Visual block export:** Convert the generated code into Scratch-like blocks for further learning.
 *   **Multiplayer collaboration:** Kids building together.
+*   **Voice-guided coding tutorials:** Gemini 3 native TTS could enable the AI Buddy to speak instructions aloud, making the platform accessible to younger or pre-literate kids and creating an immersive audio learning experience.
+*   **Multi-step agent code generation:** Vercel AI SDK 6 agent abstraction enables autonomous multi-step code generation workflows, where the AI can plan, build, test, and iterate without manual prompting at each step.

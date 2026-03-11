@@ -98,12 +98,41 @@
 - [ ] Logic: Create a `useAchievements` hook that checks `gamesBuilt` against thresholds. If a new threshold is crossed, trigger a global `react-confetti` overlay and display a congratulatory modal.
 - [ ] UI: Add an "Avatar/Badges" menu where kids can swap their AI Buddy (🐶) for newly unlocked avatars (e.g., 🐉 Dragon, 🤖 Robot).
 
+## Backlog: New Features [ ]
+
+### Voice-Guided Coding with Gemini TTS
+- [ ] Integrate Gemini 3 native TTS to let the AI Buddy speak instructions aloud
+- [ ] Kids can hear the AI Buddy explain what it is building, making the experience accessible to younger or pre-literate users
+- [ ] Requires audio playback controls (play/pause/stop) and volume adjustment
+
+### Dark Mode Toggle
+- [ ] Add a dark/light mode toggle in the UI header
+- [ ] Tweens (10-14) prefer grown-up looking interfaces; dark mode signals "real developer" credibility
+- [ ] Persist preference in localStorage
+
+### Customizable Themes & Avatars
+- [ ] Allow kids to pick from multiple color themes (neon, pastel, retro pixel, etc.)
+- [ ] Let kids choose or unlock different AI Buddy avatars for self-expression
+- [ ] Persist selections in localStorage per project or globally
+
+### Educational Loading Screen
+- [ ] Show coding facts, tips, or mini-challenges during generation wait times (inspired by Codorex's approach)
+- [ ] Rotate through a curated list of age-appropriate coding trivia
+- [ ] Replace or augment the current hacker mode overlay with educational content
+
 ## Technical Debt (from Code Review)
 
 ### Must Fix Before Next Feature
 - [x] **Message list keys:** Replace `key={idx}` with stable keys (`crypto.randomUUID()` with migration) to prevent incorrect DOM reuse.
 - [x] **Confetti timer reset:** Reset confetti timer on rapid-fire generations using `confettiTimerRef` with `clearTimeout`.
 - [x] **Accessibility:** Add `aria-hidden={!isChatVisible}` to hidden chat panel so screen readers don't traverse off-screen content.
+
+### Security & Dependencies
+- [ ] **CVE audit:** Verify all dependencies for known CVEs (Vite 7.3.1 covers CVE-2025-58752; React RSC CVE-2025-55182 does not apply to client-side only)
+- [ ] **Dependency update cadence:** Establish a regular schedule to run `npm audit` and update vulnerable packages across frontend, backend, and e2e
+
+### Migration
+- [ ] **Evaluate AI SDK 6 agent abstraction:** AI SDK 6 introduces typed `UIMessage` vs `ModelMessage` and agent workflows for multi-step code generation. Evaluate migration path from current `experimental_useObject` usage.
 
 ### Nice to Fix
 - [x] **Confetti CSS coupling:** Refactored to use inline `style={{}}` on each confetti piece, removed `nth-child` selectors.

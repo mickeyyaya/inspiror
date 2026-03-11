@@ -267,7 +267,17 @@ We use **Vitest** and **React Testing Library** for the frontend, and **Jest** +
 | LOW | Confetti CSS uses hardcoded `nth-child` selectors - refactored to inline styles | `index.css` | DONE |
 | LOW | Favicon emoji may not render on all browsers/OS - replaced with SVG rocket | `index.html` | DONE |
 
-## 7. Implementation Steps (Next)
+## 7. Security Notes
+
+- **Vite CVE-2025-58752:** Fixed in Vite 7.1.5+. Current project uses Vite 7.3.1, which includes the fix. Verify version on each dependency update to avoid regression.
+- **React RSC CVEs (CVE-2025-55182):** Does not affect this project. Inspiror is client-side only with no React Server Components. No action required unless RSC is adopted in the future.
+
+## 8. Technology Considerations
+
+- **AI SDK 6 typed messages:** Vercel AI SDK 6 introduces typed `UIMessage` vs `ModelMessage` separation. Current project uses `experimental_useObject` from AI SDK. Future migration path: adopt the new message types to gain type safety and support for richer message payloads (tool calls, multi-modal content).
+- **Gemini native TTS:** Gemini 3 provides native text-to-speech output, enabling audio responses from the AI Buddy. This could power voice-guided coding tutorials without requiring a separate TTS service.
+
+## 9. Implementation Steps (Next)
 1.  ~~**Phase 2.5:** Audio integration, Play/Edit toggle.~~ (DONE)
 2.  ~~**Phase 5:** CSS media queries, Docker, Vercel deployment.~~ (DONE)
 3.  ~~**Tech Debt:** Message keys, confetti timer, accessibility, favicon, CSS coupling.~~ (DONE)
