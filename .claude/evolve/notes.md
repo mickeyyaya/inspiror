@@ -94,3 +94,15 @@
 - **Tests:** 187 total (175 frontend + 12 backend), all passing
 - **Warnings deferred:** postMessage wildcard origin (pre-existing), schema duplication frontend/backend, focus trap not implemented, experimental_useObject migration, backend tsconfig missing test types
 - **Next cycle should consider:** Schema deduplication, E2E tests for block editor, content moderation (after 03-18), focus trap for modals, onboarding tutorial, template gallery
+
+## Cycle 10 — 2026-03-12
+- **Items:** Collision callback leak fix + stale test mock migration
+- **Type:** Bug fix + Test integrity
+- **Collision leak:** `game.off(blockId)` now filters `collisionCallbacks` array, preventing unbounded accumulation of stale collision handlers. Without this fix, disabled/re-registered blocks would have their collision callbacks checked every frame indefinitely.
+- **Stale mocks:** Updated 5 test mock return values from deprecated `{ code: "<html>..." }` to `{ blocks: [...] }` matching the actual `generationSchema`. Tests now exercise the real block-compilation path.
+- **experimental_useObject:** Checked — stable `useObject` export not yet available in installed `@ai-sdk/react`. Deferred to revisit after 2026-04-01.
+- **Security:** PASS (no issues)
+- **Code Review:** PASS (1 MEDIUM fixed: confetti timer mocks missing `blocks: []`)
+- **Tests:** 188 total (176 frontend + 12 backend), all passing
+- **Warnings deferred:** postMessage wildcard origin, schema duplication, focus trap, EditorView 489 lines, window.confirm usage, i18n gaps (hardcoded English strings), bundle splitting, game.playSound stub, English-only chips
+- **Next cycle should consider:** Focus trap for modals (WCAG), i18n remaining hardcoded strings, EditorView decomposition (extract useAutoFix + useLegacyConversion hooks), schema deduplication, E2E block editor tests
