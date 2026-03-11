@@ -4,7 +4,7 @@ import { useAudio } from "../hooks/useAudio";
 import { useVoice, type VoiceLanguage } from "../hooks/useVoice";
 import { useAchievements } from "../hooks/useAchievements";
 import { translations } from "../i18n/translations";
-import type { ChatMessage } from "../types/project";
+import type { ChatMessage, Project } from "../types/project";
 import { generationSchema, pickRandomChips, withId } from "../constants";
 import { ConfettiBurst } from "./ConfettiBurst";
 import { ChatHeader } from "./ChatHeader";
@@ -15,16 +15,11 @@ import { AchievementModal } from "./AchievementModal";
 import { BadgeGallery } from "./BadgeGallery";
 
 export interface EditorViewProps {
-  project: { id: string; messages: ChatMessage[]; currentCode: string };
+  project: Pick<Project, "id" | "messages" | "currentCode">;
   defaultCode: string;
   onUpdate: (
     projectId: string,
-    updates: Partial<
-      Pick<
-        { messages: ChatMessage[]; currentCode: string },
-        "messages" | "currentCode"
-      >
-    >,
+    updates: Partial<Pick<Project, "messages" | "currentCode">>,
   ) => void;
   onReset: () => void;
   onBack: () => void;
@@ -209,8 +204,14 @@ export function EditorView({
   // Use messagesRef to avoid stale closure in iframe error handler
   useEffect(() => {
     const handleIframeError = (event: MessageEvent) => {
+      // Validate origin to prevent cross-origin message spoofing
+      // "null" is sent by sandboxed iframes (no allow-same-origin)
+      const allowed = [window.location.origin, "null", ""];
+      if (!allowed.includes(event.origin)) return;
       if (event.data?.type === "iframe-error") {
-        const errorMsg = event.data.message || "Unknown error";
+        // Truncate error message to prevent prompt injection via crafted errors
+        const rawMsg = String(event.data.message || "Unknown error");
+        const errorMsg = rawMsg.slice(0, 200);
         console.error(`[Sandbox Error] ${errorMsg}`);
 
         if (isLoading) return;
