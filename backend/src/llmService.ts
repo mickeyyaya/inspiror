@@ -30,9 +30,11 @@ export class LLMService {
   ) {
     try {
       const languageHint =
-        language === "zh-CN"
-          ? "The user prefers Chinese. Please reply in Chinese."
-          : "The user prefers English. Please reply in English.";
+        language === "zh-TW"
+          ? "The user prefers Traditional Chinese (繁體中文). Please reply in Traditional Chinese."
+          : language === "zh-CN"
+            ? "The user prefers Simplified Chinese (简体中文). Please reply in Simplified Chinese."
+            : "The user prefers English. Please reply in English.";
 
       const basePrompt = `You are the "Builder Buddy", an encouraging, patient mentor for kids (ages 8-14) building visual apps.
 You are represented visually as a Cute Animal.
