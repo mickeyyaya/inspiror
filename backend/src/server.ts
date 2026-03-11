@@ -25,7 +25,7 @@ const generateLimiter = rateLimit({
   message: { error: "Too many requests, please try again later" },
 });
 
-app.use("/api/generate", generateLimiter);
+app.use(["/api/generate", "/api/convert-to-blocks"], generateLimiter);
 
 interface ChatMessage {
   role: string;
@@ -83,19 +83,20 @@ app.post("/api/generate", async (req, res) => {
     return res.status(400).json({ error: validation.error });
   }
 
+  // Validate currentBlocks (JSON string of blocks array)
   if (
-    req.body.currentCode !== undefined &&
-    (typeof req.body.currentCode !== "string" ||
-      req.body.currentCode.length > MAX_CODE_LENGTH)
+    req.body.currentBlocks !== undefined &&
+    (typeof req.body.currentBlocks !== "string" ||
+      req.body.currentBlocks.length > MAX_CODE_LENGTH)
   ) {
-    console.warn("[API] Rejected request: currentCode exceeds size limit");
+    console.warn("[API] Rejected request: currentBlocks exceeds size limit");
     return res
       .status(400)
-      .json({ error: `currentCode exceeds ${MAX_CODE_LENGTH} characters` });
+      .json({ error: `currentBlocks exceeds ${MAX_CODE_LENGTH} characters` });
   }
 
   console.log(
-    `[API] Generation request received | Messages: ${req.body.messages.length} | Code length: ${req.body.currentCode?.length || 0}`,
+    `[API] Generation request received | Messages: ${req.body.messages.length} | Blocks length: ${req.body.currentBlocks?.length || 0}`,
   );
 
   try {
@@ -104,13 +105,42 @@ app.post("/api/generate", async (req, res) => {
       : "en-US";
     const result = await llmService.generateStream(
       req.body.messages,
-      req.body.currentCode,
+      req.body.currentBlocks,
       language,
     );
     result.pipeTextStreamToResponse(res);
   } catch (error) {
     console.error("[API] Route Error during stream setup:", error);
     res.status(500).json({ error: "Internal server error during generation" });
+  }
+});
+
+// --- Legacy code to blocks conversion endpoint ---
+app.post("/api/convert-to-blocks", async (req, res) => {
+  const { code, language: reqLanguage } = req.body;
+
+  if (!code || typeof code !== "string") {
+    return res
+      .status(400)
+      .json({ error: "code field is required and must be a string" });
+  }
+
+  if (code.length > MAX_CODE_LENGTH) {
+    return res
+      .status(400)
+      .json({ error: `code exceeds ${MAX_CODE_LENGTH} characters` });
+  }
+
+  const language = VALID_LANGUAGES.has(reqLanguage) ? reqLanguage : "en-US";
+
+  console.log(`[API] Convert-to-blocks request | Code length: ${code.length}`);
+
+  try {
+    const result = await llmService.convertToBlocks(code, language);
+    result.pipeTextStreamToResponse(res);
+  } catch (error) {
+    console.error("[API] Route Error during conversion:", error);
+    res.status(500).json({ error: "Internal server error during conversion" });
   }
 });
 

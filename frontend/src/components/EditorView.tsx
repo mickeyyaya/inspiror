@@ -1,12 +1,15 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { useAudio } from "../hooks/useAudio";
 import { useVoice, type VoiceLanguage } from "../hooks/useVoice";
 import { useAchievements } from "../hooks/useAchievements";
 import { translations } from "../i18n/translations";
 import type { ChatMessage, Project } from "../types/project";
+import type { Block } from "../types/block";
 import { generationSchema, pickRandomChips, withId } from "../constants";
 import { getCodingFacts } from "../constants/codingFacts";
+import { compileBlocks } from "../compiler/compileBlocks";
+import { DEFAULT_BLOCKS } from "../constants/defaultBlocks";
 import { ConfettiBurst } from "./ConfettiBurst";
 import { ChatHeader } from "./ChatHeader";
 import { MessageList } from "./MessageList";
@@ -14,14 +17,17 @@ import { MessageInput } from "./MessageInput";
 import { PreviewPanel } from "./PreviewPanel";
 import { AchievementModal } from "./AchievementModal";
 import { BadgeGallery } from "./BadgeGallery";
-import { CodePanel } from "./CodePanel";
+import { BlockEditor } from "./blocks/BlockEditor";
+
+const COMPILE_DEBOUNCE_MS = 150;
+const SAFE_BLOCK_ID_RE = /^[a-zA-Z0-9_-]{1,64}$/;
 
 export interface EditorViewProps {
-  project: Pick<Project, "id" | "messages" | "currentCode">;
+  project: Pick<Project, "id" | "messages" | "currentCode" | "blocks">;
   defaultCode: string;
   onUpdate: (
     projectId: string,
-    updates: Partial<Pick<Project, "messages" | "currentCode">>,
+    updates: Partial<Pick<Project, "messages" | "currentCode" | "blocks">>,
   ) => void;
   onReset: () => void;
   onBack: () => void;
@@ -51,7 +57,11 @@ export function EditorView({
   });
   const [inputValue, setInputValue] = useState("");
   const [currentCode, setCurrentCode] = useState(project.currentCode);
+  const [blocks, setBlocks] = useState<Block[]>(
+    () => project.blocks ?? DEFAULT_BLOCKS.map((b) => ({ ...b })),
+  );
   const [isChatVisible, setIsChatVisible] = useState(true);
+  const [isBlockPanelOpen, setIsBlockPanelOpen] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [suggestionChips, setSuggestionChips] = useState(pickRandomChips);
 
@@ -60,11 +70,15 @@ export function EditorView({
   const autoFixCountRef = useRef(0);
   const confettiTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const messagesRef = useRef(messages);
+  const blocksRef = useRef(blocks);
 
-  // Keep messagesRef in sync to avoid stale closures
   useEffect(() => {
     messagesRef.current = messages;
   }, [messages]);
+
+  useEffect(() => {
+    blocksRef.current = blocks;
+  }, [blocks]);
 
   const { playPop, playChipClick, playChime, playBuzzer, isMuted, toggleMute } =
     useAudio();
@@ -78,7 +92,6 @@ export function EditorView({
     toggleAutoSpeak,
   } = useVoice(language);
   const {
-    achievements,
     unlockedIds,
     stats,
     newlyUnlocked,
@@ -92,7 +105,6 @@ export function EditorView({
     selectAvatar,
   } = useAchievements();
   const [isBadgeGalleryOpen, setIsBadgeGalleryOpen] = useState(false);
-  const [isCodePanelOpen, setIsCodePanelOpen] = useState(false);
   const codingFacts = useMemo(() => getCodingFacts(language), [language]);
   const recordBuildRef = useRef(recordBuild);
   const recordDebugRef = useRef(recordDebug);
@@ -132,8 +144,14 @@ export function EditorView({
         ]);
         speakRef.current(finalObj.reply as string);
       }
-      if (finalObj?.code) {
-        setCurrentCode(finalObj.code as string);
+      if (
+        finalObj?.blocks &&
+        Array.isArray(finalObj.blocks) &&
+        finalObj.blocks.length > 0
+      ) {
+        const newBlocks = finalObj.blocks as Block[];
+        setBlocks(newBlocks);
+        setCurrentCode(compileBlocks(newBlocks));
       }
       playChimeRef.current();
       recordBuildRef.current();
@@ -164,7 +182,11 @@ export function EditorView({
     ];
     setMessages(newMessages);
     setInputValue("");
-    submit({ messages: newMessages, currentCode, language });
+    submit({
+      messages: newMessages,
+      currentBlocks: JSON.stringify(blocksRef.current),
+      language,
+    });
   };
 
   const handleChipClick = (label: string) => {
@@ -175,7 +197,11 @@ export function EditorView({
     recordExplore();
     const newMessages: ChatMessage[] = [...messages, withId("user", label)];
     setMessages(newMessages);
-    submit({ messages: newMessages, currentCode, language });
+    submit({
+      messages: newMessages,
+      currentBlocks: JSON.stringify(blocksRef.current),
+      language,
+    });
   };
 
   const handleReset = () => {
@@ -188,17 +214,36 @@ export function EditorView({
       return;
     }
     onReset();
+    const freshBlocks = DEFAULT_BLOCKS.map((b) => ({ ...b }));
     setMessages([withId("assistant", t.greeting)]);
-    setCurrentCode(defaultCode);
+    setBlocks(freshBlocks);
+    setCurrentCode(compileBlocks(freshBlocks));
     setInputValue("");
     setSuggestionChips(pickRandomChips());
     autoFixCountRef.current = 0;
   };
 
-  const handleRunCode = (code: string) => {
-    setCurrentCode(code);
-    recordRemix();
-  };
+  // Handle block edits from the BlockEditor (param changes, reorder, toggle)
+  const handleBlocksChange = useCallback(
+    (newBlocks: Block[]) => {
+      setBlocks(newBlocks);
+      recordRemix();
+    },
+    [recordRemix],
+  );
+
+  // Debounced compile: derive currentCode from blocks to avoid torn state
+  const compileTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    if (compileTimerRef.current) clearTimeout(compileTimerRef.current);
+    compileTimerRef.current = setTimeout(() => {
+      setCurrentCode(compileBlocks(blocks));
+      compileTimerRef.current = null;
+    }, COMPILE_DEBOUNCE_MS);
+    return () => {
+      if (compileTimerRef.current) clearTimeout(compileTimerRef.current);
+    };
+  }, [blocks]);
 
   const showSuggestions =
     messages.length === 1 && messages[0]?.role === "assistant" && !isLoading;
@@ -210,21 +255,25 @@ export function EditorView({
   }, [messages, onUpdate, projectId]);
 
   useEffect(() => {
-    onUpdate(projectId, { currentCode });
-  }, [currentCode, onUpdate, projectId]);
+    onUpdate(projectId, { currentCode, blocks });
+  }, [currentCode, blocks, onUpdate, projectId]);
 
-  // Use messagesRef to avoid stale closure in iframe error handler
+  // Error handler for iframe errors — includes blockId awareness
   useEffect(() => {
     const handleIframeError = (event: MessageEvent) => {
-      // Validate origin to prevent cross-origin message spoofing
-      // "null" is sent by sandboxed iframes (no allow-same-origin)
       const allowed = [window.location.origin, "null", ""];
       if (!allowed.includes(event.origin)) return;
       if (event.data?.type === "iframe-error") {
-        // Truncate error message to prevent prompt injection via crafted errors
         const rawMsg = String(event.data.message || "Unknown error");
         const errorMsg = rawMsg.slice(0, 200);
-        console.error(`[Sandbox Error] ${errorMsg}`);
+        const rawBlockId = event.data.blockId
+          ? String(event.data.blockId)
+          : null;
+        const blockId =
+          rawBlockId && SAFE_BLOCK_ID_RE.test(rawBlockId) ? rawBlockId : null;
+        console.error(
+          `[Sandbox Error]${blockId ? ` Block: ${blockId}` : ""} ${errorMsg}`,
+        );
 
         if (isLoading) return;
 
@@ -243,7 +292,7 @@ export function EditorView({
         const oopsMessage = withId("assistant", t.error_oops);
         const errorContext = withId(
           "user",
-          `The code you generated caused this error: ${errorMsg}. Please fix it.`,
+          `The block${blockId ? ` "${blockId}"` : ""} caused this error: ${errorMsg}. Please fix it.`,
         );
         const updatedMessages = [
           ...messagesRef.current,
@@ -251,13 +300,19 @@ export function EditorView({
           errorContext,
         ];
         setMessages(updatedMessages);
-        submit({ messages: updatedMessages, currentCode, language });
+        submit({
+          messages: updatedMessages,
+          currentBlocks: JSON.stringify(blocksRef.current),
+          language,
+        });
       }
     };
 
     window.addEventListener("message", handleIframeError);
     return () => window.removeEventListener("message", handleIframeError);
-  }, [currentCode, isLoading, submit, playBuzzer, language, t]);
+  }, [isLoading, submit, playBuzzer, language, t]);
+
+  const blockCount = blocks.filter((b) => b.enabled).length;
 
   return (
     <div className="w-screen h-dvh bg-[#fdfbf7] flex font-sans overflow-hidden">
@@ -317,18 +372,41 @@ export function EditorView({
         isLoading={isLoading}
         isChatVisible={isChatVisible}
         onShowChat={() => setIsChatVisible(true)}
-        onLookInside={() => setIsCodePanelOpen(true)}
+        onLookInside={() => setIsBlockPanelOpen(true)}
         iframeRef={iframeRef}
         codingFacts={codingFacts}
+        blockCount={blockCount}
         t={t}
       />
 
-      <CodePanel
-        code={currentCode}
-        isOpen={isCodePanelOpen}
-        onClose={() => setIsCodePanelOpen(false)}
-        onRunCode={handleRunCode}
-      />
+      {/* Block Editor Panel (replaces CodePanel for block-mode projects) */}
+      <div
+        data-testid="block-panel"
+        aria-hidden={!isBlockPanelOpen}
+        className={`fixed top-0 right-0 h-full z-40 flex flex-col
+          w-full sm:w-[400px]
+          bg-[#fdfbf7]
+          border-l-4 border-[#222]
+          shadow-[-8px_0_0_#222]
+          transition-transform duration-300 ease-in-out
+          ${isBlockPanelOpen ? "translate-x-0" : "translate-x-full"}`}
+      >
+        <BlockEditor
+          blocks={blocks}
+          onBlocksChange={handleBlocksChange}
+          isLoading={isLoading}
+        />
+        <div className="p-3 border-t-2 border-gray-200 flex-shrink-0">
+          <button
+            onClick={() => setIsBlockPanelOpen(false)}
+            className="w-full px-4 py-2 rounded-2xl bg-[#222] text-white font-bold text-sm
+              border-2 border-[#222] shadow-[4px_4px_0_rgba(0,0,0,0.2)]
+              active:translate-y-[4px] active:shadow-none transition-all"
+          >
+            Close
+          </button>
+        </div>
+      </div>
 
       <AchievementModal
         achievement={newlyUnlocked}

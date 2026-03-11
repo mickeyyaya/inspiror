@@ -74,6 +74,7 @@ Traditional text-based programming can be intimidating and syntax-heavy for chil
 | **CodeCombat** | N/A (RPG heroes) | Quest progress | Loot drops, gear upgrades, XP | Learning IS the game |
 | **Codedex** | N/A | Standard | Region unlocking on fantasy map | 8-bit pixel art identity |
 | **Tynker** | N/A | Standard | Certificates | Block-to-text progression |
+| **Tynker Copilot** | AI Copilot | Standard | Certificates | Fine-tuned Llama2-13B outputs block code directly; targets ages 6-12 |
 
 ### Inspiror's Competitive Advantages
 1. **Real-time streaming hacker mode** - Kids see code being written live (Codorex shows static facts; we show the actual build)
@@ -81,6 +82,15 @@ Traditional text-based programming can be intimidating and syntax-heavy for chil
 3. **Confetti celebration loop** - Every successful build triggers confetti (vs. CodeCombat's loot drops)
 4. **Animated AI buddy** - Bouncing/thinking avatar gives personality (vs. static emoji competitors)
 5. **Animated welcome screen** - Particle-effect landing vs. boring "Your creation will appear here"
+
+### Direct Competitor Alert: Tynker Copilot
+Tynker launched an AI Copilot feature using a fine-tuned **Llama2-13B** model trained on block-code output. Unlike general-purpose LLMs, it generates Tynker block sequences directly from natural language prompts, targeting ages 6-12 — Inspiror's exact demographic. This makes Tynker Copilot the most direct competitive threat to the block editor feature. Key differences:
+- Tynker's model outputs native block representations; Inspiror's `/api/convert-to-blocks` does a post-hoc conversion from HTML.
+- Tynker has established school distribution (curriculum partnerships); Inspiror has zero-friction entry.
+- Tynker Copilot is gated behind subscription plans; Inspiror's block editor is free.
+
+### Dependency Risk: dnd-kit
+The block editor uses **dnd-kit** for drag-and-drop. As of early 2026, dnd-kit maintainer activity has slowed significantly (see GitHub issue #1194). If the library is abandoned, migrating all drag-and-drop logic is a non-trivial effort. Mitigation: abstract dnd-kit behind an interface layer so the implementation can be swapped (to `@hello-pangea/dnd` or a native HTML5 DnD approach) without rewriting every component.
 
 ### Market Trends (Updated March 2026)
 - **"Vibe coding" is Collins Word of the Year 2026** — mainstream awareness of AI-assisted coding is accelerating
@@ -116,9 +126,12 @@ Based on competitive research, the following improvements have been shipped:
 | 12 | Play/Edit mode toggle | Shipped | Distinct Build vs Play modes with chat hidden in Play |
 | 13 | Multi-project catalog | Shipped | Create, open, delete multiple projects with auto-titles |
 | 14 | Legacy data migration | Shipped | Old single-project data auto-migrates to multi-project format |
+| 15 | Visual block editor | Shipped | dnd-kit drag-and-drop block reordering, param sliders, live recompile |
+| 16 | Block-to-code compiler | Shipped | `compileBlocks` runtime engine converts `BlockDefinition[]` to iframe-ready HTML |
+| 17 | AI block conversion | Shipped | `/api/convert-to-blocks` endpoint decomposes existing code into editable blocks |
 
 ## 10. Future Enhancements
-*   **"Look Inside" / Code Remixing:** A Scratch-like feature to expose the generated HTML/JS in a safe, readable panel so kids can learn how the AI built the game and manually tweak variables (e.g., speed, color).
+*   **"Look Inside" / Code Remixing:** Now partially addressed by the block editor. A deeper implementation would expose raw HTML/JS in a syntax-highlighted panel alongside the blocks view.
 *   **Asset Upload & Personalization:** Allow kids to upload their own drawings or photos (e.g., "Make my pet dog the main character") to deeply personalize their creations.
 *   **Gamified Progression:** Implement an achievement system (e.g., "Code Ninja badge unlocked for making 5 games!") and unlockable AI Buddy avatars to drive long-term retention.
 *   **Visual block export:** Convert the generated code into Scratch-like blocks for further learning.

@@ -46,9 +46,43 @@ export const ALL_SUGGESTIONS = [
 export const CHIPS_PER_SET = 4;
 export const CONFETTI_COUNT = 80;
 
+const blockParamSchema = z.object({
+  key: z.string(),
+  label: z.string(),
+  type: z.enum(["number", "color", "string", "boolean", "enum"]),
+  value: z.union([z.string(), z.number(), z.boolean()]),
+  min: z.number().optional(),
+  max: z.number().optional(),
+  step: z.number().optional(),
+  options: z.array(z.string()).optional(),
+});
+
+const blockSchema = z.object({
+  id: z.string(),
+  type: z.enum([
+    "setup",
+    "character",
+    "movement",
+    "collision",
+    "event",
+    "score",
+    "timer",
+    "visual",
+    "sound",
+    "custom",
+  ]),
+  label: z.string(),
+  emoji: z.string(),
+  enabled: z.boolean(),
+  params: z.array(blockParamSchema),
+  code: z.string(),
+  css: z.string().optional(),
+  order: z.number(),
+});
+
 export const generationSchema = z.object({
   reply: z.string(),
-  code: z.string(),
+  blocks: z.array(blockSchema),
 });
 
 export function pickRandomChips() {
