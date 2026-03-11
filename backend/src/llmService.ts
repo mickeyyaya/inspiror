@@ -251,11 +251,7 @@ When the user has existing blocks and asks for changes:
 
       const result = await streamObject({
         model: google(GEMINI_MODEL),
-        providerOptions: {
-          google: {
-            thinkingConfig: { thinkingLevel: "medium" },
-          },
-        },
+        // Note: thinkingConfig is incompatible with structured output (streamObject)
         schema: generationSchema,
         messages: [
           {
@@ -292,11 +288,7 @@ ${code}`;
 
       const result = await streamObject({
         model: google(GEMINI_MODEL),
-        providerOptions: {
-          google: {
-            thinkingConfig: { thinkingLevel: "medium" },
-          },
-        },
+        // Note: thinkingConfig is incompatible with structured output (streamObject)
         schema: conversionSchema,
         messages: [
           {
