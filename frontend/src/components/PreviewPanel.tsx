@@ -1,5 +1,5 @@
 import { useMemo, useRef } from "react";
-import { MessageCircle, Code } from "lucide-react";
+import { MessageCircle, Blocks } from "lucide-react";
 import { injectErrorCatcher } from "../utils/injectErrorCatcher";
 import { BuildingOverlay } from "./BuildingOverlay";
 
@@ -11,6 +11,7 @@ interface PreviewPanelProps {
   onLookInside: () => void;
   iframeRef: React.RefObject<HTMLIFrameElement | null>;
   codingFacts: string[];
+  blockCount?: number;
   t: {
     aria_show_chat: string;
     aria_look_inside: string;
@@ -27,6 +28,7 @@ export function PreviewPanel({
   onLookInside,
   iframeRef,
   codingFacts,
+  blockCount,
   t,
 }: PreviewPanelProps) {
   const srcDoc = useMemo(() => injectErrorCatcher(currentCode), [currentCode]);
@@ -70,8 +72,12 @@ export function PreviewPanel({
           className="bg-[var(--color-candy-purple)] border-4 border-[#222] text-[#222] px-4 py-2 rounded-full shadow-[4px_4px_0_#222] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none transition-all flex items-center gap-2 btn-squish hover-wiggle font-bold text-sm"
           aria-label={t.aria_look_inside}
         >
-          <Code size={20} strokeWidth={2.5} />
-          <span className="hidden sm:inline">{t.aria_look_inside}</span>
+          <Blocks size={20} strokeWidth={2.5} />
+          <span className="hidden sm:inline">
+            {blockCount !== undefined
+              ? `${blockCount} Blocks`
+              : t.aria_look_inside}
+          </span>
         </button>
       </div>
 

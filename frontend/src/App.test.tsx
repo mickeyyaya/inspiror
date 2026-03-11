@@ -893,20 +893,31 @@ describe("Inspiror App", () => {
 
       render(<App />);
 
-      // We're in Project A — trigger a finish that updates code
+      // We're in Project A — trigger a finish that updates blocks
       await act(async () => {
         triggerFinish!({
           object: {
             reply: "Updated spaceship!",
-            code: "<html><body>SPACESHIP V2</body></html>",
+            blocks: [
+              {
+                id: "bg",
+                type: "setup",
+                label: "Background",
+                emoji: "🎨",
+                enabled: true,
+                params: [],
+                code: 'game.setBackground("#001122");',
+                order: 0,
+              },
+            ],
           },
         });
       });
 
-      // Project A should have updated code
+      // Project A should have updated code (compiled from blocks)
       let saved = JSON.parse(mockStorage["inspiror_projects"]!);
       let projA = saved.find((p: { id: string }) => p.id === "project-a");
-      expect(projA.currentCode).toContain("SPACESHIP V2");
+      expect(projA.currentCode).toContain("game.setBackground");
 
       // Project B should be untouched
       let projB = saved.find((p: { id: string }) => p.id === "project-b");

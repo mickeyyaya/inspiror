@@ -1,3 +1,5 @@
+import type { Block } from "./block";
+
 export interface ChatMessage {
   id: string;
   role: "user" | "assistant" | "system";
@@ -11,4 +13,6 @@ export interface Project {
   updatedAt: number;
   messages: ChatMessage[];
   currentCode: string;
+  blocks?: Block[];
+  version?: number;
 }

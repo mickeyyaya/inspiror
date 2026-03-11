@@ -47,13 +47,15 @@ describe("POST /api/generate", () => {
     expect(res.text).toContain("Mocked reply from AI buddy");
   });
 
-  it("should accept currentCode and pass it to the LLM system prompt", async () => {
-    const currentCode = "<html><body><h1>Existing App</h1></body></html>";
+  it("should accept currentBlocks and pass it to the LLM system prompt", async () => {
+    const currentBlocks = JSON.stringify([
+      { id: "bg", type: "setup", label: "Background" },
+    ]);
     await request(app)
       .post("/api/generate")
       .send({
         messages: [{ role: "user", content: "Change the title" }],
-        currentCode,
+        currentBlocks,
       });
 
     expect(mockedStreamObject).toHaveBeenCalledTimes(1);
@@ -66,7 +68,7 @@ describe("POST /api/generate", () => {
       content: string;
     }>;
     const systemMessage = messages.find((m) => m.role === "system");
-    expect(systemMessage?.content).toContain(currentCode);
+    expect(systemMessage?.content).toContain(currentBlocks);
   });
 
   it("should reject messages with invalid role", async () => {
@@ -143,15 +145,15 @@ describe("POST /api/generate", () => {
     expect(res.body.error).toMatch(/content.*required/i);
   });
 
-  it("should reject currentCode exceeding size limit", async () => {
+  it("should reject currentBlocks exceeding size limit", async () => {
     const res = await request(app)
       .post("/api/generate")
       .send({
         messages: [{ role: "user", content: "hello" }],
-        currentCode: "x".repeat(50001),
+        currentBlocks: "x".repeat(50001),
       });
 
     expect(res.status).toBe(400);
-    expect(res.body.error).toMatch(/currentCode.*exceed/i);
+    expect(res.body.error).toMatch(/currentBlocks.*exceed/i);
   });
 });

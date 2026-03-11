@@ -87,8 +87,17 @@ These findings will be incorporated into the main project's PRD and Task breakdo
 - Standard loading and celebration
 - Established brand with school partnerships
 
+**Tynker Copilot** *(new — Cycle 7 findings)*
+- Fine-tuned **Llama2-13B** trained specifically on Tynker's block-code format
+- AI outputs block code directly from a natural language prompt — no post-hoc conversion step
+- Target age: 6-12 (overlaps directly with Inspiror's primary demographic)
+- Gated behind paid subscription plans
+- Does not have a real-time streaming or hacker mode equivalent
+- Competitive gap: Tynker's model is purpose-built for blocks; Inspiror's approach converts HTML output after the fact, which can produce noisier block decompositions
+
 ### What Inspiror Does Better
 1. **Real-time streaming code display** — No competitor shows code being written live in a cinematic hacker mode
+1a. **Visual block editor with live recompile** — Tynker Copilot generates blocks from prompts but has no live slider-driven recompile loop; Inspiror's `compileBlocks` pipeline closes that loop.
 2. **Confetti celebration on every build** — Immediate reward loop (CodeCombat has loot, but only after long quests)
 3. **Animated AI buddy with thinking state** — Most competitors have static avatars
 4. **Zero-friction with persistence** — Zero signup + localStorage = best of both worlds
@@ -101,6 +110,7 @@ These findings will be incorporated into the main project's PRD and Task breakdo
 4. **Kodable's audio input** — Voice commands would be huge for younger kids
 5. **Codedex's fantasy map** — Spatial progression is more engaging than linear badges
 6. **Rosebud's specialized builders** — Genre-specific templates could guide kids better
+7. **Tynker Copilot's native block model** — Purpose-built LLM for block output avoids HTML-to-block conversion artifacts
 
 ## 7. Key Design Principles Applied
 
@@ -119,8 +129,53 @@ These findings will be incorporated into the main project's PRD and Task breakdo
 | Principle | Gap | Priority |
 |-----------|-----|----------|
 | Deep gamification | Only confetti, no badges/XP/progression | MEDIUM |
-| See Inside / Remixing | No code editor panel for tweaking | MEDIUM |
+| See Inside / Remixing | Block editor partially fills this gap; raw HTML view still absent | MEDIUM |
 | Personalization | No image upload for custom sprites | MEDIUM |
 | Audio input | No voice commands | LOW |
 | Educational loading | No coding facts during wait | LOW |
 | Social features | No sharing, remixing, or multiplayer | LOW |
+| High-contrast blocks | No `prefers-contrast` mode for block colors | LOW |
+
+## 8. Cycle 7 Research Findings (March 2026)
+
+### Blockly transferred to Raspberry Pi Foundation
+Google transferred ownership of **Blockly** (the open-source visual block library used by Scratch, App Inventor, and others) to the Raspberry Pi Foundation in late 2025. The Raspberry Pi Foundation is a non-profit with a mission aligned to kids' education. Implications for Inspiror:
+- Blockly is now more likely to remain maintained long-term under charitable stewardship.
+- Blockly's API surface (workspace, toolbox, block definitions) is more mature than dnd-kit's drag primitives for block editors.
+- Potential future migration path: replace the custom `BlockDefinition`/`compileBlocks` stack with a Blockly workspace, using code generators to produce the HTML/JS output.
+
+### Scratch high-contrast block colors
+Scratch uses a fixed, high-contrast color palette per block category — the specific palette is designed to remain distinguishable under color-blindness simulations (deuteranopia, protanopia). Key colors:
+- Motion: `#4C97FF` (vivid blue)
+- Looks: `#9966FF` (purple)
+- Sound: `#CF63CF` (pink-purple)
+- Events: `#FFAB19` (amber)
+- Control: `#FFAB19` (amber, lighter variant for loops)
+- Operators: `#59C059` (green)
+
+Inspiror's current block categories do not have a defined accessible color scheme. Adding a `prefers-contrast: more` CSS media query variant or a toggle in settings would close this gap.
+
+### dnd-kit maintenance concerns (issue #1194)
+GitHub issue [dnd-kit #1194](https://github.com/clauderic/dnd-kit/issues/1194) documents a pattern of maintainer unresponsiveness to PRs and bug reports since mid-2025. The library has no co-maintainers. Risk assessment:
+- **Low short-term risk:** The library is stable and no critical bugs affect Inspiror's use case.
+- **Medium long-term risk:** If React 20 or a future browser API breaks dnd-kit, there may be no upstream fix.
+- **Mitigation:** Abstract all dnd-kit calls behind a `DragContext` provider interface. Candidate replacements if needed: `@hello-pangea/dnd` (a maintained fork of react-beautiful-dnd) or native HTML5 Drag and Drop API.
+
+### Tynker Copilot — direct competitor analysis
+Tynker's new AI Copilot feature is the first direct competitor to Inspiror's block editor. Technical notes from public documentation and demo videos:
+- Model: fine-tuned **Llama2-13B**, not a general-purpose LLM
+- Training data: Tynker's proprietary block-code dataset (curriculum-aligned exercises)
+- Output: Tynker block sequences in JSON format, rendered directly by Tynker's existing block engine
+- Input: natural language prompt (same as Inspiror's chat interface)
+- Limitation: cannot generate free-form HTML/JS games; output is constrained to Tynker's block vocabulary
+- Age targeting: 6-12 (Inspiror's primary demographic)
+
+Strategic takeaway: Tynker Copilot validates the market for AI-to-blocks UX. Inspiror's advantage is open-ended HTML/JS generation (no vocabulary ceiling), real-time streaming, and zero-signup entry. Inspiror's disadvantage is that the HTML-to-blocks conversion is a heuristic step that can produce imperfect decompositions.
+
+### "Game dev without engine" renaissance trend
+A broader market trend observed across Itch.io, Product Hunt, and r/gamedev communities: a growing cohort of indie creators and educators prefer tools that generate standalone HTML5 games (no Unity, no Godot, no engine dependency) because:
+1. Instant playability — any browser, no install
+2. Portable artifact — a single `.html` file is understandable and shareable
+3. Lower cognitive overhead for younger learners
+
+Platforms exploiting this trend: Bolt.new (general), Rosebud AI (games), and Inspiror. The trend supports continuing Inspiror's core approach of generating single-file HTML/JS games rather than pivoting to an engine-based output. Quantitative signal: Bolt.new at $40M ARR (confirmed March 2026) with a significant portion of usage attributed to game-like interactive experiments.
