@@ -9,9 +9,10 @@ const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "http://localhost:5173";
 const VALID_ROLES = new Set(["user", "assistant"]);
 const MAX_MESSAGES = 50;
 const MAX_CONTENT_LENGTH = 5000;
+const MAX_CODE_LENGTH = 50000;
 
 app.use(cors({ origin: ALLOWED_ORIGIN }));
-app.use(express.json());
+app.use(express.json({ limit: "512kb" }));
 
 const generateLimiter = rateLimit({
   windowMs: 60 * 1000,
@@ -28,7 +29,10 @@ interface ChatMessage {
   content: string;
 }
 
-function validateMessages(messages: unknown): { valid: boolean; error?: string } {
+function validateMessages(messages: unknown): {
+  valid: boolean;
+  error?: string;
+} {
   if (!messages || !Array.isArray(messages)) {
     return { valid: false, error: "messages array is required" };
   }
@@ -37,15 +41,28 @@ function validateMessages(messages: unknown): { valid: boolean; error?: string }
     return { valid: false, error: "Too many messages (max 50)" };
   }
 
-  for (const msg of messages as ChatMessage[]) {
-    if (!VALID_ROLES.has(msg.role)) {
-      return { valid: false, error: `Invalid role "${msg.role}". Allowed: user, assistant` };
+  for (const msg of messages) {
+    if (msg === null || typeof msg !== "object") {
+      return { valid: false, error: "Each message must be an object" };
     }
-    if (typeof msg.content !== "string" || msg.content.length === 0) {
-      return { valid: false, error: "Message content is required and must be a string" };
+    const { role, content } = msg as ChatMessage;
+    if (!VALID_ROLES.has(role)) {
+      return {
+        valid: false,
+        error: `Invalid role "${role}". Allowed: user, assistant`,
+      };
     }
-    if (msg.content.length > MAX_CONTENT_LENGTH) {
-      return { valid: false, error: `Message content exceeds ${MAX_CONTENT_LENGTH} characters` };
+    if (typeof content !== "string" || content.length === 0) {
+      return {
+        valid: false,
+        error: "Message content is required and must be a string",
+      };
+    }
+    if (content.length > MAX_CONTENT_LENGTH) {
+      return {
+        valid: false,
+        error: `Message content exceeds ${MAX_CONTENT_LENGTH} characters`,
+      };
     }
   }
 
@@ -59,7 +76,20 @@ app.post("/api/generate", async (req, res) => {
     return res.status(400).json({ error: validation.error });
   }
 
-  console.log(`[API] Generation request received | Messages: ${req.body.messages.length} | Code length: ${req.body.currentCode?.length || 0}`);
+  if (
+    req.body.currentCode !== undefined &&
+    (typeof req.body.currentCode !== "string" ||
+      req.body.currentCode.length > MAX_CODE_LENGTH)
+  ) {
+    console.warn("[API] Rejected request: currentCode exceeds size limit");
+    return res
+      .status(400)
+      .json({ error: `currentCode exceeds ${MAX_CODE_LENGTH} characters` });
+  }
+
+  console.log(
+    `[API] Generation request received | Messages: ${req.body.messages.length} | Code length: ${req.body.currentCode?.length || 0}`,
+  );
 
   try {
     const result = await llmService.generateStream(

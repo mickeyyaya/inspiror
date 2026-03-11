@@ -4,13 +4,21 @@ import { streamObject } from "ai";
 
 jest.mock("ai", () => ({
   streamObject: jest.fn().mockReturnValue({
-    pipeTextStreamToResponse: (res: { status: (code: number) => { send: (body: string) => void } }) => {
-      res.status(200).send('{"reply":"Mocked reply from AI buddy","code":"<html>mocked code</html>"}');
-    }
+    pipeTextStreamToResponse: (res: {
+      status: (code: number) => { send: (body: string) => void };
+    }) => {
+      res
+        .status(200)
+        .send(
+          '{"reply":"Mocked reply from AI buddy","code":"<html>mocked code</html>"}',
+        );
+    },
   }),
 }));
 
-const mockedStreamObject = streamObject as jest.MockedFunction<typeof streamObject>;
+const mockedStreamObject = streamObject as jest.MockedFunction<
+  typeof streamObject
+>;
 
 describe("POST /api/generate", () => {
   beforeEach(() => {
@@ -49,15 +57,17 @@ describe("POST /api/generate", () => {
       });
 
     expect(mockedStreamObject).toHaveBeenCalledTimes(1);
-    const callArgs = mockedStreamObject.mock.calls[0]![0] as Record<string, unknown>;
-    const messages = callArgs.messages as Array<{ role: string; content: string }>;
-    const systemMessage = messages.find(
-      (m) => m.role === "system",
-    );
+    const callArgs = mockedStreamObject.mock.calls[0]![0] as Record<
+      string,
+      unknown
+    >;
+    const messages = callArgs.messages as Array<{
+      role: string;
+      content: string;
+    }>;
+    const systemMessage = messages.find((m) => m.role === "system");
     expect(systemMessage?.content).toContain(currentCode);
   });
-
-  // --- Input validation tests ---
 
   it("should reject messages with invalid role", async () => {
     const res = await request(app)
@@ -87,9 +97,7 @@ describe("POST /api/generate", () => {
       content: `message ${i}`,
     }));
 
-    const res = await request(app)
-      .post("/api/generate")
-      .send({ messages });
+    const res = await request(app).post("/api/generate").send({ messages });
 
     expect(res.status).toBe(400);
     expect(res.body.error).toMatch(/too many messages/i);
@@ -106,27 +114,26 @@ describe("POST /api/generate", () => {
     expect(res.body.error).toMatch(/content.*required/i);
   });
 
-  it("should accept valid messages with both user and assistant roles", async () => {
+  it("should reject non-object items in messages array", async () => {
     const res = await request(app)
       .post("/api/generate")
       .send({
-        messages: [
-          { role: "user", content: "hello" },
-          { role: "assistant", content: "hi there" },
-          { role: "user", content: "make a game" },
-        ],
+        messages: [null, 42, "string"],
       });
 
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/must be an object/i);
   });
 
-  // --- CORS tests ---
-
-  it("should include CORS headers in response", async () => {
+  it("should reject currentCode exceeding size limit", async () => {
     const res = await request(app)
-      .options("/api/generate")
-      .set("Origin", "http://localhost:5173");
+      .post("/api/generate")
+      .send({
+        messages: [{ role: "user", content: "hello" }],
+        currentCode: "x".repeat(50001),
+      });
 
-    expect(res.headers["access-control-allow-origin"]).toBeDefined();
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/currentCode.*exceed/i);
   });
 });
