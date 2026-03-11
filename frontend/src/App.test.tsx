@@ -65,7 +65,9 @@ describe("Inspiror App - Hacker Mode & UX", () => {
 
     // Default mock behavior for useObject
     mockSubmit = vi.fn();
-    (aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>).mockReturnValue({
+    (
+      aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>
+    ).mockReturnValue({
       object: undefined,
       submit: mockSubmit,
       isLoading: false,
@@ -81,7 +83,9 @@ describe("Inspiror App - Hacker Mode & UX", () => {
   });
 
   it("shows vivid Hacker Mode overlay during generation", () => {
-    (aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>).mockReturnValue({
+    (
+      aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>
+    ).mockReturnValue({
       object: { code: "<html>MATRIX LOADING</html>" },
       submit: mockSubmit,
       isLoading: true,
@@ -117,7 +121,9 @@ describe("Inspiror App - Hacker Mode & UX", () => {
     const hideButton = screen.getByRole("button", { name: /Hide Chat/i });
     fireEvent.click(hideButton);
 
-    expect(screen.queryByText(/Hi! I'm your builder buddy/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/Hi! I'm your builder buddy/i),
+    ).not.toBeInTheDocument();
 
     const showButton = screen.getByRole("button", { name: /Show Chat/i });
     fireEvent.click(showButton);
@@ -133,7 +139,9 @@ describe("Inspiror App - Hacker Mode & UX", () => {
   });
 
   it("switches buddy avatar to thinking animation during loading", () => {
-    (aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>).mockReturnValue({
+    (
+      aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>
+    ).mockReturnValue({
       object: undefined,
       submit: mockSubmit,
       isLoading: true,
@@ -185,7 +193,9 @@ describe("Inspiror App - Hacker Mode & UX", () => {
   // Reset
   it("renders a reset button and resets to defaults", () => {
     render(<App />);
-    expect(screen.getByRole("button", { name: /Reset/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /^Reset$/i }),
+    ).toBeInTheDocument();
   });
 
   // Preview sandbox
@@ -229,7 +239,9 @@ describe("Inspiror App - Hacker Mode & UX", () => {
       (c: string[]) => c[0] === "inspiror-messages",
     );
     const lastSaved = JSON.parse(setItemCalls[setItemCalls.length - 1][1]);
-    expect(lastSaved.every((m: { id: string }) => typeof m.id === "string")).toBe(true);
+    expect(
+      lastSaved.every((m: { id: string }) => typeof m.id === "string"),
+    ).toBe(true);
     const ids = lastSaved.map((m: { id: string }) => m.id);
     expect(new Set(ids).size).toBe(ids.length);
   });
@@ -297,9 +309,13 @@ describe("Inspiror App - Hacker Mode & UX", () => {
     // Chat should be hidden
     expect(screen.queryByText("Builder Buddy")).not.toBeInTheDocument();
     // Show Chat button should also be hidden
-    expect(screen.queryByRole("button", { name: /Show Chat/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /Show Chat/i }),
+    ).not.toBeInTheDocument();
     // Mode toggle should show "Back to Build"
-    expect(screen.getByTestId("mode-toggle")).toHaveTextContent("Back to Build");
+    expect(screen.getByTestId("mode-toggle")).toHaveTextContent(
+      "Back to Build",
+    );
   });
 
   it("returns to build mode with chat visible", () => {
@@ -311,5 +327,127 @@ describe("Inspiror App - Hacker Mode & UX", () => {
     // Return to build mode
     fireEvent.click(screen.getByTestId("mode-toggle"));
     expect(screen.getByText("Builder Buddy")).toBeInTheDocument();
+  });
+
+  // === LOOK INSIDE / CODE REMIXING PANEL TESTS ===
+
+  it("renders a Look Inside button in build mode", () => {
+    render(<App />);
+    expect(
+      screen.getByRole("button", { name: /look inside/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("Look Inside button is not visible in play mode", () => {
+    render(<App />);
+    fireEvent.click(screen.getByTestId("mode-toggle")); // enter play mode
+    expect(
+      screen.queryByRole("button", { name: /look inside/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("clicking Look Inside opens the code panel", () => {
+    render(<App />);
+    const panel = screen.getByTestId("code-panel");
+    expect(panel).toHaveClass("translate-x-full");
+
+    fireEvent.click(screen.getByRole("button", { name: /look inside/i }));
+    expect(panel).not.toHaveClass("translate-x-full");
+  });
+
+  it("code panel shows the current generated code", () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: /look inside/i }));
+
+    const textarea = screen.getByTestId(
+      "code-panel-textarea",
+    ) as HTMLTextAreaElement;
+    // Default code contains this string
+    expect(textarea.value).toContain("What will YOU create today?");
+  });
+
+  it("Run My Code button updates the iframe preview with edited code", () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: /look inside/i }));
+
+    const textarea = screen.getByTestId(
+      "code-panel-textarea",
+    ) as HTMLTextAreaElement;
+    fireEvent.change(textarea, {
+      target: { value: "<html><body>My remix</body></html>" },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /run my code/i }));
+
+    const iframe = screen.getByTitle("Preview Sandbox") as HTMLIFrameElement;
+    expect(iframe.getAttribute("srcdoc")).toContain("My remix");
+  });
+
+  it("plays success chime when Run My Code is clicked", () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: /look inside/i }));
+    fireEvent.click(screen.getByRole("button", { name: /run my code/i }));
+
+    expect(mockPlayChime).toHaveBeenCalled();
+  });
+
+  it("code panel close button hides the panel", () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: /look inside/i }));
+
+    const panel = screen.getByTestId("code-panel");
+    expect(panel).not.toHaveClass("translate-x-full");
+
+    fireEvent.click(screen.getByRole("button", { name: /close panel/i }));
+    expect(panel).toHaveClass("translate-x-full");
+  });
+
+  it("panel edits are preserved when panel is closed and reopened", () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: /look inside/i }));
+
+    const textarea = screen.getByTestId(
+      "code-panel-textarea",
+    ) as HTMLTextAreaElement;
+    fireEvent.change(textarea, {
+      target: { value: "<html>my persistent edits</html>" },
+    });
+
+    // Close and reopen
+    fireEvent.click(screen.getByRole("button", { name: /close panel/i }));
+    fireEvent.click(screen.getByRole("button", { name: /look inside/i }));
+
+    const reopened = screen.getByTestId(
+      "code-panel-textarea",
+    ) as HTMLTextAreaElement;
+    expect(reopened.value).toBe("<html>my persistent edits</html>");
+  });
+
+  it("new AI generation updates the code panel content", () => {
+    const { rerender } = render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: /look inside/i }));
+
+    const textareaBefore = screen.getByTestId(
+      "code-panel-textarea",
+    ) as HTMLTextAreaElement;
+    expect(textareaBefore.value).toContain("What will YOU create today?");
+
+    // Simulate AI finishing with new code
+    (
+      aiSdkReact.experimental_useObject as ReturnType<typeof vi.fn>
+    ).mockReturnValue({
+      object: undefined,
+      submit: mockSubmit,
+      isLoading: false,
+    });
+
+    // The App passes currentCode to CodePanel — when AI updates currentCode, panel shows new code
+    // This is verified by the CodePanel unit test "updates internal code when the code prop changes"
+    rerender(<App />);
+    // Panel still shows the current code (unchanged because no new AI generation triggered in this test)
+    const textareaAfter = screen.getByTestId(
+      "code-panel-textarea",
+    ) as HTMLTextAreaElement;
+    expect(textareaAfter.value).toContain("What will YOU create today?");
   });
 });

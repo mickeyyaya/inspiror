@@ -9,10 +9,12 @@ import {
   VolumeX,
   Play,
   Code,
+  Code2,
 } from "lucide-react";
 import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { z } from "zod";
 import { useAudio } from "./hooks/useAudio";
+import { CodePanel } from "./components/CodePanel";
 import "./index.css";
 
 interface ChatMessage {
@@ -189,6 +191,8 @@ function App() {
   const [isChatVisible, setIsChatVisible] = useState(true);
   const [showConfetti, setShowConfetti] = useState(false);
   const [mode, setMode] = useState<"build" | "play">("build");
+  const [isCodePanelOpen, setIsCodePanelOpen] = useState(false);
+  const [iframeSrcDoc, setIframeSrcDoc] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const prevIsLoadingRef = useRef(false);
@@ -212,6 +216,7 @@ function App() {
       }
       if (finalObj?.code) {
         setCurrentCode(finalObj.code as string);
+        setIframeSrcDoc(null); // Reset remixed code so AI code takes over
       }
       playChimeRef.current();
     },
@@ -250,7 +255,13 @@ function App() {
     setMessages(makeDefaultMessages());
     setCurrentCode(DEFAULT_CODE);
     setInputValue("");
+    setIframeSrcDoc(null);
     autoFixCountRef.current = 0;
+  };
+
+  const handleRunCode = (code: string) => {
+    setIframeSrcDoc(injectErrorCatcher(code));
+    playChime();
   };
 
   const showSuggestions =
@@ -273,6 +284,9 @@ function App() {
 
   useEffect(() => {
     const handleIframeError = (event: MessageEvent) => {
+      // Only trust messages from same origin or srcdoc iframes (origin "null")
+      if (event.origin !== window.location.origin && event.origin !== "null")
+        return;
       if (event.data?.type === "iframe-error") {
         const errorMsg = event.data.message || "Unknown error";
         console.error(`[Sandbox Error] ${errorMsg}`);
@@ -332,12 +346,14 @@ function App() {
       <div className="absolute inset-0 z-0 bg-[#000]">
         <iframe
           title="Preview Sandbox"
-          srcDoc={injectErrorCatcher(currentCode)}
+          srcDoc={iframeSrcDoc ?? injectErrorCatcher(currentCode)}
           className={`w-full h-full border-none bg-white transition-all duration-300 ${
             isLoading && !isPlayMode
               ? "opacity-20 blur-sm scale-105"
               : "opacity-100 scale-100"
           }`}
+          // SECURITY: allow-scripts only. NEVER add allow-same-origin — it would
+          // let user-edited code access parent DOM, localStorage, and cookies.
           sandbox="allow-scripts"
         />
       </div>
@@ -380,6 +396,18 @@ function App() {
         </div>
       )}
 
+      {/* LOOK INSIDE BUTTON (build mode only) */}
+      {!isPlayMode && (
+        <button
+          onClick={() => setIsCodePanelOpen((prev) => !prev)}
+          className="absolute top-4 left-4 z-30 bg-gradient-to-r from-[#1a1a3a] to-[#2a2a4a] text-[#a855f7] px-4 py-2 rounded-full border-2 border-[#a855f7]/60 shadow-[0_0_15px_rgba(168,85,247,0.3)] hover:scale-105 hover:border-[#a855f7] active:scale-95 transition-all flex items-center gap-2 font-bold text-sm"
+          aria-label="Look Inside"
+        >
+          <Code2 size={18} />
+          Look Inside
+        </button>
+      )}
+
       {/* MODE TOGGLE BUTTON */}
       <button
         onClick={() => setMode(isPlayMode ? "build" : "play")}
@@ -409,6 +437,16 @@ function App() {
         >
           <MessageCircle size={36} className="drop-shadow-[0_0_5px_#fff]" />
         </button>
+      )}
+
+      {/* CODE PANEL (always rendered for transition, build mode only) */}
+      {!isPlayMode && (
+        <CodePanel
+          code={currentCode}
+          isOpen={isCodePanelOpen}
+          onClose={() => setIsCodePanelOpen(false)}
+          onRunCode={handleRunCode}
+        />
       )}
 
       {/* FLOATING CHAT WINDOW (build mode only) */}
