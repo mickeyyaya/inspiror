@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { streamObject, Message } from "ai";
+import { streamObject } from "ai";
 import { google } from "@ai-sdk/google";
 
 // Define the exact schema we want the LLM to return
@@ -24,12 +24,19 @@ export class LLMService {
   }
 
   async generateStream(
-    messages: Message[],
+    messages: Array<{ role: string; content: string }>,
     currentCode?: string,
+    language: string = "en-US",
   ) {
     try {
+      const languageHint =
+        language === "zh-CN"
+          ? "The user prefers Chinese. Please reply in Chinese."
+          : "The user prefers English. Please reply in English.";
+
       const basePrompt = `You are the "Builder Buddy", an encouraging, patient mentor for kids (ages 8-14) building visual apps.
 You are represented visually as a Cute Animal.
+${languageHint}
 Your goal is to help them build interactive UIs, simple 2D games, and animations using ONLY self-contained HTML, CSS, and JS.
 Keep your language simple, avoid heavy jargon, and praise their creativity.
 If their request is vague, ask scaffolding questions.
@@ -51,14 +58,22 @@ CRITICAL - FORMATTING:
         : basePrompt;
 
       const result = await streamObject({
-        model: google("gemini-2.5-pro"),
+        model: google("gemini-3.1-flash-lite-preview"),
+        providerOptions: {
+          google: {
+            thinkingConfig: { thinkingLevel: "medium" },
+          },
+        },
         schema: generationSchema,
         messages: [
           {
-            role: "system",
+            role: "system" as const,
             content: systemContent,
           },
-          ...messages,
+          ...messages.map((m) => ({
+            role: m.role as "user" | "assistant",
+            content: m.content,
+          })),
         ],
       });
 

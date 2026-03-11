@@ -118,7 +118,6 @@ These findings will be incorporated into the main project's PRD and Task breakdo
 ### What We Haven't Implemented Yet
 | Principle | Gap | Priority |
 |-----------|-----|----------|
-| Auditory feedback | No sound effects on actions | HIGH |
 | Deep gamification | Only confetti, no badges/XP/progression | MEDIUM |
 | See Inside / Remixing | No code editor panel for tweaking | MEDIUM |
 | Personalization | No image upload for custom sprites | MEDIUM |

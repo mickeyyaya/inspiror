@@ -7,20 +7,36 @@ Inspiror follows a client-server architecture:
 
 ## 2. Component Design (Frontend)
 
-### `App` (Root)
-*   **Responsibility:** Layout container (Full screen preview with a floating chat window that can be hidden/turned off on desktop; stacked or adaptive on mobile). Manages global state (messages, current code).
+### `App` (Root — `App.tsx`)
+*   **Responsibility:** Routes between `ProjectCatalog` (when no project is selected) and `EditorView` (when a project is open).
+*   **Hooks:**
+    *   `useProjects`: Manages multi-project state (CRUD, persistence, legacy migration).
+
+### `ProjectCatalog` (`components/ProjectCatalog.tsx`)
+*   **Responsibility:** Displays a grid of project cards with create, open, and delete actions. Shows empty state for new users.
+*   **Features:**
+    *   Projects sorted by `updatedAt` (most recent first).
+    *   `timeAgo` helper for relative timestamps.
+    *   Responsive grid: 1 col (mobile) → 2 (sm) → 3 (lg) → 4 (xl).
+
+### `EditorView` (in `App.tsx`)
+*   **Responsibility:** Full editor with chat panel, preview sandbox, hacker mode overlay, and confetti. Mounted with `key={project.id}` to reset state when switching projects.
 *   **State:**
-    *   `messages`: Array of chat messages (`{ role: 'user' | 'assistant', content: string }`).
+    *   `messages`: Array of chat messages (`ChatMessage` — `{ id, role, content }`).
     *   `currentCode`: String containing the generated HTML/CSS/JS payload.
     *   `isChatVisible`: Boolean to toggle the floating chat panel.
     *   `showConfetti`: Boolean to trigger confetti burst on completion.
     *   `inputValue`: String for the chat input field.
+    *   `mode`: `"build" | "play"` — Build/Play mode toggle.
 *   **Hooks:**
     *   `useObject` (from `@ai-sdk/react`): Manages streaming API calls, provides `object`, `submit`, `isLoading`.
+    *   `useAudio`: Sound effects (pop, chip click, chime, buzzer) with mute toggle and localStorage persistence.
     *   `useRef(messagesEndRef)`: Auto-scroll anchor at bottom of message list.
     *   `useRef(prevIsLoadingRef)`: Tracks loading transitions for confetti trigger.
+    *   `useRef(autoFixCountRef)`: Limits auto-fix retries to 2 consecutive attempts.
+    *   `useRef(confettiTimerRef)`: Prevents confetti timer overlap on rapid generations.
 
-### `ChatPanel`
+### `ChatPanel` (inline in `EditorView`)
 *   **Responsibility:** Displays the conversation history, suggestion chips, and input field.
 *   **Components:**
     *   `MessageList`: Renders individual `MessageBubble` components with slide-in animations (`msg-user`, `msg-buddy` CSS classes).
@@ -28,14 +44,22 @@ Inspiror follows a client-server architecture:
     *   `StreamingReply`: Shows real-time `object?.reply` with typing cursor during generation.
     *   `MessageInput`: Text input with glow effect (`input-glow-active` CSS class when text present).
 
-### `PreviewSandbox`
+### `PreviewSandbox` (inline in `EditorView`)
 *   **Responsibility:** Renders the generated code securely.
-*   **Implementation:** An `<iframe>` using the `srcdoc` attribute bound to `currentCode`. Includes a sandbox attribute (`sandbox="allow-scripts"`) for safety. Error catcher script injected for auto-fix flow.
+*   **Implementation:** An `<iframe>` using the `srcdoc` attribute bound to `currentCode`. Includes a sandbox attribute (`sandbox="allow-scripts"`) for safety. Error catcher script injected via `injectErrorCatcher()` for auto-fix flow.
 *   **Default State:** Animated welcome screen with gradient background, floating particles, and "What will YOU create today?" text.
 
-### `BuddyAvatar`
+### `BuddyAvatar` (inline in chat header)
 *   **Responsibility:** Animated emoji avatar in chat header.
 *   **Implementation:** `buddy-avatar` CSS class (bounce animation, 2s loop) switches to `buddy-avatar-thinking` (wobble animation, 0.6s loop) when `isLoading` is true.
+
+### Types (`types/project.ts`)
+*   `ChatMessage`: `{ id: string, role: "user" | "assistant" | "system", content: string }`
+*   `Project`: `{ id, title, createdAt, updatedAt, messages: ChatMessage[], currentCode: string }`
+
+### Custom Hooks
+*   **`useProjects`** (`hooks/useProjects.ts`): Multi-project CRUD, localStorage persistence, legacy data migration, auto-title extraction.
+*   **`useAudio`** (`hooks/useAudio.ts`): Preloads 4 sound effects, provides play functions, mute toggle persisted to localStorage.
 
 ## 3. API Contract (Backend)
 
@@ -76,14 +100,14 @@ We use **Vitest** and **React Testing Library** for the frontend, and **Jest** +
 *   **Frontend Test 5:** Ensure the frontend sends `currentCode` alongside `messages` when making the API call. (GREEN)
 *   **Frontend Test 5b:** Ensure "Suggestion Chips" (Magic Buttons) render when the chat is empty or waiting for initial input, and clicking one populates and submits the input. (GREEN)
 
-### Phase 2.5: UX Polish & Visual Delight (PARTIALLY COMPLETED)
+### Phase 2.5: UX Polish & Visual Delight (COMPLETED)
 *   **Frontend Test - Buddy Avatar:** Verify `.buddy-avatar` class renders by default and switches to `.buddy-avatar-thinking` during loading. (GREEN)
 *   **Frontend Test - Chip Entrance:** Verify `.chip-enter` class on all 4 chips with staggered `animationDelay` (0ms, 100ms, 200ms, 300ms). (GREEN)
 *   **Frontend Test - Message Animations:** Verify `.msg-buddy` class on assistant messages and `.msg-user` on user messages. (GREEN)
 *   **Frontend Test - Input Glow:** Verify `.input-glow-active` class appears when input has text, absent when empty. (GREEN)
 *   **Frontend Test - Welcome Screen:** Verify default iframe `srcdoc` contains "What will YOU create today?" and "particle". (GREEN)
 *   **Frontend Test - Auto-scroll:** Verify `scrollIntoView` is called on render. (GREEN)
-*   **Frontend Test - Auditory Feedback:** Mock HTML5 Audio API and verify `useAudio` hook triggers correctly. (TODO)
+*   **Frontend Test - Auditory Feedback:** `useAudio` hook with 4 sounds, mute toggle, localStorage persistence. (GREEN)
 
 ### Phase 3: Educational Auto-Fix Error Handling (COMPLETED)
 *   **Frontend Test 6:** Simulate an `error` event from the `PreviewSandbox` iframe. The app must catch it, display a friendly "Oops, fixing it!" assistant message, and automatically trigger a hidden generation request with the error details. (GREEN)
@@ -99,23 +123,68 @@ We use **Vitest** and **React Testing Library** for the frontend, and **Jest** +
 
 ## 5. Current Test Coverage
 
-### Unit Tests (14 tests - Vitest)
+### Unit Tests (35+ tests - Vitest)
+
+#### Project Catalog Tests
 | # | Test | Status |
 |---|------|--------|
-| 1 | Renders initial chat greeting | GREEN |
-| 2 | Shows vivid Hacker Mode overlay during generation | GREEN |
-| 3 | Renders suggestion chips and handles click | GREEN |
-| 4 | Can toggle floating chat visibility | GREEN |
-| 5 | Shows animated buddy avatar with bounce | GREEN |
-| 6 | Switches buddy to thinking animation during loading | GREEN |
-| 7 | Applies staggered animation delay to chips | GREEN |
-| 8 | Applies slide-in animation classes to messages | GREEN |
-| 9 | Applies glow class when input has text | GREEN |
-| 10 | Renders animated welcome screen in default preview | GREEN |
-| 11 | Renders reset button | GREEN |
-| 12 | Renders preview sandbox with error catcher | GREEN |
-| 13 | Allows user to type and submit a message | GREEN |
-| 14 | Calls scrollIntoView for auto-scroll | GREEN |
+| 1 | Shows catalog when no project is selected | GREEN |
+| 2 | Shows empty state with create button | GREEN |
+| 3 | Creates a new project and opens editor | GREEN |
+| 4 | Shows project cards when projects exist | GREEN |
+| 5 | Navigates back to catalog from editor | GREEN |
+| 6 | Opens a project from catalog | GREEN |
+| 7 | Deletes a project from catalog | GREEN |
+| 8 | Migrates legacy data to a project | GREEN |
+
+#### Editor View Tests
+| # | Test | Status |
+|---|------|--------|
+| 9 | Renders initial chat greeting from AI Buddy | GREEN |
+| 10 | Shows vivid Hacker Mode overlay during generation | GREEN |
+| 11 | Renders suggestion chips and handles click | GREEN |
+| 12 | Can toggle floating chat visibility | GREEN |
+| 13 | Shows animated buddy avatar with bounce | GREEN |
+| 14 | Switches buddy to thinking animation during loading | GREEN |
+| 15 | Applies staggered animation delay to chips | GREEN |
+| 16 | Applies slide-in animation classes to messages | GREEN |
+| 17 | Applies glow class when input has text | GREEN |
+| 18 | Renders animated welcome screen in default preview | GREEN |
+| 19 | Renders reset button and resets to defaults | GREEN |
+| 20 | Renders preview sandbox with error catcher | GREEN |
+| 21 | Allows user to type and submit a message | GREEN |
+| 22 | Calls scrollIntoView for auto-scroll | GREEN |
+| 23 | Plays pop sound on message send | GREEN |
+| 24 | Plays chip click sound on suggestion click | GREEN |
+| 25 | Renders mute toggle and calls toggleMute | GREEN |
+| 26 | Shows mode toggle defaulting to build mode | GREEN |
+| 27 | Hides chat in play mode | GREEN |
+| 28 | Returns to build mode with chat visible | GREEN |
+
+#### Error Handling & Edge Case Tests
+| # | Test | Status |
+|---|------|--------|
+| 29 | Handles stream onError callback | GREEN |
+| 30 | Auto-fixes iframe errors, limits to 2 attempts | GREEN |
+| 31 | Ignores iframe error if already loading | GREEN |
+| 32 | Defaults to "Unknown error" if message missing | GREEN |
+| 33 | Updates messages/code when stream finishes | GREEN |
+| 34 | Handles partial finish object gracefully | GREEN |
+| 35 | Falls back to default if JSON.parse throws | GREEN |
+| 36 | handleSend does nothing if input is empty | GREEN |
+| 37 | handleSend does nothing if isLoading is true | GREEN |
+| 38 | onKeyDown ignores non-Enter keys | GREEN |
+| 39 | Renders confetti burst after loading finishes | GREEN |
+| 40 | Clears confetti timer on rapid generations | GREEN |
+
+#### injectErrorCatcher Branch Tests
+| # | Test | Status |
+|---|------|--------|
+| 41 | Injects after `<head>` if present | GREEN |
+| 42 | Injects before `<body` if no head | GREEN |
+| 43 | Injects after `<html` if no body or head | GREEN |
+| 44 | Injects after doctype if no html tag | GREEN |
+| 45 | Prepends script if no valid tags found | GREEN |
 
 ### Backend Tests (4 tests - Jest)
 | # | Test | Status |
@@ -125,7 +194,7 @@ We use **Vitest** and **React Testing Library** for the frontend, and **Jest** +
 | 3 | Returns chunked stream when messages provided | GREEN |
 | 4 | Accepts currentCode and passes to LLM system prompt | GREEN |
 
-### E2E Tests (22 tests - Playwright)
+### E2E Tests (45+ tests - Playwright)
 | # | Test | Status |
 |---|------|--------|
 | 1 | Displays initial greeting | GREEN |
@@ -150,6 +219,41 @@ We use **Vitest** and **React Testing Library** for the frontend, and **Jest** +
 | 20 | Shows animated welcome screen in default preview | GREEN |
 | 21 | Buddy avatar has bounce animation | GREEN |
 | 22 | Input glows when text is entered | GREEN |
+| 23 | Mute toggle switches icon | GREEN |
+| 24 | Mode toggle switches build/play modes | GREEN |
+| 25 | Play mode hides chat toggle button | GREEN |
+| 26 | Confetti burst has 20 pieces with inline styles | GREEN |
+| 27 | Confetti disappears after timeout | GREEN |
+| 28 | Persists currentCode in localStorage | GREEN |
+| 29 | Reset restores default code in iframe | GREEN |
+| 30 | Reset clears localStorage | GREEN |
+| 31 | Migrates old messages without IDs on reload | GREEN |
+| 32 | Handles corrupted localStorage gracefully | GREEN |
+| 33 | Mute state persists across page reloads | GREEN |
+| 34 | Enter key on empty input does not send | GREEN |
+| 35 | Input is cleared after sending a message | GREEN |
+| 36 | Input glow deactivates when text is cleared | GREEN |
+| 37 | User/assistant messages have correct CSS classes | GREEN |
+| 38 | Initial greeting shows wave emoji | GREEN |
+| 39 | Supports multi-turn conversation flow | GREEN |
+| 40 | Suggestion chips have staggered animation delays | GREEN |
+| 41 | Suggestion chips disappear after message sent | GREEN |
+| 42 | Suggestion chips reappear after reset | GREEN |
+| 43 | Play mode keeps iframe content visible | GREEN |
+| 44 | Mode toggle is always visible in both modes | GREEN |
+| 45 | Play mode does not show hacker overlay during loading | GREEN |
+| 46 | Chat panel has aria-hidden attribute | GREEN |
+| 47 | Chat panel is full-width on mobile viewport | GREEN |
+| 48 | Chat panel has responsive width classes | GREEN |
+| 49 | Page has SVG favicon | GREEN |
+| 50 | Hacker mode shows BUILDING text and sparkles | GREEN |
+| 51 | Hacker mode shows INITIALIZING MATRIX when no code | GREEN |
+| 52 | Buddy avatar switches to thinking during loading | GREEN |
+| 53 | Reset clears input field | GREEN |
+| 54 | Each suggestion chip sends its specific label | GREEN |
+| 55 | Page title is set correctly | GREEN |
+| 56 | Iframe sandbox only allows scripts | GREEN |
+| 57 | Messages have unique IDs in localStorage | GREEN |
 
 ## 6. Code Review Findings & Technical Debt
 
@@ -157,154 +261,25 @@ We use **Vitest** and **React Testing Library** for the frontend, and **Jest** +
 
 | Severity | Issue | File | Status |
 |----------|-------|------|--------|
-| MEDIUM | `key={idx}` for message list - array index keys cause incorrect DOM reuse when messages are inserted non-append (iframe error handler) | `App.tsx` | TODO |
-| MEDIUM | Confetti timer doesn't reset on rapid-fire generations - first timer hides confetti prematurely | `App.tsx` | TODO |
-| MEDIUM | Hidden chat panel lacks `aria-hidden` - screen readers traverse off-screen content | `App.tsx` | TODO |
-| LOW | Confetti CSS uses hardcoded `nth-child` selectors coupled to `CONFETTI_COUNT` constant | `index.css` | TODO |
-| LOW | Favicon emoji may not render on all browsers/OS (Firefox Linux) | `index.html` | TODO |
+| MEDIUM | `key={idx}` for message list - replaced with `crypto.randomUUID()` stable keys | `App.tsx` | DONE |
+| MEDIUM | Confetti timer doesn't reset on rapid-fire generations - fixed with `confettiTimerRef` | `App.tsx` | DONE |
+| MEDIUM | Hidden chat panel lacks `aria-hidden` - added `aria-hidden={!isChatVisible}` | `App.tsx` | DONE |
+| LOW | Confetti CSS uses hardcoded `nth-child` selectors - refactored to inline styles | `index.css` | DONE |
+| LOW | Favicon emoji may not render on all browsers/OS - replaced with SVG rocket | `index.html` | DONE |
 
-## 7. Security Advisories (March 2026)
+## 7. Security Notes
 
-| CVE / Advisory | Severity | Description | Inspiror Impact | Action |
-|---------------|----------|-------------|-----------------|--------|
-| CVE-2025-55182 "React2Shell" | CVSS 10.0 Critical | RCE in React Server Components (RSC). | Inspiror uses client-side React with no RSC — NOT directly affected. | Upgrade to React 19.2.1+ as a precaution. |
-| CVE-2025-58752 | High | Vite serves HTML files regardless of `server.fs` settings in Vite < 7.0.7. | Affects dev server. Verify current Vite version and upgrade to 7.0.8+ if below threshold. | Run `npm ls vite` and upgrade if needed. |
-| Express | No critical CVEs | No critical new CVEs at time of writing. | No immediate action required. | Run `npm audit` periodically to stay current. |
-| @ai-sdk/react | No known CVEs | No known CVEs at time of writing. | No immediate action required. | Monitor with `npm audit`. |
+- **Vite CVE-2025-58752:** Fixed in Vite 7.1.5+. Current project uses Vite 7.3.1, which includes the fix. Verify version on each dependency update to avoid regression.
+- **React RSC CVEs (CVE-2025-55182):** Does not affect this project. Inspiror is client-side only with no React Server Components. No action required unless RSC is adopted in the future.
 
-**Recommended immediate action:** Run `npm audit` in both `frontend/` and `backend/`. Confirm React >= 19.2.1 and Vite >= 7.0.8.
+## 8. Technology Considerations
 
-## 8. SDK Updates (March 2026)
+- **AI SDK 6 typed messages:** Vercel AI SDK 6 introduces typed `UIMessage` vs `ModelMessage` separation. Current project uses `experimental_useObject` from AI SDK. Future migration path: adopt the new message types to gain type safety and support for richer message payloads (tool calls, multi-modal content).
+- **Gemini native TTS:** Gemini 3 provides native text-to-speech output, enabling audio responses from the AI Buddy. This could power voice-guided coding tutorials without requiring a separate TTS service.
 
-### Vercel AI SDK 6
-
-- **Agent abstraction:** First-class agent primitives with tool approval flows.
-- **Stable `useObject`:** `experimental_useObject` is now the stable `useObject` export — Inspiror's frontend currently uses the `experimental_` prefix and should be updated.
-- **MCP support:** Model Context Protocol integration for external tool/data sources.
-- **Migration note:** Replace `import { experimental_useObject } from '@ai-sdk/react'` with `import { useObject } from '@ai-sdk/react'` (see TASKS.md backlog).
-
-### Gemini Updates (March 2026)
-
-| Model | Change |
-|-------|--------|
-| Gemini 3.1 Flash-Lite | 2.5x faster TTFT, 45% faster output, $0.25/1M input tokens |
-| `thinking_level` parameter | New parameter to tune cost vs. quality per request — useful for scaffolding cheap vs. complex turns |
-| Thought Signatures | Maintain chain-of-reasoning across multi-turn sessions, improving iterative scaffolding coherence |
-
-**Migration note:** Update `backend/src/llmService.ts` to pass `thinking_level` where appropriate (e.g., low for simple error-fix turns, high for initial project generation).
-
-## 9. Architecture Audit (March 2026)
-
-### Component Decomposition — Overdue
-
-`App.tsx` has grown to 575 lines and contains layout, state management, event handling, streaming logic, iframe error catching, localStorage serialization, and audio triggering. The component design from Section 2 envisioned six distinct components that have not been extracted:
-
-| Component | Responsibility | Current State |
-|-----------|---------------|---------------|
-| `ChatPanel` | Conversation history, input, chips | Inline in `App.tsx` |
-| `PreviewSandbox` | Sandboxed iframe + error catcher injection | Inline in `App.tsx` |
-| `BuddyAvatar` | Animated avatar with state-driven CSS class | Inline in `App.tsx` |
-| `SuggestionChips` | Staggered chip rendering and click handling | Inline in `App.tsx` |
-| `MessageInput` | Controlled input with glow effect | Inline in `App.tsx` |
-| `StreamingReply` | Real-time partial reply with typing cursor | Inline in `App.tsx` |
-
-Recommended extraction order (highest impact first): `PreviewSandbox` (contains complex iframe + error handler logic), then `ChatPanel`, then the remaining four.
-
-### currentCode State Duplication
-
-`App.currentCode` and the `CodePanel`'s internal editable state are not kept in sync. When a user edits code in `CodePanel` and runs it, `App.currentCode` retains the last AI-generated version. The next AI generation call therefore ignores the user's edits entirely. Resolution requires either lifting `CodePanel` editor state into `App` or introducing a `useCurrentCode` shared context/hook.
-
-### Backend Middleware Layer — Missing
-
-The Express server handles all concerns (CORS, input parsing, LLM proxying) inside a single route handler with no middleware chain. Required additions before production deployment:
-
-1. `express-rate-limit` — per-IP request throttling on `/api/generate`
-2. Restricted CORS origin — replace `cors()` with `cors({ origin: process.env.ALLOWED_ORIGIN })`
-3. Input validation middleware — enforce message count cap, per-message content length limit, and valid role values (`user` | `assistant` only)
-4. Content moderation hook — block or sanitize prompts before forwarding to the LLM
-
-### AI SDK Migration
-
-`experimental_useObject` was a provisional export. AI SDK 6 promotes it to the stable `useObject` export. Migration is a one-line import change with no API surface changes:
-
-```ts
-// Before
-import { experimental_useObject } from '@ai-sdk/react'
-
-// After
-import { useObject } from '@ai-sdk/react'
-```
-
-Replace the hook reference name throughout `App.tsx` and update the corresponding test mock in `App.test.tsx`.
-
-## 10. Implementation Steps (Next)
-1.  **Phase 2.5 (Next):** Implement `useAudio` hook for sound effects, add Play/Edit toggle.
-2.  **Phase 5:** CSS media queries for mobile/tablet, Docker containerization, Vercel deployment.
-3.  **Phase 6:** Sliding code editor ("Look Inside"), image upload, gamified achievements.
-4.  **Tech Debt:** Address code review findings (message keys, confetti timer, accessibility).
-
-## 11. Cycle 3 Holistic Audit (March 2026)
-
-**Scope:** Full 8-dimension audit (Performance, Stability, UI/UX, Playability, Code Quality, Security, Architecture, Accessibility) across both `feature/test-coverage` and `main` branches.
-**Total issues found:** 46
-
-### Branch Divergence — Blocking Issue
-
-The two active branches have diverged to the point where they are mutual exclusive supersets:
-
-| Dimension | `feature/test-coverage` | `main` |
-|-----------|------------------------|--------|
-| Test coverage | Higher (45+ unit tests) | Lower |
-| Multi-project support | Missing | Present (ProjectCatalog, useProjects) |
-| i18n (EN/TW/CN) | Missing | Present |
-| Voice input | Missing | Present |
-| Stability fixes | Present | Partial |
-
-A reconciliation merge (not a fast-forward) is required before any new feature work. The recommended approach is to merge `main` into `feature/test-coverage` (bringing in multi-project, i18n, voice), resolve conflicts, ensure all test suites pass, and then merge forward to `main`.
-
-### New Stability Issues Found
-
-| Severity | Issue | File | Root Cause |
-|----------|-------|------|------------|
-| CRITICAL | `EditorView` declared as local function inside `App` | `App.tsx` | React sees new component type on every render; forces full unmount/remount of the iframe |
-| HIGH | Stale closure in iframe error handler | `App.tsx` | `messages` captured at registration time; auto-fix sends outdated context |
-| HIGH | `currentCode` not updated after user remix | `App.tsx`, `CodePanel` | Editor state not lifted; next AI turn ignores user edits |
-| HIGH | `cloneNode` audio leak | `useAudio.ts` | No cleanup; cloned elements accumulate indefinitely |
-| MEDIUM | No Express global error handler | `server.ts` | Async errors produce empty client responses |
-| MEDIUM | `injectErrorCatcher` called every render | `App.tsx` | Missing `useMemo`; unnecessary string recomputation |
-
-### App.tsx Monolith — Growing Problem
-
-`App.tsx` has grown to **773 lines** on the `feature/test-coverage` branch (up from 575 lines noted in Cycle 2). The component design in Section 2 of this document envisioned six extracted components; none have been extracted. The addition of `EditorView` as a local function inside `App` made the situation significantly worse by introducing a React identity bug.
-
-Revised extraction priority (highest impact first):
-
-1. **`EditorView`** — extract as a module-level component immediately to fix the CRITICAL unmount/remount bug
-2. **`PreviewSandbox`** — contains iframe + error handler (complex, high isolation value)
-3. **`ChatPanel`** — conversation history, input, chips
-4. **`SuggestionChips`**, **`BuddyAvatar`**, **`MessageInput`**, **`StreamingReply`** — remaining leaf components
-
-The 773-line file now encompasses layout, routing, state management, event handling, streaming logic, iframe error catching, localStorage serialization, audio triggering, code panel toggling, and EditorView rendering. This violates the 400-line guideline by almost 2x and makes isolated testing of any single concern difficult.
-
-### Infrastructure Gaps Found
-
-| Area | Gap | Recommended Fix |
-|------|-----|-----------------|
-| Backend | No global error handler middleware | Add `(err, req, res, next)` middleware at end of `server.ts` |
-| Backend | `@google/genai` unused dependency | Remove from `backend/package.json` |
-| Backend | Hardcoded model name | Extract to `GEMINI_MODEL` env var in `llmService.ts` |
-| Backend | `package.json` test script incorrect | Verify `npx jest` runs against `tests/` directory |
-| Frontend | Vitest coverage thresholds not enforced | Add `coverage.thresholds` to `vitest.config.ts` |
-| Frontend | `App.css` empty but imported | Delete or consolidate into `index.css` |
-
-### Priority Order for Next Sprint
-
-1. Resolve branch divergence (blocking all other work)
-2. Extract `EditorView` to top-level component (CRITICAL bug fix)
-3. Fix stale closure in iframe error handler (HIGH stability)
-4. Add reset confirmation dialog (HIGH UX)
-5. Fix `currentCode` sync after remix (HIGH architecture)
-6. Add `useMemo` to `injectErrorCatcher` (MEDIUM performance)
-7. Add Express global error handler (MEDIUM stability)
-8. Remove unused `@google/genai` dependency (MEDIUM cleanliness)
-9. Enforce Vitest coverage thresholds (LOW, prevents regression)
+## 9. Implementation Steps (Next)
+1.  ~~**Phase 2.5:** Audio integration, Play/Edit toggle.~~ (DONE)
+2.  ~~**Phase 5:** CSS media queries, Docker, Vercel deployment.~~ (DONE)
+3.  ~~**Tech Debt:** Message keys, confetti timer, accessibility, favicon, CSS coupling.~~ (DONE)
+4.  ~~**Multi-Project Support:** Project catalog, CRUD, legacy migration, auto-titles.~~ (DONE)
+5.  **Phase 6 (Future):** Sliding code editor ("Look Inside"), image upload, gamified achievements.

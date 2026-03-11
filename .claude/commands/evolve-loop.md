@@ -1,11 +1,20 @@
 ---
 name: evolve-loop
 description: "Self-evolving development cycle: Research → Prioritize → Implement → Review → Merge → Loop. Works with any project, language, or LLM."
+arguments:
+  - name: cycles
+    description: "Number of evolution cycles to run (default: 2). E.g., 1, 2, 5."
+    required: false
+    default: "2"
 ---
 
 # Evolve Loop
 
 A continuous evolution cycle that autonomously researches, prioritizes, implements, reviews, tests, and ships features — then loops back to start again. Designed for long-running autonomous development.
+
+**Usage:** `/evolve-loop [cycles]` — e.g., `/evolve-loop` (2 cycles), `/evolve-loop 1` (one cycle), `/evolve-loop 5` (five cycles).
+
+**Parameter:** `cycles` (default: 2) — the number of complete Research → Implement → Merge cycles to execute. The loop will stop after completing this many cycles (or earlier if an exit condition is met). Track the current cycle number starting from 1.
 
 Incorporates patterns from [autonomous-loops](https://github.com/affaan-m/everything-claude-code/blob/main/skills/autonomous-loops/SKILL.md): de-sloppify, model routing, cross-iteration context, separate context windows, and completion signals.
 
@@ -397,10 +406,14 @@ Commits:      <list of commits>
 
 ### Step 3: Continue or stop
 
-- If completion signal triggered (3 consecutive "nothing to do") → STOP
-- If context window approaching limits → output summary, suggest `/evolve-loop` in fresh session
-- **Autonomous mode** (bypass-permissions enabled): ALWAYS proceed to Phase 1 automatically. Never pause for confirmation between cycles. The loop runs continuously until an exit condition is met (completion signal, context exhaustion, or max cycles).
-- **Interactive mode**: proceed to Phase 1
+Check exit conditions in this order:
+
+1. **Cycle limit reached** — If current cycle number >= `cycles` parameter → STOP. Output: "Completed N/N cycles."
+2. **Completion signal** — If 3 consecutive "nothing to do" → STOP
+3. **Context exhaustion** — If context window approaching limits → output summary, suggest `/evolve-loop <remaining>` in fresh session
+4. **Otherwise** — increment cycle counter and proceed to Phase 1:
+   - **Autonomous mode** (bypass-permissions enabled): proceed immediately, no confirmation
+   - **Interactive mode**: proceed to Phase 1
 
 ---
 
@@ -442,11 +455,12 @@ Always have at least one exit condition to prevent infinite resource consumption
 
 | Condition | How to Set |
 |-----------|-----------|
+| **Cycle limit (primary)** | Required `cycles` parameter — e.g., `/evolve-loop 3` stops after 3 cycles |
 | Manual stop | User interrupts or says "stop" |
 | Completion signal | 3 consecutive cycles where planner finds nothing → auto-stop |
-| Max cycles | Use `/loop` with a finite cron (auto-expires after 3 days) |
+| Recurring loop | Use `/loop 30m /evolve-loop 1` — runs 1 cycle every 30 minutes |
 | No features left | Planner agent finds nothing to prioritize → increment counter |
-| Context exhaustion | Context window approaching limit → suggest restart |
+| Context exhaustion | Context window approaching limit → suggest restart with remaining cycles |
 
 ---
 
@@ -454,7 +468,7 @@ Always have at least one exit condition to prevent infinite resource consumption
 
 | Combination | How |
 |-------------|-----|
-| **Continuous loop** | `/loop 30m /evolve-loop` — runs every 30 minutes |
+| **Continuous loop** | `/loop 30m /evolve-loop 1` — runs 1 cycle every 30 minutes |
 | **Sequential pipeline** | Chain `claude -p` calls for each phase instead of interactive |
 | **Model routing** | Use `--model opus` for planning, default for implementation |
 | **Parallel features** | Run multiple `/evolve-loop` in separate worktrees (advanced) |
