@@ -53,3 +53,15 @@
 - **Tests:** 104 total (18 new: 7 AchievementModal + 7 BadgeGallery + 4 MessageList), all passing
 - **Warnings deferred:** Focus trap not implemented (Tab can escape modals), useAudio cloneNode leak, font @font-face broken, ProjectCatalog delete no confirmation, EditorView still ~347 lines, flat TranslationKeys may need nesting at ~60+ keys, handleRunCode missing isLoading guard, CodePanel "Look Inside"/"Reset to AI Version"/"Run My Code" hardcoded English
 - **Next cycle should consider:** Focus trap for modals, CodePanel i18n, handleRunCode isLoading guard, useAudio memory leak, ProjectCatalog delete confirmation, template gallery
+
+## Cycle 7 — 2026-03-11
+- **Items:** Visual Block Editor (Scratch-like logic blocks)
+- **Type:** Major Feature (new architecture)
+- **Block system:** Replaced monolithic HTML generation with structured Block[] system. Kids see draggable cards instead of raw code. Each block registers with canvas runtime engine (game.* API) and runs in error-isolated IIFE.
+- **New files (14):** block.ts types, runtime engine (229 lines), compileBlocks compiler, substituteParams, BlockCard, ParamEditor, BlockEditor (dnd-kit), blockCategories, defaultBlocks, + 5 test files
+- **Modified files (15):** llmService.ts (full rewrite for block generation), server.ts (convert-to-blocks endpoint), EditorView.tsx (block panel integration), PreviewPanel.tsx (block count), constants.ts (block schema), useProjects.ts (blocks state), project.ts (blocks field), + tests + docs
+- **Security:** PASS after fixes (escapeJsString for block.id injection, sanitizeCss for style breakout, blockId regex validation, rate limiting on convert endpoint)
+- **Code Review:** 2 issues found and fixed (legacy project overwrite on mount, conversionSchema using full generationSchema)
+- **Tests:** 198 total (186 frontend + 12 backend), all passing
+- **Warnings deferred:** 3 stale test mocks still use `code` field instead of `blocks`, setInterval in enemy-spawner example bypasses block-disable, draw loop empty catch, postMessage wildcard origin, hardcoded model name now in 2 places, "Close" button not i18n'd
+- **Next cycle should consider:** Wire /api/convert-to-blocks frontend consumer for legacy migration, fix stale test mocks, replace setInterval example with game.onUpdate, i18n block panel strings, extract model name to constant

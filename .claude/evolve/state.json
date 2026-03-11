@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-11T22:47:00Z",
+  "lastUpdated": "2026-03-11T23:55:00Z",
   "research": {
     "queries": [
       {
@@ -56,7 +56,8 @@
     { "task": "Backend test script + zh-TW language hint", "date": "2026-03-11", "decision": "completed", "cycle": 5 },
     { "task": "Content Moderation", "date": "2026-03-11", "decision": "deferred", "revisitAfter": "2026-03-18", "cycle": 3 },
     { "task": "TranslationKeys interface (type safety)", "date": "2026-03-11", "decision": "completed", "cycle": 6 },
-    { "task": "A11y: dialog roles, Escape key, focus, aria-live, i18n modals", "date": "2026-03-11", "decision": "completed", "cycle": 6 }
+    { "task": "A11y: dialog roles, Escape key, focus, aria-live, i18n modals", "date": "2026-03-11", "decision": "completed", "cycle": 6 },
+    { "task": "Visual Block Editor (Scratch-like logic blocks)", "date": "2026-03-11", "decision": "completed", "cycle": 7 }
   ],
   "failedApproaches": [],
   "nothingToDoCount": 0
