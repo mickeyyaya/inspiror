@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-12T00:08:00Z",
+  "lastUpdated": "2026-03-12T07:33:00Z",
   "research": {
     "queries": [
       {
@@ -58,7 +58,8 @@
     { "task": "TranslationKeys interface (type safety)", "date": "2026-03-11", "decision": "completed", "cycle": 6 },
     { "task": "A11y: dialog roles, Escape key, focus, aria-live, i18n modals", "date": "2026-03-11", "decision": "completed", "cycle": 6 },
     { "task": "Visual Block Editor (Scratch-like logic blocks)", "date": "2026-03-11", "decision": "completed", "cycle": 7 },
-    { "task": "Quick fixes: remove @google/genai, extract GEMINI_MODEL, Express error handler, delete confirmation, useAudio pool", "date": "2026-03-12", "decision": "completed", "cycle": 8 }
+    { "task": "Quick fixes: remove @google/genai, extract GEMINI_MODEL, Express error handler, delete confirmation, useAudio pool", "date": "2026-03-12", "decision": "completed", "cycle": 8 },
+    { "task": "A11y (prefers-reduced-motion), useVoice type safety, legacy auto-conversion, dead code removal", "date": "2026-03-12", "decision": "completed", "cycle": 9 }
   ],
   "failedApproaches": [],
   "nothingToDoCount": 0

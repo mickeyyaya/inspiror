@@ -79,3 +79,18 @@
 - **Code Review:** PR #2 created
 - **Warnings deferred:** Schema duplication (frontend/backend), experimental_useObject migration, legacy project auto-conversion, content moderation (deferred to 2026-03-18), no E2E for block editor features, no CSP header, EditorView 436 lines, useVoice any types, prefers-reduced-motion missing
 - **Next cycle should consider:** Schema deduplication or shared types, wire legacy auto-conversion, content moderation (after 03-18), E2E tests for block editor, migrate experimental_useObject
+
+## Cycle 9 — 2026-03-12
+- **Items:** A11y + type safety + legacy auto-conversion + dead code removal
+- **Type:** Accessibility + Type Safety + Feature + Cleanup
+- **A11y:** Added prefers-reduced-motion media query (disables all animations/transitions)
+- **Type safety:** Replaced all 6 `any` types in useVoice.ts with proper SpeechRecognition interfaces
+- **Legacy auto-conversion:** Wired /api/convert-to-blocks into EditorView — detects legacy projects on mount, calls API, parses JSON response, validates block schema, sets blocks + compiles. Shows converting overlay with i18n text.
+- **Backend fixes:** Global error handler middleware, API key startup validation, convert endpoint returns plain JSON (not streaming), invalid language warning log
+- **Dead code removal:** Deleted CodePanel.tsx + CodePanel.test.tsx (superseded by BlockEditor)
+- **i18n:** Added confirm_delete, block_panel_close, converting_blocks keys in all 3 locales
+- **Security review:** 1 HIGH fixed (block schema validation added), 1 pre-existing MEDIUM noted (postMessage origin)
+- **Code review:** 2 HIGH fixed (streaming→JSON parse, missing zh-TW/zh-CN i18n keys)
+- **Tests:** 187 total (175 frontend + 12 backend), all passing
+- **Warnings deferred:** postMessage wildcard origin (pre-existing), schema duplication frontend/backend, focus trap not implemented, experimental_useObject migration, backend tsconfig missing test types
+- **Next cycle should consider:** Schema deduplication, E2E tests for block editor, content moderation (after 03-18), focus trap for modals, onboarding tutorial, template gallery
