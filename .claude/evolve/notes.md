@@ -65,3 +65,17 @@
 - **Tests:** 198 total (186 frontend + 12 backend), all passing
 - **Warnings deferred:** 3 stale test mocks still use `code` field instead of `blocks`, setInterval in enemy-spawner example bypasses block-disable, draw loop empty catch, postMessage wildcard origin, hardcoded model name now in 2 places, "Close" button not i18n'd
 - **Next cycle should consider:** Wire /api/convert-to-blocks frontend consumer for legacy migration, fix stale test mocks, replace setInterval example with game.onUpdate, i18n block panel strings, extract model name to constant
+
+## Cycle 8 — 2026-03-12
+- **Items:** Bundle of 5 quick fixes (stability, performance, UX)
+- **Type:** Tech debt cleanup + Bug fixes
+- **Fixes applied:**
+  - Removed unused `@google/genai` dependency (carried since cycle 3)
+  - Extracted Gemini model name to `GEMINI_MODEL` constant with env var override
+  - Added Express global error handler `(err, req, res, next)` middleware
+  - Added delete confirmation dialog to ProjectCatalog with i18n (EN/TW/CN)
+  - Fixed `useAudio` cloneNode memory leak — bounded pool of 4 elements per sound
+- **Tests:** 199 total (187 frontend + 12 backend), all passing. 1 new pool cycling test.
+- **Code Review:** PR #2 created
+- **Warnings deferred:** Schema duplication (frontend/backend), experimental_useObject migration, legacy project auto-conversion, content moderation (deferred to 2026-03-18), no E2E for block editor features, no CSP header, EditorView 436 lines, useVoice any types, prefers-reduced-motion missing
+- **Next cycle should consider:** Schema deduplication or shared types, wire legacy auto-conversion, content moderation (after 03-18), E2E tests for block editor, migrate experimental_useObject
