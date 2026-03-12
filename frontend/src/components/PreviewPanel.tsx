@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { MessageCircle, Blocks } from "lucide-react";
 import { injectErrorCatcher } from "../utils/injectErrorCatcher";
 import { BuildingOverlay } from "./BuildingOverlay";
+import { BackgroundBubbles } from "./BackgroundBubbles";
 
 interface PreviewPanelProps {
   currentCode: string;
@@ -40,7 +41,7 @@ export function PreviewPanel({
       className="flex-1 relative bg-[#fdfbf7] overflow-hidden flex flex-col p-4 sm:p-8"
       onMouseEnter={() => iframeRef.current?.focus()}
     >
-      <div className="absolute inset-0 bg-kids-pattern pointer-events-none z-0"></div>
+      <BackgroundBubbles />
 
       {!isChatVisible && (
         <div className="absolute top-4 left-4 sm:top-8 sm:left-8 z-30">
