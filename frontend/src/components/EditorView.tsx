@@ -452,6 +452,7 @@ export function EditorView({
           blocks={blocks}
           onBlocksChange={handleBlocksChange}
           isLoading={isLoading}
+          t={t}
         />
         <div className="p-3 border-t-2 border-gray-200 flex-shrink-0">
           <button

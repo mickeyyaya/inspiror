@@ -3,6 +3,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, ChevronDown, ChevronUp, Trash2 } from "lucide-react";
 import type { Block } from "../../types/block";
+import type { TranslationKeys } from "../../i18n/translations";
 import { BLOCK_CATEGORIES } from "../../constants/blockCategories";
 import { ParamEditor } from "./ParamEditor";
 
@@ -15,6 +16,7 @@ interface BlockCardProps {
     value: string | number | boolean,
   ) => void;
   onDelete?: (id: string) => void;
+  t?: TranslationKeys;
 }
 
 export function BlockCard({
@@ -22,6 +24,7 @@ export function BlockCard({
   onToggle,
   onParamChange,
   onDelete,
+  t,
 }: BlockCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const category = BLOCK_CATEGORIES[block.type];
@@ -79,7 +82,7 @@ export function BlockCard({
           className={`w-10 h-6 rounded-full border-2 border-[#222] transition-colors relative flex-shrink-0 ${
             block.enabled ? "bg-[#39ff14]" : "bg-gray-300"
           }`}
-          aria-label={`${block.enabled ? "Disable" : "Enable"} ${block.label}`}
+          aria-label={`${block.enabled ? (t?.block_disable ?? "Disable") : (t?.block_enable ?? "Enable")} ${block.label}`}
           role="switch"
           aria-checked={block.enabled}
         >
@@ -96,7 +99,9 @@ export function BlockCard({
             onClick={() => setIsExpanded(!isExpanded)}
             className="p-1 rounded hover:bg-gray-100"
             aria-label={
-              isExpanded ? "Collapse parameters" : "Expand parameters"
+              isExpanded
+                ? (t?.block_collapse_params ?? "Collapse parameters")
+                : (t?.block_expand_params ?? "Expand parameters")
             }
           >
             {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
@@ -123,6 +128,7 @@ export function BlockCard({
               key={param.key}
               param={param}
               onChange={(key, value) => onParamChange(block.id, key, value)}
+              t={t}
             />
           ))}
         </div>

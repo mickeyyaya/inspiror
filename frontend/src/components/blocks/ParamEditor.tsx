@@ -1,11 +1,13 @@
 import type { BlockParam } from "../../types/block";
+import type { TranslationKeys } from "../../i18n/translations";
 
 interface ParamEditorProps {
   param: BlockParam;
   onChange: (key: string, value: string | number | boolean) => void;
+  t?: TranslationKeys;
 }
 
-export function ParamEditor({ param, onChange }: ParamEditorProps) {
+export function ParamEditor({ param, onChange, t }: ParamEditorProps) {
   const handleChange = (value: string | number | boolean) => {
     onChange(param.key, value);
   };
@@ -77,7 +79,7 @@ export function ParamEditor({ param, onChange }: ParamEditorProps) {
             className={`w-10 h-6 rounded-full border-2 border-[#222] transition-colors relative ${
               param.value ? "bg-[#39ff14]" : "bg-gray-300"
             }`}
-            aria-label={`${param.label}: ${param.value ? "on" : "off"}`}
+            aria-label={`${param.label}: ${param.value ? (t?.param_on ?? "on") : (t?.param_off ?? "off")}`}
             role="switch"
             aria-checked={Boolean(param.value)}
           >

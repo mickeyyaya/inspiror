@@ -42,6 +42,13 @@ export interface TranslationKeys {
   switch_language: string;
   confirm_reset: string;
   block_panel_close: string;
+  block_panel_title: string;
+  block_enable: string;
+  block_disable: string;
+  block_expand_params: string;
+  block_collapse_params: string;
+  param_on: string;
+  param_off: string;
   converting_blocks: string;
   achievement_unlocked: string;
   achievement_awesome: string;
@@ -98,6 +105,13 @@ export const translations: Record<Language, TranslationKeys> = {
     switch_language: "Switch Language",
     confirm_reset: "Reset this project? Your current work will be cleared.",
     block_panel_close: "Close",
+    block_panel_title: "Blocks",
+    block_enable: "Enable",
+    block_disable: "Disable",
+    block_expand_params: "Expand parameters",
+    block_collapse_params: "Collapse parameters",
+    param_on: "on",
+    param_off: "off",
     converting_blocks: "Converting your code to blocks...",
     achievement_unlocked: "Achievement Unlocked!",
     achievement_awesome: "Awesome!",
@@ -151,6 +165,13 @@ export const translations: Record<Language, TranslationKeys> = {
     switch_language: "切換語言",
     confirm_reset: "要重設這個專案嗎？目前的作品會被清除。",
     block_panel_close: "關閉",
+    block_panel_title: "積木",
+    block_enable: "啟用",
+    block_disable: "停用",
+    block_expand_params: "展開參數",
+    block_collapse_params: "收合參數",
+    param_on: "開",
+    param_off: "關",
     converting_blocks: "正在將您的程式碼轉換為積木...",
     achievement_unlocked: "成就解鎖！",
     achievement_awesome: "太棒了！",
@@ -204,6 +225,13 @@ export const translations: Record<Language, TranslationKeys> = {
     switch_language: "切换语言",
     confirm_reset: "要重置这个项目吗？目前的作品会被清除。",
     block_panel_close: "关闭",
+    block_panel_title: "积木",
+    block_enable: "启用",
+    block_disable: "停用",
+    block_expand_params: "展开参数",
+    block_collapse_params: "收起参数",
+    param_on: "开",
+    param_off: "关",
     converting_blocks: "正在将您的代码转换为积木...",
     achievement_unlocked: "成就解锁！",
     achievement_awesome: "太棒了！",

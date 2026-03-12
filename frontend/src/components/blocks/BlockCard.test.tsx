@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { BlockCard } from "./BlockCard";
 import type { Block, BlockParam } from "../../types/block";
+import { translations } from "../../i18n/translations";
 
 vi.mock("@dnd-kit/sortable", () => ({
   useSortable: () => ({
@@ -370,6 +371,46 @@ describe("BlockCard", () => {
       );
       fireEvent.change(screen.getByRole("slider"), { target: { value: "80" } });
       expect(onParamChange).toHaveBeenCalledWith("block-42", "speed", 80);
+    });
+  });
+
+  describe("zh-TW locale", () => {
+    const tZhTW = translations["zh-TW"];
+
+    it("uses zh-TW translated Disable/Enable aria-label on toggle switch", () => {
+      render(
+        <BlockCard
+          block={makeBlock({ label: "測試積木", enabled: true })}
+          onToggle={vi.fn()}
+          onParamChange={vi.fn()}
+          t={tZhTW}
+        />,
+      );
+      // block is enabled, so label should say "停用" (Disable in zh-TW)
+      expect(
+        screen.getByRole("switch", { name: "停用 測試積木" }),
+      ).toBeInTheDocument();
+    });
+
+    it("uses zh-TW translated Expand/Collapse parameters aria-label", () => {
+      render(
+        <BlockCard
+          block={makeBlock({ params: [makeParam()] })}
+          onToggle={vi.fn()}
+          onParamChange={vi.fn()}
+          t={tZhTW}
+        />,
+      );
+      // Initially collapsed — should show "展開參數"
+      expect(
+        screen.getByRole("button", { name: "展開參數" }),
+      ).toBeInTheDocument();
+
+      // Click to expand — should now show "收合參數"
+      fireEvent.click(screen.getByRole("button", { name: "展開參數" }));
+      expect(
+        screen.getByRole("button", { name: "收合參數" }),
+      ).toBeInTheDocument();
     });
   });
 });

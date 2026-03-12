@@ -15,18 +15,21 @@ import {
 } from "@dnd-kit/sortable";
 import { Blocks } from "lucide-react";
 import type { Block } from "../../types/block";
+import type { TranslationKeys } from "../../i18n/translations";
 import { BlockCard } from "./BlockCard";
 
 interface BlockEditorProps {
   blocks: Block[];
   onBlocksChange: (blocks: Block[]) => void;
   isLoading?: boolean;
+  t?: TranslationKeys;
 }
 
 export function BlockEditor({
   blocks,
   onBlocksChange,
   isLoading = false,
+  t,
 }: BlockEditorProps) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -108,7 +111,9 @@ export function BlockEditor({
       {/* Header */}
       <div className="bg-gradient-to-r from-[#a855f7] to-[#7c3aed] text-white p-4 flex items-center gap-2 font-bold shadow-md flex-shrink-0">
         <Blocks size={20} />
-        <span className="text-lg font-extrabold tracking-tight">Blocks</span>
+        <span className="text-lg font-extrabold tracking-tight">
+          {t?.block_panel_title ?? "Blocks"}
+        </span>
         <span className="ml-auto text-sm opacity-80">
           {blocks.filter((b) => b.enabled).length}/{blocks.length}
         </span>
@@ -147,6 +152,7 @@ export function BlockEditor({
                 onToggle={handleToggle}
                 onParamChange={handleParamChange}
                 onDelete={handleDelete}
+                t={t}
               />
             ))}
           </SortableContext>
