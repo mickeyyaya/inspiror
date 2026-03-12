@@ -24,7 +24,6 @@ const SAFE_BLOCK_ID_RE = /^[a-zA-Z0-9_-]{1,64}$/;
 
 export interface EditorViewProps {
   project: Pick<Project, "id" | "messages" | "currentCode" | "blocks">;
-  defaultCode: string;
   onUpdate: (
     projectId: string,
     updates: Partial<Pick<Project, "messages" | "currentCode" | "blocks">>,
@@ -37,7 +36,6 @@ export interface EditorViewProps {
 
 export function EditorView({
   project,
-  defaultCode,
   onUpdate,
   onReset,
   onBack,

@@ -56,7 +56,7 @@ describe("BuildingOverlay", () => {
     const { unmount } = render(
       <BuildingOverlay isLoading={true} buildingText="BUILDING!" facts={FACTS} />,
     );
-    const clearSpy = vi.spyOn(global, "clearInterval");
+    const clearSpy = vi.spyOn(globalThis, "clearInterval");
     unmount();
     expect(clearSpy).toHaveBeenCalled();
     clearSpy.mockRestore();

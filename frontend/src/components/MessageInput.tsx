@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import { Send, Mic, MicOff } from "lucide-react";
 
 interface MessageInputProps {

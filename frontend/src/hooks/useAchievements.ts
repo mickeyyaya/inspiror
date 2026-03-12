@@ -5,7 +5,6 @@ import {
   DEFAULT_ACHIEVEMENT_STATE,
   type Achievement,
   type AchievementState,
-  type BuddyAvatar,
 } from "../types/achievements";
 
 const STORAGE_KEY = "inspiror-achievements";

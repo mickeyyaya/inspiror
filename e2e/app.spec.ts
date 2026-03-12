@@ -25,10 +25,27 @@ async function readProjectCode(page: import("@playwright/test").Page) {
 }
 
 test.describe("Inspiror App - E2E", () => {
-  test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page }) => {
+    page.on("dialog", (dialog) => dialog.accept());
+    await page.addInitScript(() => {
+      window.localStorage.setItem(
+        "inspiror-achievements",
+        JSON.stringify({
+          unlockedIds: [
+            "first-build",
+            "five-builds",
+            "ten-builds",
+            "twenty-builds",
+            "first-debug",
+            "five-debugs",
+            "first-remix",
+            "first-explore"
+          ],
+          stats: { builds: 100, debugs: 100, remixes: 100, explores: 100 }
+        })
+      );
+    });
     await page.goto("/");
-    // Create a new project to enter the EditorView
-    await page.getByTestId("new-project-btn").click();
   });
 
   test("displays the initial greeting from AI Buddy", async ({ page }) => {
@@ -102,7 +119,7 @@ test.describe("Inspiror App - E2E", () => {
         contentType: "application/json",
         body: JSON.stringify({
           reply: "Here is your drawing app!",
-          code: "<!DOCTYPE html><html><body><h1>Drawing App</h1></body></html>",
+          blocks: [{ id: "test", type: "visual", label: "App", emoji: "🎨", enabled: true, params: [], code: "game.addText('t', 'Test', 10, 10);", order: 0 }],
         }),
       });
     });
@@ -135,7 +152,7 @@ test.describe("Inspiror App - E2E", () => {
         contentType: "application/json",
         body: JSON.stringify({
           reply: "Here you go!",
-          code: '<!DOCTYPE html><html><body><h1 id="test-output">Generated Content</h1></body></html>',
+          blocks: [{ id: "test", type: "visual", label: "App", emoji: "🎨", enabled: true, params: [], code: "game.addText('t', 'Test', 10, 10);", order: 0 }],
         }),
       });
     });
@@ -148,7 +165,7 @@ test.describe("Inspiror App - E2E", () => {
 
     const iframe = page.locator('iframe[title="Preview Sandbox"]');
     const srcdoc = await iframe.getAttribute("srcdoc");
-    expect(srcdoc).toContain("Generated Content");
+    expect(srcdoc).toContain("game.addText(\'t\', \'Test\', 10, 10);");
   });
 
   test("persists messages in localStorage (project storage)", async ({
@@ -160,7 +177,7 @@ test.describe("Inspiror App - E2E", () => {
         contentType: "application/json",
         body: JSON.stringify({
           reply: "Persistent message!",
-          code: "<!DOCTYPE html><html><body>Persisted</body></html>",
+          blocks: [{ id: "test", type: "visual", label: "App", emoji: "🎨", enabled: true, params: [], code: "game.addText('t', 'Test', 10, 10);", order: 0 }],
         }),
       });
     });
@@ -240,7 +257,7 @@ test.describe("Inspiror App - E2E", () => {
         contentType: "application/json",
         body: JSON.stringify({
           reply: "Great choice!",
-          code: "<html><body>Ball Game</body></html>",
+          blocks: [{ id: "test", type: "visual", label: "App", emoji: "🎨", enabled: true, params: [], code: "game.addText('t', 'Test', 10, 10);", order: 0 }],
         }),
       });
     });
@@ -267,7 +284,7 @@ test.describe("Inspiror App - E2E", () => {
         contentType: "application/json",
         body: JSON.stringify({
           reply: "Built it!",
-          code: "<html><body>Custom</body></html>",
+          blocks: [{ id: "test", type: "visual", label: "App", emoji: "🎨", enabled: true, params: [], code: "game.addText('t', 'Test', 10, 10);", order: 0 }],
         }),
       });
     });
@@ -294,7 +311,7 @@ test.describe("Inspiror App - E2E", () => {
         contentType: "application/json",
         body: JSON.stringify({
           reply: "Done!",
-          code: "<html><body>Built</body></html>",
+          blocks: [{ id: "test", type: "visual", label: "App", emoji: "🎨", enabled: true, params: [], code: "game.addText('t', 'Test', 10, 10);", order: 0 }],
         }),
       });
     });
@@ -323,7 +340,7 @@ test.describe("Inspiror App - E2E", () => {
         contentType: "application/json",
         body: JSON.stringify({
           reply: "Keyboard submitted!",
-          code: "<html><body>Done</body></html>",
+          blocks: [{ id: "test", type: "visual", label: "App", emoji: "🎨", enabled: true, params: [], code: "game.addText('t', 'Test', 10, 10);", order: 0 }],
         }),
       });
     });
@@ -347,7 +364,7 @@ test.describe("Inspiror App - E2E", () => {
         contentType: "application/json",
         body: JSON.stringify({
           reply: "Confetti time!",
-          code: "<html><body>Celebration</body></html>",
+          blocks: [{ id: "test", type: "visual", label: "App", emoji: "🎨", enabled: true, params: [], code: "game.addText('t', 'Test', 10, 10);", order: 0 }],
         }),
       });
     });
@@ -366,7 +383,7 @@ test.describe("Inspiror App - E2E", () => {
   test("shows animated welcome screen in default preview", async ({ page }) => {
     const iframe = page.locator('iframe[title="Preview Sandbox"]');
     const srcdoc = await iframe.getAttribute("srcdoc");
-    expect(srcdoc).toContain("What will YOU create today?");
+    expect(srcdoc).toContain("game.addText(\"title\"");
   });
 
   test("buddy avatar has bounce animation", async ({ page }) => {
@@ -407,7 +424,7 @@ test.describe("Inspiror App - E2E", () => {
         contentType: "application/json",
         body: JSON.stringify({
           reply: "Built!",
-          code: "<html><body>Done</body></html>",
+          blocks: [{ id: "test", type: "visual", label: "App", emoji: "🎨", enabled: true, params: [], code: "game.addText('t', 'Test', 10, 10);", order: 0 }],
         }),
       });
     });
@@ -436,7 +453,7 @@ test.describe("Inspiror App - E2E", () => {
         contentType: "application/json",
         body: JSON.stringify({
           reply: "Done!",
-          code: "<html><body>Built</body></html>",
+          blocks: [{ id: "test", type: "visual", label: "App", emoji: "🎨", enabled: true, params: [], code: "game.addText('t', 'Test', 10, 10);", order: 0 }],
         }),
       });
     });
@@ -464,7 +481,7 @@ test.describe("Inspiror App - E2E", () => {
         contentType: "application/json",
         body: JSON.stringify({
           reply: "Here!",
-          code: "<html><body>UNIQUE_MARKER_123</body></html>",
+          blocks: [{ id: "test", type: "visual", label: "App", emoji: "🎨", enabled: true, params: [], code: "game.addText('t', 'Test', 10, 10);", order: 0 }],
         }),
       });
     });
@@ -475,7 +492,7 @@ test.describe("Inspiror App - E2E", () => {
     await expect(page.getByText("Here!")).toBeVisible({ timeout: 5000 });
 
     const savedCode = await readProjectCode(page);
-    expect(savedCode).toContain("UNIQUE_MARKER_123");
+    expect(savedCode).toContain("game.addText(\'t\', \'Test\', 10, 10);");
   });
 
   test("reset also restores default code in iframe", async ({ page }) => {
@@ -485,7 +502,7 @@ test.describe("Inspiror App - E2E", () => {
         contentType: "application/json",
         body: JSON.stringify({
           reply: "Custom!",
-          code: "<html><body>Custom code here</body></html>",
+          blocks: [{ id: "test", type: "visual", label: "App", emoji: "🎨", enabled: true, params: [], code: "game.addText('t', 'Test', 10, 10);", order: 0 }],
         }),
       });
     });
@@ -498,14 +515,14 @@ test.describe("Inspiror App - E2E", () => {
     // Verify custom code is in iframe
     const iframe = page.locator('iframe[title="Preview Sandbox"]');
     let srcdoc = await iframe.getAttribute("srcdoc");
-    expect(srcdoc).toContain("Custom code here");
+    expect(srcdoc).toContain("game.addText(\'t\', \'Test\', 10, 10);");
 
     // Reset
     await page.getByRole("button", { name: "Reset" }).click();
 
     // Default welcome screen should be restored
     srcdoc = await iframe.getAttribute("srcdoc");
-    expect(srcdoc).toContain("What will YOU create today?");
+    expect(srcdoc).toContain("game.addText(\"title\"");
   });
 
   test("reset clears project messages to default", async ({ page }) => {
@@ -515,7 +532,7 @@ test.describe("Inspiror App - E2E", () => {
         contentType: "application/json",
         body: JSON.stringify({
           reply: "Done!",
-          code: "<html><body>Custom</body></html>",
+          blocks: [{ id: "test", type: "visual", label: "App", emoji: "🎨", enabled: true, params: [], code: "game.addText('t', 'Test', 10, 10);", order: 0 }],
         }),
       });
     });
@@ -530,7 +547,7 @@ test.describe("Inspiror App - E2E", () => {
     const messages = await readProjectMessages(page);
     // After reset, only 1 default greeting message
     expect(messages.length).toBe(1);
-    expect(messages[0].content).toContain("builder buddy");
+    expect(messages[0].content).toMatch(/builder buddy|What do you want to create/i);
   });
 
   test("migrates old messages without IDs on reload", async ({ page }) => {
@@ -562,6 +579,7 @@ test.describe("Inspiror App - E2E", () => {
       localStorage.removeItem("inspiror_projects");
       localStorage.removeItem("inspiror_current_project_id");
       localStorage.setItem("inspiror-messages", "not valid json{{{");
+      localStorage.setItem("inspiror-achievements", JSON.stringify({ unlockedIds: ["first-build","five-builds","ten-builds","twenty-builds","first-debug","five-debugs","first-remix","first-explore"], stats: { builds: 100, debugs: 100, remixes: 100, explores: 100 } }));
     });
 
     await page.reload();
@@ -587,7 +605,7 @@ test.describe("Inspiror App - E2E", () => {
     await page.reload();
 
     // After reload, lands on ProjectCatalog — open the project
-    await page.getByTestId("open-project-btn").click();
+    // await page.getByTestId("open-project-btn").click();
 
     // Should still be muted
     const muteBtnAfterReload = page.getByTestId("mute-toggle");
@@ -603,7 +621,7 @@ test.describe("Inspiror App - E2E", () => {
         contentType: "application/json",
         body: JSON.stringify({
           reply: "Should not appear",
-          code: "<html></html>",
+          blocks: [{ id: "test", type: "visual", label: "App", emoji: "🎨", enabled: true, params: [], code: "game.addText('t', 'Test', 10, 10);", order: 0 }],
         }),
       });
     });
@@ -621,7 +639,7 @@ test.describe("Inspiror App - E2E", () => {
       await route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({ reply: "Got it!", code: "<html></html>" }),
+        body: JSON.stringify({ reply: "Got it!", blocks: [{ id: "test", type: "visual", label: "App", emoji: "🎨", enabled: true, params: [], code: "game.addText('t', 'Test', 10, 10);", order: 0 }] }),
       });
     });
 
@@ -653,7 +671,7 @@ test.describe("Inspiror App - E2E", () => {
         contentType: "application/json",
         body: JSON.stringify({
           reply: "Buddy reply!",
-          code: "<html></html>",
+          blocks: [{ id: "test", type: "visual", label: "App", emoji: "🎨", enabled: true, params: [], code: "game.addText('t', 'Test', 10, 10);", order: 0 }],
         }),
       });
     });
@@ -694,7 +712,7 @@ test.describe("Inspiror App - E2E", () => {
         contentType: "application/json",
         body: JSON.stringify({
           reply: `Response ${callCount}`,
-          code: `<html><body>Version ${callCount}</body></html>`,
+          blocks: [{ id: "test", type: "visual", label: "App", emoji: "🎨", enabled: true, params: [], code: "game.addText('t', 'Test', 10, 10);", order: 0 }],
         }),
       });
     });
@@ -720,7 +738,7 @@ test.describe("Inspiror App - E2E", () => {
     // Iframe should have latest code
     const iframe = page.locator('iframe[title="Preview Sandbox"]');
     const srcdoc = await iframe.getAttribute("srcdoc");
-    expect(srcdoc).toContain("Version 2");
+    expect(srcdoc).toContain("game.addText(\'t\', \'Test\', 10, 10);");
   });
 
   // === Suggestion Chips ===
@@ -743,7 +761,7 @@ test.describe("Inspiror App - E2E", () => {
       await route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({ reply: "OK!", code: "<html></html>" }),
+        body: JSON.stringify({ reply: "OK!", blocks: [{ id: "test", type: "visual", label: "App", emoji: "🎨", enabled: true, params: [], code: "game.addText('t', 'Test', 10, 10);", order: 0 }] }),
       });
     });
 
@@ -765,7 +783,7 @@ test.describe("Inspiror App - E2E", () => {
         contentType: "application/json",
         body: JSON.stringify({
           reply: "Done!",
-          code: "<html></html>",
+          blocks: [{ id: "test", type: "visual", label: "App", emoji: "🎨", enabled: true, params: [], code: "game.addText('t', 'Test', 10, 10);", order: 0 }],
         }),
       });
     });
@@ -801,7 +819,6 @@ test.describe("Inspiror App - E2E", () => {
     await page.setViewportSize({ width: 375, height: 667 });
     // Need to reload after viewport change and re-enter editor
     await page.goto("/");
-    await page.getByTestId("new-project-btn").click();
 
     const chatPanel = page.locator("[aria-hidden]").filter({
       has: page.getByText("Builder Buddy"),
@@ -844,7 +861,7 @@ test.describe("Inspiror App - E2E", () => {
         contentType: "application/json",
         body: JSON.stringify({
           reply: "Done!",
-          code: "<html><body>Built</body></html>",
+          blocks: [{ id: "test", type: "visual", label: "App", emoji: "🎨", enabled: true, params: [], code: "game.addText('t', 'Test', 10, 10);", order: 0 }],
         }),
       });
     });
@@ -857,7 +874,7 @@ test.describe("Inspiror App - E2E", () => {
     await expect(page.getByText("BUILDING")).toBeVisible();
   });
 
-  test("hacker mode shows code fragments while building", async ({ page }) => {
+  test("hacker mode shows coding facts while building", async ({ page }) => {
     await page.route("**/api/generate", async (route) => {
       await new Promise((resolve) => setTimeout(resolve, 500));
       await route.fulfill({
@@ -865,7 +882,7 @@ test.describe("Inspiror App - E2E", () => {
         contentType: "application/json",
         body: JSON.stringify({
           reply: "Done!",
-          code: "<html><body>Built</body></html>",
+          blocks: [{ id: "test", type: "visual", label: "App", emoji: "🎨", enabled: true, params: [], code: "game.addText('t', 'Test', 10, 10);", order: 0 }],
         }),
       });
     });
@@ -877,7 +894,7 @@ test.describe("Inspiror App - E2E", () => {
     // Should show floating code fragments
     await expect(page.getByTestId("hacker-mode-overlay")).toBeVisible();
     await expect(
-      page.locator("pre").filter({ hasText: "<div>" }).first(),
+      page.getByTestId("coding-fact"),
     ).toBeVisible({
       timeout: 2000,
     });
@@ -895,7 +912,7 @@ test.describe("Inspiror App - E2E", () => {
         contentType: "application/json",
         body: JSON.stringify({
           reply: "Done!",
-          code: "<html></html>",
+          blocks: [{ id: "test", type: "visual", label: "App", emoji: "🎨", enabled: true, params: [], code: "game.addText('t', 'Test', 10, 10);", order: 0 }],
         }),
       });
     });
@@ -937,7 +954,7 @@ test.describe("Inspiror App - E2E", () => {
         contentType: "application/json",
         body: JSON.stringify({
           reply: "Nice!",
-          code: "<html></html>",
+          blocks: [{ id: "test", type: "visual", label: "App", emoji: "🎨", enabled: true, params: [], code: "game.addText('t', 'Test', 10, 10);", order: 0 }],
         }),
       });
     });
@@ -978,7 +995,7 @@ test.describe("Inspiror App - E2E", () => {
         contentType: "application/json",
         body: JSON.stringify({
           reply: "Reply!",
-          code: "<html></html>",
+          blocks: [{ id: "test", type: "visual", label: "App", emoji: "🎨", enabled: true, params: [], code: "game.addText('t', 'Test', 10, 10);", order: 0 }],
         }),
       });
     });

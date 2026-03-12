@@ -1,6 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import type { Project, ChatMessage } from "../types/project";
-import type { Block } from "../types/block";
 import { translations } from "../i18n/translations";
 import { DEFAULT_BLOCKS } from "../constants/defaultBlocks";
 import { compileBlocks } from "../compiler/compileBlocks";

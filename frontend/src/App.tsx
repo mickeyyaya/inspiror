@@ -17,7 +17,6 @@ function App() {
     goToCatalog,
     updateProject,
     resetCurrentProject,
-    DEFAULT_CODE,
   } = useProjects(language);
 
   const toggleLanguage = () => {
@@ -45,7 +44,6 @@ function App() {
     <EditorView
       key={currentProject.id}
       project={currentProject}
-      defaultCode={DEFAULT_CODE}
       onUpdate={updateProject}
       onReset={resetCurrentProject}
       onBack={goToCatalog}

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { RUNTIME_ENGINE } from "./engine";
 
 describe("RUNTIME_ENGINE", () => {
@@ -17,6 +17,53 @@ describe("RUNTIME_ENGINE", () => {
     expect(RUNTIME_ENGINE).toContain("setBackground");
     expect(RUNTIME_ENGINE).toContain("addText");
     expect(RUNTIME_ENGINE).toContain("playSound");
+  });
+
+  it("contains pointer/touch API", () => {
+    expect(RUNTIME_ENGINE).toContain("pointerX");
+    expect(RUNTIME_ENGINE).toContain("pointerY");
+    expect(RUNTIME_ENGINE).toContain("pointerDown");
+    expect(RUNTIME_ENGINE).toContain("onTap");
+    expect(RUNTIME_ENGINE).toContain("onDrag");
+  });
+
+  it("contains timer helpers", () => {
+    expect(RUNTIME_ENGINE).toContain("after: function(blockId, ms, fn)");
+    expect(RUNTIME_ENGINE).toContain("every: function(blockId, ms, fn)");
+    expect(RUNTIME_ENGINE).toContain("blockTimers");
+  });
+
+  it("contains physics helpers", () => {
+    expect(RUNTIME_ENGINE).toContain("bounceOffWalls");
+    expect(RUNTIME_ENGINE).toContain("moveToward");
+    expect(RUNTIME_ENGINE).toContain("pe.gravity");
+    expect(RUNTIME_ENGINE).toContain("pe.friction");
+  });
+
+  it("contains health/progress bar rendering", () => {
+    expect(RUNTIME_ENGINE).toContain("addBar");
+    expect(RUNTIME_ENGINE).toContain('"bar"');
+  });
+
+  it("contains circle overlap collision", () => {
+    expect(RUNTIME_ENGINE).toContain("onOverlap");
+    expect(RUNTIME_ENGINE).toContain("overlapCallbacks");
+  });
+
+  it("contains AI movement helpers", () => {
+    expect(RUNTIME_ENGINE).toContain("followEntity");
+    expect(RUNTIME_ENGINE).toContain("wander");
+    expect(RUNTIME_ENGINE).toContain("patrol");
+  });
+
+  it("contains image loading", () => {
+    expect(RUNTIME_ENGINE).toContain("loadImage");
+  });
+
+  it("contains sound synthesis", () => {
+    expect(RUNTIME_ENGINE).toContain("playTone");
+    expect(RUNTIME_ENGINE).toContain("playNote");
+    expect(RUNTIME_ENGINE).toContain("AudioContext");
   });
 
   it("wraps in an IIFE for isolation", () => {
@@ -61,5 +108,15 @@ describe("RUNTIME_ENGINE", () => {
     expect(RUNTIME_ENGINE).toContain(
       "collisionCallbacks = collisionCallbacks.filter",
     );
+  });
+
+  it("cleans up timers, taps, drags, and overlaps in game.off()", () => {
+    expect(RUNTIME_ENGINE).toContain(
+      "overlapCallbacks = overlapCallbacks.filter",
+    );
+    expect(RUNTIME_ENGINE).toContain("tapCallbacks = tapCallbacks.filter");
+    expect(RUNTIME_ENGINE).toContain("dragCallbacks = dragCallbacks.filter");
+    expect(RUNTIME_ENGINE).toContain("clearTimeout");
+    expect(RUNTIME_ENGINE).toContain("clearInterval");
   });
 });
