@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { MessageCircle, Blocks } from "lucide-react";
 import { injectErrorCatcher } from "../utils/injectErrorCatcher";
 import { BuildingOverlay } from "./BuildingOverlay";
@@ -40,7 +40,7 @@ export function PreviewPanel({
       className="flex-1 relative bg-[#fdfbf7] overflow-hidden flex flex-col p-4 sm:p-8"
       onMouseEnter={() => iframeRef.current?.focus()}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(#ff6b6b_1px,transparent_1px),radial-gradient(#4ecdc4_1px,transparent_1px)] bg-[size:40px_40px] bg-[position:0_0,20px_20px] opacity-[0.15] pointer-events-none z-0"></div>
+      <div className="absolute inset-0 bg-kids-pattern pointer-events-none z-0"></div>
 
       {!isChatVisible && (
         <div className="absolute top-4 left-4 sm:top-8 sm:left-8 z-30">
