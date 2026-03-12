@@ -46,8 +46,7 @@ export function EditorView({
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
     if (
       project.messages.length === 1 &&
-      project.messages[0].role === "assistant" &&
-      project.messages[0].content.includes("Hi! I'm your builder buddy")
+      project.messages[0].role === "assistant"
     ) {
       return [withId("assistant", t.greeting)];
     }
@@ -210,12 +209,7 @@ export function EditorView({
   };
 
   const handleReset = () => {
-    if (
-      !window.confirm(
-        t.confirm_reset ??
-          "Reset this project? Your current work will be cleared.",
-      )
-    ) {
+    if (!window.confirm(t.confirm_reset)) {
       return;
     }
     onReset();
