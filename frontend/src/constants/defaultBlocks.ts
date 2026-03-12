@@ -10,13 +10,13 @@ export const DEFAULT_BLOCKS: Block[] = [
     type: "setup",
     label: "Background",
     emoji: "🎨",
-    enabled: true,
+    enabled: false,
     params: [
       {
         key: "bgColor",
         label: "Background Color",
         type: "color",
-        value: "#1a1a2e",
+        value: "#a8e6cf",
       },
     ],
     code: `game.setBackground({{bgColor}});`,
@@ -39,7 +39,7 @@ export const DEFAULT_BLOCKS: Block[] = [
         key: "color",
         label: "Text Color",
         type: "color",
-        value: "#ffffff",
+        value: "#222222",
       },
     ],
     code: `game.addText("title", {{title}}, game.width() / 2, game.height() / 2, {
