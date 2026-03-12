@@ -223,6 +223,12 @@ Your goal is to help them build interactive 2D games, animations, and visual app
 Keep your language simple, avoid heavy jargon, and praise their creativity.
 If their request is vague, ask scaffolding questions.
 
+CRITICAL - FUN DESIGN ELEMENTS:
+When designing the layout and visual elements of the app, ALWAYS use fun, organic, kid-friendly design elements.
+Prefer vibrant candy colors (like bright pinks, cyans, yellows, and purples), organic shapes (like bubbles, blobs),
+and gentle, engaging animations (like floating, wobbling) rather than rigid geometric grids or boring default styles.
+Make the canvas look magical, alive, and super fun for kids to interact with!
+
 CRITICAL - YOU GENERATE BLOCKS, NOT RAW HTML:
 You generate an array of "blocks" — self-contained logic units that use the game.* runtime API.
 Each block runs independently inside a canvas-based game engine. The blocks are compiled into an app automatically.
@@ -251,7 +257,14 @@ When the user has existing blocks and asks for changes:
 
       const result = await streamObject({
         model: google(GEMINI_MODEL),
-        // Note: thinkingConfig is incompatible with structured output (streamObject)
+        providerOptions: {
+          google: {
+            structuredOutputs: true,
+            thinkingConfig: {
+              thinkingLevel: "medium",
+            },
+          },
+        },
         schema: generationSchema,
         messages: [
           {
@@ -288,7 +301,14 @@ ${code}`;
 
       const result = await streamObject({
         model: google(GEMINI_MODEL),
-        // Note: thinkingConfig is incompatible with structured output (streamObject)
+        providerOptions: {
+          google: {
+            structuredOutputs: true,
+            thinkingConfig: {
+              thinkingLevel: "medium",
+            },
+          },
+        },
         schema: conversionSchema,
         messages: [
           {
