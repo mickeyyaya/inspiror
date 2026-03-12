@@ -54,7 +54,7 @@ export function PreviewPanel({
         </div>
       )}
 
-      <div className="flex-1 w-full h-full relative z-10 bg-white border-4 border-[#222] rounded-[2rem] overflow-hidden shadow-[8px_8px_0_#222]">
+      <div className="flex-1 w-full h-full relative z-10 bg-transparent border-4 border-[#222] rounded-[2rem] overflow-hidden shadow-[8px_8px_0_#222]">
         <iframe
           ref={iframeRef}
           title="Preview Sandbox"

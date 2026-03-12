@@ -41,7 +41,7 @@ export const RUNTIME_ENGINE = `
   var collisionCallbacks = [];
 
   // --- Background ---
-  var bgColor = "#000000";
+  var bgColor = "transparent";
 
   // --- Error tracking ---
   var disabledBlocks = {};
@@ -133,7 +133,7 @@ export const RUNTIME_ENGINE = `
     },
 
     setBackground: function(color) {
-      bgColor = color || "#000000";
+      bgColor = color || "transparent";
     },
 
     addText: function(id, text, x, y, opts) {
@@ -165,8 +165,12 @@ export const RUNTIME_ENGINE = `
 
   // --- Render loop ---
   function draw() {
-    ctx.fillStyle = bgColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    if (bgColor === "transparent" || bgColor === "") {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    } else {
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
 
     for (var id in entities) {
       if (!entities.hasOwnProperty(id)) continue;

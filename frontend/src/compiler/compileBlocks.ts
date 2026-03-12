@@ -70,7 +70,7 @@ export function compileBlocks(blocks: Block[]): string {
 <meta charset="utf-8">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { overflow: hidden; background: #000; }
+body { overflow: hidden; background: transparent; }
 ${css}
 </style>
 </head>
