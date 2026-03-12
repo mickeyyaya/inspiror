@@ -60,7 +60,9 @@ export function EditorView({
   const [isChatVisible, setIsChatVisible] = useState(true);
   const [isBlockPanelOpen, setIsBlockPanelOpen] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [suggestionChips, setSuggestionChips] = useState(pickRandomChips);
+  const [suggestionChips, setSuggestionChips] = useState(() =>
+    pickRandomChips(language),
+  );
   const [isConverting, setIsConverting] = useState(false);
 
   const isLegacyProject = useRef(project.blocks === undefined);
@@ -219,7 +221,7 @@ export function EditorView({
     setBlocks(freshBlocks);
     setCurrentCode(compileBlocks(freshBlocks));
     setInputValue("");
-    setSuggestionChips(pickRandomChips());
+    setSuggestionChips(pickRandomChips(language));
     autoFixCountRef.current = 0;
   };
 
@@ -408,6 +410,7 @@ export function EditorView({
             onChipClick={handleChipClick}
             thinkingText={t.thinking}
             magicButtonPrompt={t.magic_button_prompt}
+            language={language}
           />
 
           <MessageInput

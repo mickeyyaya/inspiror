@@ -1,6 +1,7 @@
 import { useRef, useEffect } from "react";
 import type { ChatMessage } from "../types/project";
 import { pickRandomChips } from "../constants";
+import type { VoiceLanguage } from "../hooks/useVoice";
 
 interface MessageListProps {
   messages: ChatMessage[];
@@ -12,6 +13,7 @@ interface MessageListProps {
   onChipClick: (label: string) => void;
   thinkingText: string;
   magicButtonPrompt: string;
+  language?: VoiceLanguage;
 }
 
 export function MessageList({
@@ -24,6 +26,7 @@ export function MessageList({
   onChipClick,
   thinkingText,
   magicButtonPrompt,
+  language,
 }: MessageListProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -95,7 +98,9 @@ export function MessageList({
               {magicButtonPrompt}
             </p>
             <button
-              onClick={() => onSuggestionChipsShuffle(pickRandomChips())}
+              onClick={() =>
+                onSuggestionChipsShuffle(pickRandomChips(language))
+              }
               className="bg-white border-2 border-[#222] px-3 py-1 rounded-full text-sm font-bold text-[#222] hover:scale-105 active:scale-95 transition-all shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none"
               aria-label="Shuffle suggestions"
               data-testid="shuffle-chips"
