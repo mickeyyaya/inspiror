@@ -65,6 +65,7 @@ export function EditorView({
   const [isConverting, setIsConverting] = useState(false);
 
   const isLegacyProject = useRef(project.blocks === undefined);
+  const checksRef = useRef<string[]>([]);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -91,7 +92,7 @@ export function EditorView({
     stopListening,
     speak,
     toggleAutoSpeak,
-  } = useVoice(language);
+  } = useVoice(language, isMuted);
   const {
     unlockedIds,
     stats,
@@ -151,8 +152,11 @@ export function EditorView({
         finalObj.blocks.length > 0
       ) {
         const newBlocks = finalObj.blocks as Block[];
+        checksRef.current = Array.isArray(finalObj.checks)
+          ? (finalObj.checks as string[])
+          : [];
         setBlocks(newBlocks);
-        setCurrentCode(compileBlocks(newBlocks));
+        setCurrentCode(compileBlocks(newBlocks, checksRef.current));
       }
       playChimeRef.current();
       recordBuildRef.current();
@@ -216,6 +220,7 @@ export function EditorView({
     }
     onReset();
     const freshBlocks = DEFAULT_BLOCKS.map((b) => ({ ...b }));
+    checksRef.current = [];
     setMessages([withId("assistant", t.greeting)]);
     setBlocks(freshBlocks);
     setCurrentCode(compileBlocks(freshBlocks));
@@ -243,7 +248,7 @@ export function EditorView({
     }
     if (compileTimerRef.current) clearTimeout(compileTimerRef.current);
     compileTimerRef.current = setTimeout(() => {
-      setCurrentCode(compileBlocks(blocks));
+      setCurrentCode(compileBlocks(blocks, checksRef.current));
       compileTimerRef.current = null;
     }, COMPILE_DEBOUNCE_MS);
     return () => {

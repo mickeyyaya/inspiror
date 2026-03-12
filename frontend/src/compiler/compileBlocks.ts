@@ -25,10 +25,48 @@ function sanitizeComment(str: string): string {
 }
 
 /**
+ * Build a script that runs self-verification checks after ~30 frames.
+ * Each check is a JS expression that should evaluate to true.
+ * Failed checks post an error message to the parent for auto-fix.
+ */
+function buildCheckRunner(checks: string[]): string {
+  if (checks.length === 0) return "";
+  const escaped = checks.map((c) => escapeJsString(c));
+  return `
+// --- Self-verification checks ---
+(function() {
+  var _checkFrame = 0;
+  game.onUpdate("__self_check__", function() {
+    _checkFrame++;
+    if (_checkFrame !== 30) return;
+    game.off("__self_check__");
+    var checks = [${escaped.map((c) => `"${c}"`).join(",")}];
+    for (var i = 0; i < checks.length; i++) {
+      try {
+        if (!eval(checks[i])) {
+          window.parent.postMessage({
+            type: "iframe-error",
+            message: "Self-check failed: " + checks[i]
+          }, "*");
+          return;
+        }
+      } catch(err) {
+        window.parent.postMessage({
+          type: "iframe-error",
+          message: "Self-check error: " + checks[i] + " — " + String(err && err.message ? err.message : err)
+        }, "*");
+        return;
+      }
+    }
+  });
+})();`;
+}
+
+/**
  * Compile an array of Blocks into a self-contained HTML string
  * with the runtime engine and each block wrapped in an error-isolated IIFE.
  */
-export function compileBlocks(blocks: Block[]): string {
+export function compileBlocks(blocks: Block[], checks?: string[]): string {
   const enabled = blocks
     .filter((b) => b.enabled)
     .sort((a, b) => a.order - b.order);
@@ -64,6 +102,8 @@ export function compileBlocks(blocks: Block[]): string {
     })
     .join("\n");
 
+  const checkScript = buildCheckRunner(checks ?? []);
+
   return `<!DOCTYPE html>
 <html>
 <head>
@@ -80,6 +120,7 @@ ${RUNTIME_ENGINE}
 </script>
 <script>
 ${blockScripts}
+${checkScript}
 </script>
 </body>
 </html>`;

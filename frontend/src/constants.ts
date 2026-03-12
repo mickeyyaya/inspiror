@@ -83,6 +83,7 @@ const blockSchema = z.object({
 export const generationSchema = z.object({
   reply: z.string(),
   blocks: z.array(blockSchema),
+  checks: z.array(z.string()).optional(),
 });
 
 export function pickRandomChips() {

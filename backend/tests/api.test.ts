@@ -157,3 +157,113 @@ describe("POST /api/generate", () => {
     expect(res.body.error).toMatch(/currentBlocks.*exceed/i);
   });
 });
+
+describe("POST /api/convert-to-blocks", () => {
+  const mockBlock = {
+    id: "test-block",
+    type: "setup",
+    label: "Test",
+    emoji: "🔧",
+    enabled: true,
+    params: [],
+    code: "game.setBackground('#000');",
+    order: 0,
+  };
+
+  beforeEach(() => {
+    mockedStreamObject.mockClear();
+  });
+
+  it("should return 200 with blocks on valid request", async () => {
+    mockedStreamObject.mockReturnValueOnce({
+      object: Promise.resolve({ blocks: [mockBlock] }),
+    } as ReturnType<typeof streamObject>);
+
+    const res = await request(app)
+      .post("/api/convert-to-blocks")
+      .send({ code: "<html><body>hello</body></html>", language: "en-US" });
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("blocks");
+    expect(res.body.blocks).toHaveLength(1);
+    expect(res.body.blocks[0]).toMatchObject({ id: "test-block" });
+  });
+
+  it("should pass code and language to streamObject", async () => {
+    mockedStreamObject.mockReturnValueOnce({
+      object: Promise.resolve({ blocks: [mockBlock] }),
+    } as ReturnType<typeof streamObject>);
+
+    await request(app)
+      .post("/api/convert-to-blocks")
+      .send({ code: "const x = 1;", language: "zh-TW" });
+
+    expect(mockedStreamObject).toHaveBeenCalledTimes(1);
+    const callArgs = mockedStreamObject.mock.calls[0]![0] as Record<
+      string,
+      unknown
+    >;
+    const messages = callArgs.messages as Array<{
+      role: string;
+      content: string;
+    }>;
+    const userMessage = messages.find((m) => m.role === "user");
+    expect(userMessage?.content).toContain("const x = 1;");
+  });
+
+  it("should default language to en-US when an invalid language is supplied", async () => {
+    mockedStreamObject.mockReturnValueOnce({
+      object: Promise.resolve({ blocks: [mockBlock] }),
+    } as ReturnType<typeof streamObject>);
+
+    const res = await request(app)
+      .post("/api/convert-to-blocks")
+      .send({ code: "var x = 1;", language: "fr-FR" });
+
+    expect(res.status).toBe(200);
+    // The endpoint logs a warning and defaults — it should still succeed
+    expect(res.body).toHaveProperty("blocks");
+  });
+
+  it("should return 400 when code is missing", async () => {
+    const res = await request(app)
+      .post("/api/convert-to-blocks")
+      .send({ language: "en-US" });
+
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty("error");
+    expect(res.body.error).toMatch(/code.*required/i);
+  });
+
+  it("should return 400 when code is not a string", async () => {
+    const res = await request(app)
+      .post("/api/convert-to-blocks")
+      .send({ code: 12345, language: "en-US" });
+
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty("error");
+    expect(res.body.error).toMatch(/code.*required/i);
+  });
+
+  it("should return 400 when code exceeds 50000 characters", async () => {
+    const res = await request(app)
+      .post("/api/convert-to-blocks")
+      .send({ code: "x".repeat(50001), language: "en-US" });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/code.*exceed/i);
+  });
+
+  it("should return 500 when the LLM service throws", async () => {
+    mockedStreamObject.mockReturnValueOnce({
+      object: Promise.reject(new Error("LLM failure")),
+    } as ReturnType<typeof streamObject>);
+
+    const res = await request(app)
+      .post("/api/convert-to-blocks")
+      .send({ code: "var x = 1;", language: "en-US" });
+
+    expect(res.status).toBe(500);
+    expect(res.body).toHaveProperty("error");
+  });
+});

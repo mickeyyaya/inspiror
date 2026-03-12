@@ -60,6 +60,12 @@ export const generationSchema = z.object({
     .describe(
       "Array of self-contained logic blocks using the game.* runtime API. Each block must be independent and use {{key}} param placeholders.",
     ),
+  checks: z
+    .array(z.string())
+    .optional()
+    .describe(
+      "Array of JS expressions that should evaluate to true after blocks run for ~30 frames. Used for self-verification. E.g. \"game.getEntity('ball') !== null\", \"game.get('score') === 0\".",
+    ),
 });
 
 export type GenerationResult = z.infer<typeof generationSchema>;
@@ -407,7 +413,32 @@ When the user has existing blocks and asks for changes:
 1. Keep ALL existing blocks that still make sense (include them in your response).
 2. Modify only the blocks that need changing.
 3. Add new blocks for new features.
-4. The blocks array in your response replaces the entire current set, so always include all blocks.`;
+4. The blocks array in your response replaces the entire current set, so always include all blocks.
+
+CRITICAL - SELF-CHECK BEFORE RESPONDING:
+Before finalizing your blocks, mentally run through this checklist and fix any issues:
+1. Does every game.onUpdate / game.on / game.onCollision / game.onOverlap / game.onDrag / game.onTap / game.every / game.after use the CORRECT blockId matching the block's own "id" field?
+2. Does every game.getEntity() call have a null check before accessing properties?
+3. Are all entity IDs spelled consistently between addEntity, getEntity, removeEntity, and collision/overlap registrations?
+4. Does every block's code actually work standalone — no references to variables defined in other blocks?
+5. Are coordinates and sizes reasonable for the canvas (width ~400-800, height ~400-600)?
+6. Do movement speeds make sense? (1-10 pixels/frame is typical; 100+ would teleport off screen)
+7. Are there any infinite loops, division by zero, or missing semicolons?
+8. Do all {{param}} placeholders match the keys defined in the block's params array?
+9. For games: is there clear visual feedback when the user interacts (particles, tweens, sounds)?
+10. Will the creation actually do something visible and interesting on first load (not require user action to see anything)?
+If you find issues, fix them silently — do not mention the checklist to the child.
+
+CRITICAL - GENERATE SELF-VERIFICATION CHECKS:
+Always include a "checks" array with 2-5 short JS expressions that verify your blocks work.
+These run automatically after ~30 frames. Each must evaluate to true if everything is correct.
+Examples:
+- "game.getEntity('ball') !== null" — verify entity was created
+- "game.getEntity('ball').width > 0" — verify entity has size
+- "typeof game.get('score') === 'number'" — verify state was initialized
+- "game.allEntities().length >= 3" — verify expected entity count
+Keep checks simple — only use game.getEntity(), game.get(), game.allEntities(), game.width(), game.height().
+Do NOT mention checks to the child.`;
 
       const systemContent = currentBlocks
         ? `${basePrompt}\n\nThe user's current blocks are:\n${currentBlocks}\n\nModify/extend these blocks based on the user's request. Keep all existing functionality unless told otherwise. Include ALL blocks (existing + new) in your response.`

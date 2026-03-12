@@ -165,8 +165,14 @@ app.use(
 );
 
 if (require.main === module) {
+  // Fall back to GEMINI_API_KEY for local development
+  if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY && process.env.GEMINI_API_KEY) {
+    process.env.GOOGLE_GENERATIVE_AI_API_KEY = process.env.GEMINI_API_KEY;
+  }
   if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
-    console.error("[FATAL] GOOGLE_GENERATIVE_AI_API_KEY is not set. Exiting.");
+    console.error(
+      "[FATAL] GOOGLE_GENERATIVE_AI_API_KEY (or GEMINI_API_KEY) is not set. Exiting.",
+    );
     process.exit(1);
   }
   const PORT = process.env.PORT || 3001;

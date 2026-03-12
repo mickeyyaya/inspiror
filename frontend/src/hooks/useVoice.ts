@@ -33,7 +33,7 @@ declare global {
 
 export type VoiceLanguage = "en-US" | "zh-CN" | "zh-TW";
 
-export function useVoice(language: VoiceLanguage) {
+export function useVoice(language: VoiceLanguage, isMuted = false) {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [isAutoSpeakEnabled, setIsAutoSpeakEnabled] = useState(true);
@@ -108,7 +108,7 @@ export function useVoice(language: VoiceLanguage) {
 
   const speak = useCallback(
     (text: string) => {
-      if (!synthRef.current || !isAutoSpeakEnabled) return;
+      if (!synthRef.current || !isAutoSpeakEnabled || isMuted) return;
 
       synthRef.current.cancel();
 
@@ -132,8 +132,15 @@ export function useVoice(language: VoiceLanguage) {
 
       synthRef.current.speak(utterance);
     },
-    [language, isAutoSpeakEnabled],
+    [language, isAutoSpeakEnabled, isMuted],
   );
+
+  // Cancel any in-progress speech when muted
+  useEffect(() => {
+    if (isMuted && synthRef.current) {
+      synthRef.current.cancel();
+    }
+  }, [isMuted]);
 
   const toggleAutoSpeak = useCallback(() => {
     setIsAutoSpeakEnabled((prev) => !prev);
