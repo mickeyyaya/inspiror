@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, ChevronDown, ChevronUp } from "lucide-react";
+import { GripVertical, ChevronDown, ChevronUp, Trash2 } from "lucide-react";
 import type { Block } from "../../types/block";
 import { BLOCK_CATEGORIES } from "../../constants/blockCategories";
 import { ParamEditor } from "./ParamEditor";
@@ -9,10 +9,20 @@ import { ParamEditor } from "./ParamEditor";
 interface BlockCardProps {
   block: Block;
   onToggle: (id: string) => void;
-  onParamChange: (blockId: string, paramKey: string, value: string | number | boolean) => void;
+  onParamChange: (
+    blockId: string,
+    paramKey: string,
+    value: string | number | boolean,
+  ) => void;
+  onDelete?: (id: string) => void;
 }
 
-export function BlockCard({ block, onToggle, onParamChange }: BlockCardProps) {
+export function BlockCard({
+  block,
+  onToggle,
+  onParamChange,
+  onDelete,
+}: BlockCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const category = BLOCK_CATEGORIES[block.type];
 
@@ -41,10 +51,7 @@ export function BlockCard({ block, onToggle, onParamChange }: BlockCardProps) {
       aria-label={`Block: ${block.label}`}
     >
       {/* Category color band */}
-      <div
-        className="h-1.5"
-        style={{ backgroundColor: category.color }}
-      />
+      <div className="h-1.5" style={{ backgroundColor: category.color }} />
 
       {/* Header row */}
       <div className="flex items-center gap-2 px-3 py-2">
@@ -88,13 +95,22 @@ export function BlockCard({ block, onToggle, onParamChange }: BlockCardProps) {
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className="p-1 rounded hover:bg-gray-100"
-            aria-label={isExpanded ? "Collapse parameters" : "Expand parameters"}
+            aria-label={
+              isExpanded ? "Collapse parameters" : "Expand parameters"
+            }
           >
-            {isExpanded ? (
-              <ChevronUp size={16} />
-            ) : (
-              <ChevronDown size={16} />
-            )}
+            {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </button>
+        )}
+
+        {/* Delete button */}
+        {onDelete && (
+          <button
+            onClick={() => onDelete(block.id)}
+            className="p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-red-500 transition-colors"
+            aria-label={`Delete ${block.label}`}
+          >
+            <Trash2 size={14} />
           </button>
         )}
       </div>

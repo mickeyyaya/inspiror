@@ -4,8 +4,16 @@ import { BlockEditor } from "./BlockEditor";
 import type { Block } from "../../types/block";
 
 vi.mock("@dnd-kit/core", () => ({
-  DndContext: ({ children, onDragEnd }: { children: React.ReactNode; onDragEnd: (e: unknown) => void }) => {
-    (window as Window & { __testDragEnd?: (e: unknown) => void }).__testDragEnd = onDragEnd;
+  DndContext: ({
+    children,
+    onDragEnd,
+  }: {
+    children: React.ReactNode;
+    onDragEnd: (e: unknown) => void;
+  }) => {
+    (
+      window as Window & { __testDragEnd?: (e: unknown) => void }
+    ).__testDragEnd = onDragEnd;
     return <>{children}</>;
   },
   closestCenter: vi.fn(),
@@ -24,7 +32,9 @@ vi.mock("@dnd-kit/sortable", () => ({
     transition: null,
     isDragging: false,
   }),
-  SortableContext: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  SortableContext: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
   sortableKeyboardCoordinates: vi.fn(),
   verticalListSortingStrategy: "vertical",
 }));
@@ -73,7 +83,9 @@ describe("BlockEditor", () => {
   describe("block list", () => {
     it("has role=list and aria-label on block list container", () => {
       render(<BlockEditor blocks={[]} onBlocksChange={vi.fn()} />);
-      expect(screen.getByRole("list", { name: "Logic blocks" })).toBeInTheDocument();
+      expect(
+        screen.getByRole("list", { name: "Logic blocks" }),
+      ).toBeInTheDocument();
     });
 
     it("renders no block cards when blocks array is empty", () => {
@@ -108,7 +120,7 @@ describe("BlockEditor", () => {
   describe("loading state", () => {
     it("shows skeleton loader when isLoading=true and blocks are empty", () => {
       const { container } = render(
-        <BlockEditor blocks={[]} onBlocksChange={vi.fn()} isLoading={true} />
+        <BlockEditor blocks={[]} onBlocksChange={vi.fn()} isLoading={true} />,
       );
       const skeletons = container.querySelectorAll(".animate-pulse");
       expect(skeletons.length).toBeGreaterThan(0);
@@ -116,7 +128,7 @@ describe("BlockEditor", () => {
 
     it("does not show skeleton loader when isLoading=false", () => {
       const { container } = render(
-        <BlockEditor blocks={[]} onBlocksChange={vi.fn()} isLoading={false} />
+        <BlockEditor blocks={[]} onBlocksChange={vi.fn()} isLoading={false} />,
       );
       expect(container.querySelector(".animate-pulse")).not.toBeInTheDocument();
     });
@@ -127,7 +139,7 @@ describe("BlockEditor", () => {
           blocks={[makeBlock()]}
           onBlocksChange={vi.fn()}
           isLoading={true}
-        />
+        />,
       );
       expect(container.querySelector(".animate-pulse")).not.toBeInTheDocument();
     });
@@ -138,7 +150,9 @@ describe("BlockEditor", () => {
       const onBlocksChange = vi.fn();
       const blocks = [makeBlock({ id: "a", enabled: true, order: 0 })];
       render(<BlockEditor blocks={blocks} onBlocksChange={onBlocksChange} />);
-      fireEvent.click(screen.getByRole("switch", { name: "Disable Test Block" }));
+      fireEvent.click(
+        screen.getByRole("switch", { name: "Disable Test Block" }),
+      );
       expect(onBlocksChange).toHaveBeenCalledWith([
         expect.objectContaining({ id: "a", enabled: false }),
       ]);
@@ -170,7 +184,9 @@ describe("BlockEditor", () => {
       render(<BlockEditor blocks={blocks} onBlocksChange={onBlocksChange} />);
 
       // Simulate drag: move "a" to position of "c"
-      const dragEnd = (window as Window & { __testDragEnd?: (e: unknown) => void }).__testDragEnd;
+      const dragEnd = (
+        window as Window & { __testDragEnd?: (e: unknown) => void }
+      ).__testDragEnd;
       dragEnd?.({ active: { id: "a" }, over: { id: "c" } });
 
       expect(onBlocksChange).toHaveBeenCalled();
@@ -186,7 +202,9 @@ describe("BlockEditor", () => {
       const blocks = [makeBlock({ id: "a", order: 0 })];
       render(<BlockEditor blocks={blocks} onBlocksChange={onBlocksChange} />);
 
-      const dragEnd = (window as Window & { __testDragEnd?: (e: unknown) => void }).__testDragEnd;
+      const dragEnd = (
+        window as Window & { __testDragEnd?: (e: unknown) => void }
+      ).__testDragEnd;
       dragEnd?.({ active: { id: "a" }, over: { id: "a" } });
 
       expect(onBlocksChange).not.toHaveBeenCalled();
@@ -197,10 +215,48 @@ describe("BlockEditor", () => {
       const blocks = [makeBlock({ id: "a", order: 0 })];
       render(<BlockEditor blocks={blocks} onBlocksChange={onBlocksChange} />);
 
-      const dragEnd = (window as Window & { __testDragEnd?: (e: unknown) => void }).__testDragEnd;
+      const dragEnd = (
+        window as Window & { __testDragEnd?: (e: unknown) => void }
+      ).__testDragEnd;
       dragEnd?.({ active: { id: "a" }, over: null });
 
       expect(onBlocksChange).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("delete interaction", () => {
+    it("clicking delete removes the block and calls onBlocksChange with filtered array", () => {
+      const onBlocksChange = vi.fn();
+      const blocks = [
+        makeBlock({ id: "a", label: "Block A", order: 0 }),
+        makeBlock({ id: "b", label: "Block B", order: 1 }),
+      ];
+      render(<BlockEditor blocks={blocks} onBlocksChange={onBlocksChange} />);
+      fireEvent.click(screen.getByRole("button", { name: "Delete Block A" }));
+      const result = onBlocksChange.mock.calls[0][0] as Block[];
+      expect(result).toHaveLength(1);
+      expect(result[0].id).toBe("b");
+    });
+
+    it("remaining blocks have correct sequential order values after deletion", () => {
+      const onBlocksChange = vi.fn();
+      const blocks = [
+        makeBlock({ id: "a", label: "Block A", order: 0 }),
+        makeBlock({ id: "b", label: "Block B", order: 1 }),
+        makeBlock({ id: "c", label: "Block C", order: 2 }),
+      ];
+      render(<BlockEditor blocks={blocks} onBlocksChange={onBlocksChange} />);
+      fireEvent.click(screen.getByRole("button", { name: "Delete Block A" }));
+      const result = onBlocksChange.mock.calls[0][0] as Block[];
+      expect(result.map((b) => b.order)).toEqual([0, 1]);
+    });
+
+    it("deleting last block results in empty array", () => {
+      const onBlocksChange = vi.fn();
+      const blocks = [makeBlock({ id: "a", label: "Block A", order: 0 })];
+      render(<BlockEditor blocks={blocks} onBlocksChange={onBlocksChange} />);
+      fireEvent.click(screen.getByRole("button", { name: "Delete Block A" }));
+      expect(onBlocksChange).toHaveBeenCalledWith([]);
     });
   });
 
@@ -212,14 +268,24 @@ describe("BlockEditor", () => {
           id: "a",
           order: 0,
           params: [
-            { key: "speed", label: "Speed", type: "number", value: 50, min: 0, max: 100, step: 1 },
+            {
+              key: "speed",
+              label: "Speed",
+              type: "number",
+              value: 50,
+              min: 0,
+              max: 100,
+              step: 1,
+            },
           ],
         }),
       ];
       render(<BlockEditor blocks={blocks} onBlocksChange={onBlocksChange} />);
 
       // Expand params
-      fireEvent.click(screen.getByRole("button", { name: "Expand parameters" }));
+      fireEvent.click(
+        screen.getByRole("button", { name: "Expand parameters" }),
+      );
       fireEvent.change(screen.getByRole("slider", { name: "Speed" }), {
         target: { value: "75" },
       });

@@ -93,6 +93,16 @@ export function BlockEditor({
     [blocks, onBlocksChange],
   );
 
+  const handleDelete = useCallback(
+    (id: string) => {
+      const updated = blocks
+        .filter((b) => b.id !== id)
+        .map((b, idx) => ({ ...b, order: idx }));
+      onBlocksChange(updated);
+    },
+    [blocks, onBlocksChange],
+  );
+
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
@@ -136,6 +146,7 @@ export function BlockEditor({
                 block={block}
                 onToggle={handleToggle}
                 onParamChange={handleParamChange}
+                onDelete={handleDelete}
               />
             ))}
           </SortableContext>
