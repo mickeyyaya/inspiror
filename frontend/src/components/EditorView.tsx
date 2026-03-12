@@ -3,6 +3,8 @@ import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { useAudio } from "../hooks/useAudio";
 import { useVoice, type VoiceLanguage } from "../hooks/useVoice";
 import { useAchievements } from "../hooks/useAchievements";
+import { useAutoFix } from "../hooks/useAutoFix";
+import { useLegacyConversion } from "../hooks/useLegacyConversion";
 import { translations } from "../i18n/translations";
 import type { ChatMessage, Project } from "../types/project";
 import type { Block } from "../types/block";
@@ -20,7 +22,6 @@ import { BadgeGallery } from "./BadgeGallery";
 import { BlockEditor } from "./blocks/BlockEditor";
 
 const COMPILE_DEBOUNCE_MS = 150;
-const SAFE_BLOCK_ID_RE = /^[a-zA-Z0-9_-]{1,64}$/;
 
 export interface EditorViewProps {
   project: Pick<Project, "id" | "messages" | "currentCode" | "blocks">;
@@ -63,14 +64,11 @@ export function EditorView({
   const [suggestionChips, setSuggestionChips] = useState(() =>
     pickRandomChips(language),
   );
-  const [isConverting, setIsConverting] = useState(false);
-
-  const isLegacyProject = useRef(project.blocks === undefined);
   const checksRef = useRef<string[]>([]);
 
+  const isLegacyProject = useRef(project.blocks === undefined);
   const inputRef = useRef<HTMLInputElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const autoFixCountRef = useRef(0);
   const confettiTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const messagesRef = useRef(messages);
   const blocksRef = useRef(blocks);
@@ -177,10 +175,31 @@ export function EditorView({
     },
   });
 
+  const { resetAutoFixCount } = useAutoFix({
+    isLoading,
+    submit,
+    playBuzzer,
+    language,
+    t,
+    blocksRef,
+    messagesRef,
+    recordDebugRef,
+    setMessages,
+  });
+
+  const { isConverting } = useLegacyConversion({
+    project,
+    language,
+    onBlocksConverted: (convertedBlocks) => {
+      setBlocks(convertedBlocks);
+      setCurrentCode(compileBlocks(convertedBlocks));
+    },
+  });
+
   const handleSend = () => {
     if (!inputValue.trim() || isLoading) return;
     stopListening();
-    autoFixCountRef.current = 0;
+    resetAutoFixCount();
     playPop();
     const newMessages: ChatMessage[] = [
       ...messages,
@@ -198,7 +217,7 @@ export function EditorView({
   const handleChipClick = (label: string) => {
     if (isLoading) return;
     stopListening();
-    autoFixCountRef.current = 0;
+    resetAutoFixCount();
     playChipClick();
     recordExplore();
     const newMessages: ChatMessage[] = [...messages, withId("user", label)];
@@ -222,7 +241,7 @@ export function EditorView({
     setCurrentCode(compileBlocks(freshBlocks));
     setInputValue("");
     setSuggestionChips(pickRandomChips(language));
-    autoFixCountRef.current = 0;
+    resetAutoFixCount();
   };
 
   // Handle block edits from the BlockEditor (param changes, reorder, toggle)
@@ -252,57 +271,6 @@ export function EditorView({
     };
   }, [blocks]);
 
-  // Auto-convert legacy projects (no blocks field) on mount
-  const hasAttemptedConversion = useRef(false);
-  useEffect(() => {
-    if (hasAttemptedConversion.current) return;
-    if (project.blocks !== undefined) return;
-    // Only convert if the project has non-trivial code (not the default starter)
-    const code = project.currentCode;
-    if (!code || code.length < 100) return;
-    hasAttemptedConversion.current = true;
-    setIsConverting(true);
-
-    const base = import.meta.env.VITE_API_URL
-      ? new URL(import.meta.env.VITE_API_URL).origin
-      : "http://localhost:3001";
-    const apiUrl = `${base}/api/convert-to-blocks`;
-
-    fetch(apiUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code, language }),
-    })
-      .then(async (res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const parsed = await res.json();
-        if (
-          parsed?.blocks &&
-          Array.isArray(parsed.blocks) &&
-          parsed.blocks.length > 0 &&
-          parsed.blocks.every(
-            (b: unknown) =>
-              b !== null &&
-              typeof b === "object" &&
-              "id" in b &&
-              "code" in b &&
-              "enabled" in b,
-          )
-        ) {
-          setBlocks(parsed.blocks as Block[]);
-          setCurrentCode(compileBlocks(parsed.blocks as Block[]));
-        }
-      })
-      .catch((err) => {
-        console.error("[EditorView] Legacy conversion failed:", err);
-        // Keep DEFAULT_BLOCKS — already initialized in state
-      })
-      .finally(() => {
-        setIsConverting(false);
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const showSuggestions =
     messages.length === 1 && messages[0]?.role === "assistant" && !isLoading;
 
@@ -315,60 +283,6 @@ export function EditorView({
   useEffect(() => {
     onUpdate(projectId, { currentCode, blocks });
   }, [currentCode, blocks, onUpdate, projectId]);
-
-  // Error handler for iframe errors — includes blockId awareness
-  useEffect(() => {
-    const handleIframeError = (event: MessageEvent) => {
-      const allowed = [window.location.origin, "null", ""];
-      if (!allowed.includes(event.origin)) return;
-      if (event.data?.type === "iframe-error") {
-        const rawMsg = String(event.data.message || "Unknown error");
-        const errorMsg = rawMsg.slice(0, 200);
-        const rawBlockId = event.data.blockId
-          ? String(event.data.blockId)
-          : null;
-        const blockId =
-          rawBlockId && SAFE_BLOCK_ID_RE.test(rawBlockId) ? rawBlockId : null;
-        console.error(
-          `[Sandbox Error]${blockId ? ` Block: ${blockId}` : ""} ${errorMsg}`,
-        );
-
-        if (isLoading) return;
-
-        if (autoFixCountRef.current >= 2) {
-          console.warn("[App] Auto-fix limit reached. Stopping infinite loop.");
-          const warningMessage = withId("assistant", t.error_autofix_limit);
-          setMessages((prev) => [...prev, warningMessage]);
-          return;
-        }
-
-        autoFixCountRef.current += 1;
-        console.log(`[App] Triggering Auto-Fix (${autoFixCountRef.current}/2)`);
-
-        playBuzzer();
-        recordDebugRef.current();
-        const oopsMessage = withId("assistant", t.error_oops);
-        const errorContext = withId(
-          "user",
-          `The block${blockId ? ` "${blockId}"` : ""} caused this error: ${errorMsg}. Please fix it.`,
-        );
-        const updatedMessages = [
-          ...messagesRef.current,
-          oopsMessage,
-          errorContext,
-        ];
-        setMessages(updatedMessages);
-        submit({
-          messages: updatedMessages,
-          currentBlocks: JSON.stringify(blocksRef.current),
-          language,
-        });
-      }
-    };
-
-    window.addEventListener("message", handleIframeError);
-    return () => window.removeEventListener("message", handleIframeError);
-  }, [isLoading, submit, playBuzzer, language, t]);
 
   const blockCount = blocks.filter((b) => b.enabled).length;
 
