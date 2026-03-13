@@ -389,3 +389,13 @@
 - **Tests:** 479 frontend + 20 backend = 499 total, all passing.
 - **Deploy:** SUCCESS (commit e547f71, pushed to main)
 - **Next cycle should consider:** Dark mode (candy dark), content moderation (after 2026-03-18), schema dedup, EditorView decomposition, "" in postMessage origins
+
+## Cycle 36 — 2026-03-13
+- **Tasks:** BlockPanelDrawer extraction + postMessage origin tightening
+- **Type:** Refactoring + Security
+- **BlockPanelDrawer:** Extracted block panel drawer from EditorView.tsx into standalone BlockPanelDrawer.tsx (~65 lines). Includes Escape key handler, inert/aria-hidden attributes, close button. 6 unit tests added. EditorView reduced by ~40 lines.
+- **postMessage origins:** Removed empty string "" from allowed origins in useAutoFix.ts. srcdoc iframes send origin "null" (string), not "". Updated all App.test.tsx MessageEvent constructors to use origin: "null".
+- **Security:** PASS
+- **Tests:** 485 frontend + 20 backend = 505 total, all passing.
+- **Deploy:** SUCCESS (commit 98b7d6b, pushed to main)
+- **Next cycle should consider:** Dark mode (candy dark), content moderation (after 2026-03-18), schema dedup, EditorView further decomposition (still ~420 lines), getWelcomeCode memoization

@@ -533,6 +533,12 @@
       "date": "2026-03-13",
       "decision": "completed",
       "cycle": 35
+    },
+    {
+      "task": "BlockPanelDrawer extraction + postMessage origin tightening",
+      "date": "2026-03-13",
+      "decision": "completed",
+      "cycle": 36
     }
   ],
   "failedApproaches": [],
