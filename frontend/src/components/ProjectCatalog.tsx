@@ -67,11 +67,14 @@ export function ProjectCatalog({
     const seconds = Math.floor((Date.now() - timestamp) / 1000);
     if (seconds < 60) return t.time_just_now;
     const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes}${t.time_min_ago}`;
+    if (minutes < 60)
+      return `${minutes} ${minutes === 1 ? t.time_min_ago : t.time_mins_ago}`;
     const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours}${t.time_hour_ago}`;
+    if (hours < 24)
+      return `${hours} ${hours === 1 ? t.time_hour_ago : t.time_hours_ago}`;
     const days = Math.floor(hours / 24);
-    if (days < 30) return `${days}${t.time_day_ago}`;
+    if (days < 30)
+      return `${days} ${days === 1 ? t.time_day_ago : t.time_days_ago}`;
     return t.last_edited;
   };
 

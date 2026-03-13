@@ -115,25 +115,46 @@ describe("ProjectCatalog", () => {
     expect(screen.getByText("Just now")).toBeInTheDocument();
   });
 
-  it("shows minutes ago", () => {
+  it("shows minutes ago (plural)", () => {
     renderCatalog({
       projects: [makeProject({ updatedAt: Date.now() - 5 * 60_000 })],
     });
-    expect(screen.getByText(/5/)).toBeInTheDocument();
+    expect(screen.getByText("5 mins ago")).toBeInTheDocument();
   });
 
-  it("shows hours ago", () => {
+  it("shows minute ago (singular)", () => {
+    renderCatalog({
+      projects: [makeProject({ updatedAt: Date.now() - 1 * 60_000 })],
+    });
+    expect(screen.getByText("1 min ago")).toBeInTheDocument();
+  });
+
+  it("shows hours ago (plural)", () => {
     renderCatalog({
       projects: [makeProject({ updatedAt: Date.now() - 3 * 3600_000 })],
     });
-    expect(screen.getByText(/3/)).toBeInTheDocument();
+    expect(screen.getByText("3 hours ago")).toBeInTheDocument();
   });
 
-  it("shows days ago", () => {
+  it("shows hour ago (singular)", () => {
+    renderCatalog({
+      projects: [makeProject({ updatedAt: Date.now() - 1 * 3600_000 })],
+    });
+    expect(screen.getByText("1 hour ago")).toBeInTheDocument();
+  });
+
+  it("shows days ago (plural)", () => {
     renderCatalog({
       projects: [makeProject({ updatedAt: Date.now() - 5 * 86400_000 })],
     });
-    expect(screen.getByText(/5/)).toBeInTheDocument();
+    expect(screen.getByText("5 days ago")).toBeInTheDocument();
+  });
+
+  it("shows day ago (singular)", () => {
+    renderCatalog({
+      projects: [makeProject({ updatedAt: Date.now() - 1 * 86400_000 })],
+    });
+    expect(screen.getByText("1 day ago")).toBeInTheDocument();
   });
 
   it("shows last edited for 30+ days", () => {

@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">91.66% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>12/24</span>
+                <span class='fraction'>22/24</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">45.83% </span>
+                <span class="strong">91.66% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>11/24</span>
+                <span class='fraction'>22/24</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">40% </span>
+                <span class="strong">80% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>4/10</span>
+                <span class='fraction'>8/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">52.38% </span>
+                <span class="strong">95.23% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>11/21</span>
+                <span class='fraction'>20/21</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -316,42 +316,42 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">137x</span>
+<span class="cline-any cline-yes">166x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">137x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">137x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">137x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">166x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">166x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">137x</span>
-<span class="cline-any cline-yes">137x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">137x</span>
-<span class="cline-any cline-yes">44x</span>
-<span class="cline-any cline-yes">44x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">137x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">166x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">137x</span>
+<span class="cline-any cline-yes">166x</span>
+<span class="cline-any cline-yes">166x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">166x</span>
+<span class="cline-any cline-yes">69x</span>
+<span class="cline-any cline-yes">69x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">166x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">166x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -512,14 +512,14 @@ export function PreviewPanel({
 }: PreviewPanelProps) {
   const srcDoc = useMemo(() =&gt; injectErrorCatcher(currentCode), [currentCode]);
 &nbsp;
-  const handleDownload = useCallback(<span class="fstat-no" title="function not covered" >() =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    downloadHtml(currentCode, projectTitle ?? "");</span>
+  const handleDownload = useCallback(() =&gt; {
+    downloadHtml(currentCode, projectTitle ?? "");
   }, [currentCode, projectTitle]);
 &nbsp;
   const showShareBtn = canWebShare();
 &nbsp;
-  const handleShare = useCallback(<span class="fstat-no" title="function not covered" >() =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    shareProject(currentCode, projectTitle ?? "My Project").catch(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+  const handleShare = useCallback(() =&gt; {
+    shareProject(currentCode, projectTitle ?? <span class="branch-1 cbranch-no" title="branch not covered" >"My Project")</span>.catch(<span class="fstat-no" title="function not covered" >() =&gt; {</span>
       // Non-abort errors — silently ignore in UI
     });
   }, [currentCode, projectTitle]);
@@ -529,18 +529,18 @@ export function PreviewPanel({
 &nbsp;
   useEffect(() =&gt; {
     return () =&gt; {
-      <span class="missing-if-branch" title="if path not taken" >I</span>if (copiedTimerRef.current) <span class="cstat-no" title="statement not covered" >clearTimeout(copiedTimerRef.current);</span>
+      if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
     };
   }, []);
 &nbsp;
-  const handleCopy = useCallback(<span class="fstat-no" title="function not covered" >async () =&gt; {</span>
-    const ok = <span class="cstat-no" title="statement not covered" >await copyHtmlToClipboard(currentCode);</span>
-<span class="cstat-no" title="statement not covered" >    if (ok) {</span>
-<span class="cstat-no" title="statement not covered" >      setCopied(true);</span>
-<span class="cstat-no" title="statement not covered" >      if (copiedTimerRef.current) <span class="cstat-no" title="statement not covered" >clearTimeout(copiedTimerRef.current);</span></span>
-<span class="cstat-no" title="statement not covered" >      copiedTimerRef.current = setTimeout(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
-<span class="cstat-no" title="statement not covered" >        setCopied(false);</span>
-<span class="cstat-no" title="statement not covered" >        copiedTimerRef.current = null;</span>
+  const handleCopy = useCallback(async () =&gt; {
+    const ok = await copyHtmlToClipboard(currentCode);
+    if (ok) {
+      setCopied(true);
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (copiedTimerRef.current) <span class="cstat-no" title="statement not covered" >clearTimeout(copiedTimerRef.current);</span>
+      copiedTimerRef.current = setTimeout(() =&gt; {
+        setCopied(false);
+        copiedTimerRef.current = null;
       }, 2000);
     }
   }, [currentCode]);
@@ -590,7 +590,7 @@ export function PreviewPanel({
         &lt;/button&gt;
 &nbsp;
         {showShareBtn &amp;&amp; (
-<span class="branch-1 cbranch-no" title="branch not covered" >          &lt;button</span>
+          &lt;button
             onClick={handleShare}
             disabled={isLoading}
             className="bg-[var(--color-candy-blue,#89CFF0)] border-4 border-[#222] text-[#222] px-4 py-2 rounded-full shadow-[4px_4px_0_#222] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none transition-all flex items-center gap-2 btn-squish hover-wiggle font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
@@ -610,12 +610,12 @@ export function PreviewPanel({
           data-testid="copy-html-btn"
         &gt;
           {copied ? (
-<span class="branch-0 cbranch-no" title="branch not covered" >            &lt;Check size={20} strokeWidth={2.5} /&gt;</span>
+            &lt;Check size={20} strokeWidth={2.5} /&gt;
           ) : (
             &lt;Copy size={20} strokeWidth={2.5} /&gt;
           )}
           &lt;span className="hidden sm:inline"&gt;
-            {copied ? <span class="branch-0 cbranch-no" title="branch not covered" >t.copied_feedback : t</span>.copy_html}
+            {copied ? t.copied_feedback : t.copy_html}
           &lt;/span&gt;
         &lt;/button&gt;
       &lt;/div&gt;
@@ -631,7 +631,7 @@ export function PreviewPanel({
           &lt;span className="hidden sm:inline"&gt;
             {blockCount !== undefined
               ? `${blockCount} ${t.blocks_count}`
-              : <span class="branch-1 cbranch-no" title="branch not covered" >t.aria_look_inside}</span>
+              : t.aria_look_inside}
           &lt;/span&gt;
         &lt;/button&gt;
       &lt;/div&gt;
@@ -652,7 +652,7 @@ export function PreviewPanel({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-03-13T10:09:59.967Z
+                at 2026-03-13T10:38:29.538Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

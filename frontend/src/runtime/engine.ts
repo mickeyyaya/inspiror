@@ -46,6 +46,7 @@ export const RUNTIME_ENGINE = `
   var bgGradient = null;
 
   // --- Particle system ---
+  var MAX_PARTICLES = 500;
   var particles = [];
 
   // --- Tween system ---
@@ -455,6 +456,7 @@ export const RUNTIME_ENGINE = `
       var count = o.count || 20;
       var spread = o.spread || 6;
       for (var i = 0; i < count; i++) {
+        if (particles.length >= MAX_PARTICLES) break;
         var angle = (Math.PI * 2 / count) * i + (Math.random() - 0.5) * 0.5;
         var speed = (Math.random() * 0.5 + 0.5) * spread;
         particles.push(new Particle(x, y, {
@@ -477,6 +479,7 @@ export const RUNTIME_ENGINE = `
       var o = opts || {};
       var count = o.count || 5;
       for (var i = 0; i < count; i++) {
+        if (particles.length >= MAX_PARTICLES) break;
         particles.push(new Particle(x, y, {
           vx: (Math.random() - 0.5) * 1.5,
           vy: (Math.random() - 0.5) * 1.5,
