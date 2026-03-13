@@ -5,6 +5,7 @@ export interface Achievement {
   icon: string;
   threshold: number;
   type: "builds" | "debugs" | "remixes" | "explores";
+  hidden?: boolean;
 }
 
 export interface AchievementState {
@@ -88,6 +89,33 @@ export const ACHIEVEMENTS: Achievement[] = [
     icon: "🧠",
     threshold: 3,
     type: "explores",
+  },
+  {
+    id: "remix-master",
+    title: "Remix Master",
+    description: "Edit blocks 10 times — you're a tinkerer!",
+    icon: "🎨",
+    threshold: 10,
+    type: "remixes",
+    hidden: true,
+  },
+  {
+    id: "explorer-pro",
+    title: "Explorer Pro",
+    description: "Try 10 suggestion chips — so curious!",
+    icon: "🚀",
+    threshold: 10,
+    type: "explores",
+    hidden: true,
+  },
+  {
+    id: "bug-hunter",
+    title: "Bug Hunter",
+    description: "Fix 10 bugs — nothing stops you!",
+    icon: "🕵️",
+    threshold: 10,
+    type: "debugs",
+    hidden: true,
   },
 ];
 

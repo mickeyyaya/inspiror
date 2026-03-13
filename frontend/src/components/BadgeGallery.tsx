@@ -116,6 +116,7 @@ export function BadgeGallery({
         <div className="grid grid-cols-2 gap-3 mb-6">
           {ACHIEVEMENTS.map((a) => {
             const unlocked = unlockedIds.includes(a.id);
+            const isHiddenLocked = a.hidden && !unlocked;
             return (
               <div
                 key={a.id}
@@ -124,12 +125,17 @@ export function BadgeGallery({
                     ? "bg-white shadow-[3px_3px_0_#222]"
                     : "bg-gray-100 opacity-50"
                 }`}
+                data-testid={isHiddenLocked ? "hidden-badge" : undefined}
               >
                 <div className={`text-3xl mb-1 ${unlocked ? "" : "grayscale"}`}>
-                  {a.icon}
+                  {isHiddenLocked ? "❓" : a.icon}
                 </div>
-                <div className="text-xs font-bold text-[#222]">{a.title}</div>
-                <div className="text-[10px] text-gray-500">{a.description}</div>
+                <div className="text-xs font-bold text-[#222]">
+                  {isHiddenLocked ? "???" : a.title}
+                </div>
+                <div className="text-[10px] text-gray-500">
+                  {isHiddenLocked ? "Keep playing to discover!" : a.description}
+                </div>
               </div>
             );
           })}

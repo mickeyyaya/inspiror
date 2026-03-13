@@ -82,4 +82,16 @@ describe("BadgeGallery", () => {
     expect(screen.getByText("5")).toBeInTheDocument();
     expect(screen.getByText("2")).toBeInTheDocument();
   });
+
+  it("shows hidden achievements as ??? when locked", () => {
+    render(<BadgeGallery {...defaultProps} unlockedIds={[]} />);
+    const hiddenBadges = screen.getAllByTestId("hidden-badge");
+    expect(hiddenBadges.length).toBeGreaterThanOrEqual(3);
+    expect(screen.getAllByText("???").length).toBeGreaterThanOrEqual(3);
+  });
+
+  it("reveals hidden achievement when unlocked", () => {
+    render(<BadgeGallery {...defaultProps} unlockedIds={["remix-master"]} />);
+    expect(screen.getByText("Remix Master")).toBeInTheDocument();
+  });
 });
