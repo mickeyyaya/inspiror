@@ -319,3 +319,12 @@
 - **Tests:** 415 frontend. All pass.
 - **Deploy:** SUCCESS (commit 3afd050, pushed to main)
 - **Next cycle should consider:** Service worker for offline, dark mode, schema dedup, Builder Buddy i18n, PreviewPanel tests
+
+## Cycle 29 — 2026-03-13
+- **Tasks:** i18n Builder Buddy name in ChatHeader
+- **Type:** i18n fix
+- **Fix:** Replaced hardcoded "Builder Buddy" string in ChatHeader.tsx with t.buddy_name. Added buddy_name key to all 3 locales: EN "Builder Buddy", zh-TW "小幫手", zh-CN "小帮手". Previously zh-TW/zh-CN users saw English text in the header.
+- **Security:** PASS (static string replacement only)
+- **Tests:** 415 frontend. All pass.
+- **Deploy:** SUCCESS (commit ea6a4d0, pushed to main)
+- **Next cycle should consider:** Service worker for offline caching, dark mode, schema dedup (frontend/backend Zod schemas), PreviewPanel/MessageInput unit tests, content moderation (after 2026-03-18)
