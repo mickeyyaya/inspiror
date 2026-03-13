@@ -482,8 +482,11 @@ describe("Inspiror App", () => {
 
     it("shows animated buddy avatar with bounce animation", () => {
       render(<App />);
-      const avatar = document.querySelector(".buddy-avatar");
+      // The greeting ends with "?", so buddy enters curious state (buddy-avatar-curious class).
+      // We verify the avatar element exists and has an animation class applied.
+      const avatar = screen.getByTestId("buddy-avatar");
       expect(avatar).toBeInTheDocument();
+      expect(avatar.className).toMatch(/buddy-avatar/);
     });
 
     it("switches buddy avatar to thinking animation during loading", () => {

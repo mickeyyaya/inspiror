@@ -101,6 +101,62 @@ code {
   filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.1));
 }
 
+/* === Buddy Emotion Animations === */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes buddy-proud {
+    0%   { transform: translateY(0) scale(1); }
+    20%  { transform: translateY(-10px) scale(1.15); }
+    35%  { transform: translateY(0) scale(1); }
+    55%  { transform: translateY(-6px) scale(1.1); }
+    70%  { transform: translateY(0) scale(1); }
+    85%  { transform: scale(1.05); }
+    100% { transform: translateY(0) scale(1); }
+  }
+
+  @keyframes buddy-worried {
+    0%   { transform: translateX(0); }
+    15%  { transform: translateX(-6px); }
+    30%  { transform: translateX(6px); }
+    45%  { transform: translateX(-6px); }
+    60%  { transform: translateX(6px); }
+    75%  { transform: translateX(-4px); }
+    88%  { transform: translateX(4px); }
+    100% { transform: translateX(0); }
+  }
+
+  @keyframes buddy-curious {
+    0%, 100% { transform: rotate(0deg); }
+    30%      { transform: rotate(15deg); }
+    70%      { transform: rotate(-15deg); }
+  }
+
+  .buddy-avatar-proud {
+    display: inline-block;
+    animation: buddy-proud 0.6s ease-in-out 1 forwards;
+    filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.1));
+  }
+
+  .buddy-avatar-worried {
+    display: inline-block;
+    animation: buddy-worried 0.5s ease-in-out 1 forwards;
+    filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.1));
+  }
+
+  .buddy-avatar-curious {
+    display: inline-block;
+    animation: buddy-curious 1.2s ease-in-out infinite;
+    filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.1));
+  }
+}
+
+/* Fallback classes when reduced motion is preferred */
+.buddy-avatar-proud,
+.buddy-avatar-worried,
+.buddy-avatar-curious {
+  display: inline-block;
+  filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.1));
+}
+
 /* === Staggered Chip Entrance === */
 @keyframes chip-pop-in {
   0% { transform: scale(0) rotate(-10deg); opacity: 0; }

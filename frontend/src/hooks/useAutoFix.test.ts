@@ -25,7 +25,9 @@ describe("useAutoFix", () => {
   const submitMock = vi.fn();
   const playBuzzerMock = vi.fn();
   const recordDebugRefMock = { current: vi.fn() };
-  const messagesRef = { current: [] as { id: string; role: string; content: string }[] };
+  const messagesRef = {
+    current: [] as { id: string; role: string; content: string }[],
+  };
   const blocksRef = { current: [] as unknown[] };
   const setMessagesMock = vi.fn();
 
@@ -148,6 +150,47 @@ describe("useAutoFix", () => {
     });
 
     expect(submitMock).not.toHaveBeenCalled();
+  });
+
+  it("calls onError callback when auto-fix triggers", () => {
+    const onError = vi.fn();
+    renderHook(() => useAutoFix({ ...baseProps, onError }));
+
+    act(() => {
+      window.dispatchEvent(makeIframeErrorEvent());
+    });
+
+    expect(onError).toHaveBeenCalledTimes(1);
+    expect(playBuzzerMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not call onError at auto-fix limit", () => {
+    const onError = vi.fn();
+    renderHook(() => useAutoFix({ ...baseProps, onError }));
+
+    act(() => {
+      window.dispatchEvent(makeIframeErrorEvent());
+    });
+    act(() => {
+      window.dispatchEvent(makeIframeErrorEvent());
+    });
+    // Third hits the limit
+    act(() => {
+      window.dispatchEvent(makeIframeErrorEvent());
+    });
+
+    expect(onError).toHaveBeenCalledTimes(2);
+  });
+
+  it("works without onError (optional prop — no error thrown)", () => {
+    // Omitting onError should not cause any errors
+    expect(() => {
+      const { unmount } = renderHook(() => useAutoFix(baseProps));
+      act(() => {
+        window.dispatchEvent(makeIframeErrorEvent());
+      });
+      unmount();
+    }).not.toThrow();
   });
 
   it("resets counter when resetAutoFixCount is called", () => {

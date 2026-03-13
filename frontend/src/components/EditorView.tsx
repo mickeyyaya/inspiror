@@ -13,7 +13,7 @@ import { getCodingFacts } from "../constants/codingFacts";
 import { compileBlocks } from "../compiler/compileBlocks";
 import { DEFAULT_BLOCKS } from "../constants/defaultBlocks";
 import { ConfettiBurst } from "./ConfettiBurst";
-import { ChatHeader } from "./ChatHeader";
+import { ChatHeader, type BuddyEmotion } from "./ChatHeader";
 import { MessageList } from "./MessageList";
 import { MessageInput } from "./MessageInput";
 import { PreviewPanel } from "./PreviewPanel";
@@ -64,6 +64,8 @@ export function EditorView({
   const [isChatVisible, setIsChatVisible] = useState(true);
   const [isBlockPanelOpen, setIsBlockPanelOpen] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [buddyEmotion, setBuddyEmotion] = useState<BuddyEmotion>("idle");
+  const emotionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [suggestionChips, setSuggestionChips] = useState(() =>
     pickRandomChips(language),
   );
@@ -79,6 +81,28 @@ export function EditorView({
   useEffect(() => {
     messagesRef.current = messages;
   }, [messages]);
+
+  // Wire "curious" emotion: when the last assistant message ends with "?"
+  useEffect(() => {
+    const lastMsg = messages[messages.length - 1];
+    if (
+      lastMsg?.role === "assistant" &&
+      lastMsg.content.trimEnd().endsWith("?")
+    ) {
+      setBuddyEmotion("curious");
+    } else if (buddyEmotion === "curious") {
+      setBuddyEmotion("idle");
+    }
+    // buddyEmotion intentionally excluded — we only read it to clear "curious",
+    // including it would cause an infinite re-render loop.
+  }, [messages]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Cleanup emotion timer on unmount
+  useEffect(() => {
+    return () => {
+      if (emotionTimerRef.current) clearTimeout(emotionTimerRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     blocksRef.current = blocks;
@@ -137,6 +161,20 @@ export function EditorView({
     }
   }, [isListening, transcript]);
 
+  const triggerEmotion = useCallback(
+    (emotion: BuddyEmotion, durationMs: number) => {
+      if (emotionTimerRef.current) {
+        clearTimeout(emotionTimerRef.current);
+      }
+      setBuddyEmotion(emotion);
+      emotionTimerRef.current = setTimeout(() => {
+        setBuddyEmotion("idle");
+        emotionTimerRef.current = null;
+      }, durationMs);
+    },
+    [],
+  );
+
   const { object, submit, isLoading } = useObject({
     api: import.meta.env.VITE_API_URL ?? "http://localhost:3001/api/generate",
     schema: generationSchema,
@@ -171,6 +209,7 @@ export function EditorView({
         setShowConfetti(false);
         confettiTimerRef.current = null;
       }, 2500);
+      triggerEmotion("proud", 2500);
     },
     onError(err) {
       console.error("[UI] Stream error:", err);
@@ -188,6 +227,10 @@ export function EditorView({
     messagesRef,
     recordDebugRef,
     setMessages,
+    onError: useCallback(
+      () => triggerEmotion("worried", 2000),
+      [triggerEmotion],
+    ),
   });
 
   const { isConverting } = useLegacyConversion({
@@ -315,6 +358,7 @@ export function EditorView({
             isAutoSpeakEnabled={isAutoSpeakEnabled}
             language={language}
             buddyEmoji={selectedAvatar.emoji}
+            emotion={buddyEmotion}
             onBack={onBack}
             onToggleLanguage={onToggleLanguage}
             onToggleAutoSpeak={toggleAutoSpeak}

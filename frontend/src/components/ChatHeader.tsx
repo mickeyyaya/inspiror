@@ -10,12 +10,36 @@ import {
 } from "lucide-react";
 import type { VoiceLanguage } from "../hooks/useVoice";
 
+export type BuddyEmotion =
+  | "idle"
+  | "thinking"
+  | "proud"
+  | "worried"
+  | "curious";
+
+const EMOTION_OVERLAY: Record<BuddyEmotion, string | null> = {
+  idle: null,
+  thinking: null,
+  proud: "⭐",
+  worried: "💦",
+  curious: "❓",
+};
+
+const EMOTION_CLASS: Record<BuddyEmotion, string> = {
+  idle: "buddy-avatar",
+  thinking: "buddy-avatar-thinking",
+  proud: "buddy-avatar-proud",
+  worried: "buddy-avatar-worried",
+  curious: "buddy-avatar-curious",
+};
+
 interface ChatHeaderProps {
   isLoading: boolean;
   isMuted: boolean;
   isAutoSpeakEnabled: boolean;
   language: VoiceLanguage;
   buddyEmoji: string;
+  emotion?: BuddyEmotion;
   onBack: () => void;
   onToggleLanguage: () => void;
   onToggleAutoSpeak: () => void;
@@ -42,6 +66,7 @@ export function ChatHeader({
   isAutoSpeakEnabled,
   language,
   buddyEmoji,
+  emotion = "idle",
   onBack,
   onToggleLanguage,
   onToggleAutoSpeak,
@@ -51,6 +76,9 @@ export function ChatHeader({
   onOpenBadges,
   t,
 }: ChatHeaderProps) {
+  const resolvedEmotion: BuddyEmotion = isLoading ? "thinking" : emotion;
+  const overlayEmoji = EMOTION_OVERLAY[resolvedEmotion];
+
   return (
     <div className="bg-[var(--color-candy-blue)] text-[#222] p-4 flex justify-between items-center border-b-4 border-[#222] z-10 shadow-[0_4px_0_#222]">
       <div className="flex items-center gap-3">
@@ -63,9 +91,25 @@ export function ChatHeader({
           <ArrowLeft size={22} className="text-[#222]" strokeWidth={3} />
         </button>
         <span
-          className={`text-4xl ${isLoading ? "buddy-avatar-thinking" : "buddy-avatar"}`}
+          className="relative inline-block"
+          data-testid="buddy-avatar-wrapper"
         >
-          {buddyEmoji}
+          <span
+            className={`text-4xl ${EMOTION_CLASS[resolvedEmotion]}`}
+            data-testid="buddy-avatar"
+            data-emotion={resolvedEmotion}
+          >
+            {buddyEmoji}
+          </span>
+          {overlayEmoji !== null && (
+            <span
+              className="absolute -top-2 -right-2 text-lg leading-none"
+              aria-hidden="true"
+              data-testid="buddy-emotion-overlay"
+            >
+              {overlayEmoji}
+            </span>
+          )}
         </span>
         <span
           className="text-2xl tracking-wide font-extrabold text-[#222]"

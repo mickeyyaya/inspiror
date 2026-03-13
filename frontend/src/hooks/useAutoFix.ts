@@ -24,6 +24,7 @@ export interface UseAutoFixParams {
   messagesRef: React.MutableRefObject<ChatMessage[]>;
   recordDebugRef: React.MutableRefObject<() => void>;
   setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
+  onError?: () => void;
 }
 
 export interface UseAutoFixReturn {
@@ -40,6 +41,7 @@ export function useAutoFix({
   messagesRef,
   recordDebugRef,
   setMessages,
+  onError,
 }: UseAutoFixParams): UseAutoFixReturn {
   const autoFixCountRef = useRef(0);
 
@@ -75,6 +77,11 @@ export function useAutoFix({
     setMessagesRef.current = setMessages;
   }, [setMessages]);
 
+  const onErrorRef = useRef(onError);
+  useEffect(() => {
+    onErrorRef.current = onError;
+  }, [onError]);
+
   useEffect(() => {
     const handleIframeError = (event: MessageEvent) => {
       const allowed = [window.location.origin, "null", ""];
@@ -95,14 +102,20 @@ export function useAutoFix({
 
       if (autoFixCountRef.current >= AUTO_FIX_LIMIT) {
         console.warn("[App] Auto-fix limit reached. Stopping infinite loop.");
-        const warningMessage = withId("assistant", tRef.current.error_autofix_limit);
+        const warningMessage = withId(
+          "assistant",
+          tRef.current.error_autofix_limit,
+        );
         setMessagesRef.current((prev) => [...prev, warningMessage]);
         return;
       }
 
       autoFixCountRef.current += 1;
-      console.log(`[App] Triggering Auto-Fix (${autoFixCountRef.current}/${AUTO_FIX_LIMIT})`);
+      console.log(
+        `[App] Triggering Auto-Fix (${autoFixCountRef.current}/${AUTO_FIX_LIMIT})`,
+      );
 
+      onErrorRef.current?.();
       playBuzzerRef.current();
       recordDebugRef.current();
       const oopsMessage = withId("assistant", tRef.current.error_oops);
