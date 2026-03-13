@@ -3,6 +3,7 @@ import type { Project, ChatMessage } from "../types/project";
 import { translations } from "../i18n/translations";
 import { DEFAULT_BLOCKS } from "../constants/defaultBlocks";
 import { compileBlocks } from "../compiler/compileBlocks";
+import { safeSave } from "../utils/safeSave";
 import type { VoiceLanguage } from "./useVoice";
 
 const STORAGE_KEYS = {
@@ -221,12 +222,16 @@ export function useProjects(language: VoiceLanguage) {
     ? (projects.find((p) => p.id === currentId) ?? null)
     : null;
 
+  const [saveError, setSaveError] = useState<string | null>(null);
+
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.projects, JSON.stringify(projects));
+    const ok = safeSave(STORAGE_KEYS.projects, JSON.stringify(projects));
     if (currentId) {
-      localStorage.setItem(STORAGE_KEYS.currentProjectId, currentId);
+      const idOk = safeSave(STORAGE_KEYS.currentProjectId, currentId);
+      setSaveError(ok && idOk ? null : "storage_full");
     } else {
       localStorage.removeItem(STORAGE_KEYS.currentProjectId);
+      setSaveError(ok ? null : "storage_full");
     }
   }, [projects, currentId]);
 
@@ -324,5 +329,6 @@ export function useProjects(language: VoiceLanguage) {
     updateCurrentProject,
     resetCurrentProject,
     DEFAULT_CODE,
+    saveError,
   };
 }

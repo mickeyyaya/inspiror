@@ -60,6 +60,9 @@ export interface TranslationKeys {
   aria_close_gallery: string;
   blocks_count: string;
   more_ideas: string;
+  download_project: string;
+  aria_download: string;
+  save_error: string;
 }
 
 export const translations: Record<Language, TranslationKeys> = {
@@ -125,6 +128,9 @@ export const translations: Record<Language, TranslationKeys> = {
     aria_close_gallery: "Close gallery",
     blocks_count: "Blocks",
     more_ideas: "More ideas",
+    download_project: "Download",
+    aria_download: "Download as HTML file",
+    save_error: "Could not save — your storage is full!",
   },
   "zh-TW": {
     greeting: "嗨！我是你的建築夥伴。今天你想創造什麼呢？",
@@ -187,6 +193,9 @@ export const translations: Record<Language, TranslationKeys> = {
     aria_close_gallery: "關閉徽章",
     blocks_count: "積木",
     more_ideas: "更多點子",
+    download_project: "下載",
+    aria_download: "下載為 HTML 檔案",
+    save_error: "無法儲存 — 你的儲存空間已滿！",
   },
   "zh-CN": {
     greeting: "嗨！我是你的建筑夥伴。今天你想创造什么呢？",
@@ -249,5 +258,8 @@ export const translations: Record<Language, TranslationKeys> = {
     aria_close_gallery: "关闭徽章",
     blocks_count: "积木",
     more_ideas: "更多点子",
+    download_project: "下载",
+    aria_download: "下载为 HTML 文件",
+    save_error: "无法保存 — 你的存储空间已满！",
   },
 };

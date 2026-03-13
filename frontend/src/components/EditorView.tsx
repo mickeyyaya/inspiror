@@ -24,7 +24,10 @@ import { BlockEditor } from "./blocks/BlockEditor";
 const COMPILE_DEBOUNCE_MS = 150;
 
 export interface EditorViewProps {
-  project: Pick<Project, "id" | "messages" | "currentCode" | "blocks">;
+  project: Pick<
+    Project,
+    "id" | "title" | "messages" | "currentCode" | "blocks"
+  >;
   onUpdate: (
     projectId: string,
     updates: Partial<Pick<Project, "messages" | "currentCode" | "blocks">>,
@@ -358,6 +361,7 @@ export function EditorView({
         iframeRef={iframeRef}
         codingFacts={codingFacts}
         blockCount={blockCount}
+        projectTitle={project.title}
         t={t}
         convertingText={isConverting ? t.converting_blocks : undefined}
       />

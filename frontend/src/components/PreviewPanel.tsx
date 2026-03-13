@@ -1,6 +1,7 @@
-import { useMemo } from "react";
-import { MessageCircle, Blocks } from "lucide-react";
+import { useMemo, useCallback } from "react";
+import { MessageCircle, Blocks, Download } from "lucide-react";
 import { injectErrorCatcher } from "../utils/injectErrorCatcher";
+import { downloadHtml } from "../utils/downloadHtml";
 import { BuildingOverlay } from "./BuildingOverlay";
 import { BackgroundBubbles } from "./BackgroundBubbles";
 
@@ -14,12 +15,15 @@ interface PreviewPanelProps {
   codingFacts: string[];
   blockCount?: number;
   convertingText?: string;
+  projectTitle?: string;
   t: {
     aria_show_chat: string;
     aria_look_inside: string;
     overlay_building: string;
     overlay_did_you_know: string;
     blocks_count: string;
+    download_project: string;
+    aria_download: string;
   };
 }
 
@@ -33,9 +37,14 @@ export function PreviewPanel({
   codingFacts,
   blockCount,
   convertingText,
+  projectTitle,
   t,
 }: PreviewPanelProps) {
   const srcDoc = useMemo(() => injectErrorCatcher(currentCode), [currentCode]);
+
+  const handleDownload = useCallback(() => {
+    downloadHtml(currentCode, projectTitle ?? "");
+  }, [currentCode, projectTitle]);
 
   return (
     <div
@@ -68,6 +77,18 @@ export function PreviewPanel({
           }`}
           sandbox="allow-scripts"
         />
+      </div>
+
+      <div className="absolute bottom-4 left-4 sm:bottom-8 sm:left-8 z-30">
+        <button
+          onClick={handleDownload}
+          disabled={isLoading}
+          className="bg-[var(--color-candy-green,#a8e6cf)] border-4 border-[#222] text-[#222] px-4 py-2 rounded-full shadow-[4px_4px_0_#222] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none transition-all flex items-center gap-2 btn-squish hover-wiggle font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          aria-label={t.aria_download}
+        >
+          <Download size={20} strokeWidth={2.5} />
+          <span className="hidden sm:inline">{t.download_project}</span>
+        </button>
       </div>
 
       <div className="absolute bottom-4 right-4 sm:bottom-8 sm:right-8 z-30">

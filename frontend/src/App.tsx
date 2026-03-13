@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useProjects } from "./hooks/useProjects";
 import type { VoiceLanguage } from "./hooks/useVoice";
+import { translations } from "./i18n/translations";
 import { ProjectCatalog } from "./components/ProjectCatalog";
 import { EditorView } from "./components/EditorView";
 import "./index.css";
@@ -17,6 +18,7 @@ function App() {
     goToCatalog,
     updateProject,
     resetCurrentProject,
+    saveError,
   } = useProjects(language);
 
   const toggleLanguage = () => {
@@ -40,16 +42,28 @@ function App() {
     );
   }
 
+  const t = translations[language];
+
   return (
-    <EditorView
-      key={currentProject.id}
-      project={currentProject}
-      onUpdate={updateProject}
-      onReset={resetCurrentProject}
-      onBack={goToCatalog}
-      language={language}
-      onToggleLanguage={toggleLanguage}
-    />
+    <>
+      {saveError && (
+        <div
+          role="alert"
+          className="fixed top-0 left-0 right-0 z-50 bg-[#ff6b6b] text-white text-center py-2 px-4 font-bold text-sm border-b-4 border-[#222]"
+        >
+          {t.save_error}
+        </div>
+      )}
+      <EditorView
+        key={currentProject.id}
+        project={currentProject}
+        onUpdate={updateProject}
+        onReset={resetCurrentProject}
+        onBack={goToCatalog}
+        language={language}
+        onToggleLanguage={toggleLanguage}
+      />
+    </>
   );
 }
 

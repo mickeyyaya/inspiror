@@ -6,6 +6,7 @@ import {
   type Achievement,
   type AchievementState,
 } from "../types/achievements";
+import { safeSave } from "../utils/safeSave";
 
 const STORAGE_KEY = "inspiror-achievements";
 const AVATAR_KEY = "inspiror-selected-avatar";
@@ -26,7 +27,7 @@ function loadState(): AchievementState {
 }
 
 function saveState(state: AchievementState): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  safeSave(STORAGE_KEY, JSON.stringify(state));
 }
 
 function loadSelectedAvatar(): string {
@@ -41,7 +42,8 @@ export function useAchievements() {
   const pendingUnlocksRef = useRef<Achievement[]>([]);
 
   const showNextUnlock = useCallback(() => {
-    const next = pendingUnlocksRef.current.shift();
+    const [next, ...rest] = pendingUnlocksRef.current;
+    pendingUnlocksRef.current = rest;
     setNewlyUnlocked(next ?? null);
   }, []);
 
@@ -105,7 +107,7 @@ export function useAchievements() {
       const avatar = BUDDY_AVATARS.find((a) => a.id === avatarId);
       if (avatar && state.stats.builds >= avatar.requiredBuilds) {
         setSelectedAvatarId(avatarId);
-        localStorage.setItem(AVATAR_KEY, avatarId);
+        safeSave(AVATAR_KEY, avatarId);
       }
     },
     [state.stats.builds],
