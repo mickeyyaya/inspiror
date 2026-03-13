@@ -16,6 +16,7 @@ const defaultProps = {
   onChipClick: () => {},
   thinkingText: "Thinking",
   magicButtonPrompt: "Try a Magic Button!",
+  moreIdeasText: "More ideas",
 };
 
 describe("MessageList", () => {

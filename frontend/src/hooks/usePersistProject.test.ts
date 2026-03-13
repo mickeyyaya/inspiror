@@ -22,7 +22,11 @@ describe("usePersistProject", () => {
   const block = (type: string): Block => ({
     id: `b-${type}`,
     type: type as Block["type"],
-    params: {},
+    label: type,
+    emoji: "🔲",
+    code: `// ${type}`,
+    order: 0,
+    params: [],
     enabled: true,
   });
 

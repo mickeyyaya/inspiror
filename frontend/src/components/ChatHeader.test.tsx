@@ -12,6 +12,7 @@ const defaultT = {
   aria_reset: "Reset",
   aria_hide_chat: "Hide Chat",
   badge_title: "Badges",
+  buddy_name: "Builder Buddy",
 };
 
 const defaultProps = {
@@ -93,9 +94,17 @@ describe("ChatHeader emotion prop", () => {
 
 describe("BuddyEmotion type", () => {
   it("accepts all valid emotion values without TypeScript error", () => {
-    const emotions: BuddyEmotion[] = ["idle", "thinking", "proud", "worried", "curious"];
+    const emotions: BuddyEmotion[] = [
+      "idle",
+      "thinking",
+      "proud",
+      "worried",
+      "curious",
+    ];
     emotions.forEach((emotion) => {
-      const { unmount } = render(<ChatHeader {...defaultProps} emotion={emotion} />);
+      const { unmount } = render(
+        <ChatHeader {...defaultProps} emotion={emotion} />,
+      );
       const avatar = screen.getByTestId("buddy-avatar");
       expect(avatar.getAttribute("data-emotion")).toBe(emotion);
       unmount();
