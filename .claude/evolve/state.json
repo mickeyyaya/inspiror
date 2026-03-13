@@ -1,112 +1,377 @@
 {
-  "lastUpdated": "2026-03-13T09:55:00Z",
+  "lastUpdated": "2026-03-13T10:27:00Z",
   "research": {
     "queries": [
       {
         "query": "AI-powered kids coding education trends 2025-2026",
         "date": "2026-03-11",
-        "keyFindings": ["92% student AI usage", "AI literacy replacing learn-to-code", "personalized gamification trending"],
+        "keyFindings": [
+          "92% student AI usage",
+          "AI literacy replacing learn-to-code",
+          "personalized gamification trending"
+        ],
         "ttlDays": 7
       },
       {
         "query": "Rosebud AI Bolt.new Replit competitor updates 2026",
         "date": "2026-03-11",
-        "keyFindings": ["Replit exited K-12", "Bolt.new switched to Claude", "Rosebud 2.2M games + monetization"],
+        "keyFindings": [
+          "Replit exited K-12",
+          "Bolt.new switched to Claude",
+          "Rosebud 2.2M games + monetization"
+        ],
         "ttlDays": 7
       },
       {
         "query": "UX best practices kids coding tools gamification CHI 2025",
         "date": "2026-03-11",
-        "keyFindings": ["expressive mascots improve engagement", "adaptive gamification > generic badges", "visual progress tracking critical"],
+        "keyFindings": [
+          "expressive mascots improve engagement",
+          "adaptive gamification > generic badges",
+          "visual progress tracking critical"
+        ],
         "ttlDays": 7
       },
       {
         "query": "Vercel AI SDK 6 Google Gemini 3.1 API updates",
         "date": "2026-03-11",
-        "keyFindings": ["AI SDK 6 stable useObject", "Gemini 3.1 Flash-Lite 2.5x faster TTFT", "thinking_level parameter"],
+        "keyFindings": [
+          "AI SDK 6 stable useObject",
+          "Gemini 3.1 Flash-Lite 2.5x faster TTFT",
+          "thinking_level parameter"
+        ],
         "ttlDays": 7
       },
       {
         "query": "React 19 Vite 7 Express security advisories 2025-2026",
         "date": "2026-03-11",
-        "keyFindings": ["CVE-2025-55182 React2Shell (RSC only)", "CVE-2025-58752 Vite fs bypass", "No critical Express CVEs"],
+        "keyFindings": [
+          "CVE-2025-55182 React2Shell (RSC only)",
+          "CVE-2025-58752 Vite fs bypass",
+          "No critical Express CVEs"
+        ],
         "ttlDays": 14
       },
       {
         "query": "dnd-kit maintenance status and alternatives 2026",
         "date": "2026-03-13",
-        "keyFindings": ["dnd-kit/core no major release in ~1 year", "dnd-kit/react v0.3.2 recent", "pragmatic-drag-and-drop (Atlassian) alternative"],
+        "keyFindings": [
+          "dnd-kit/core no major release in ~1 year",
+          "dnd-kit/react v0.3.2 recent",
+          "pragmatic-drag-and-drop (Atlassian) alternative"
+        ],
         "ttlDays": 14
       },
       {
         "query": "Block-based coding education best practices Scratch visual programming",
         "date": "2026-03-13",
-        "keyFindings": ["project-based > guided drill", "20-30min session targets optimal", "share/export critical engagement hook"],
+        "keyFindings": [
+          "project-based > guided drill",
+          "20-30min session targets optimal",
+          "share/export critical engagement hook"
+        ],
         "ttlDays": 14
       },
       {
         "query": "COPPA 2025 amendments AI kids apps compliance",
         "date": "2026-03-13",
-        "keyFindings": ["Compliance deadline April 22 2026", "Parental consent for AI training", "Data retention lifecycle required", "AI disclosure required"],
+        "keyFindings": [
+          "Compliance deadline April 22 2026",
+          "Parental consent for AI training",
+          "Data retention lifecycle required",
+          "AI disclosure required"
+        ],
         "ttlDays": 30
       },
       {
         "query": "Content moderation AI kids apps Azure OpenAI safety",
         "date": "2026-03-13",
-        "keyFindings": ["Azure AI Content Safety K-12 templates", "OpenAI Moderation API free real-time", "Point-of-generation filtering best practice"],
+        "keyFindings": [
+          "Azure AI Content Safety K-12 templates",
+          "OpenAI Moderation API free real-time",
+          "Point-of-generation filtering best practice"
+        ],
         "ttlDays": 14
       },
       {
         "query": "Suggestion chip i18n patterns Scratch multilingual coding tools",
         "date": "2026-03-13",
-        "keyFindings": ["Scratch uses react-intl + Transifex", "Static locale JSON or LLM-generated suggestions", "Emoji prefixes are locale-neutral"],
+        "keyFindings": [
+          "Scratch uses react-intl + Transifex",
+          "Static locale JSON or LLM-generated suggestions",
+          "Emoji prefixes are locale-neutral"
+        ],
         "ttlDays": 14
+      },
+      {
+        "query": "most engaging features kids coding games 2025 2026 retention what makes kids come back scratch roblox",
+        "date": "2026-03-13",
+        "keyFindings": [
+          "Starter templates beat blank canvas for first-session retention",
+          "Expressive mascots (Duolingo owl) are top engagement driver per CHI 2025",
+          "Social sharing and community galleries are #1 return-visit driver (Scratch, Roblox)",
+          "Progressive difficulty and surprise unlocks keep kids returning",
+          "Time-to-delight is #1 predictor of retention in kids apps"
+        ],
+        "ttlDays": 12
       }
     ]
   },
   "evaluatedTasks": [
-    { "task": "Core Chat & Code Generation", "date": "2026-01-01", "decision": "completed", "cycle": 0 },
-    { "task": "Real-Time Streaming & Hacker Mode", "date": "2026-01-01", "decision": "completed", "cycle": 0 },
-    { "task": "Contextual Memory & Magic Buttons", "date": "2026-01-01", "decision": "completed", "cycle": 0 },
-    { "task": "Visual Delight + Audio + Animations", "date": "2026-01-01", "decision": "completed", "cycle": 0 },
-    { "task": "Educational Auto-Fix Error Handling", "date": "2026-01-01", "decision": "completed", "cycle": 0 },
-    { "task": "Local Storage Persistence", "date": "2026-01-01", "decision": "completed", "cycle": 0 },
-    { "task": "Look Inside Code Panel", "date": "2026-02-01", "decision": "completed", "cycle": 1 },
-    { "task": "Multi-Project Support", "date": "2026-02-15", "decision": "completed", "cycle": 0 },
-    { "task": "Multi-Language Support (i18n)", "date": "2026-03-01", "decision": "completed", "cycle": 0 },
-    { "task": "Candy Neubrutalism UI", "date": "2026-03-01", "decision": "completed", "cycle": 0 },
-    { "task": "Backend Security Hardening (CORS, rate limit, input validation, env URL)", "date": "2026-03-11", "decision": "completed", "cycle": 2 },
-    { "task": "Mobile Responsive Layout", "date": "2026-03-11", "decision": "completed", "cycle": 2 },
-    { "task": "App.tsx Decomposition + Stability Fixes", "date": "2026-03-11", "decision": "completed", "cycle": 3 },
-    { "task": "Gamified Progression System", "date": "2026-03-11", "decision": "completed", "cycle": 3 },
-    { "task": "Branch Reconciliation (feature/test-coverage into main)", "date": "2026-03-11", "decision": "completed", "cycle": 3 },
-    { "task": "Educational Loading Screen", "date": "2026-03-11", "decision": "completed", "cycle": 4 },
-    { "task": "Quick Fixes: Helmet + Validation + Achievement Wiring", "date": "2026-03-11", "decision": "completed", "cycle": 4 },
-    { "task": "Re-enable Look Inside CodePanel", "date": "2026-03-11", "decision": "completed", "cycle": 5 },
-    { "task": "Backend test script + zh-TW language hint", "date": "2026-03-11", "decision": "completed", "cycle": 5 },
-    { "task": "Content Moderation", "date": "2026-03-11", "decision": "deferred", "revisitAfter": "2026-03-18", "cycle": 3 },
-    { "task": "TranslationKeys interface (type safety)", "date": "2026-03-11", "decision": "completed", "cycle": 6 },
-    { "task": "A11y: dialog roles, Escape key, focus, aria-live, i18n modals", "date": "2026-03-11", "decision": "completed", "cycle": 6 },
-    { "task": "Visual Block Editor (Scratch-like logic blocks)", "date": "2026-03-11", "decision": "completed", "cycle": 7 },
-    { "task": "Quick fixes: remove @google/genai, extract GEMINI_MODEL, Express error handler, delete confirmation, useAudio pool", "date": "2026-03-12", "decision": "completed", "cycle": 8 },
-    { "task": "A11y (prefers-reduced-motion), useVoice type safety, legacy auto-conversion, dead code removal", "date": "2026-03-12", "decision": "completed", "cycle": 9 },
-    { "task": "Collision callback leak in engine.ts + stale test mocks using code instead of blocks", "date": "2026-03-12", "decision": "completed", "cycle": 10 },
-    { "task": "experimental_useObject migration", "date": "2026-03-12", "decision": "rejected", "reason": "Stable useObject export not available in installed @ai-sdk/react version", "revisitAfter": "2026-04-01" },
-    { "task": "useVoice.ts Test Coverage + Backend /api/convert-to-blocks Tests", "date": "2026-03-13", "decision": "completed", "cycle": 11 },
-    { "task": "i18n Bug Fixes + Block Deletion", "date": "2026-03-13", "decision": "completed", "cycle": 12 },
-    { "task": "Block Panel i18n (aria-labels + header)", "date": "2026-03-13", "decision": "completed", "cycle": 13 },
-    { "task": "Suggestion Chip i18n (zh-TW, zh-CN)", "date": "2026-03-13", "decision": "completed", "cycle": 13 },
-    { "task": "EditorView Hook Extraction (useAutoFix + useLegacyConversion)", "date": "2026-03-13", "decision": "completed", "cycle": 13 },
-    { "task": "Security hardening (eval removal, postMessage origin, script sanitization) + i18n regressions (Blocks label, More ideas) + zh-CN auto-rename", "date": "2026-03-13", "decision": "completed", "cycle": 14 },
-    { "task": "Stability bundle: fetch timeout, achievement unlock queue, localStorage save debounce", "date": "2026-03-13", "decision": "completed", "cycle": 15 },
-    { "task": "Export/share HTML download button + localStorage safety (safeSave, saveError banner)", "date": "2026-03-13", "decision": "completed", "cycle": 16 },
-    { "task": "useProjects unit tests (34 tests) + Vitest coverage thresholds (80%)", "date": "2026-03-13", "decision": "completed", "cycle": 17 }
+    {
+      "task": "Core Chat & Code Generation",
+      "date": "2026-01-01",
+      "decision": "completed",
+      "cycle": 0
+    },
+    {
+      "task": "Real-Time Streaming & Hacker Mode",
+      "date": "2026-01-01",
+      "decision": "completed",
+      "cycle": 0
+    },
+    {
+      "task": "Contextual Memory & Magic Buttons",
+      "date": "2026-01-01",
+      "decision": "completed",
+      "cycle": 0
+    },
+    {
+      "task": "Visual Delight + Audio + Animations",
+      "date": "2026-01-01",
+      "decision": "completed",
+      "cycle": 0
+    },
+    {
+      "task": "Educational Auto-Fix Error Handling",
+      "date": "2026-01-01",
+      "decision": "completed",
+      "cycle": 0
+    },
+    {
+      "task": "Local Storage Persistence",
+      "date": "2026-01-01",
+      "decision": "completed",
+      "cycle": 0
+    },
+    {
+      "task": "Look Inside Code Panel",
+      "date": "2026-02-01",
+      "decision": "completed",
+      "cycle": 1
+    },
+    {
+      "task": "Multi-Project Support",
+      "date": "2026-02-15",
+      "decision": "completed",
+      "cycle": 0
+    },
+    {
+      "task": "Multi-Language Support (i18n)",
+      "date": "2026-03-01",
+      "decision": "completed",
+      "cycle": 0
+    },
+    {
+      "task": "Candy Neubrutalism UI",
+      "date": "2026-03-01",
+      "decision": "completed",
+      "cycle": 0
+    },
+    {
+      "task": "Backend Security Hardening (CORS, rate limit, input validation, env URL)",
+      "date": "2026-03-11",
+      "decision": "completed",
+      "cycle": 2
+    },
+    {
+      "task": "Mobile Responsive Layout",
+      "date": "2026-03-11",
+      "decision": "completed",
+      "cycle": 2
+    },
+    {
+      "task": "App.tsx Decomposition + Stability Fixes",
+      "date": "2026-03-11",
+      "decision": "completed",
+      "cycle": 3
+    },
+    {
+      "task": "Gamified Progression System",
+      "date": "2026-03-11",
+      "decision": "completed",
+      "cycle": 3
+    },
+    {
+      "task": "Branch Reconciliation (feature/test-coverage into main)",
+      "date": "2026-03-11",
+      "decision": "completed",
+      "cycle": 3
+    },
+    {
+      "task": "Educational Loading Screen",
+      "date": "2026-03-11",
+      "decision": "completed",
+      "cycle": 4
+    },
+    {
+      "task": "Quick Fixes: Helmet + Validation + Achievement Wiring",
+      "date": "2026-03-11",
+      "decision": "completed",
+      "cycle": 4
+    },
+    {
+      "task": "Re-enable Look Inside CodePanel",
+      "date": "2026-03-11",
+      "decision": "completed",
+      "cycle": 5
+    },
+    {
+      "task": "Backend test script + zh-TW language hint",
+      "date": "2026-03-11",
+      "decision": "completed",
+      "cycle": 5
+    },
+    {
+      "task": "Content Moderation",
+      "date": "2026-03-11",
+      "decision": "deferred",
+      "revisitAfter": "2026-03-18",
+      "cycle": 3
+    },
+    {
+      "task": "TranslationKeys interface (type safety)",
+      "date": "2026-03-11",
+      "decision": "completed",
+      "cycle": 6
+    },
+    {
+      "task": "A11y: dialog roles, Escape key, focus, aria-live, i18n modals",
+      "date": "2026-03-11",
+      "decision": "completed",
+      "cycle": 6
+    },
+    {
+      "task": "Visual Block Editor (Scratch-like logic blocks)",
+      "date": "2026-03-11",
+      "decision": "completed",
+      "cycle": 7
+    },
+    {
+      "task": "Quick fixes: remove @google/genai, extract GEMINI_MODEL, Express error handler, delete confirmation, useAudio pool",
+      "date": "2026-03-12",
+      "decision": "completed",
+      "cycle": 8
+    },
+    {
+      "task": "A11y (prefers-reduced-motion), useVoice type safety, legacy auto-conversion, dead code removal",
+      "date": "2026-03-12",
+      "decision": "completed",
+      "cycle": 9
+    },
+    {
+      "task": "Collision callback leak in engine.ts + stale test mocks using code instead of blocks",
+      "date": "2026-03-12",
+      "decision": "completed",
+      "cycle": 10
+    },
+    {
+      "task": "experimental_useObject migration",
+      "date": "2026-03-12",
+      "decision": "rejected",
+      "reason": "Stable useObject export not available in installed @ai-sdk/react version",
+      "revisitAfter": "2026-04-01"
+    },
+    {
+      "task": "useVoice.ts Test Coverage + Backend /api/convert-to-blocks Tests",
+      "date": "2026-03-13",
+      "decision": "completed",
+      "cycle": 11
+    },
+    {
+      "task": "i18n Bug Fixes + Block Deletion",
+      "date": "2026-03-13",
+      "decision": "completed",
+      "cycle": 12
+    },
+    {
+      "task": "Block Panel i18n (aria-labels + header)",
+      "date": "2026-03-13",
+      "decision": "completed",
+      "cycle": 13
+    },
+    {
+      "task": "Suggestion Chip i18n (zh-TW, zh-CN)",
+      "date": "2026-03-13",
+      "decision": "completed",
+      "cycle": 13
+    },
+    {
+      "task": "EditorView Hook Extraction (useAutoFix + useLegacyConversion)",
+      "date": "2026-03-13",
+      "decision": "completed",
+      "cycle": 13
+    },
+    {
+      "task": "Security hardening (eval removal, postMessage origin, script sanitization) + i18n regressions (Blocks label, More ideas) + zh-CN auto-rename",
+      "date": "2026-03-13",
+      "decision": "completed",
+      "cycle": 14
+    },
+    {
+      "task": "Stability bundle: fetch timeout, achievement unlock queue, localStorage save debounce",
+      "date": "2026-03-13",
+      "decision": "completed",
+      "cycle": 15
+    },
+    {
+      "task": "Export/share HTML download button + localStorage safety (safeSave, saveError banner)",
+      "date": "2026-03-13",
+      "decision": "completed",
+      "cycle": 16
+    },
+    {
+      "task": "useProjects unit tests (34 tests) + Vitest coverage thresholds (80%)",
+      "date": "2026-03-13",
+      "decision": "completed",
+      "cycle": 17
+    },
+    {
+      "task": "Expressive Buddy Emotions (proud/worried/curious animations)",
+      "date": "2026-03-13",
+      "decision": "completed",
+      "cycle": 18
+    },
+    {
+      "task": "Starter Template Gallery (6 templates on ProjectCatalog)",
+      "date": "2026-03-13",
+      "decision": "completed",
+      "cycle": 18
+    }
   ],
   "failedApproaches": [],
   "evalHistory": [
-    { "cycle": 11, "verdict": "PASS", "total": 13, "passed": 13, "failed": 0 },
-    { "cycle": 12, "verdict": "PASS", "total": 10, "passed": 10, "failed": 0 },
-    { "cycle": 13, "verdict": "PASS", "total": 3, "passed": 3, "failed": 0 }
+    {
+      "cycle": 11,
+      "verdict": "PASS",
+      "total": 13,
+      "passed": 13,
+      "failed": 0
+    },
+    {
+      "cycle": 12,
+      "verdict": "PASS",
+      "total": 10,
+      "passed": 10,
+      "failed": 0
+    },
+    {
+      "cycle": 13,
+      "verdict": "PASS",
+      "total": 3,
+      "passed": 3,
+      "failed": 0
+    }
   ],
   "instinctCount": 4,
   "operatorWarnings": [],

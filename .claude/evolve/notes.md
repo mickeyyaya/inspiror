@@ -200,3 +200,15 @@
 - **Tests:** 304 frontend + 19 backend = 323 total, all passing
 - **Deploy:** SUCCESS (commit 2ee5379, merged to main, pushed)
 - **Next cycle should consider:** Content moderation (deferred deadline 2026-03-18 approaching), onboarding/first-run tutorial, focus trap for modals, schema deduplication, EditorView further decomposition (404 lines), template gallery
+
+## Cycle 18 — 2026-03-13
+- **Goal:** Exploring new features kids will love
+- **Tasks:** Expressive Buddy Emotions + Starter Template Gallery
+- **Type:** Feature (kid engagement)
+- **Buddy Emotions:** 3 new CSS keyframe animations (proud/worried/curious) wired to build success, auto-fix errors, and LLM questions. Overlay emojis (⭐💦❓). Auto-revert timers. prefers-reduced-motion guarded. BuddyEmotion type exported from ChatHeader.
+- **Template Gallery:** 6 starter templates (Catch the Star, Bouncing Emoji, Color Mixer, Counting Game, Magic Wand, Emoji Rain) as Block[] arrays on ProjectCatalog. Horizontally scrollable candy-neubrutalism cards. Click creates project with template blocks + compiled preview. i18n in all 3 locales.
+- **Audit fixes:** Added emotionTimerRef cleanup useEffect on unmount (MEDIUM), added eslint-disable rationale comment (LOW).
+- **Security:** PASS (both tasks — template blocks are static, sanitizeScript applied by compiler)
+- **Tests:** 343 frontend + 19 backend = 362 total, all passing. 39 new tests (12 ChatHeader + 3 useAutoFix + 11 starterTemplates + 14 ProjectCatalog).
+- **Deploy:** SUCCESS (commits fdeb33d + 0d48da8, merged to main, pushed)
+- **Next cycle should consider:** First-run onboarding tooltips (most deferred HIGH item), daily streak/return mechanic, content moderation (after 2026-03-18), publish/share link, focus trap for modals
