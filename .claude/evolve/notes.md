@@ -289,3 +289,13 @@
 - **Tests:** 412 frontend (4 new ErrorBoundary tests). All pass.
 - **Deploy:** SUCCESS (commit f518958, pushed to main)
 - **Next cycle should consider:** Dark mode, PWA offline, project renaming UX, content moderation (after 2026-03-18), keyboard shortcuts panel
+
+## Cycle 26 — 2026-03-13
+- **Tasks:** Self-host Comic Neue font + active streak updates on build
+- **Type:** Bug fix + Privacy/COPPA + Engagement fix
+- **Font fix:** Replaced broken Google Fonts @font-face (was pointing to CSS URL, not font file) with self-hosted TTF files in public/fonts/. Eliminates external request to Google (COPPA privacy concern for kids app). Font now actually loads correctly.
+- **Streak fix:** Added recordActivity() callback to useStreak hook. Previously streak only computed on mount — if a child kept a tab open overnight and built the next day, streak wouldn't update. Now wired to build events via onBuild prop in EditorView → App.tsx.
+- **Security:** PASS (removed external data collection, no new attack surface)
+- **Tests:** 414 frontend (2 new streak tests). All pass.
+- **Deploy:** SUCCESS (commit 60c702e, pushed to main)
+- **Next cycle should consider:** Dark mode, PWA offline, project renaming, Gemini model validation at startup, schema dedup (frontend/backend)

@@ -433,6 +433,12 @@
       "date": "2026-03-13",
       "decision": "completed",
       "cycle": 25
+    },
+    {
+      "task": "Self-host Comic Neue font + active streak updates on build",
+      "date": "2026-03-13",
+      "decision": "completed",
+      "cycle": 26
     }
   ],
   "failedApproaches": [],
