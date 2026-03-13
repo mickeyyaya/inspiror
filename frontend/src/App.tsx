@@ -55,6 +55,7 @@ function App() {
         onDelete={deleteProject}
         onCreate={createProject}
         onCreateFromTemplate={handleCreateFromTemplate}
+        onRename={(id, title) => updateProject(id, { title })}
         language={language}
         onToggleLanguage={toggleLanguage}
         streakDays={streakDays}

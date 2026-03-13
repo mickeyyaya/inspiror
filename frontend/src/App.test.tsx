@@ -259,6 +259,31 @@ describe("Inspiror App", () => {
       ).toBeInTheDocument();
     });
 
+    it("renames a project via double-click", () => {
+      const project = {
+        id: "proj-1",
+        title: "My Cool App",
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        messages: [{ id: "m1", role: "assistant", content: "Hello!" }],
+        currentCode: "<html></html>",
+      };
+      mockStorage["inspiror_projects"] = JSON.stringify([project]);
+
+      render(<App />);
+      expect(screen.getByText("My Cool App")).toBeInTheDocument();
+
+      // Double-click the title to start renaming
+      fireEvent.doubleClick(screen.getByText("My Cool App"));
+      const input = screen.getByTestId("rename-input");
+      expect(input).toBeInTheDocument();
+
+      // Type a new name and press Enter
+      fireEvent.change(input, { target: { value: "Super Game" } });
+      fireEvent.keyDown(input, { key: "Enter" });
+      expect(screen.getByText("Super Game")).toBeInTheDocument();
+    });
+
     it("migrates legacy data to a project", () => {
       const oldMessages = [
         { role: "assistant", content: "Welcome back!" },

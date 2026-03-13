@@ -175,6 +175,8 @@ if (require.main === module) {
     );
     process.exit(1);
   }
+  const model = process.env.GEMINI_MODEL || "gemini-3.1-flash-lite-preview";
+  console.log(`[Startup] Using Gemini model: ${model}`);
   const PORT = process.env.PORT || 3001;
   app.listen(PORT, () => {
     console.log(`Backend server listening on port ${PORT}`);

@@ -1,5 +1,12 @@
-import { useState } from "react";
-import { Plus, Trash2, FolderOpen, Clock, Languages } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import {
+  Plus,
+  Trash2,
+  FolderOpen,
+  Clock,
+  Languages,
+  Pencil,
+} from "lucide-react";
 import type { Project } from "../types/project";
 import { translations } from "../i18n/translations";
 import type { VoiceLanguage } from "../hooks/useVoice";
@@ -15,6 +22,7 @@ interface ProjectCatalogProps {
   onDelete: (id: string) => void;
   onCreate: () => void;
   onCreateFromTemplate: (template: StarterTemplate) => void;
+  onRename?: (id: string, title: string) => void;
   language: VoiceLanguage;
   onToggleLanguage: () => void;
   streakDays?: number;
@@ -26,6 +34,7 @@ export function ProjectCatalog({
   onDelete,
   onCreate,
   onCreateFromTemplate,
+  onRename,
   language,
   onToggleLanguage,
   streakDays,
@@ -33,6 +42,26 @@ export function ProjectCatalog({
   const t = translations[language];
   const sorted = [...projects].sort((a, b) => b.updatedAt - a.updatedAt);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState("");
+  const renameInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (editingId) renameInputRef.current?.focus();
+  }, [editingId]);
+
+  const startRename = (project: Project) => {
+    setEditingId(project.id);
+    setEditingTitle(project.title);
+  };
+
+  const commitRename = () => {
+    if (editingId && editingTitle.trim()) {
+      onRename?.(editingId, editingTitle.trim());
+    }
+    setEditingId(null);
+    setEditingTitle("");
+  };
 
   const timeAgo = (timestamp: number): string => {
     const seconds = Math.floor((Date.now() - timestamp) / 1000);
@@ -190,12 +219,45 @@ export function ProjectCatalog({
                     data-testid="project-card"
                   >
                     <div className="p-6 flex-1 flex flex-col">
-                      <h3
-                        className="text-[#222] font-extrabold text-2xl truncate mb-3"
-                        title={project.title}
-                      >
-                        {project.title}
-                      </h3>
+                      {editingId === project.id ? (
+                        <input
+                          ref={renameInputRef}
+                          data-testid="rename-input"
+                          value={editingTitle}
+                          onChange={(e) => setEditingTitle(e.target.value)}
+                          onBlur={commitRename}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") commitRename();
+                            if (e.key === "Escape") {
+                              setEditingId(null);
+                              setEditingTitle("");
+                            }
+                          }}
+                          className="text-[#222] font-extrabold text-2xl mb-3 bg-white/50 border-2 border-[#222] rounded-xl px-2 py-1 outline-none focus:ring-2 focus:ring-[var(--color-candy-blue)]"
+                          maxLength={60}
+                        />
+                      ) : (
+                        <h3
+                          className="text-[#222] font-extrabold text-2xl truncate mb-3 cursor-pointer group/title flex items-center gap-2"
+                          title={project.title}
+                          onDoubleClick={() => startRename(project)}
+                        >
+                          <span className="truncate">{project.title}</span>
+                          {onRename && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                startRename(project);
+                              }}
+                              className="opacity-0 group-hover/title:opacity-100 transition-opacity p-1"
+                              aria-label={t.aria_rename_project}
+                              data-testid="rename-btn"
+                            >
+                              <Pencil size={14} strokeWidth={2.5} />
+                            </button>
+                          )}
+                        </h3>
+                      )}
                       <div className="flex items-center gap-2 text-[#222]/70 font-bold text-sm mb-6 bg-white/30 w-fit px-3 py-1 rounded-full border-2 border-[#222]/20">
                         <Clock size={16} strokeWidth={2.5} />
                         <span>{timeAgo(project.updatedAt)}</span>
