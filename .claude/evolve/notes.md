@@ -378,4 +378,14 @@
 - **Security:** PASS
 - **Tests:** 478 frontend + 20 backend = 498 total, all passing.
 - **Deploy:** SUCCESS (commit 96cec34, pushed to main)
-- **Next cycle should consider:** Dark mode (candy dark), content moderation (after 2026-03-18), handleDelete sortedBlocks fix, llmService.ts refactor, schema dedup
+- **Next cycle should consider:** Dark mode (candy dark), content moderation (after 2026-03-18), schema dedup, EditorView decomposition
+
+## Cycle 35 — 2026-03-13
+- **Tasks:** handleDelete sortedBlocks fix + llmService prompt extraction
+- **Type:** Bug fix + Code quality
+- **handleDelete:** Fixed BlockEditor.handleDelete to filter from sortedBlocks instead of unsorted blocks prop. Previously, deleting a block after drag-reorder would silently revert the user's ordering. Added test for delete-after-reorder.
+- **Prompt extraction:** Extracted RUNTIME_API_REFERENCE (125 lines) and BLOCK_EXAMPLES (190 lines) from llmService.ts into backend/src/prompts/. llmService.ts reduced from 518 to 246 lines.
+- **Security:** PASS
+- **Tests:** 479 frontend + 20 backend = 499 total, all passing.
+- **Deploy:** SUCCESS (commit e547f71, pushed to main)
+- **Next cycle should consider:** Dark mode (candy dark), content moderation (after 2026-03-18), schema dedup, EditorView decomposition, "" in postMessage origins
