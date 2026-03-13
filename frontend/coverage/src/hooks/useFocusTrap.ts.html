@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/compiler/substituteParams.ts</title>
+    <title>Code coverage report for src/hooks/useFocusTrap.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/compiler</a> substituteParams.ts</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/hooks</a> useFocusTrap.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">95.45% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>13/13</span>
+                <span class='fraction'>21/22</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90% </span>
+                <span class="strong">87.5% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>9/10</span>
+                <span class='fraction'>14/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>12/12</span>
+                <span class='fraction'>18/18</span>
             </div>
         
             
@@ -94,67 +94,85 @@
 <a name='L29'></a><a href='#L29'>29</a>
 <a name='L30'></a><a href='#L30'>30</a>
 <a name='L31'></a><a href='#L31'>31</a>
-<a name='L32'></a><a href='#L32'>32</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">473x</span>
+<span class="cline-any cline-yes">199x</span>
+<span class="cline-any cline-yes">199x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">39x</span>
-<span class="cline-any cline-yes">39x</span>
-<span class="cline-any cline-yes">32x</span>
-<span class="cline-any cline-yes">32x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">39x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { BlockParam } from "../types/block";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { useEffect, type RefObject } from "react";
 &nbsp;
-/**
- * Replace {{key}} placeholders in code with JSON-escaped param values.
- * Prevents injection via user-edited params by properly escaping strings.
- */
-export function substituteParams(
-  code: string,
-  params: BlockParam[],
-): string {
-  let result = code;
-  for (const param of params) {
-    const placeholder = `{{${param.key}}}`;
-    if (!result.includes(placeholder)) continue;
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 &nbsp;
-    let replacement: string;
-    if (typeof param.value === "string") {
-      // JSON.stringify adds quotes and escapes special chars
-      replacement = JSON.stringify(param.value);
-    } else if (typeof param.value === "boolean") {
-      replacement = param.value ? "true" : <span class="branch-1 cbranch-no" title="branch not covered" >"false";</span>
-    } else {
-      // number — ensure it's a finite number
-      const num = Number(param.value);
-      replacement = Number.isFinite(num) ? String(num) : "0";
-    }
+export function useFocusTrap(
+  containerRef: RefObject&lt;HTMLElement | null&gt;,
+  active: boolean,
+): void {
+  useEffect(() =&gt; {
+    const container = containerRef.current;
+    if (!container || !active) return;
 &nbsp;
-    result = result.split(placeholder).join(replacement);
-  }
-  return result;
+    const handleKeyDown = (e: KeyboardEvent) =&gt; {
+      if (e.key !== "Tab") return;
+&nbsp;
+      const focusable = Array.from(
+        container.querySelectorAll&lt;HTMLElement&gt;(FOCUSABLE_SELECTOR),
+      );
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (focusable.length === 0) <span class="cstat-no" title="statement not covered" >return;</span>
+&nbsp;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+&nbsp;
+      if (e.shiftKey &amp;&amp; document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      <span class="missing-if-branch" title="else path not taken" >E</span>} else if (!e.shiftKey &amp;&amp; document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+&nbsp;
+    container.addEventListener("keydown", handleKeyDown);
+    return () =&gt; container.removeEventListener("keydown", handleKeyDown);
+  }, [containerRef, active]);
 }
 &nbsp;</pre></td></tr></table></pre>
 

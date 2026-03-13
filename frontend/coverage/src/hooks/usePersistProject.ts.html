@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/compiler/substituteParams.ts</title>
+    <title>Code coverage report for src/hooks/usePersistProject.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/compiler</a> substituteParams.ts</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/hooks</a> usePersistProject.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>13/13</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>9/10</span>
+                <span class='fraction'>3/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>12/12</span>
+                <span class='fraction'>10/10</span>
             </div>
         
             
@@ -94,7 +94,22 @@
 <a name='L29'></a><a href='#L29'>29</a>
 <a name='L30'></a><a href='#L30'>30</a>
 <a name='L31'></a><a href='#L31'>31</a>
-<a name='L32'></a><a href='#L32'>32</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -104,57 +119,75 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">39x</span>
-<span class="cline-any cline-yes">39x</span>
-<span class="cline-any cline-yes">32x</span>
-<span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">31x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">39x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { BlockParam } from "../types/block";
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">144x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">144x</span>
+<span class="cline-any cline-yes">65x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">144x</span>
+<span class="cline-any cline-yes">55x</span>
+<span class="cline-any cline-yes">55x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">55x</span>
+<span class="cline-any cline-yes">55x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { useEffect, useRef } from "react";
+import type { ChatMessage, Project } from "../types/project";
+import type { Block } from "../types/block";
 &nbsp;
-/**
- * Replace {{key}} placeholders in code with JSON-escaped param values.
- * Prevents injection via user-edited params by properly escaping strings.
- */
-export function substituteParams(
-  code: string,
-  params: BlockParam[],
-): string {
-  let result = code;
-  for (const param of params) {
-    const placeholder = `{{${param.key}}}`;
-    if (!result.includes(placeholder)) continue;
+const SAVE_DEBOUNCE_MS = 300;
 &nbsp;
-    let replacement: string;
-    if (typeof param.value === "string") {
-      // JSON.stringify adds quotes and escapes special chars
-      replacement = JSON.stringify(param.value);
-    } else if (typeof param.value === "boolean") {
-      replacement = param.value ? "true" : <span class="branch-1 cbranch-no" title="branch not covered" >"false";</span>
-    } else {
-      // number — ensure it's a finite number
-      const num = Number(param.value);
-      replacement = Number.isFinite(num) ? String(num) : "0";
-    }
+interface UsePersistProjectOptions {
+  projectId: string;
+  messages: ChatMessage[];
+  currentCode: string;
+  blocks: Block[];
+  onUpdate: (
+    projectId: string,
+    updates: Partial&lt;Pick&lt;Project, "messages" | "currentCode" | "blocks"&gt;&gt;,
+  ) =&gt; void;
+}
 &nbsp;
-    result = result.split(placeholder).join(replacement);
-  }
-  return result;
+export function usePersistProject({
+  projectId,
+  messages,
+  currentCode,
+  blocks,
+  onUpdate,
+}: UsePersistProjectOptions): void {
+  const saveTimerRef = useRef&lt;ReturnType&lt;typeof setTimeout&gt;&gt;(undefined);
+&nbsp;
+  // Save messages immediately
+  useEffect(() =&gt; {
+    onUpdate(projectId, { messages });
+  }, [messages, onUpdate, projectId]);
+&nbsp;
+  // Save code + blocks with debounce
+  useEffect(() =&gt; {
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(() =&gt; {
+      onUpdate(projectId, { currentCode, blocks });
+    }, SAVE_DEBOUNCE_MS);
+    return () =&gt; {
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    };
+  }, [currentCode, blocks, onUpdate, projectId]);
 }
 &nbsp;</pre></td></tr></table></pre>
 
