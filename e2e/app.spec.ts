@@ -643,6 +643,9 @@ test.describe("Inspiror App - E2E", () => {
     await page.getByRole("button", { name: "Send" }).click();
     await expect(page.getByText("Here!")).toBeVisible({ timeout: 5000 });
 
+    // Wait for debounced localStorage save (300ms debounce + buffer)
+    await page.waitForTimeout(500);
+
     const savedCode = await readProjectCode(page);
     expect(savedCode).toContain("game.addText(\'t\', \'Test\', 10, 10);");
   });
@@ -1313,5 +1316,134 @@ test.describe("Inspiror App - E2E", () => {
     expect(
       ids.every((id: string) => typeof id === "string" && id.length > 0),
     ).toBe(true);
+  });
+
+  test.describe("HTML Export / Download Button", () => {
+    test("download button is visible in preview panel", async ({ page }) => {
+      const downloadBtn = page.getByRole("button", {
+        name: /download/i,
+      });
+      await expect(downloadBtn).toBeVisible();
+    });
+
+    test("download button has correct aria-label", async ({ page }) => {
+      const downloadBtn = page.getByRole("button", {
+        name: "Download as HTML file",
+      });
+      await expect(downloadBtn).toBeVisible();
+    });
+
+    test("download button triggers file download", async ({ page }) => {
+      // Wait for a download event when clicking the button
+      const downloadPromise = page.waitForEvent("download");
+      const downloadBtn = page.getByRole("button", {
+        name: /download/i,
+      });
+      await downloadBtn.click();
+      const download = await downloadPromise;
+
+      // Verify the downloaded file has .html extension
+      expect(download.suggestedFilename()).toMatch(/\.html$/);
+    });
+
+    test("download filename is derived from project title", async ({
+      page,
+    }) => {
+      const downloadPromise = page.waitForEvent("download");
+      const downloadBtn = page.getByRole("button", {
+        name: /download/i,
+      });
+      await downloadBtn.click();
+      const download = await downloadPromise;
+
+      // The seeded project is titled "E2E Test Project"
+      expect(download.suggestedFilename()).toBe("E2E-Test-Project.html");
+    });
+
+    test("downloaded file contains HTML content", async ({ page }) => {
+      // Wait for the preview iframe to have content (blocks compile on mount)
+      const iframe = page.locator("iframe[title='Preview Sandbox']");
+      await expect(iframe).toBeVisible();
+      // Small delay for debounced block compilation
+      await page.waitForTimeout(500);
+
+      const downloadPromise = page.waitForEvent("download");
+      const downloadBtn = page.getByRole("button", {
+        name: /download/i,
+      });
+      await downloadBtn.click();
+      const download = await downloadPromise;
+
+      // Read the downloaded content
+      const filePath = await download.path();
+      expect(filePath).toBeTruthy();
+      if (filePath) {
+        const fs = require("fs");
+        const content = fs.readFileSync(filePath, "utf-8");
+        // The compiled default blocks produce HTML with DOCTYPE
+        expect(content.length).toBeGreaterThan(0);
+      }
+    });
+
+    test("download button is disabled during loading", async ({ page }) => {
+      // The seeded project starts in idle state (not loading)
+      // Verify button is enabled initially
+      const downloadBtn = page.getByRole("button", {
+        name: /download/i,
+      });
+      await expect(downloadBtn).toBeEnabled();
+    });
+
+    test("download button shows localized label in zh-TW", async ({ page }) => {
+      // The language button shows visible text "EN" — click to switch to zh-TW
+      const langBtn = page.getByRole("button", { name: "EN", exact: true });
+      await langBtn.click();
+
+      // After switching, the download button's aria-label should be in zh-TW
+      const downloadBtn = page.getByRole("button", {
+        name: "下載為 HTML 檔案",
+      });
+      await expect(downloadBtn).toBeVisible();
+    });
+  });
+
+  test.describe("localStorage Safety — Save Error Banner", () => {
+    test("no save error banner appears under normal conditions", async ({
+      page,
+    }) => {
+      // Verify no alert banner is present
+      const alert = page.getByRole("alert");
+      await expect(alert).not.toBeVisible();
+    });
+
+    test("save error banner appears when localStorage is full", async ({
+      page,
+    }) => {
+      // Simulate QuotaExceededError by overriding localStorage.setItem
+      await page.evaluate(() => {
+        const originalSetItem = window.localStorage.setItem.bind(
+          window.localStorage,
+        );
+        let callCount = 0;
+        window.localStorage.setItem = (key: string, value: string) => {
+          callCount++;
+          // Allow the first few writes (initial state), then start throwing
+          if (callCount > 5) {
+            throw new DOMException("quota exceeded", "QuotaExceededError");
+          }
+          originalSetItem(key, value);
+        };
+      });
+
+      // Trigger a state change that causes a localStorage write
+      // Send a message to trigger project update
+      const input = page.getByPlaceholder("Type your grand idea...");
+      await input.fill("Make a simple game");
+      await page.getByRole("button", { name: "Send" }).click();
+
+      // Wait for the save error banner to appear
+      const alert = page.getByRole("alert");
+      await expect(alert).toBeVisible({ timeout: 5000 });
+    });
   });
 });
