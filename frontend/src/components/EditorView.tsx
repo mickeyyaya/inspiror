@@ -22,7 +22,7 @@ import { MessageInput } from "./MessageInput";
 import { PreviewPanel } from "./PreviewPanel";
 import { AchievementModal } from "./AchievementModal";
 import { BadgeGallery } from "./BadgeGallery";
-import { BlockEditor } from "./blocks/BlockEditor";
+import { BlockPanelDrawer } from "./BlockPanelDrawer";
 import { OnboardingTooltip } from "./OnboardingTooltip";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { useOnboarding } from "../hooks/useOnboarding";
@@ -75,14 +75,7 @@ export function EditorView({
   );
   const [isChatVisible, setIsChatVisible] = useState(true);
   const [isBlockPanelOpen, setIsBlockPanelOpen] = useState(false);
-  useEffect(() => {
-    if (!isBlockPanelOpen) return;
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setIsBlockPanelOpen(false);
-    };
-    document.addEventListener("keydown", handleKey);
-    return () => document.removeEventListener("keydown", handleKey);
-  }, [isBlockPanelOpen]);
+  const closeBlockPanel = useCallback(() => setIsBlockPanelOpen(false), []);
   const [showConfetti, setShowConfetti] = useState(false);
   const { buddyEmotion, triggerEmotion } = useBuddyEmotion(messages);
   const [suggestionChips, setSuggestionChips] = useState(() =>
@@ -382,36 +375,14 @@ export function EditorView({
         convertingText={isConverting ? t.converting_blocks : undefined}
       />
 
-      {/* Block Editor Panel (replaces CodePanel for block-mode projects) */}
-      <div
-        data-testid="block-panel"
-        aria-hidden={!isBlockPanelOpen}
-        inert={!isBlockPanelOpen ? true : undefined}
-        className={`fixed top-0 right-0 h-full z-40 flex flex-col
-          w-full sm:w-[400px]
-          bg-[#fdfbf7]
-          border-l-4 border-[#222]
-          shadow-[-8px_0_0_#222]
-          transition-transform duration-300 ease-in-out
-          ${isBlockPanelOpen ? "translate-x-0" : "translate-x-full"}`}
-      >
-        <BlockEditor
-          blocks={blocks}
-          onBlocksChange={handleBlocksChange}
-          isLoading={isLoading}
-          t={t}
-        />
-        <div className="p-3 border-t-2 border-gray-200 flex-shrink-0">
-          <button
-            onClick={() => setIsBlockPanelOpen(false)}
-            className="w-full px-4 py-2 rounded-2xl bg-[#222] text-white font-bold text-sm
-              border-2 border-[#222] shadow-[4px_4px_0_rgba(0,0,0,0.2)]
-              active:translate-y-[4px] active:shadow-none transition-all"
-          >
-            {t.block_panel_close}
-          </button>
-        </div>
-      </div>
+      <BlockPanelDrawer
+        isOpen={isBlockPanelOpen}
+        onClose={closeBlockPanel}
+        blocks={blocks}
+        onBlocksChange={handleBlocksChange}
+        isLoading={isLoading}
+        t={t}
+      />
 
       <AchievementModal
         achievement={newlyUnlocked}

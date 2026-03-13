@@ -458,6 +458,7 @@ describe("Inspiror App", () => {
         await act(async () => {
           window.dispatchEvent(
             new MessageEvent("message", {
+              origin: "null",
               data: {
                 type: "iframe-error",
                 message: "SyntaxError: x is not defined",
@@ -476,6 +477,7 @@ describe("Inspiror App", () => {
         await act(async () => {
           window.dispatchEvent(
             new MessageEvent("message", {
+              origin: "null",
               data: {
                 type: "iframe-error",
                 message: "ReferenceError: y is not defined",
@@ -489,6 +491,7 @@ describe("Inspiror App", () => {
         await act(async () => {
           window.dispatchEvent(
             new MessageEvent("message", {
+              origin: "null",
               data: {
                 type: "iframe-error",
                 message: "TypeError: z is not a function",
@@ -648,6 +651,7 @@ describe("Inspiror App", () => {
         await act(async () => {
           window.dispatchEvent(
             new MessageEvent("message", {
+              origin: "null",
               data: { type: "iframe-error", message: "Error!" },
             }),
           );
@@ -660,6 +664,7 @@ describe("Inspiror App", () => {
         await act(async () => {
           window.dispatchEvent(
             new MessageEvent("message", {
+              origin: "null",
               data: { type: "iframe-error" },
             }),
           );

@@ -84,7 +84,7 @@ export function useAutoFix({
 
   useEffect(() => {
     const handleIframeError = (event: MessageEvent) => {
-      const allowed = [window.location.origin, "null", ""];
+      const allowed = [window.location.origin, "null"];
       if (!allowed.includes(event.origin)) return;
       if (event.data?.type !== "iframe-error") return;
 
