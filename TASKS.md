@@ -402,3 +402,50 @@ Audited against actual source on `main` branch (March 2026 — Cycle 14).
 - [ ] **No undo/redo for block edits** — Kids lose work on accidental delete/reorder. (Playability)
 - [ ] **localStorage quota exhaustion not handled** — `useProjects.ts:225` no try/catch on setItem. Silent data loss. (Stability)
 - [ ] **`</script>` breakout not sanitized in block code** — `compileBlocks.ts:80` embeds block JS inside `<script>` without sanitizing `</script>` sequences. (Security)
+
+---
+
+## Cycle 16 Audit [ ]
+
+Audit covers: Stability, Features, Performance, Accessibility, Code Quality, Security, Architecture.
+Audited against actual source on `main` branch (March 2026 — Cycle 16).
+
+### Stability (HIGH)
+
+- [ ] **No unit tests for `useProjects.ts`** — The most critical data hook in the codebase has zero test coverage. A regression here silently corrupts all project persistence. Write Vitest unit tests covering CRUD, localStorage round-trips, legacy migration, and auto-title extraction. (Stability) [`hooks/useProjects.ts`] *(carried from Cycle 14)*
+- [ ] **Vitest coverage thresholds not enforced** — `vitest.config.ts` has no `coverage.thresholds` configured; coverage can regress silently and CI will still pass. Add thresholds for `branches`, `functions`, `lines`, and `statements` at the 80% target. (Stability) [`vitest.config.ts`] *(carried from Cycle 3, 7, 8)*
+- [ ] **localStorage write try/catch missing in `useProjects` and `useAchievements`** — `setItem` calls are not wrapped in try/catch; `QuotaExceededError` on Safari private browsing and iOS causes silent data loss with no user feedback. Add try/catch with a visible error toast on write failure. (Stability) [`hooks/useProjects.ts`, `hooks/useAchievements.ts`]
+
+### Features (HIGH)
+
+- [ ] **No export / share HTML download button** — Single biggest competitive gap vs. Codorex, Rosebud, and Upit. Exporting the current preview as a self-contained HTML file is trivially achievable with a Blob download link. Implement in `PreviewPanel` or `ChatHeader`. (Features)
+- [ ] **No onboarding / first-run tutorial tooltips** — The block panel, play mode toggle, and voice input are entirely undiscoverable by new users. Add contextual tooltip popovers that appear on first use and can be dismissed permanently via localStorage flag. (Features)
+
+### Performance (MEDIUM)
+
+- [ ] **Extract and minify `RUNTIME_ENGINE` string** — `engine.ts` is 952 lines of unminified JavaScript re-injected into every iframe `srcDoc` on every block change. Extract the engine to a build artifact and minify it; this alone should reduce per-compile payload by ~70%. (Performance) [`runtime/engine.ts`] *(carried from Cycle 14)*
+- [ ] **Lazy-load block editor and dnd-kit** — `BlockEditor`, `BlockCard`, `ParamEditor`, and the entire dnd-kit dependency are eagerly bundled even for users who never open the block panel. Add a dynamic `import()` split point so these load only when the block panel is first opened. (Performance)
+- [ ] **Audio pools lazy-initialize on first interaction** — `useAudio` eagerly creates 16 `HTMLAudioElement` instances on component mount before the user has interacted with anything. Defer pool creation to the first `play()` call to avoid unnecessary DOM allocation and network requests on mount. (Performance) [`hooks/useAudio.ts`] *(carried from Cycle 8)*
+
+### Accessibility (MEDIUM)
+
+- [ ] **No focus trap in `AchievementModal` / `BadgeGallery`** — Tab key escapes these modal dialogs into background content, violating WCAG 2.1 SC 2.1.2. Implement a focus trap (e.g., via `focus-trap-react` or a custom hook) for all modal dialogs. (Accessibility) *(carried from Cycle 7, 8)*
+- [ ] **No focus management on block panel open / close** — Opening the block panel does not move keyboard focus into it; closing it does not return focus to the trigger button. (Accessibility) [`EditorView.tsx`] *(carried from Cycle 8)*
+
+### Code Quality (MEDIUM)
+
+- [ ] **Zod schema duplication frontend / backend** — `generationSchema`, `blockSchema`, and `blockParamSchema` are defined identically in `frontend/src/constants.ts` and `backend/src/llmService.ts`. Extract to a shared package or generate one from the other to eliminate drift. (Code Quality) *(carried from Cycle 8)*
+- [ ] **Extract prompt strings from `llmService.ts` to `backend/src/prompts/`** — System prompts and user prompt templates are inline in `llmService.ts`, making them hard to review, test, or iterate on independently. Move each prompt to a dedicated file under `backend/src/prompts/`. (Code Quality) [`backend/src/llmService.ts`]
+- [ ] **`ProjectCatalog` bilingual hardcoded string and pluralization bug** — The empty-state copy is a hardcoded bilingual literal rather than an i18n key, and count-based pluralization ("1 projects") is not handled. Replace with the translation system and add a plural form. (Code Quality) [`components/ProjectCatalog.tsx`] *(carried from Cycle 8)*
+- [ ] **`EditorView.tsx` still 413 lines** — Exceeds the 400-line soft ceiling. Extract the block panel wrapper into a `BlockPanelContainer` component and the callback wiring into a `useEditorCallbackRefs` hook. (Code Quality) [`components/EditorView.tsx`] *(carried from Cycle 8)*
+
+### Security (MEDIUM)
+
+- [ ] **No CSP headers in `vercel.json`** — No `Content-Security-Policy` response header restricts `script-src` or `frame-src`. Add a CSP in `vercel.json` headers config to limit XSS and iframe injection surface. (Security) [`vercel.json`] *(carried from Cycle 8)*
+- [ ] **`convertToBlocks` prompt injection via raw user code** — The `/api/convert-to-blocks` route embeds raw user-authored HTML/JS directly into the LLM prompt without sanitization. A crafted project can override system instructions. Strip or escape code before embedding in the prompt. (Security) [`backend/src/llmService.ts`]
+- [ ] **Run `npm audit` across all workspaces** — No audit has been run recently. Execute `npm audit` in `frontend/`, `backend/`, and `e2e/` and remediate any HIGH or CRITICAL advisories before the next release. (Security)
+
+### Architecture (MEDIUM)
+
+- [ ] **No block-chat provenance linking** — Blocks compiled and injected into the iframe have no reference back to the chat turn or AI generation that produced them (`blocksVersion` / `generatedAt` field missing). This makes debugging regressions and attributing block state to conversation history impossible. Add a provenance field to `BlockDefinition`. (Architecture)
+- [ ] **`useLegacyConversion` language dependency missing from effect deps array** — The conversion effect uses `language` from context but omits it from its dependency array (suppressed with eslint-disable). A language switch after mount will not re-trigger conversion. Add `language` to the dependency array and handle re-conversion correctly. (Architecture) [`hooks/useLegacyConversion.ts`] *(carried from Cycle 14)*
