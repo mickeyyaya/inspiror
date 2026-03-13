@@ -27,6 +27,12 @@ import { OnboardingTooltip } from "./OnboardingTooltip";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { useOnboarding } from "../hooks/useOnboarding";
 
+if (!import.meta.env.VITE_API_URL && import.meta.env.MODE !== "development") {
+  console.warn(
+    "[Inspiror] VITE_API_URL is not set. API calls will fall back to localhost:3001 which will fail in production.",
+  );
+}
+
 export interface EditorViewProps {
   project: Pick<
     Project,

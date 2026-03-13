@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { safeSave } from "../utils/safeSave";
 
 export const STREAK_STORAGE_KEY = "inspiror-streak-v1";
 
@@ -38,11 +39,7 @@ function readStreak(): StreakData | null {
 }
 
 function writeStreak(data: StreakData): void {
-  try {
-    localStorage.setItem(STREAK_STORAGE_KEY, JSON.stringify(data));
-  } catch {
-    // Storage full — ignore
-  }
+  safeSave(STREAK_STORAGE_KEY, JSON.stringify(data));
 }
 
 function computeStreak(): { streakDays: number; isNewDay: boolean } {

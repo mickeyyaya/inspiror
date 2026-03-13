@@ -13,7 +13,23 @@ const MAX_MESSAGES = 50;
 const MAX_CONTENT_LENGTH = 5000;
 const MAX_CODE_LENGTH = 50000;
 
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        fontSrc: ["'self'"],
+        imgSrc: ["'self'", "data:", "blob:"],
+        connectSrc: ["'self'"],
+        frameAncestors: ["'self'"],
+        objectSrc: ["'none'"],
+        baseUri: ["'self'"],
+      },
+    },
+  }),
+);
 app.use(cors({ origin: ALLOWED_ORIGIN }));
 app.use(express.json({ limit: "512kb" }));
 

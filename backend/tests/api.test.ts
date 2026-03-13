@@ -20,6 +20,19 @@ const mockedStreamObject = streamObject as jest.MockedFunction<
   typeof streamObject
 >;
 
+describe("Security headers", () => {
+  it("should include Content-Security-Policy header with correct directives", async () => {
+    const res = await request(app).post("/api/generate").send({ messages: [] });
+    const csp = res.headers["content-security-policy"];
+    expect(csp).toBeDefined();
+    expect(csp).toContain("default-src 'self'");
+    expect(csp).toContain("frame-ancestors 'self'");
+    expect(csp).toContain("object-src 'none'");
+    expect(csp).toContain("script-src 'self'");
+    expect(csp).toContain("style-src 'self' 'unsafe-inline'");
+  });
+});
+
 describe("POST /api/generate", () => {
   beforeEach(() => {
     mockedStreamObject.mockClear();
