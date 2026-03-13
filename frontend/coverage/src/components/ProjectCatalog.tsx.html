@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">56.52% </span>
+                <span class="strong">58.33% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>13/23</span>
+                <span class='fraction'>14/24</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>11/22</span>
+                <span class='fraction'>12/24</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">61.11% </span>
+                <span class="strong">63.15% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>11/18</span>
+                <span class='fraction'>12/19</span>
             </div>
         
             
@@ -213,7 +213,19 @@
 <a name='L148'></a><a href='#L148'>148</a>
 <a name='L149'></a><a href='#L149'>149</a>
 <a name='L150'></a><a href='#L150'>150</a>
-<a name='L151'></a><a href='#L151'>151</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L151'></a><a href='#L151'>151</a>
+<a name='L152'></a><a href='#L152'>152</a>
+<a name='L153'></a><a href='#L153'>153</a>
+<a name='L154'></a><a href='#L154'>154</a>
+<a name='L155'></a><a href='#L155'>155</a>
+<a name='L156'></a><a href='#L156'>156</a>
+<a name='L157'></a><a href='#L157'>157</a>
+<a name='L158'></a><a href='#L158'>158</a>
+<a name='L159'></a><a href='#L159'>159</a>
+<a name='L160'></a><a href='#L160'>160</a>
+<a name='L161'></a><a href='#L161'>161</a>
+<a name='L162'></a><a href='#L162'>162</a>
+<a name='L163'></a><a href='#L163'>163</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -311,6 +323,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -322,6 +339,9 @@
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -345,7 +365,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -411,7 +435,10 @@ export function ProjectCatalog({
         &lt;div className="flex items-center gap-3"&gt;
           &lt;span className="text-5xl buddy-avatar"&gt;🐶&lt;/span&gt;
           &lt;div&gt;
-            &lt;h1 className="text-3xl sm:text-4xl font-extrabold text-[#333] tracking-wide" style={{ textShadow: "2px 2px 0px var(--color-candy-yellow)" }}&gt;
+            &lt;h1
+              className="text-3xl sm:text-4xl font-extrabold text-[#333] tracking-wide"
+              style={{ textShadow: "2px 2px 0px var(--color-candy-yellow)" }}
+            &gt;
               {t.catalog_title}
             &lt;/h1&gt;
             &lt;p className="text-gray-600 font-bold mt-1 text-lg"&gt;
@@ -425,7 +452,9 @@ export function ProjectCatalog({
           &lt;button
             onClick={onToggleLanguage}
             className={`border-4 border-[#222] px-4 py-3 rounded-full hover:scale-105 active:scale-95 transition-transform shadow-[4px_4px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none flex items-center gap-2 font-bold text-lg ${
-              language !== "en-US" ? <span class="branch-0 cbranch-no" title="branch not covered" >"bg-[var(--color-candy-green)]" : "</span>bg-white"
+              language !== "en-US"
+                ? <span class="branch-0 cbranch-no" title="branch not covered" >"bg-[var(--color-candy-green)]"</span>
+                : "bg-white"
             }`}
           &gt;
             &lt;Languages size={22} strokeWidth={2.5} /&gt;
@@ -478,7 +507,10 @@ export function ProjectCatalog({
                   data-testid="project-card"
                 &gt;
                   &lt;div className="p-6 flex-1 flex flex-col"&gt;
-                    &lt;h3 className="text-[#222] font-extrabold text-2xl truncate mb-3" title={project.title}&gt;
+                    &lt;h3
+                      className="text-[#222] font-extrabold text-2xl truncate mb-3"
+                      title={project.title}
+                    &gt;
                       {project.title}
                     &lt;/h3&gt;
                     &lt;div className="flex items-center gap-2 text-[#222]/70 font-bold text-sm mb-6 bg-white/30 w-fit px-3 py-1 rounded-full border-2 border-[#222]/20"&gt;
@@ -495,7 +527,11 @@ export function ProjectCatalog({
                         {t.open_project}
                       &lt;/button&gt;
                       &lt;button
-                        onClick={() =&gt; onDelete(project.id)}
+                        onClick={() =&gt; {
+                          <span class="missing-if-branch" title="else path not taken" >E</span>if (window.confirm(t.confirm_delete)) {
+                            onDelete(project.id);
+                          }
+                        }}
                         className="bg-white border-4 border-[#222] text-[#222] p-3 rounded-2xl shadow-[3px_3px_0px_#222] active:translate-y-[3px] active:translate-x-[3px] active:shadow-none transition-all hover:bg-red-400 hover:text-white"
                         aria-label={`${t.delete_project} ${project.title}`}
                         data-testid="delete-project-btn"
@@ -520,7 +556,7 @@ export function ProjectCatalog({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-03-11T15:57:00.703Z
+                at 2026-03-13T01:51:27.216Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
