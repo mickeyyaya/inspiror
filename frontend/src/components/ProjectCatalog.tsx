@@ -104,7 +104,7 @@ export function ProjectCatalog({
             <p className="text-gray-600 font-bold mt-1 text-lg">
               {projects.length === 0
                 ? t.tell_buddy
-                : `${projects.length} ${projects.length === 1 ? "project" : "projects"} ${language === "en-US" ? "waiting for you!" : "正在等著你！"}`}
+                : `${projects.length} ${projects.length === 1 ? t.project_count_one : t.project_count_many} ${t.projects_waiting}`}
             </p>
             {streakDays !== undefined && streakDays >= 2 && (
               <span

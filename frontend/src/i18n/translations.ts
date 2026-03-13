@@ -93,6 +93,9 @@ export interface TranslationKeys {
   copied_feedback: string;
   streak_days: string;
   aria_rename_project: string;
+  project_count_one: string;
+  project_count_many: string;
+  projects_waiting: string;
 }
 
 export const translations: Record<Language, TranslationKeys> = {
@@ -193,6 +196,9 @@ export const translations: Record<Language, TranslationKeys> = {
     copied_feedback: "Copied!",
     streak_days: "day streak!",
     aria_rename_project: "Rename project",
+    project_count_one: "project",
+    project_count_many: "projects",
+    projects_waiting: "waiting for you!",
   },
   "zh-TW": {
     greeting: "嗨！我是你的建築夥伴。今天你想創造什麼呢？",
@@ -288,6 +294,9 @@ export const translations: Record<Language, TranslationKeys> = {
     copied_feedback: "已複製！",
     streak_days: "天連續！",
     aria_rename_project: "重新命名專案",
+    project_count_one: "個專案",
+    project_count_many: "個專案",
+    projects_waiting: "正在等著你！",
   },
   "zh-CN": {
     greeting: "嗨！我是你的建筑夥伴。今天你想创造什么呢？",
@@ -383,5 +392,8 @@ export const translations: Record<Language, TranslationKeys> = {
     copied_feedback: "已复制！",
     streak_days: "天连续！",
     aria_rename_project: "重命名项目",
+    project_count_one: "个项目",
+    project_count_many: "个项目",
+    projects_waiting: "正在等着你！",
   },
 };
