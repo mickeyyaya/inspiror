@@ -146,6 +146,46 @@
           "Weekly engaged users are 90% more likely to retain long-term — onboarding goal is habit formation, not feature education"
         ],
         "ttlDays": 14
+      },
+      {
+        "query": "dark mode implementation patterns kids apps React Tailwind CSS 2026",
+        "date": "2026-03-13",
+        "keyFindings": [
+          "Tailwind v4 dark mode: set darkMode:'class' in config, toggle 'dark' class on <html>; CSS variables + React Context is the scalable 2026 pattern",
+          "Use prefers-color-scheme media query as the default (system preference); allow user override stored in localStorage",
+          "Prevent flash-of-unstyled-content (FOUC) with an inline <script> in index.html that reads localStorage before React hydrates",
+          "For kids apps, 'candy dark' (dark BG + vivid accent colors) outperforms simple greyscale inversion — maintain brand color palette in dark mode",
+          "tailwindcss-theme-variants plugin enables named themes (light/dark/high-contrast) as Tailwind prefixes — good for a11y compliance",
+          "61% of engineering teams deploy dark mode via feature flags (LaunchDarkly 2024 report) — low-risk rollout strategy"
+        ],
+        "ttlDays": 14
+      },
+      {
+        "query": "Content Security Policy CSP iframe sandbox best practices 2025 2026",
+        "date": "2026-03-13",
+        "keyFindings": [
+          "Inspiror's PreviewPanel already uses sandbox='allow-scripts' (correct — no allow-same-origin, no allow-forms) — this is the gold standard for user-code sandboxes",
+          "Helmet default CSP may block srcdoc iframes: need to verify frame-src 'none' is not set; srcdoc iframes do NOT load an external URL so frame-src policy applies differently across browsers",
+          "Add explicit Content-Security-Policy header on the Express server: frame-ancestors 'self' (blocks clickjacking), default-src 'self', script-src 'self' 'nonce-{nonce}' for any inline scripts",
+          "For srcdoc iframes running user JS, postMessage origin must be validated on parent side (Inspiror already does this in useAutoFix.ts via event.origin check)",
+          "OWASP 2026: CSP Level 3 with 'strict-dynamic' + nonces is preferred over allowlisted origins for script-src — reduces XSS risk even if attacker controls a CDN",
+          "All iframe content should load over HTTPS only; in 2026 any third-party that doesn't support HTTPS is a red flag (not applicable to Inspiror's srcdoc model)"
+        ],
+        "ttlDays": 14
+      },
+      {
+        "query": "security advisories React Vite Express Node.js 2026 CVE",
+        "date": "2026-03-13",
+        "keyFindings": [
+          "CVE-2025-55182 (CVSS 10.0): React Server Components RCE — affects React 19.0/19.1/19.2 with RSC; Inspiror uses React without RSC so NOT directly affected, but monitor",
+          "CVE-2025-55184 + CVE-2025-67779 (CVSS 7.5 High): DoS via crafted HTTP to Server Functions endpoint — RSC-only, same exemption applies",
+          "CVE-2026-23864: additional DoS in RSC — patched; again RSC-only",
+          "Node.js Jan 2026 security release: --permission model bypass via symlink paths; HTTP/2 HPACK crash (remote DoS); UDS bypass for privilege escalation — update to latest LTS (22.x) recommended",
+          "Node.js OpenSSL advisory Jan 2026: patch included in regular Node.js releases — handled by Node.js LTS update",
+          "CVE-2025-58752 (Vite fs bypass) was already captured in state — confirm Vite is patched to ≥5.4.x or ≥6.x",
+          "No new critical Express CVEs found as of March 2026 — existing helmet + rate-limit + input validation in Inspiror backend covers known attack surface"
+        ],
+        "ttlDays": 7
       }
     ]
   },
@@ -475,6 +515,12 @@
       "date": "2026-03-13",
       "decision": "completed",
       "cycle": 32
+    },
+    {
+      "task": "CSP headers + VITE_API_URL env warning + useStreak safeSave",
+      "date": "2026-03-13",
+      "decision": "completed",
+      "cycle": 33
     }
   ],
   "failedApproaches": [],
@@ -503,6 +549,6 @@
   ],
   "instinctCount": 4,
   "operatorWarnings": [],
-  "lastUpdated": "2026-03-13T18:45:00Z",
+  "lastUpdated": "2026-03-13T19:00:00Z",
   "nothingToDoCount": 0
 }

@@ -357,4 +357,15 @@
 - **Security:** PASS (no user input involved)
 - **Tests:** 478 frontend + 19 backend = 497 total, all passing. Coverage 95.46%.
 - **Deploy:** SUCCESS (commit 91d7497, pushed to main)
-- **Next cycle should consider:** Dark mode, CSP headers, content moderation (after 2026-03-18), schema dedup, VITE_API_URL fallback fix, llmService.ts refactor
+- **Next cycle should consider:** Dark mode, content moderation (after 2026-03-18), schema dedup, llmService.ts refactor, WCAG contrast fix (#a8e6cf)
+
+## Cycle 33 — 2026-03-13
+- **Tasks:** CSP headers + VITE_API_URL env warning + useStreak safeSave
+- **Type:** Security + Stability
+- **CSP:** Explicit Content-Security-Policy via helmet: default-src 'self', frame-ancestors 'self' (clickjacking), object-src 'none', script-src 'self', style-src 'self' 'unsafe-inline' (Tailwind). Deferred since Cycle 2 (11 cycles).
+- **Env warning:** console.warn when VITE_API_URL is unset in non-dev mode. Prevents silent API failure in production deployments.
+- **safeSave:** useStreak.writeStreak now uses safeSave utility (consistent with useProjects/useAchievements).
+- **Security:** PASS (CSP now active — defense-in-depth against XSS)
+- **Tests:** 478 frontend + 20 backend = 498 total, all passing. 1 new CSP header test.
+- **Deploy:** SUCCESS (commit 41168c2, pushed to main)
+- **Next cycle should consider:** Dark mode (candy dark), WCAG contrast fix (#a8e6cf on CTA buttons), content moderation (after 2026-03-18), template title localization bug, schema dedup
