@@ -299,3 +299,13 @@
 - **Tests:** 414 frontend (2 new streak tests). All pass.
 - **Deploy:** SUCCESS (commit 60c702e, pushed to main)
 - **Next cycle should consider:** Dark mode, PWA offline, project renaming, Gemini model validation at startup, schema dedup (frontend/backend)
+
+## Cycle 27 — 2026-03-13
+- **Tasks:** Inline project rename + Gemini model startup log
+- **Type:** Feature (UX) + Stability
+- **Rename:** Double-click or pencil icon on project cards triggers inline rename input. Enter/blur commits, Escape cancels. Wired through onRename prop → updateProject. i18n for aria label in all 3 locales.
+- **Model log:** Backend logs configured Gemini model at startup for visibility/debugging.
+- **Security:** PASS (rename is local state only, maxLength=60 on input)
+- **Tests:** 415 frontend (1 new rename test). All pass.
+- **Deploy:** SUCCESS (commit 16571d6, pushed to main)
+- **Next cycle should consider:** Dark mode, PWA offline, schema dedup, hardcoded strings i18n, PreviewPanel/MessageInput tests
