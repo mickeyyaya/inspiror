@@ -84,6 +84,8 @@ export interface TranslationKeys {
   onboarding_step3_desc: string;
   onboarding_got_it: string;
   onboarding_skip: string;
+  confirm_ok: string;
+  confirm_cancel: string;
 }
 
 export const translations: Record<Language, TranslationKeys> = {
@@ -175,6 +177,8 @@ export const translations: Record<Language, TranslationKeys> = {
       "See the building blocks that make your app work. Drag and tweak them!",
     onboarding_got_it: "Got it!",
     onboarding_skip: "Skip tour",
+    confirm_ok: "Yes, do it!",
+    confirm_cancel: "Nope, go back",
   },
   "zh-TW": {
     greeting: "嗨！我是你的建築夥伴。今天你想創造什麼呢？",
@@ -261,6 +265,8 @@ export const translations: Record<Language, TranslationKeys> = {
     onboarding_step3_desc: "看看組成你的應用的積木。你可以拖動和調整它們！",
     onboarding_got_it: "知道了！",
     onboarding_skip: "跳過導覽",
+    confirm_ok: "好，執行！",
+    confirm_cancel: "不，返回",
   },
   "zh-CN": {
     greeting: "嗨！我是你的建筑夥伴。今天你想创造什么呢？",
@@ -347,5 +353,7 @@ export const translations: Record<Language, TranslationKeys> = {
     onboarding_step3_desc: "看看组成你的应用的积木。你可以拖动和调整它们！",
     onboarding_got_it: "知道了！",
     onboarding_skip: "跳过导览",
+    confirm_ok: "好，执行！",
+    confirm_cancel: "不，返回",
   },
 };

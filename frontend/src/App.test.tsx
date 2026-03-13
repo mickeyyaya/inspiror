@@ -250,8 +250,9 @@ describe("Inspiror App", () => {
 
       render(<App />);
       expect(screen.getByText("My Cool App")).toBeInTheDocument();
-      vi.spyOn(window, "confirm").mockReturnValueOnce(true);
       fireEvent.click(screen.getByTestId("delete-project-btn"));
+      // ConfirmDialog is now open — click confirm
+      fireEvent.click(screen.getByTestId("confirm-dialog-confirm"));
       expect(screen.queryByText("My Cool App")).not.toBeInTheDocument();
       expect(
         screen.getByText(/You haven't built anything yet/),
@@ -536,7 +537,6 @@ describe("Inspiror App", () => {
     });
 
     it("renders a reset button and resets to defaults", () => {
-      const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(true);
       render(<App />);
       const input = screen.getByPlaceholderText(/Type your grand idea/i);
       fireEvent.change(input, { target: { value: "Something else" } });
@@ -544,9 +544,9 @@ describe("Inspiror App", () => {
       const resetBtn = screen.getByRole("button", { name: /^Reset$/i });
       fireEvent.click(resetBtn);
 
-      expect(confirmSpy).toHaveBeenCalled();
+      // ConfirmDialog is now open — click confirm
+      fireEvent.click(screen.getByTestId("confirm-dialog-confirm"));
       expect(input).toHaveValue("");
-      confirmSpy.mockRestore();
     });
 
     it("renders the preview sandbox iframe with error catcher", () => {

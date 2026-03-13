@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Plus, Trash2, FolderOpen, Clock, Languages } from "lucide-react";
 import type { Project } from "../types/project";
 import { translations } from "../i18n/translations";
@@ -6,6 +7,7 @@ import {
   STARTER_TEMPLATES,
   type StarterTemplate,
 } from "../constants/starterTemplates";
+import { ConfirmDialog } from "./ConfirmDialog";
 
 interface ProjectCatalogProps {
   projects: Project[];
@@ -28,6 +30,7 @@ export function ProjectCatalog({
 }: ProjectCatalogProps) {
   const t = translations[language];
   const sorted = [...projects].sort((a, b) => b.updatedAt - a.updatedAt);
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
   const timeAgo = (timestamp: number): string => {
     const seconds = Math.floor((Date.now() - timestamp) / 1000);
@@ -197,11 +200,7 @@ export function ProjectCatalog({
                           {t.open_project}
                         </button>
                         <button
-                          onClick={() => {
-                            if (window.confirm(t.confirm_delete)) {
-                              onDelete(project.id);
-                            }
-                          }}
+                          onClick={() => setPendingDeleteId(project.id)}
                           className="bg-white border-4 border-[#222] text-[#222] p-3 rounded-2xl shadow-[3px_3px_0px_#222] active:translate-y-[3px] active:translate-x-[3px] active:shadow-none transition-all hover:bg-red-400 hover:text-white"
                           aria-label={`${t.delete_project} ${project.title}`}
                           data-testid="delete-project-btn"
@@ -217,6 +216,18 @@ export function ProjectCatalog({
           </>
         )}
       </div>
+
+      <ConfirmDialog
+        isOpen={pendingDeleteId !== null}
+        message={t.confirm_delete}
+        onConfirm={() => {
+          if (pendingDeleteId) onDelete(pendingDeleteId);
+          setPendingDeleteId(null);
+        }}
+        onCancel={() => setPendingDeleteId(null)}
+        confirmLabel={t.confirm_ok}
+        cancelLabel={t.confirm_cancel}
+      />
     </div>
   );
 }

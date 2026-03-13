@@ -24,6 +24,7 @@ import { AchievementModal } from "./AchievementModal";
 import { BadgeGallery } from "./BadgeGallery";
 import { BlockEditor } from "./blocks/BlockEditor";
 import { OnboardingTooltip } from "./OnboardingTooltip";
+import { ConfirmDialog } from "./ConfirmDialog";
 import { useOnboarding } from "../hooks/useOnboarding";
 
 export interface EditorViewProps {
@@ -246,10 +247,14 @@ export function EditorView({
     });
   };
 
-  const handleReset = () => {
-    if (!window.confirm(t.confirm_reset)) {
-      return;
-    }
+  const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
+
+  const handleResetRequest = () => {
+    setIsResetConfirmOpen(true);
+  };
+
+  const handleResetConfirm = () => {
+    setIsResetConfirmOpen(false);
     onReset();
     const freshBlocks = DEFAULT_BLOCKS.map((b) => ({ ...b }));
     checksRef.current = [];
@@ -313,7 +318,7 @@ export function EditorView({
             onToggleLanguage={onToggleLanguage}
             onToggleAutoSpeak={toggleAutoSpeak}
             onToggleMute={toggleMute}
-            onReset={handleReset}
+            onReset={handleResetRequest}
             onHideChat={() => setIsChatVisible(false)}
             onOpenBadges={() => setIsBadgeGalleryOpen(true)}
             t={t}
@@ -413,6 +418,15 @@ export function EditorView({
         onAdvance={advanceOnboarding}
         onSkip={skipOnboarding}
         t={t}
+      />
+
+      <ConfirmDialog
+        isOpen={isResetConfirmOpen}
+        message={t.confirm_reset}
+        onConfirm={handleResetConfirm}
+        onCancel={() => setIsResetConfirmOpen(false)}
+        confirmLabel={t.confirm_ok}
+        cancelLabel={t.confirm_cancel}
       />
     </div>
   );
