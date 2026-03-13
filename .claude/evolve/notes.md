@@ -368,4 +368,14 @@
 - **Security:** PASS (CSP now active — defense-in-depth against XSS)
 - **Tests:** 478 frontend + 20 backend = 498 total, all passing. 1 new CSP header test.
 - **Deploy:** SUCCESS (commit 41168c2, pushed to main)
-- **Next cycle should consider:** Dark mode (candy dark), WCAG contrast fix (#a8e6cf on CTA buttons), content moderation (after 2026-03-18), template title localization bug, schema dedup
+- **Next cycle should consider:** Dark mode (candy dark), content moderation (after 2026-03-18), schema dedup, llmService.ts refactor, handleDelete sortedBlocks fix
+
+## Cycle 34 — 2026-03-13
+- **Tasks:** WCAG AA contrast fix + template title localization
+- **Type:** Accessibility + Bug fix
+- **Contrast:** Darkened --color-candy-green from #a8e6cf (1.9:1) to #2ecc71 (3.7:1+). Updated all UI chrome references (PWA banner, project cards, PreviewPanel fallback). In-game decorative colors kept lighter.
+- **Template titles:** Fixed handleCreateFromTemplate using template.id ("catch-the-star") instead of translations[language][template.titleKey] ("Catch the Star" / "接住星星"). Added language to useCallback deps.
+- **Security:** PASS
+- **Tests:** 478 frontend + 20 backend = 498 total, all passing.
+- **Deploy:** SUCCESS (commit 96cec34, pushed to main)
+- **Next cycle should consider:** Dark mode (candy dark), content moderation (after 2026-03-18), handleDelete sortedBlocks fix, llmService.ts refactor, schema dedup
