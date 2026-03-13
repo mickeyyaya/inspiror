@@ -1,13 +1,5 @@
 import { renderHook, act } from "@testing-library/react";
-import {
-  describe,
-  it,
-  expect,
-  vi,
-  beforeEach,
-  afterEach,
-  afterAll,
-} from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { useStreak, STREAK_STORAGE_KEY } from "./useStreak";
 
 describe("useStreak", () => {

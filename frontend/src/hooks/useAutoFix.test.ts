@@ -26,16 +26,16 @@ describe("useAutoFix", () => {
   const playBuzzerMock = vi.fn();
   const recordDebugRefMock = { current: vi.fn() };
   const messagesRef = {
-    current: [] as { id: string; role: string; content: string }[],
+    current: [] as import("../types/project").ChatMessage[],
   };
-  const blocksRef = { current: [] as unknown[] };
+  const blocksRef = { current: [] as import("../types/block").Block[] };
   const setMessagesMock = vi.fn();
 
   const baseProps = {
     isLoading: false,
     submit: submitMock,
     playBuzzer: playBuzzerMock,
-    language: "en" as const,
+    language: "en-US" as const,
     t: {
       error_oops: "Oops!",
       error_autofix_limit: "Auto-fix limit reached.",

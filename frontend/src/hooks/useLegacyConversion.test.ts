@@ -3,9 +3,20 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { useLegacyConversion } from "./useLegacyConversion";
 import type { Block } from "../types/block";
 
-const validBlock = { id: "b1", code: "console.log(1)", enabled: true, label: "Log", order: 0, category: "misc", params: [] };
+const validBlock: import("../types/block").Block = {
+  id: "b1",
+  type: "custom",
+  code: "console.log(1)",
+  enabled: true,
+  label: "Log",
+  emoji: "📝",
+  order: 0,
+  params: [],
+};
 
-function makeProject(overrides: { blocks?: Block[]; currentCode?: string } = {}) {
+function makeProject(
+  overrides: { blocks?: Block[]; currentCode?: string } = {},
+) {
   return {
     id: "proj-1",
     messages: [],
@@ -33,7 +44,7 @@ describe("useLegacyConversion", () => {
     const { result } = renderHook(() =>
       useLegacyConversion({
         project: makeProject({ blocks: [validBlock] }),
-        language: "en",
+        language: "en-US",
         onBlocksConverted: onBlocksConvertedMock,
         onConversionEnd: onConversionEndMock,
       }),
@@ -50,7 +61,7 @@ describe("useLegacyConversion", () => {
     const { result } = renderHook(() =>
       useLegacyConversion({
         project: makeProject({ currentCode: "short code" }),
-        language: "en",
+        language: "en-US",
         onBlocksConverted: onBlocksConvertedMock,
         onConversionEnd: onConversionEndMock,
       }),
@@ -71,7 +82,7 @@ describe("useLegacyConversion", () => {
     renderHook(() =>
       useLegacyConversion({
         project: makeProject({ currentCode: longCode }),
-        language: "en",
+        language: "en-US",
         onBlocksConverted: onBlocksConvertedMock,
         onConversionEnd: onConversionEndMock,
       }),
@@ -84,7 +95,7 @@ describe("useLegacyConversion", () => {
     const [url, options] = fetchSpy.mock.calls[0];
     expect(String(url)).toContain("/api/convert-to-blocks");
     const body = JSON.parse((options as RequestInit).body as string);
-    expect(body).toEqual({ code: longCode, language: "en" });
+    expect(body).toEqual({ code: longCode, language: "en-US" });
   });
 
   it("sets isConverting true during fetch and false on completion", async () => {
@@ -98,7 +109,7 @@ describe("useLegacyConversion", () => {
     const { result } = renderHook(() =>
       useLegacyConversion({
         project: makeProject({ currentCode: longCode }),
-        language: "en",
+        language: "en-US",
         onBlocksConverted: onBlocksConvertedMock,
         onConversionEnd: onConversionEndMock,
       }),
@@ -121,12 +132,14 @@ describe("useLegacyConversion", () => {
   it("handles fetch error gracefully (logs, keeps DEFAULT_BLOCKS)", async () => {
     const longCode = "x".repeat(150);
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-    vi.spyOn(globalThis, "fetch").mockRejectedValueOnce(new Error("Network error"));
+    vi.spyOn(globalThis, "fetch").mockRejectedValueOnce(
+      new Error("Network error"),
+    );
 
     const { result } = renderHook(() =>
       useLegacyConversion({
         project: makeProject({ currentCode: longCode }),
-        language: "en",
+        language: "en-US",
         onBlocksConverted: onBlocksConvertedMock,
         onConversionEnd: onConversionEndMock,
       }),
@@ -152,7 +165,7 @@ describe("useLegacyConversion", () => {
       ({ code }: { code: string }) =>
         useLegacyConversion({
           project: makeProject({ currentCode: code }),
-          language: "en",
+          language: "en-US",
           onBlocksConverted: onBlocksConvertedMock,
           onConversionEnd: onConversionEndMock,
         }),
@@ -180,7 +193,7 @@ describe("useLegacyConversion", () => {
     renderHook(() =>
       useLegacyConversion({
         project: makeProject({ currentCode: longCode }),
-        language: "en",
+        language: "en-US",
         onBlocksConverted: onBlocksConvertedMock,
         onConversionEnd: onConversionEndMock,
       }),

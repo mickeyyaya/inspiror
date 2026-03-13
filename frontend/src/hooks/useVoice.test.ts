@@ -124,7 +124,7 @@ describe("useVoice", () => {
   it("sets recognition.lang when language prop changes", () => {
     const { rerender } = renderHook(
       ({ lang }: { lang: "en-US" | "zh-CN" | "zh-TW" }) => useVoice(lang),
-      { initialProps: { lang: "en-US" as const } },
+      { initialProps: { lang: "en-US" as "en-US" | "zh-CN" | "zh-TW" } },
     );
     rerender({ lang: "zh-CN" });
     expect(latestRecognition.lang).toBe("zh-CN");
