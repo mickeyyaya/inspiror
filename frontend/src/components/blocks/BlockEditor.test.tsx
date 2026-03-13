@@ -251,6 +251,25 @@ describe("BlockEditor", () => {
       expect(result.map((b) => b.order)).toEqual([0, 1]);
     });
 
+    it("preserves visual order when deleting after reorder", () => {
+      const onBlocksChange = vi.fn();
+      // Blocks with non-sequential order (as if reordered: C=0, A=1, B=2)
+      const blocks = [
+        makeBlock({ id: "a", label: "Block A", order: 1 }),
+        makeBlock({ id: "b", label: "Block B", order: 2 }),
+        makeBlock({ id: "c", label: "Block C", order: 0 }),
+      ];
+      render(<BlockEditor blocks={blocks} onBlocksChange={onBlocksChange} />);
+      // Delete A (visually in the middle: C, A, B)
+      fireEvent.click(screen.getByRole("button", { name: "Delete Block A" }));
+      const result = onBlocksChange.mock.calls[0][0] as Block[];
+      expect(result).toHaveLength(2);
+      // Should preserve sorted visual order: C then B
+      expect(result[0].id).toBe("c");
+      expect(result[1].id).toBe("b");
+      expect(result.map((b) => b.order)).toEqual([0, 1]);
+    });
+
     it("deleting last block results in empty array", () => {
       const onBlocksChange = vi.fn();
       const blocks = [makeBlock({ id: "a", label: "Block A", order: 0 })];

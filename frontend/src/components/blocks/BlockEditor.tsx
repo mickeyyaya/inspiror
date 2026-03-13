@@ -98,12 +98,12 @@ export function BlockEditor({
 
   const handleDelete = useCallback(
     (id: string) => {
-      const updated = blocks
+      const updated = sortedBlocks
         .filter((b) => b.id !== id)
         .map((b, idx) => ({ ...b, order: idx }));
       onBlocksChange(updated);
     },
-    [blocks, onBlocksChange],
+    [sortedBlocks, onBlocksChange],
   );
 
   return (
