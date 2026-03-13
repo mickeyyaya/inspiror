@@ -339,3 +339,12 @@
 - **Tests:** 458 frontend + 19 backend = 477 total, all passing
 - **Deploy:** SUCCESS (commit 2ef18e2, pushed to main)
 - **Next cycle should consider:** Dark mode, CSP headers, content moderation (after 2026-03-18), block panel inert when closed (a11y), useLegacyConversion isValidBlock tightening, schema dedup, unbounded particles cap
+
+## Cycle 31 — 2026-03-13
+- **Tasks:** isValidBlock hardening + block panel inert (a11y)
+- **Type:** Stability + Accessibility
+- **Validation:** isValidBlock now checks all 8 required Block fields + valid BlockCategory + valid param entries. Prevents malformed LLM/storage data from crashing block compiler.
+- **A11y:** Added `inert` attribute to block panel container when closed. Keyboard Tab no longer reaches invisible off-screen buttons. Fixes WCAG 2.1 SC 2.4.3.
+- **Tests:** 475 frontend + 19 backend = 494 total. 17 new isValidBlock unit tests + 1 integration test.
+- **Deploy:** SUCCESS (commit ec49ab5, pushed to main)
+- **Next cycle should consider:** Dark mode, CSP headers, content moderation (after 2026-03-18), schema dedup, unbounded particles cap, VITE_API_URL fallback fix, time format singular/plural bug
