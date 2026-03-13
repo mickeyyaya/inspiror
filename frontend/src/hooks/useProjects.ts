@@ -81,7 +81,7 @@ const getWelcomeCode = (language: VoiceLanguage) => {
     <p>${t.tell_buddy}</p>
   </div>
   <script>
-    const colors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#a8e6cf', '#c3aed6', '#ffb86c'];
+    const colors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#2ecc71', '#c3aed6', '#ffb86c'];
     for(let i=0; i<15; i++) {
       const b = document.createElement('div');
       b.className = 'bubble';

@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { useProjects } from "./hooks/useProjects";
 import { useStreak } from "./hooks/useStreak";
 import type { VoiceLanguage } from "./hooks/useVoice";
-import { translations } from "./i18n/translations";
+import { translations, type TranslationKeys } from "./i18n/translations";
 import { ProjectCatalog } from "./components/ProjectCatalog";
 import { EditorView } from "./components/EditorView";
 import { compileBlocks } from "./compiler/compileBlocks";
@@ -41,10 +41,12 @@ function App() {
       updateProject(newProject.id, {
         blocks,
         currentCode: compiledCode,
-        title: template.id,
+        title:
+          translations[language][template.titleKey as keyof TranslationKeys] ||
+          template.id,
       });
     },
-    [createProject, updateProject],
+    [createProject, updateProject, language],
   );
 
   if (!currentProject) {
