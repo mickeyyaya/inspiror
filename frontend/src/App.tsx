@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useProjects } from "./hooks/useProjects";
 import type { VoiceLanguage } from "./hooks/useVoice";
 import { translations } from "./i18n/translations";
 import { ProjectCatalog } from "./components/ProjectCatalog";
 import { EditorView } from "./components/EditorView";
+import { compileBlocks } from "./compiler/compileBlocks";
+import type { StarterTemplate } from "./constants/starterTemplates";
 import "./index.css";
 
 function App() {
@@ -29,6 +31,20 @@ function App() {
     });
   };
 
+  const handleCreateFromTemplate = useCallback(
+    (template: StarterTemplate) => {
+      const newProject = createProject();
+      const blocks = template.blocks.map((b) => ({ ...b }));
+      const compiledCode = compileBlocks(blocks);
+      updateProject(newProject.id, {
+        blocks,
+        currentCode: compiledCode,
+        title: template.id,
+      });
+    },
+    [createProject, updateProject],
+  );
+
   if (!currentProject) {
     return (
       <ProjectCatalog
@@ -36,6 +52,7 @@ function App() {
         onOpen={openProject}
         onDelete={deleteProject}
         onCreate={createProject}
+        onCreateFromTemplate={handleCreateFromTemplate}
         language={language}
         onToggleLanguage={toggleLanguage}
       />

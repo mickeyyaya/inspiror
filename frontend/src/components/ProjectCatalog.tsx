@@ -2,12 +2,17 @@ import { Plus, Trash2, FolderOpen, Clock, Languages } from "lucide-react";
 import type { Project } from "../types/project";
 import { translations } from "../i18n/translations";
 import type { VoiceLanguage } from "../hooks/useVoice";
+import {
+  STARTER_TEMPLATES,
+  type StarterTemplate,
+} from "../constants/starterTemplates";
 
 interface ProjectCatalogProps {
   projects: Project[];
   onOpen: (id: string) => void;
   onDelete: (id: string) => void;
   onCreate: () => void;
+  onCreateFromTemplate: (template: StarterTemplate) => void;
   language: VoiceLanguage;
   onToggleLanguage: () => void;
 }
@@ -17,6 +22,7 @@ export function ProjectCatalog({
   onOpen,
   onDelete,
   onCreate,
+  onCreateFromTemplate,
   language,
   onToggleLanguage,
 }: ProjectCatalogProps) {
@@ -34,6 +40,15 @@ export function ProjectCatalog({
     if (days < 30) return `${days}${t.time_day_ago}`;
     return t.last_edited;
   };
+
+  const templateCardColors = [
+    "bg-[var(--color-candy-pink)]",
+    "bg-[var(--color-candy-blue)]",
+    "bg-[var(--color-candy-yellow)]",
+    "bg-[var(--color-candy-green)]",
+    "bg-[var(--color-candy-purple)]",
+    "bg-[var(--color-candy-orange)]",
+  ];
 
   return (
     <div className="w-screen h-screen bg-[#fdfbf7] flex flex-col overflow-hidden relative">
@@ -82,10 +97,47 @@ export function ProjectCatalog({
         </div>
       </div>
 
-      {/* Project Grid */}
+      {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto p-6 sm:p-8 z-10">
+        {/* Template Gallery Section */}
+        <div className="mb-8">
+          <h2
+            className="text-2xl font-extrabold text-[#333] mb-4"
+            style={{ textShadow: "1px 1px 0px var(--color-candy-pink)" }}
+          >
+            {t.templates_header}
+          </h2>
+          <div
+            className="flex gap-4 overflow-x-auto pb-3 -mx-2 px-2"
+            style={{ scrollbarWidth: "thin" }}
+            data-testid="template-gallery"
+          >
+            {STARTER_TEMPLATES.map((template, i) => {
+              const cardBg = templateCardColors[i % templateCardColors.length];
+              return (
+                <button
+                  key={template.id}
+                  onClick={() => onCreateFromTemplate(template)}
+                  className={`${cardBg} rounded-[1.5rem] border-4 border-[#222] shadow-[4px_4px_0px_#222] hover:shadow-[8px_8px_0px_#222] hover:-translate-y-1 transition-all duration-200 btn-squish flex-shrink-0 w-40 sm:w-48 flex flex-col items-center p-4 text-left`}
+                  data-testid="template-card"
+                  aria-label={t[template.titleKey as keyof typeof t]}
+                >
+                  <span className="text-5xl mb-3 block">{template.emoji}</span>
+                  <span className="font-extrabold text-[#222] text-base leading-tight mb-1 text-center">
+                    {t[template.titleKey as keyof typeof t]}
+                  </span>
+                  <span className="text-[#333]/70 text-xs font-bold text-center leading-snug">
+                    {t[template.descriptionKey as keyof typeof t]}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Project Grid */}
         {sorted.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center">
+          <div className="flex flex-col items-center justify-center py-16 text-center">
             <div className="text-7xl mb-6 buddy-avatar">🚀</div>
             <h2 className="text-3xl font-extrabold text-[#333] mb-4">
               {t.empty_catalog}
@@ -99,62 +151,70 @@ export function ProjectCatalog({
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {sorted.map((project, i) => {
-              const bgColors = [
-                "bg-[var(--color-candy-blue)]",
-                "bg-[var(--color-candy-yellow)]",
-                "bg-[var(--color-candy-pink)]",
-                "bg-[var(--color-candy-green)]",
-                "bg-[var(--color-candy-purple)]",
-                "bg-[var(--color-candy-orange)]",
-              ];
-              const cardBg = bgColors[i % bgColors.length];
+          <>
+            <h2
+              className="text-2xl font-extrabold text-[#333] mb-4"
+              style={{ textShadow: "1px 1px 0px var(--color-candy-blue)" }}
+            >
+              {t.aria_my_projects}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {sorted.map((project, i) => {
+                const bgColors = [
+                  "bg-[var(--color-candy-blue)]",
+                  "bg-[var(--color-candy-yellow)]",
+                  "bg-[var(--color-candy-pink)]",
+                  "bg-[var(--color-candy-green)]",
+                  "bg-[var(--color-candy-purple)]",
+                  "bg-[var(--color-candy-orange)]",
+                ];
+                const cardBg = bgColors[i % bgColors.length];
 
-              return (
-                <div
-                  key={project.id}
-                  className={`${cardBg} rounded-[2rem] border-4 border-[#222] shadow-[6px_6px_0px_#222] hover:shadow-[10px_10px_0px_#222] hover:-translate-y-2 transition-all duration-300 group btn-squish flex flex-col`}
-                  data-testid="project-card"
-                >
-                  <div className="p-6 flex-1 flex flex-col">
-                    <h3
-                      className="text-[#222] font-extrabold text-2xl truncate mb-3"
-                      title={project.title}
-                    >
-                      {project.title}
-                    </h3>
-                    <div className="flex items-center gap-2 text-[#222]/70 font-bold text-sm mb-6 bg-white/30 w-fit px-3 py-1 rounded-full border-2 border-[#222]/20">
-                      <Clock size={16} strokeWidth={2.5} />
-                      <span>{timeAgo(project.updatedAt)}</span>
-                    </div>
-                    <div className="mt-auto flex items-center gap-3">
-                      <button
-                        onClick={() => onOpen(project.id)}
-                        className="flex-1 bg-white border-4 border-[#222] text-[#222] px-4 py-3 rounded-2xl font-extrabold text-lg shadow-[3px_3px_0px_#222] active:translate-y-[3px] active:translate-x-[3px] active:shadow-none transition-all flex items-center justify-center gap-2 hover-wiggle"
-                        data-testid="open-project-btn"
+                return (
+                  <div
+                    key={project.id}
+                    className={`${cardBg} rounded-[2rem] border-4 border-[#222] shadow-[6px_6px_0px_#222] hover:shadow-[10px_10px_0px_#222] hover:-translate-y-2 transition-all duration-300 group btn-squish flex flex-col`}
+                    data-testid="project-card"
+                  >
+                    <div className="p-6 flex-1 flex flex-col">
+                      <h3
+                        className="text-[#222] font-extrabold text-2xl truncate mb-3"
+                        title={project.title}
                       >
-                        <FolderOpen size={20} strokeWidth={2.5} />
-                        {t.open_project}
-                      </button>
-                      <button
-                        onClick={() => {
-                          if (window.confirm(t.confirm_delete)) {
-                            onDelete(project.id);
-                          }
-                        }}
-                        className="bg-white border-4 border-[#222] text-[#222] p-3 rounded-2xl shadow-[3px_3px_0px_#222] active:translate-y-[3px] active:translate-x-[3px] active:shadow-none transition-all hover:bg-red-400 hover:text-white"
-                        aria-label={`${t.delete_project} ${project.title}`}
-                        data-testid="delete-project-btn"
-                      >
-                        <Trash2 size={20} strokeWidth={2.5} />
-                      </button>
+                        {project.title}
+                      </h3>
+                      <div className="flex items-center gap-2 text-[#222]/70 font-bold text-sm mb-6 bg-white/30 w-fit px-3 py-1 rounded-full border-2 border-[#222]/20">
+                        <Clock size={16} strokeWidth={2.5} />
+                        <span>{timeAgo(project.updatedAt)}</span>
+                      </div>
+                      <div className="mt-auto flex items-center gap-3">
+                        <button
+                          onClick={() => onOpen(project.id)}
+                          className="flex-1 bg-white border-4 border-[#222] text-[#222] px-4 py-3 rounded-2xl font-extrabold text-lg shadow-[3px_3px_0px_#222] active:translate-y-[3px] active:translate-x-[3px] active:shadow-none transition-all flex items-center justify-center gap-2 hover-wiggle"
+                          data-testid="open-project-btn"
+                        >
+                          <FolderOpen size={20} strokeWidth={2.5} />
+                          {t.open_project}
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (window.confirm(t.confirm_delete)) {
+                              onDelete(project.id);
+                            }
+                          }}
+                          className="bg-white border-4 border-[#222] text-[#222] p-3 rounded-2xl shadow-[3px_3px_0px_#222] active:translate-y-[3px] active:translate-x-[3px] active:shadow-none transition-all hover:bg-red-400 hover:text-white"
+                          aria-label={`${t.delete_project} ${project.title}`}
+                          data-testid="delete-project-btn"
+                        >
+                          <Trash2 size={20} strokeWidth={2.5} />
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          </>
         )}
       </div>
     </div>

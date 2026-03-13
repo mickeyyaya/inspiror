@@ -63,6 +63,19 @@ export interface TranslationKeys {
   download_project: string;
   aria_download: string;
   save_error: string;
+  templates_header: string;
+  template_catch_star_title: string;
+  template_catch_star_desc: string;
+  template_bouncing_emoji_title: string;
+  template_bouncing_emoji_desc: string;
+  template_color_mixer_title: string;
+  template_color_mixer_desc: string;
+  template_counting_game_title: string;
+  template_counting_game_desc: string;
+  template_magic_wand_title: string;
+  template_magic_wand_desc: string;
+  template_emoji_rain_title: string;
+  template_emoji_rain_desc: string;
 }
 
 export const translations: Record<Language, TranslationKeys> = {
@@ -131,6 +144,19 @@ export const translations: Record<Language, TranslationKeys> = {
     download_project: "Download",
     aria_download: "Download as HTML file",
     save_error: "Could not save — your storage is full!",
+    templates_header: "Start from a Template",
+    template_catch_star_title: "Catch the Star",
+    template_catch_star_desc: "Tap a star to score points!",
+    template_bouncing_emoji_title: "Bouncing Emoji",
+    template_bouncing_emoji_desc: "Watch an emoji bounce around!",
+    template_color_mixer_title: "Color Mixer",
+    template_color_mixer_desc: "Buttons that change the background!",
+    template_counting_game_title: "Counting Game",
+    template_counting_game_desc: "Tap to count up to your goal!",
+    template_magic_wand_title: "Magic Wand",
+    template_magic_wand_desc: "Tap anywhere to create sparkles!",
+    template_emoji_rain_title: "Emoji Rain",
+    template_emoji_rain_desc: "Emojis falling from the sky!",
   },
   "zh-TW": {
     greeting: "嗨！我是你的建築夥伴。今天你想創造什麼呢？",
@@ -196,6 +222,19 @@ export const translations: Record<Language, TranslationKeys> = {
     download_project: "下載",
     aria_download: "下載為 HTML 檔案",
     save_error: "無法儲存 — 你的儲存空間已滿！",
+    templates_header: "從範本開始",
+    template_catch_star_title: "接住星星",
+    template_catch_star_desc: "點擊星星來得分！",
+    template_bouncing_emoji_title: "彈跳表情",
+    template_bouncing_emoji_desc: "看表情符號到處彈跳！",
+    template_color_mixer_title: "顏色調色盤",
+    template_color_mixer_desc: "按按鈕改變背景顏色！",
+    template_counting_game_title: "數數遊戲",
+    template_counting_game_desc: "點擊數到你的目標！",
+    template_magic_wand_title: "魔法棒",
+    template_magic_wand_desc: "點擊任意處創造火花！",
+    template_emoji_rain_title: "表情雨",
+    template_emoji_rain_desc: "表情符號從天空落下！",
   },
   "zh-CN": {
     greeting: "嗨！我是你的建筑夥伴。今天你想创造什么呢？",
@@ -261,5 +300,18 @@ export const translations: Record<Language, TranslationKeys> = {
     download_project: "下载",
     aria_download: "下载为 HTML 文件",
     save_error: "无法保存 — 你的存储空间已满！",
+    templates_header: "从模板开始",
+    template_catch_star_title: "接住星星",
+    template_catch_star_desc: "点击星星来得分！",
+    template_bouncing_emoji_title: "弹跳表情",
+    template_bouncing_emoji_desc: "看表情符号到处弹跳！",
+    template_color_mixer_title: "颜色调色板",
+    template_color_mixer_desc: "按按钮改变背景颜色！",
+    template_counting_game_title: "数数游戏",
+    template_counting_game_desc: "点击数到你的目标！",
+    template_magic_wand_title: "魔法棒",
+    template_magic_wand_desc: "点击任意处创造火花！",
+    template_emoji_rain_title: "表情雨",
+    template_emoji_rain_desc: "表情符号从天空落下！",
   },
 };

@@ -1,24 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1773366687228" clover="3.2.0">
-  <project timestamp="1773366687228" name="All files">
-    <metrics statements="725" coveredstatements="694" conditionals="451" coveredconditionals="381" methods="248" coveredmethods="229" elements="1424" coveredelements="1304" complexity="0" loc="725" ncloc="725" packages="10" files="34" classes="34"/>
+<coverage generated="1773368698093" clover="3.2.0">
+  <project timestamp="1773368698093" name="All files">
+    <metrics statements="763" coveredstatements="728" conditionals="464" coveredconditionals="402" methods="259" coveredmethods="238" elements="1486" coveredelements="1368" complexity="0" loc="763" ncloc="763" packages="10" files="35" classes="35"/>
     <package name="src">
-      <metrics statements="27" coveredstatements="23" conditionals="14" coveredconditionals="9" methods="7" coveredmethods="5"/>
-      <file name="App.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/App.tsx">
-        <metrics statements="11" coveredstatements="7" conditionals="8" coveredconditionals="3" methods="3" coveredmethods="1"/>
-        <line num="10" count="181" type="stmt"/>
-        <line num="22" count="181" type="stmt"/>
+      <metrics statements="32" coveredstatements="24" conditionals="14" coveredconditionals="9" methods="9" coveredmethods="5"/>
+      <file name="App.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/App.tsx">
+        <metrics statements="16" coveredstatements="8" conditionals="8" coveredconditionals="3" methods="5" coveredmethods="1"/>
+        <line num="12" count="181" type="stmt"/>
         <line num="24" count="181" type="stmt"/>
-        <line num="25" count="0" type="stmt"/>
-        <line num="26" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="27" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="28" count="0" type="stmt"/>
-        <line num="32" count="181" type="cond" truecount="2" falsecount="0"/>
-        <line num="33" count="14" type="stmt"/>
-        <line num="45" count="167" type="stmt"/>
-        <line num="47" count="167" type="stmt"/>
+        <line num="26" count="181" type="stmt"/>
+        <line num="27" count="0" type="stmt"/>
+        <line num="28" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="29" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="30" count="0" type="stmt"/>
+        <line num="34" count="181" type="stmt"/>
+        <line num="36" count="0" type="stmt"/>
+        <line num="37" count="0" type="stmt"/>
+        <line num="38" count="0" type="stmt"/>
+        <line num="39" count="0" type="stmt"/>
+        <line num="48" count="181" type="cond" truecount="2" falsecount="0"/>
+        <line num="49" count="14" type="stmt"/>
+        <line num="62" count="167" type="stmt"/>
+        <line num="64" count="167" type="stmt"/>
       </file>
-      <file name="constants.ts" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/constants.ts">
+      <file name="constants.ts" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/constants.ts">
         <metrics statements="16" coveredstatements="16" conditionals="6" coveredconditionals="6" methods="4" coveredmethods="4"/>
         <line num="4" count="4" type="stmt"/>
         <line num="48" count="4" type="stmt"/>
@@ -33,65 +38,65 @@
         <line num="181" count="51" type="cond" truecount="2" falsecount="0"/>
         <line num="182" count="48" type="stmt"/>
         <line num="186" count="53" type="cond" truecount="2" falsecount="0"/>
-        <line num="187" count="8306" type="stmt"/>
+        <line num="187" count="8347" type="stmt"/>
         <line num="188" count="53" type="stmt"/>
-        <line num="195" count="72" type="stmt"/>
+        <line num="195" count="81" type="stmt"/>
       </file>
-      <file name="index.css" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/index.css">
+      <file name="index.css" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/index.css">
         <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       </file>
     </package>
     <package name="src.compiler">
       <metrics statements="39" coveredstatements="39" conditionals="16" coveredconditionals="15" methods="17" coveredmethods="17"/>
-      <file name="compileBlocks.ts" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/compiler/compileBlocks.ts">
+      <file name="compileBlocks.ts" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/compiler/compileBlocks.ts">
         <metrics statements="27" coveredstatements="27" conditionals="6" coveredconditionals="6" methods="16" coveredmethods="16"/>
-        <line num="7" count="22" type="stmt"/>
+        <line num="7" count="35" type="stmt"/>
         <line num="19" count="1" type="stmt"/>
-        <line num="24" count="19" type="stmt"/>
-        <line num="29" count="22" type="stmt"/>
-        <line num="33" count="2" type="stmt"/>
-        <line num="36" count="2" type="stmt"/>
+        <line num="24" count="32" type="stmt"/>
+        <line num="29" count="35" type="stmt"/>
+        <line num="33" count="3" type="stmt"/>
+        <line num="36" count="3" type="stmt"/>
         <line num="51" count="18" type="stmt"/>
         <line num="52" count="84" type="stmt"/>
-        <line num="61" count="21" type="stmt"/>
-        <line num="62" count="21" type="cond" truecount="2" falsecount="0"/>
+        <line num="61" count="27" type="stmt"/>
+        <line num="62" count="27" type="cond" truecount="2" falsecount="0"/>
         <line num="64" count="3" type="stmt"/>
         <line num="65" count="3" type="stmt"/>
         <line num="66" count="3" type="stmt"/>
         <line num="74" count="3" type="stmt"/>
         <line num="75" count="3" type="stmt"/>
-        <line num="105" count="21" type="stmt"/>
-        <line num="106" count="23" type="stmt"/>
-        <line num="107" count="6" type="stmt"/>
-        <line num="110" count="21" type="stmt"/>
-        <line num="111" count="19" type="cond" truecount="2" falsecount="0"/>
-        <line num="116" count="21" type="stmt"/>
-        <line num="118" count="19" type="stmt"/>
-        <line num="119" count="19" type="stmt"/>
-        <line num="120" count="19" type="stmt"/>
-        <line num="121" count="19" type="stmt"/>
-        <line num="140" count="21" type="cond" truecount="2" falsecount="0"/>
-        <line num="142" count="21" type="stmt"/>
+        <line num="105" count="27" type="stmt"/>
+        <line num="106" count="36" type="stmt"/>
+        <line num="107" count="13" type="stmt"/>
+        <line num="110" count="27" type="stmt"/>
+        <line num="111" count="32" type="cond" truecount="2" falsecount="0"/>
+        <line num="116" count="27" type="stmt"/>
+        <line num="118" count="32" type="stmt"/>
+        <line num="119" count="32" type="stmt"/>
+        <line num="120" count="32" type="stmt"/>
+        <line num="121" count="32" type="stmt"/>
+        <line num="140" count="27" type="cond" truecount="2" falsecount="0"/>
+        <line num="142" count="27" type="stmt"/>
       </file>
-      <file name="substituteParams.ts" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/compiler/substituteParams.ts">
+      <file name="substituteParams.ts" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/compiler/substituteParams.ts">
         <metrics statements="12" coveredstatements="12" conditionals="10" coveredconditionals="9" methods="1" coveredmethods="1"/>
-        <line num="11" count="26" type="stmt"/>
-        <line num="12" count="26" type="stmt"/>
-        <line num="13" count="17" type="stmt"/>
-        <line num="14" count="17" type="cond" truecount="2" falsecount="0"/>
-        <line num="17" count="16" type="cond" truecount="2" falsecount="0"/>
-        <line num="19" count="9" type="stmt"/>
-        <line num="20" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="11" count="39" type="stmt"/>
+        <line num="12" count="39" type="stmt"/>
+        <line num="13" count="32" type="stmt"/>
+        <line num="14" count="32" type="cond" truecount="2" falsecount="0"/>
+        <line num="17" count="31" type="cond" truecount="2" falsecount="0"/>
+        <line num="19" count="17" type="stmt"/>
+        <line num="20" count="14" type="cond" truecount="2" falsecount="0"/>
         <line num="21" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="24" count="6" type="stmt"/>
-        <line num="25" count="6" type="cond" truecount="2" falsecount="0"/>
-        <line num="28" count="16" type="stmt"/>
-        <line num="30" count="26" type="stmt"/>
+        <line num="24" count="13" type="stmt"/>
+        <line num="25" count="13" type="cond" truecount="2" falsecount="0"/>
+        <line num="28" count="31" type="stmt"/>
+        <line num="30" count="39" type="stmt"/>
       </file>
     </package>
     <package name="src.components">
-      <metrics statements="235" coveredstatements="212" conditionals="173" coveredconditionals="130" methods="84" coveredmethods="72"/>
-      <file name="AchievementModal.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/components/AchievementModal.tsx">
+      <metrics statements="263" coveredstatements="240" conditionals="186" coveredconditionals="148" methods="92" coveredmethods="80"/>
+      <file name="AchievementModal.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/components/AchievementModal.tsx">
         <metrics statements="11" coveredstatements="11" conditionals="6" coveredconditionals="5" methods="5" coveredmethods="5"/>
         <line num="18" count="143" type="stmt"/>
         <line num="20" count="143" type="stmt"/>
@@ -105,7 +110,7 @@
         <line num="32" count="17" type="stmt"/>
         <line num="43" count="1" type="stmt"/>
       </file>
-      <file name="BackgroundBubbles.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/components/BackgroundBubbles.tsx">
+      <file name="BackgroundBubbles.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/components/BackgroundBubbles.tsx">
         <metrics statements="12" coveredstatements="12" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="4"/>
         <line num="3" count="1" type="stmt"/>
         <line num="13" count="136" type="stmt"/>
@@ -120,7 +125,7 @@
         <line num="36" count="136" type="stmt"/>
         <line num="39" count="2720" type="stmt"/>
       </file>
-      <file name="BadgeGallery.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/components/BadgeGallery.tsx">
+      <file name="BadgeGallery.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/components/BadgeGallery.tsx">
         <metrics statements="17" coveredstatements="15" conditionals="22" coveredconditionals="16" methods="9" coveredmethods="7"/>
         <line num="37" count="143" type="stmt"/>
         <line num="39" count="143" type="stmt"/>
@@ -140,7 +145,7 @@
         <line num="138" count="30" type="stmt"/>
         <line num="141" count="0" type="cond" truecount="0" falsecount="2"/>
       </file>
-      <file name="BuildingOverlay.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/components/BuildingOverlay.tsx">
+      <file name="BuildingOverlay.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/components/BuildingOverlay.tsx">
         <metrics statements="11" coveredstatements="11" conditionals="11" coveredconditionals="11" methods="5" coveredmethods="5"/>
         <line num="11" count="2" type="stmt"/>
         <line num="19" count="145" type="stmt"/>
@@ -154,11 +159,15 @@
         <line num="34" count="17" type="cond" truecount="2" falsecount="0"/>
         <line num="36" count="145" type="stmt"/>
       </file>
-      <file name="ChatHeader.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/components/ChatHeader.tsx">
-        <metrics statements="1" coveredstatements="1" conditionals="16" coveredconditionals="9" methods="1" coveredmethods="1"/>
-        <line num="54" count="134" type="stmt"/>
+      <file name="ChatHeader.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/components/ChatHeader.tsx">
+        <metrics statements="5" coveredstatements="5" conditionals="19" coveredconditionals="14" methods="1" coveredmethods="1"/>
+        <line num="20" count="2" type="stmt"/>
+        <line num="28" count="2" type="stmt"/>
+        <line num="79" count="147" type="cond" truecount="2" falsecount="0"/>
+        <line num="80" count="147" type="stmt"/>
+        <line num="82" count="147" type="stmt"/>
       </file>
-      <file name="ConfettiBurst.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/components/ConfettiBurst.tsx">
+      <file name="ConfettiBurst.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/components/ConfettiBurst.tsx">
         <metrics statements="15" coveredstatements="15" conditionals="6" coveredconditionals="6" methods="2" coveredmethods="2"/>
         <line num="8" count="136" type="cond" truecount="2" falsecount="0"/>
         <line num="10" count="15" type="stmt"/>
@@ -176,8 +185,8 @@
         <line num="35" count="1200" type="cond" truecount="2" falsecount="0"/>
         <line num="37" count="1200" type="stmt"/>
       </file>
-      <file name="EditorView.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/components/EditorView.tsx">
-        <metrics statements="132" coveredstatements="121" conditionals="54" coveredconditionals="44" methods="39" coveredmethods="32"/>
+      <file name="EditorView.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/components/EditorView.tsx">
+        <metrics statements="152" coveredstatements="141" conditionals="64" coveredconditionals="54" methods="45" coveredmethods="38"/>
         <line num="24" count="1" type="stmt"/>
         <line num="49" count="137" type="stmt"/>
         <line num="50" count="137" type="stmt"/>
@@ -192,132 +201,152 @@
         <line num="65" count="137" type="stmt"/>
         <line num="66" count="137" type="stmt"/>
         <line num="67" count="137" type="stmt"/>
-        <line num="70" count="137" type="stmt"/>
+        <line num="68" count="137" type="stmt"/>
+        <line num="69" count="137" type="stmt"/>
         <line num="72" count="137" type="stmt"/>
-        <line num="73" count="137" type="stmt"/>
         <line num="74" count="137" type="stmt"/>
         <line num="75" count="137" type="stmt"/>
         <line num="76" count="137" type="stmt"/>
         <line num="77" count="137" type="stmt"/>
+        <line num="78" count="137" type="stmt"/>
         <line num="79" count="137" type="stmt"/>
-        <line num="80" count="59" type="stmt"/>
-        <line num="83" count="137" type="stmt"/>
-        <line num="84" count="48" type="stmt"/>
-        <line num="87" count="137" type="stmt"/>
-        <line num="97" count="137" type="stmt"/>
-        <line num="110" count="137" type="stmt"/>
+        <line num="81" count="137" type="stmt"/>
+        <line num="82" count="59" type="stmt"/>
+        <line num="86" count="137" type="stmt"/>
+        <line num="87" count="59" type="stmt"/>
+        <line num="88" count="59" type="cond" truecount="2" falsecount="0"/>
+        <line num="92" count="41" type="stmt"/>
+        <line num="93" count="18" type="cond" truecount="2" falsecount="0"/>
+        <line num="94" count="4" type="stmt"/>
+        <line num="101" count="137" type="stmt"/>
+        <line num="102" count="44" type="stmt"/>
+        <line num="103" count="44" type="cond" truecount="2" falsecount="0"/>
+        <line num="107" count="137" type="stmt"/>
+        <line num="108" count="48" type="stmt"/>
         <line num="111" count="137" type="stmt"/>
-        <line num="112" count="137" type="stmt"/>
-        <line num="113" count="137" type="stmt"/>
-        <line num="114" count="137" type="stmt"/>
-        <line num="115" count="137" type="stmt"/>
-        <line num="116" count="137" type="stmt"/>
-        <line num="118" count="137" type="stmt"/>
-        <line num="119" count="44" type="stmt"/>
-        <line num="122" count="137" type="stmt"/>
-        <line num="123" count="44" type="stmt"/>
-        <line num="126" count="137" type="stmt"/>
-        <line num="127" count="44" type="stmt"/>
-        <line num="130" count="137" type="stmt"/>
-        <line num="131" count="44" type="stmt"/>
+        <line num="121" count="137" type="stmt"/>
         <line num="134" count="137" type="stmt"/>
-        <line num="135" count="44" type="cond" truecount="2" falsecount="2"/>
-        <line num="136" count="0" type="stmt"/>
+        <line num="135" count="137" type="stmt"/>
+        <line num="136" count="137" type="stmt"/>
+        <line num="137" count="137" type="stmt"/>
+        <line num="138" count="137" type="stmt"/>
+        <line num="139" count="137" type="stmt"/>
         <line num="140" count="137" type="stmt"/>
-        <line num="144" count="6" type="cond" truecount="2" falsecount="0"/>
-        <line num="145" count="5" type="stmt"/>
-        <line num="149" count="5" type="stmt"/>
-        <line num="151" count="6" type="cond" truecount="2" falsecount="0"/>
-        <line num="156" count="3" type="stmt"/>
-        <line num="157" count="3" type="cond" truecount="1" falsecount="1"/>
-        <line num="160" count="3" type="stmt"/>
-        <line num="161" count="3" type="stmt"/>
-        <line num="163" count="6" type="stmt"/>
-        <line num="164" count="6" type="stmt"/>
-        <line num="166" count="6" type="cond" truecount="2" falsecount="0"/>
-        <line num="167" count="1" type="stmt"/>
-        <line num="169" count="6" type="stmt"/>
-        <line num="170" count="6" type="stmt"/>
+        <line num="142" count="137" type="stmt"/>
+        <line num="143" count="44" type="stmt"/>
+        <line num="146" count="137" type="stmt"/>
+        <line num="147" count="44" type="stmt"/>
+        <line num="150" count="137" type="stmt"/>
+        <line num="151" count="44" type="stmt"/>
+        <line num="154" count="137" type="stmt"/>
+        <line num="155" count="44" type="stmt"/>
+        <line num="158" count="137" type="stmt"/>
+        <line num="159" count="44" type="cond" truecount="2" falsecount="2"/>
+        <line num="160" count="0" type="stmt"/>
+        <line num="164" count="137" type="stmt"/>
+        <line num="166" count="9" type="cond" truecount="2" falsecount="0"/>
+        <line num="167" count="2" type="stmt"/>
+        <line num="169" count="9" type="stmt"/>
+        <line num="170" count="9" type="stmt"/>
         <line num="171" count="1" type="stmt"/>
         <line num="172" count="1" type="stmt"/>
-        <line num="176" count="1" type="stmt"/>
-        <line num="177" count="1" type="stmt"/>
-        <line num="181" count="137" type="stmt"/>
-        <line num="193" count="137" type="stmt"/>
-        <line num="197" count="0" type="stmt"/>
-        <line num="198" count="0" type="stmt"/>
-        <line num="202" count="137" type="stmt"/>
-        <line num="203" count="2" type="cond" truecount="3" falsecount="1"/>
-        <line num="204" count="2" type="stmt"/>
-        <line num="205" count="2" type="stmt"/>
-        <line num="206" count="2" type="stmt"/>
-        <line num="207" count="2" type="stmt"/>
-        <line num="211" count="2" type="stmt"/>
-        <line num="212" count="2" type="stmt"/>
-        <line num="213" count="2" type="stmt"/>
+        <line num="178" count="137" type="stmt"/>
+        <line num="182" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="183" count="5" type="stmt"/>
+        <line num="187" count="5" type="stmt"/>
+        <line num="189" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="194" count="3" type="stmt"/>
+        <line num="195" count="3" type="cond" truecount="1" falsecount="1"/>
+        <line num="198" count="3" type="stmt"/>
+        <line num="199" count="3" type="stmt"/>
+        <line num="201" count="6" type="stmt"/>
+        <line num="202" count="6" type="stmt"/>
+        <line num="204" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="205" count="1" type="stmt"/>
+        <line num="207" count="6" type="stmt"/>
+        <line num="208" count="6" type="stmt"/>
+        <line num="209" count="1" type="stmt"/>
+        <line num="210" count="1" type="stmt"/>
+        <line num="212" count="6" type="stmt"/>
+        <line num="215" count="1" type="stmt"/>
+        <line num="216" count="1" type="stmt"/>
         <line num="220" count="137" type="stmt"/>
-        <line num="221" count="2" type="cond" truecount="1" falsecount="1"/>
-        <line num="222" count="2" type="stmt"/>
-        <line num="223" count="2" type="stmt"/>
-        <line num="224" count="2" type="stmt"/>
-        <line num="225" count="2" type="stmt"/>
-        <line num="226" count="2" type="stmt"/>
-        <line num="227" count="2" type="stmt"/>
-        <line num="228" count="2" type="stmt"/>
-        <line num="235" count="137" type="stmt"/>
-        <line num="236" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="237" count="0" type="stmt"/>
-        <line num="239" count="1" type="stmt"/>
-        <line num="240" count="3" type="stmt"/>
-        <line num="241" count="1" type="stmt"/>
-        <line num="242" count="1" type="stmt"/>
-        <line num="243" count="1" type="stmt"/>
-        <line num="244" count="1" type="stmt"/>
-        <line num="245" count="1" type="stmt"/>
-        <line num="246" count="1" type="stmt"/>
-        <line num="247" count="1" type="stmt"/>
-        <line num="251" count="137" type="stmt"/>
-        <line num="253" count="0" type="stmt"/>
-        <line num="254" count="0" type="stmt"/>
-        <line num="261" count="137" type="stmt"/>
-        <line num="262" count="137" type="stmt"/>
-        <line num="263" count="48" type="cond" truecount="2" falsecount="0"/>
-        <line num="264" count="7" type="stmt"/>
-        <line num="265" count="7" type="stmt"/>
-        <line num="267" count="41" type="cond" truecount="2" falsecount="0"/>
-        <line num="268" count="41" type="stmt"/>
+        <line num="231" count="3" type="stmt"/>
+        <line num="236" count="137" type="stmt"/>
+        <line num="240" count="0" type="stmt"/>
+        <line num="241" count="0" type="stmt"/>
+        <line num="245" count="137" type="stmt"/>
+        <line num="246" count="2" type="cond" truecount="3" falsecount="1"/>
+        <line num="247" count="2" type="stmt"/>
+        <line num="248" count="2" type="stmt"/>
+        <line num="249" count="2" type="stmt"/>
+        <line num="250" count="2" type="stmt"/>
+        <line num="254" count="2" type="stmt"/>
+        <line num="255" count="2" type="stmt"/>
+        <line num="256" count="2" type="stmt"/>
+        <line num="263" count="137" type="stmt"/>
+        <line num="264" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="265" count="2" type="stmt"/>
+        <line num="266" count="2" type="stmt"/>
+        <line num="267" count="2" type="stmt"/>
+        <line num="268" count="2" type="stmt"/>
         <line num="269" count="2" type="stmt"/>
         <line num="270" count="2" type="stmt"/>
-        <line num="272" count="41" type="stmt"/>
-        <line num="273" count="41" type="cond" truecount="2" falsecount="0"/>
-        <line num="278" count="137" type="cond" truecount="3" falsecount="0"/>
-        <line num="280" count="137" type="stmt"/>
-        <line num="282" count="137" type="stmt"/>
-        <line num="284" count="137" type="stmt"/>
-        <line num="285" count="59" type="stmt"/>
-        <line num="288" count="137" type="stmt"/>
-        <line num="289" count="49" type="cond" truecount="2" falsecount="0"/>
-        <line num="290" count="49" type="stmt"/>
-        <line num="291" count="2" type="stmt"/>
-        <line num="293" count="49" type="stmt"/>
-        <line num="294" count="49" type="cond" truecount="1" falsecount="1"/>
-        <line num="298" count="137" type="stmt"/>
-        <line num="300" count="137" type="stmt"/>
-        <line num="308" count="0" type="stmt"/>
-        <line num="323" count="2" type="stmt"/>
-        <line num="324" count="0" type="stmt"/>
-        <line num="359" count="2" type="stmt"/>
-        <line num="360" count="0" type="stmt"/>
-        <line num="389" count="0" type="stmt"/>
-        <line num="407" count="0" type="stmt"/>
+        <line num="271" count="2" type="stmt"/>
+        <line num="278" count="137" type="stmt"/>
+        <line num="279" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="280" count="0" type="stmt"/>
+        <line num="282" count="1" type="stmt"/>
+        <line num="283" count="3" type="stmt"/>
+        <line num="284" count="1" type="stmt"/>
+        <line num="285" count="1" type="stmt"/>
+        <line num="286" count="1" type="stmt"/>
+        <line num="287" count="1" type="stmt"/>
+        <line num="288" count="1" type="stmt"/>
+        <line num="289" count="1" type="stmt"/>
+        <line num="290" count="1" type="stmt"/>
+        <line num="294" count="137" type="stmt"/>
+        <line num="296" count="0" type="stmt"/>
+        <line num="297" count="0" type="stmt"/>
+        <line num="304" count="137" type="stmt"/>
+        <line num="305" count="137" type="stmt"/>
+        <line num="306" count="48" type="cond" truecount="2" falsecount="0"/>
+        <line num="307" count="7" type="stmt"/>
+        <line num="308" count="7" type="stmt"/>
+        <line num="310" count="41" type="cond" truecount="2" falsecount="0"/>
+        <line num="311" count="41" type="stmt"/>
+        <line num="312" count="2" type="stmt"/>
+        <line num="313" count="2" type="stmt"/>
+        <line num="315" count="41" type="stmt"/>
+        <line num="316" count="41" type="cond" truecount="2" falsecount="0"/>
+        <line num="321" count="137" type="cond" truecount="3" falsecount="0"/>
+        <line num="323" count="137" type="stmt"/>
+        <line num="325" count="137" type="stmt"/>
+        <line num="327" count="137" type="stmt"/>
+        <line num="328" count="59" type="stmt"/>
+        <line num="331" count="137" type="stmt"/>
+        <line num="332" count="49" type="cond" truecount="2" falsecount="0"/>
+        <line num="333" count="49" type="stmt"/>
+        <line num="334" count="2" type="stmt"/>
+        <line num="336" count="49" type="stmt"/>
+        <line num="337" count="49" type="cond" truecount="1" falsecount="1"/>
+        <line num="341" count="137" type="stmt"/>
+        <line num="343" count="137" type="stmt"/>
+        <line num="351" count="0" type="stmt"/>
+        <line num="367" count="2" type="stmt"/>
+        <line num="368" count="0" type="stmt"/>
+        <line num="403" count="2" type="stmt"/>
+        <line num="404" count="0" type="stmt"/>
+        <line num="433" count="0" type="stmt"/>
+        <line num="451" count="0" type="stmt"/>
       </file>
-      <file name="MessageInput.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/components/MessageInput.tsx">
+      <file name="MessageInput.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/components/MessageInput.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="12" coveredconditionals="8" methods="3" coveredmethods="3"/>
         <line num="29" count="134" type="stmt"/>
         <line num="53" count="6" type="stmt"/>
         <line num="54" count="1" type="cond" truecount="1" falsecount="1"/>
       </file>
-      <file name="MessageList.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/components/MessageList.tsx">
+      <file name="MessageList.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/components/MessageList.tsx">
         <metrics statements="9" coveredstatements="8" conditionals="12" coveredconditionals="12" methods="6" coveredmethods="5"/>
         <line num="33" count="138" type="stmt"/>
         <line num="35" count="138" type="stmt"/>
@@ -329,7 +358,7 @@
         <line num="121" count="312" type="stmt"/>
         <line num="124" count="2" type="stmt"/>
       </file>
-      <file name="PreviewPanel.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/components/PreviewPanel.tsx">
+      <file name="PreviewPanel.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/components/PreviewPanel.tsx">
         <metrics statements="5" coveredstatements="3" conditionals="10" coveredconditionals="7" methods="4" coveredmethods="2"/>
         <line num="43" count="136" type="stmt"/>
         <line num="45" count="136" type="stmt"/>
@@ -337,32 +366,36 @@
         <line num="49" count="136" type="stmt"/>
         <line num="52" count="0" type="stmt"/>
       </file>
-      <file name="ProjectCatalog.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/components/ProjectCatalog.tsx">
-        <metrics statements="19" coveredstatements="12" conditionals="24" coveredconditionals="12" methods="6" coveredmethods="6"/>
-        <line num="23" count="10" type="stmt"/>
-        <line num="24" count="10" type="stmt"/>
-        <line num="26" count="10" type="stmt"/>
-        <line num="27" count="7" type="stmt"/>
-        <line num="28" count="7" type="cond" truecount="1" falsecount="1"/>
-        <line num="29" count="0" type="stmt"/>
-        <line num="30" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="31" count="0" type="stmt"/>
-        <line num="32" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="33" count="0" type="stmt"/>
-        <line num="34" count="0" type="cond" truecount="0" falsecount="2"/>
+      <file name="ProjectCatalog.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/components/ProjectCatalog.tsx">
+        <metrics statements="23" coveredstatements="16" conditionals="24" coveredconditionals="15" methods="8" coveredmethods="8"/>
+        <line num="29" count="26" type="stmt"/>
+        <line num="30" count="26" type="stmt"/>
+        <line num="32" count="26" type="stmt"/>
+        <line num="33" count="10" type="stmt"/>
+        <line num="34" count="10" type="cond" truecount="1" falsecount="1"/>
         <line num="35" count="0" type="stmt"/>
-        <line num="38" count="10" type="stmt"/>
-        <line num="104" count="7" type="stmt"/>
-        <line num="112" count="7" type="stmt"/>
-        <line num="114" count="7" type="stmt"/>
-        <line num="133" count="3" type="stmt"/>
-        <line num="142" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="143" count="1" type="stmt"/>
+        <line num="36" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="37" count="0" type="stmt"/>
+        <line num="38" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="39" count="0" type="stmt"/>
+        <line num="40" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="41" count="0" type="stmt"/>
+        <line num="44" count="26" type="stmt"/>
+        <line num="53" count="26" type="stmt"/>
+        <line num="116" count="156" type="stmt"/>
+        <line num="117" count="156" type="stmt"/>
+        <line num="120" count="7" type="stmt"/>
+        <line num="163" count="10" type="stmt"/>
+        <line num="171" count="10" type="stmt"/>
+        <line num="173" count="10" type="stmt"/>
+        <line num="192" count="4" type="stmt"/>
+        <line num="201" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="202" count="1" type="stmt"/>
       </file>
     </package>
     <package name="src.components.blocks">
       <metrics statements="59" coveredstatements="59" conditionals="73" coveredconditionals="69" methods="33" coveredmethods="33"/>
-      <file name="BlockCard.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/components/blocks/BlockCard.tsx">
+      <file name="BlockCard.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/components/blocks/BlockCard.tsx">
         <metrics statements="10" coveredstatements="10" conditionals="29" coveredconditionals="28" methods="6" coveredmethods="6"/>
         <line num="29" count="119" type="stmt"/>
         <line num="30" count="119" type="stmt"/>
@@ -375,7 +408,7 @@
         <line num="127" count="5" type="stmt"/>
         <line num="130" count="2" type="stmt"/>
       </file>
-      <file name="BlockEditor.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/components/blocks/BlockEditor.tsx">
+      <file name="BlockEditor.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/components/blocks/BlockEditor.tsx">
         <metrics statements="34" coveredstatements="34" conditionals="20" coveredconditionals="17" methods="19" coveredmethods="19"/>
         <line num="34" count="155" type="stmt"/>
         <line num="43" count="155" type="stmt"/>
@@ -412,7 +445,7 @@
         <line num="145" count="89" type="stmt"/>
         <line num="149" count="89" type="stmt"/>
       </file>
-      <file name="ParamEditor.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/components/blocks/ParamEditor.tsx">
+      <file name="ParamEditor.tsx" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/components/blocks/ParamEditor.tsx">
         <metrics statements="15" coveredstatements="15" conditionals="24" coveredconditionals="24" methods="8" coveredmethods="8"/>
         <line num="11" count="29" type="stmt"/>
         <line num="12" count="9" type="stmt"/>
@@ -432,12 +465,12 @@
       </file>
     </package>
     <package name="src.constants">
-      <metrics statements="7" coveredstatements="7" conditionals="2" coveredconditionals="1" methods="1" coveredmethods="1"/>
-      <file name="blockCategories.ts" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/constants/blockCategories.ts">
+      <metrics statements="8" coveredstatements="8" conditionals="2" coveredconditionals="1" methods="1" coveredmethods="1"/>
+      <file name="blockCategories.ts" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/constants/blockCategories.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="9" count="3" type="stmt"/>
       </file>
-      <file name="codingFacts.ts" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/constants/codingFacts.ts">
+      <file name="codingFacts.ts" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/constants/codingFacts.ts">
         <metrics statements="5" coveredstatements="5" conditionals="2" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="3" count="1" type="stmt"/>
         <line num="24" count="1" type="stmt"/>
@@ -445,14 +478,18 @@
         <line num="66" count="1" type="stmt"/>
         <line num="73" count="44" type="cond" truecount="1" falsecount="1"/>
       </file>
-      <file name="defaultBlocks.ts" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/constants/defaultBlocks.ts">
+      <file name="defaultBlocks.ts" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/constants/defaultBlocks.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="7" count="2" type="stmt"/>
       </file>
+      <file name="starterTemplates.ts" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/constants/starterTemplates.ts">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="11" count="3" type="stmt"/>
+      </file>
     </package>
     <package name="src.hooks">
-      <metrics statements="320" coveredstatements="316" conditionals="163" coveredconditionals="147" methods="102" coveredmethods="97"/>
-      <file name="useAchievements.ts" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/hooks/useAchievements.ts">
+      <metrics statements="324" coveredstatements="320" conditionals="163" coveredconditionals="150" methods="103" coveredmethods="98"/>
+      <file name="useAchievements.ts" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/hooks/useAchievements.ts">
         <metrics statements="50" coveredstatements="49" conditionals="19" coveredconditionals="18" methods="17" coveredmethods="16"/>
         <line num="11" count="2" type="stmt"/>
         <line num="12" count="2" type="stmt"/>
@@ -505,7 +542,7 @@
         <line num="120" count="950" type="stmt"/>
         <line num="123" count="190" type="stmt"/>
       </file>
-      <file name="useAudio.ts" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/hooks/useAudio.ts">
+      <file name="useAudio.ts" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/hooks/useAudio.ts">
         <metrics statements="45" coveredstatements="44" conditionals="4" coveredconditionals="4" methods="17" coveredmethods="16"/>
         <line num="3" count="1" type="stmt"/>
         <line num="4" count="1" type="stmt"/>
@@ -553,61 +590,65 @@
         <line num="94" count="11" type="stmt"/>
         <line num="96" count="11" type="stmt"/>
       </file>
-      <file name="useAutoFix.ts" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/hooks/useAutoFix.ts">
-        <metrics statements="51" coveredstatements="51" conditionals="20" coveredconditionals="17" methods="12" coveredmethods="12"/>
+      <file name="useAutoFix.ts" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/hooks/useAutoFix.ts">
+        <metrics statements="55" coveredstatements="55" conditionals="20" coveredconditionals="17" methods="13" coveredmethods="13"/>
         <line num="8" count="2" type="stmt"/>
         <line num="9" count="2" type="stmt"/>
-        <line num="44" count="145" type="stmt"/>
-        <line num="47" count="145" type="stmt"/>
-        <line num="48" count="145" type="stmt"/>
-        <line num="49" count="52" type="stmt"/>
-        <line num="53" count="145" type="stmt"/>
-        <line num="54" count="145" type="stmt"/>
-        <line num="55" count="52" type="stmt"/>
-        <line num="58" count="145" type="stmt"/>
-        <line num="59" count="145" type="stmt"/>
-        <line num="60" count="52" type="stmt"/>
-        <line num="63" count="145" type="stmt"/>
-        <line num="64" count="145" type="stmt"/>
-        <line num="65" count="52" type="stmt"/>
-        <line num="68" count="145" type="stmt"/>
-        <line num="69" count="145" type="stmt"/>
-        <line num="70" count="52" type="stmt"/>
-        <line num="73" count="145" type="stmt"/>
-        <line num="74" count="145" type="stmt"/>
-        <line num="75" count="52" type="stmt"/>
-        <line num="78" count="145" type="stmt"/>
-        <line num="79" count="52" type="stmt"/>
-        <line num="80" count="17" type="stmt"/>
-        <line num="81" count="17" type="cond" truecount="2" falsecount="0"/>
-        <line num="82" count="16" type="cond" truecount="2" falsecount="0"/>
-        <line num="84" count="15" type="cond" truecount="2" falsecount="0"/>
-        <line num="85" count="17" type="stmt"/>
-        <line num="86" count="17" type="cond" truecount="2" falsecount="0"/>
-        <line num="88" count="17" type="cond" truecount="3" falsecount="1"/>
-        <line num="90" count="17" type="stmt"/>
-        <line num="94" count="17" type="cond" truecount="2" falsecount="0"/>
-        <line num="96" count="13" type="cond" truecount="2" falsecount="0"/>
-        <line num="97" count="3" type="stmt"/>
-        <line num="98" count="3" type="stmt"/>
-        <line num="99" count="3" type="stmt"/>
-        <line num="100" count="3" type="stmt"/>
-        <line num="103" count="10" type="stmt"/>
-        <line num="104" count="10" type="stmt"/>
-        <line num="106" count="10" type="stmt"/>
-        <line num="107" count="10" type="stmt"/>
-        <line num="108" count="10" type="stmt"/>
-        <line num="109" count="10" type="stmt"/>
-        <line num="113" count="17" type="stmt"/>
-        <line num="118" count="17" type="stmt"/>
-        <line num="119" count="17" type="stmt"/>
-        <line num="126" count="52" type="stmt"/>
-        <line num="127" count="52" type="stmt"/>
-        <line num="130" count="145" type="stmt"/>
-        <line num="131" count="6" type="stmt"/>
-        <line num="134" count="145" type="stmt"/>
+        <line num="46" count="148" type="stmt"/>
+        <line num="49" count="148" type="stmt"/>
+        <line num="50" count="148" type="stmt"/>
+        <line num="51" count="55" type="stmt"/>
+        <line num="55" count="148" type="stmt"/>
+        <line num="56" count="148" type="stmt"/>
+        <line num="57" count="55" type="stmt"/>
+        <line num="60" count="148" type="stmt"/>
+        <line num="61" count="148" type="stmt"/>
+        <line num="62" count="55" type="stmt"/>
+        <line num="65" count="148" type="stmt"/>
+        <line num="66" count="148" type="stmt"/>
+        <line num="67" count="55" type="stmt"/>
+        <line num="70" count="148" type="stmt"/>
+        <line num="71" count="148" type="stmt"/>
+        <line num="72" count="55" type="stmt"/>
+        <line num="75" count="148" type="stmt"/>
+        <line num="76" count="148" type="stmt"/>
+        <line num="77" count="55" type="stmt"/>
+        <line num="80" count="148" type="stmt"/>
+        <line num="81" count="148" type="stmt"/>
+        <line num="82" count="55" type="stmt"/>
+        <line num="85" count="148" type="stmt"/>
+        <line num="86" count="55" type="stmt"/>
+        <line num="87" count="22" type="stmt"/>
+        <line num="88" count="22" type="cond" truecount="2" falsecount="0"/>
+        <line num="89" count="21" type="cond" truecount="2" falsecount="0"/>
+        <line num="91" count="20" type="cond" truecount="2" falsecount="0"/>
+        <line num="92" count="22" type="stmt"/>
+        <line num="93" count="22" type="cond" truecount="2" falsecount="0"/>
+        <line num="95" count="22" type="cond" truecount="3" falsecount="1"/>
+        <line num="97" count="22" type="stmt"/>
+        <line num="101" count="22" type="cond" truecount="2" falsecount="0"/>
+        <line num="103" count="18" type="cond" truecount="2" falsecount="0"/>
+        <line num="104" count="4" type="stmt"/>
+        <line num="105" count="4" type="stmt"/>
+        <line num="109" count="4" type="stmt"/>
+        <line num="110" count="4" type="stmt"/>
+        <line num="113" count="14" type="stmt"/>
+        <line num="114" count="14" type="stmt"/>
+        <line num="118" count="14" type="stmt"/>
+        <line num="119" count="22" type="stmt"/>
+        <line num="120" count="22" type="stmt"/>
+        <line num="121" count="22" type="stmt"/>
+        <line num="122" count="22" type="stmt"/>
+        <line num="126" count="22" type="stmt"/>
+        <line num="131" count="22" type="stmt"/>
+        <line num="132" count="22" type="stmt"/>
+        <line num="139" count="55" type="stmt"/>
+        <line num="140" count="55" type="stmt"/>
+        <line num="143" count="148" type="stmt"/>
+        <line num="144" count="6" type="stmt"/>
+        <line num="147" count="148" type="stmt"/>
       </file>
-      <file name="useLegacyConversion.ts" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/hooks/useLegacyConversion.ts">
+      <file name="useLegacyConversion.ts" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/hooks/useLegacyConversion.ts">
         <metrics statements="25" coveredstatements="25" conditionals="24" coveredconditionals="19" methods="8" coveredmethods="6"/>
         <line num="18" count="4" type="stmt"/>
         <line num="33" count="155" type="stmt"/>
@@ -635,95 +676,95 @@
         <line num="79" count="5" type="stmt"/>
         <line num="84" count="155" type="stmt"/>
       </file>
-      <file name="useProjects.ts" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/hooks/useProjects.ts">
-        <metrics statements="85" coveredstatements="85" conditionals="56" coveredconditionals="52" methods="31" coveredmethods="31"/>
+      <file name="useProjects.ts" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/hooks/useProjects.ts">
+        <metrics statements="85" coveredstatements="85" conditionals="56" coveredconditionals="55" methods="31" coveredmethods="31"/>
         <line num="9" count="2" type="stmt"/>
         <line num="16" count="2" type="stmt"/>
-        <line num="17" count="241" type="stmt"/>
-        <line num="18" count="241" type="stmt"/>
-        <line num="113" count="8" type="stmt"/>
-        <line num="123" count="73" type="stmt"/>
-        <line num="124" count="73" type="stmt"/>
-        <line num="125" count="73" type="cond" truecount="2" falsecount="0"/>
+        <line num="17" count="258" type="stmt"/>
+        <line num="18" count="258" type="stmt"/>
+        <line num="113" count="9" type="stmt"/>
+        <line num="123" count="80" type="stmt"/>
+        <line num="124" count="80" type="stmt"/>
+        <line num="125" count="80" type="cond" truecount="2" falsecount="0"/>
         <line num="127" count="2" type="stmt"/>
-        <line num="132" count="17" type="stmt"/>
-        <line num="133" count="17" type="stmt"/>
-        <line num="135" count="17" type="cond" truecount="4" falsecount="0"/>
-        <line num="137" count="6" type="stmt"/>
-        <line num="138" count="6" type="stmt"/>
-        <line num="139" count="6" type="cond" truecount="2" falsecount="0"/>
-        <line num="143" count="6" type="cond" truecount="2" falsecount="0"/>
-        <line num="147" count="17" type="stmt"/>
-        <line num="157" count="17" type="stmt"/>
-        <line num="158" count="17" type="stmt"/>
-        <line num="160" count="17" type="stmt"/>
+        <line num="132" count="19" type="stmt"/>
+        <line num="133" count="19" type="stmt"/>
+        <line num="135" count="19" type="cond" truecount="4" falsecount="0"/>
+        <line num="137" count="7" type="stmt"/>
+        <line num="138" count="7" type="stmt"/>
+        <line num="139" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="143" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="147" count="19" type="stmt"/>
+        <line num="157" count="19" type="stmt"/>
+        <line num="158" count="19" type="stmt"/>
+        <line num="160" count="19" type="stmt"/>
         <line num="163" count="2" type="stmt"/>
-        <line num="169" count="4" type="cond" truecount="1" falsecount="1"/>
+        <line num="169" count="5" type="cond" truecount="2" falsecount="0"/>
         <line num="170" count="4" type="stmt"/>
         <line num="172" count="11" type="cond" truecount="4" falsecount="0"/>
         <line num="177" count="4" type="cond" truecount="1" falsecount="1"/>
         <line num="178" count="7" type="stmt"/>
-        <line num="186" count="8" type="stmt"/>
-        <line num="187" count="5" type="cond" truecount="2" falsecount="0"/>
-        <line num="188" count="4" type="stmt"/>
-        <line num="189" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="186" count="10" type="stmt"/>
+        <line num="187" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="188" count="5" type="stmt"/>
+        <line num="189" count="5" type="cond" truecount="2" falsecount="0"/>
         <line num="190" count="1" type="stmt"/>
-        <line num="197" count="73" type="stmt"/>
-        <line num="199" count="73" type="cond" truecount="2" falsecount="0"/>
-        <line num="200" count="56" type="stmt"/>
-        <line num="201" count="56" type="stmt"/>
-        <line num="204" count="17" type="stmt"/>
-        <line num="205" count="17" type="cond" truecount="2" falsecount="0"/>
-        <line num="206" count="6" type="stmt"/>
-        <line num="209" count="11" type="stmt"/>
-        <line num="213" count="239" type="stmt"/>
-        <line num="214" count="239" type="stmt"/>
-        <line num="216" count="239" type="stmt"/>
-        <line num="217" count="158" type="stmt"/>
-        <line num="220" count="239" type="stmt"/>
-        <line num="221" count="239" type="cond" truecount="2" falsecount="0"/>
-        <line num="222" count="195" type="cond" truecount="1" falsecount="1"/>
-        <line num="225" count="239" type="stmt"/>
-        <line num="227" count="239" type="stmt"/>
-        <line num="228" count="158" type="stmt"/>
-        <line num="229" count="158" type="cond" truecount="2" falsecount="0"/>
-        <line num="230" count="123" type="stmt"/>
-        <line num="231" count="123" type="cond" truecount="4" falsecount="0"/>
-        <line num="233" count="35" type="stmt"/>
-        <line num="234" count="35" type="cond" truecount="2" falsecount="0"/>
-        <line num="238" count="239" type="stmt"/>
-        <line num="240" count="239" type="stmt"/>
+        <line num="197" count="80" type="stmt"/>
+        <line num="199" count="80" type="cond" truecount="2" falsecount="0"/>
+        <line num="200" count="61" type="stmt"/>
+        <line num="201" count="61" type="stmt"/>
+        <line num="204" count="19" type="stmt"/>
+        <line num="205" count="19" type="cond" truecount="2" falsecount="0"/>
+        <line num="206" count="7" type="stmt"/>
+        <line num="209" count="12" type="stmt"/>
+        <line num="213" count="255" type="stmt"/>
+        <line num="214" count="255" type="stmt"/>
+        <line num="216" count="255" type="stmt"/>
+        <line num="217" count="169" type="stmt"/>
+        <line num="220" count="255" type="stmt"/>
+        <line num="221" count="255" type="cond" truecount="2" falsecount="0"/>
+        <line num="222" count="201" type="cond" truecount="2" falsecount="0"/>
+        <line num="225" count="255" type="stmt"/>
+        <line num="227" count="255" type="stmt"/>
+        <line num="228" count="169" type="stmt"/>
+        <line num="229" count="169" type="cond" truecount="2" falsecount="0"/>
+        <line num="230" count="127" type="stmt"/>
+        <line num="231" count="127" type="cond" truecount="4" falsecount="0"/>
+        <line num="233" count="42" type="stmt"/>
+        <line num="234" count="42" type="cond" truecount="2" falsecount="0"/>
+        <line num="238" count="255" type="stmt"/>
+        <line num="240" count="255" type="stmt"/>
         <line num="241" count="12" type="stmt"/>
         <line num="242" count="4" type="stmt"/>
         <line num="252" count="4" type="stmt"/>
         <line num="256" count="4" type="stmt"/>
-        <line num="259" count="239" type="stmt"/>
-        <line num="260" count="4" type="stmt"/>
-        <line num="263" count="239" type="stmt"/>
+        <line num="259" count="255" type="stmt"/>
+        <line num="260" count="5" type="stmt"/>
+        <line num="263" count="255" type="stmt"/>
         <line num="264" count="4" type="stmt"/>
         <line num="265" count="6" type="stmt"/>
         <line num="266" count="4" type="cond" truecount="2" falsecount="0"/>
         <line num="267" count="4" type="stmt"/>
-        <line num="271" count="239" type="stmt"/>
+        <line num="271" count="255" type="stmt"/>
         <line num="272" count="4" type="stmt"/>
-        <line num="275" count="239" type="stmt"/>
-        <line num="282" count="69" type="stmt"/>
-        <line num="283" count="69" type="stmt"/>
-        <line num="284" count="76" type="cond" truecount="2" falsecount="0"/>
-        <line num="285" count="69" type="stmt"/>
-        <line num="286" count="69" type="cond" truecount="4" falsecount="0"/>
-        <line num="291" count="76" type="cond" truecount="2" falsecount="0"/>
-        <line num="295" count="69" type="stmt"/>
-        <line num="301" count="239" type="stmt"/>
-        <line num="305" count="2" type="stmt"/>
-        <line num="306" count="2" type="cond" truecount="1" falsecount="1"/>
-        <line num="307" count="2" type="stmt"/>
-        <line num="312" count="239" type="stmt"/>
+        <line num="275" count="255" type="stmt"/>
+        <line num="282" count="72" type="stmt"/>
+        <line num="283" count="72" type="stmt"/>
+        <line num="284" count="79" type="cond" truecount="2" falsecount="0"/>
+        <line num="285" count="72" type="stmt"/>
+        <line num="286" count="72" type="cond" truecount="4" falsecount="0"/>
+        <line num="291" count="79" type="cond" truecount="2" falsecount="0"/>
+        <line num="295" count="72" type="stmt"/>
+        <line num="301" count="255" type="stmt"/>
+        <line num="305" count="4" type="stmt"/>
+        <line num="306" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="307" count="3" type="stmt"/>
+        <line num="312" count="255" type="stmt"/>
         <line num="313" count="6" type="stmt"/>
         <line num="314" count="2" type="stmt"/>
-        <line num="321" count="239" type="stmt"/>
+        <line num="321" count="255" type="stmt"/>
       </file>
-      <file name="useVoice.ts" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/hooks/useVoice.ts">
+      <file name="useVoice.ts" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/hooks/useVoice.ts">
         <metrics statements="64" coveredstatements="62" conditionals="40" coveredconditionals="37" methods="17" coveredmethods="16"/>
         <line num="37" count="174" type="stmt"/>
         <line num="38" count="174" type="stmt"/>
@@ -793,21 +834,21 @@
     </package>
     <package name="src.i18n">
       <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="translations.ts" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/i18n/translations.ts">
+      <file name="translations.ts" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/i18n/translations.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-        <line num="68" count="3" type="stmt"/>
+        <line num="81" count="5" type="stmt"/>
       </file>
     </package>
     <package name="src.runtime">
       <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="engine.ts" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/runtime/engine.ts">
+      <file name="engine.ts" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/runtime/engine.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-        <line num="10" count="3" type="stmt"/>
+        <line num="10" count="4" type="stmt"/>
       </file>
     </package>
     <package name="src.types">
       <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="achievements.ts" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/types/achievements.ts">
+      <file name="achievements.ts" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/types/achievements.ts">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="27" count="3" type="stmt"/>
         <line num="94" count="3" type="stmt"/>
@@ -816,7 +857,7 @@
     </package>
     <package name="src.utils">
       <metrics statements="33" coveredstatements="33" conditionals="10" coveredconditionals="10" methods="4" coveredmethods="4"/>
-      <file name="downloadHtml.ts" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/utils/downloadHtml.ts">
+      <file name="downloadHtml.ts" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/utils/downloadHtml.ts">
         <metrics statements="13" coveredstatements="13" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
         <line num="7" count="9" type="stmt"/>
         <line num="13" count="9" type="cond" truecount="2" falsecount="0"/>
@@ -832,7 +873,7 @@
         <line num="32" count="2" type="stmt"/>
         <line num="33" count="2" type="stmt"/>
       </file>
-      <file name="injectErrorCatcher.ts" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/utils/injectErrorCatcher.ts">
+      <file name="injectErrorCatcher.ts" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/utils/injectErrorCatcher.ts">
         <metrics statements="15" coveredstatements="15" conditionals="8" coveredconditionals="8" methods="1" coveredmethods="1"/>
         <line num="1" count="1" type="stmt"/>
         <line num="4" count="49" type="stmt"/>
@@ -850,7 +891,7 @@
         <line num="23" count="1" type="stmt"/>
         <line num="29" count="1" type="stmt"/>
       </file>
-      <file name="safeSave.ts" path="/Users/danleemh/ai/apps/inspiror.feature-useprojects-tests-coverage/frontend/src/utils/safeSave.ts">
+      <file name="safeSave.ts" path="/Users/danleemh/ai/apps/inspiror.feature-starter-template-gallery/frontend/src/utils/safeSave.ts">
         <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="6" count="261" type="stmt"/>
         <line num="7" count="261" type="stmt"/>
