@@ -20,6 +20,8 @@ import { PreviewPanel } from "./PreviewPanel";
 import { AchievementModal } from "./AchievementModal";
 import { BadgeGallery } from "./BadgeGallery";
 import { BlockEditor } from "./blocks/BlockEditor";
+import { OnboardingTooltip } from "./OnboardingTooltip";
+import { useOnboarding } from "../hooks/useOnboarding";
 
 const COMPILE_DEBOUNCE_MS = 150;
 
@@ -133,6 +135,12 @@ export function EditorView({
     selectAvatar,
   } = useAchievements();
   const [isBadgeGalleryOpen, setIsBadgeGalleryOpen] = useState(false);
+  const {
+    step: onboardingStep,
+    isActive: isOnboardingActive,
+    advanceStep: advanceOnboarding,
+    skipAll: skipOnboarding,
+  } = useOnboarding();
   const codingFacts = useMemo(() => getCodingFacts(language), [language]);
   const recordBuildRef = useRef(recordBuild);
   const recordDebugRef = useRef(recordDebug);
@@ -454,6 +462,14 @@ export function EditorView({
         selectedAvatar={selectedAvatar}
         unlockedAvatars={unlockedAvatars}
         onSelectAvatar={selectAvatar}
+        t={t}
+      />
+
+      <OnboardingTooltip
+        step={onboardingStep}
+        isActive={isOnboardingActive}
+        onAdvance={advanceOnboarding}
+        onSkip={skipOnboarding}
         t={t}
       />
     </div>

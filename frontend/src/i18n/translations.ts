@@ -76,6 +76,14 @@ export interface TranslationKeys {
   template_magic_wand_desc: string;
   template_emoji_rain_title: string;
   template_emoji_rain_desc: string;
+  onboarding_step1_title: string;
+  onboarding_step1_desc: string;
+  onboarding_step2_title: string;
+  onboarding_step2_desc: string;
+  onboarding_step3_title: string;
+  onboarding_step3_desc: string;
+  onboarding_got_it: string;
+  onboarding_skip: string;
 }
 
 export const translations: Record<Language, TranslationKeys> = {
@@ -157,6 +165,16 @@ export const translations: Record<Language, TranslationKeys> = {
     template_magic_wand_desc: "Tap anywhere to create sparkles!",
     template_emoji_rain_title: "Emoji Rain",
     template_emoji_rain_desc: "Emojis falling from the sky!",
+    onboarding_step1_title: "Tap a Magic Button!",
+    onboarding_step1_desc:
+      "Pick a suggestion to get started — your buddy will build it for you!",
+    onboarding_step2_title: "Talk to Me!",
+    onboarding_step2_desc: "Tap the mic to speak your idea instead of typing.",
+    onboarding_step3_title: "Look Inside!",
+    onboarding_step3_desc:
+      "See the building blocks that make your app work. Drag and tweak them!",
+    onboarding_got_it: "Got it!",
+    onboarding_skip: "Skip tour",
   },
   "zh-TW": {
     greeting: "嗨！我是你的建築夥伴。今天你想創造什麼呢？",
@@ -235,6 +253,14 @@ export const translations: Record<Language, TranslationKeys> = {
     template_magic_wand_desc: "點擊任意處創造火花！",
     template_emoji_rain_title: "表情雨",
     template_emoji_rain_desc: "表情符號從天空落下！",
+    onboarding_step1_title: "點擊魔法按鈕！",
+    onboarding_step1_desc: "選一個建議開始吧 — 你的夥伴會幫你做出來！",
+    onboarding_step2_title: "跟我說話！",
+    onboarding_step2_desc: "點擊麥克風，用說的來告訴我你的點子。",
+    onboarding_step3_title: "看看裡面！",
+    onboarding_step3_desc: "看看組成你的應用的積木。你可以拖動和調整它們！",
+    onboarding_got_it: "知道了！",
+    onboarding_skip: "跳過導覽",
   },
   "zh-CN": {
     greeting: "嗨！我是你的建筑夥伴。今天你想创造什么呢？",
@@ -313,5 +339,13 @@ export const translations: Record<Language, TranslationKeys> = {
     template_magic_wand_desc: "点击任意处创造火花！",
     template_emoji_rain_title: "表情雨",
     template_emoji_rain_desc: "表情符号从天空落下！",
+    onboarding_step1_title: "点击魔法按钮！",
+    onboarding_step1_desc: "选一个建议开始吧 — 你的伙伴会帮你做出来！",
+    onboarding_step2_title: "跟我说话！",
+    onboarding_step2_desc: "点击麦克风，用说的来告诉我你的点子。",
+    onboarding_step3_title: "看看里面！",
+    onboarding_step3_desc: "看看组成你的应用的积木。你可以拖动和调整它们！",
+    onboarding_got_it: "知道了！",
+    onboarding_skip: "跳过导览",
   },
 };

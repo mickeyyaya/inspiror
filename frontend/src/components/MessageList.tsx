@@ -94,7 +94,7 @@ export function MessageList({
       )}
 
       {showSuggestions && (
-        <div className="flex flex-col gap-3 mt-4">
+        <div className="flex flex-col gap-3 mt-4" data-onboarding="suggestions">
           <div className="flex items-center gap-2 ml-2">
             <p className="text-[#222] text-sm font-extrabold ml-2 uppercase tracking-wider bg-white/50 w-fit px-3 py-1 rounded-full border-2 border-[#222]/20">
               {magicButtonPrompt}

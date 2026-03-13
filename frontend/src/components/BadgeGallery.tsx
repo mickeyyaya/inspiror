@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useFocusTrap } from "../hooks/useFocusTrap";
 import { X, Trophy } from "lucide-react";
 import {
   ACHIEVEMENTS,
@@ -35,6 +36,8 @@ export function BadgeGallery({
   t,
 }: BadgeGalleryProps) {
   const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(dialogRef, isOpen);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -58,6 +61,7 @@ export function BadgeGallery({
       onClick={onClose}
     >
       <div
+        ref={dialogRef}
         className="bg-[#fdfbf7] border-4 border-[#222] rounded-[2rem] p-6 shadow-[8px_8px_0_#222] max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
@@ -91,13 +95,17 @@ export function BadgeGallery({
             <div className="text-2xl font-extrabold text-[#222]">
               {stats.builds}
             </div>
-            <div className="text-xs font-bold text-[#222]/70">{t.badge_builds}</div>
+            <div className="text-xs font-bold text-[#222]/70">
+              {t.badge_builds}
+            </div>
           </div>
           <div className="bg-[var(--color-candy-pink)] border-2 border-[#222] rounded-xl p-3 text-center shadow-[3px_3px_0_#222]">
             <div className="text-2xl font-extrabold text-[#222]">
               {stats.debugs}
             </div>
-            <div className="text-xs font-bold text-[#222]/70">{t.badge_bugs_fixed}</div>
+            <div className="text-xs font-bold text-[#222]/70">
+              {t.badge_bugs_fixed}
+            </div>
           </div>
         </div>
 

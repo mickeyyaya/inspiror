@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useFocusTrap } from "../hooks/useFocusTrap";
 import type { Achievement } from "../types/achievements";
 
 interface AchievementModalProps {
@@ -16,6 +17,8 @@ export function AchievementModal({
   t,
 }: AchievementModalProps) {
   const dismissBtnRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(dialogRef, achievement !== null);
 
   useEffect(() => {
     if (!achievement) return;
@@ -39,6 +42,7 @@ export function AchievementModal({
       onClick={onDismiss}
     >
       <div
+        ref={dialogRef}
         className="bg-white border-4 border-[#222] rounded-[2rem] p-8 shadow-[8px_8px_0_#222] text-center max-w-sm mx-4 animate-bounce-in"
         onClick={(e) => e.stopPropagation()}
       >

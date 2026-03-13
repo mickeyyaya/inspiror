@@ -265,6 +265,16 @@ code {
   animation: fade-in 0.5s ease-out forwards;
 }
 
+/* === Onboarding Tooltip Pulse === */
+@keyframes onboarding-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.6; }
+}
+
+.onboarding-pulse {
+  animation: onboarding-pulse 1.5s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
