@@ -5,6 +5,9 @@ import { useVoice, type VoiceLanguage } from "../hooks/useVoice";
 import { useAchievements } from "../hooks/useAchievements";
 import { useAutoFix } from "../hooks/useAutoFix";
 import { useLegacyConversion } from "../hooks/useLegacyConversion";
+import { useBuddyEmotion } from "../hooks/useBuddyEmotion";
+import { useCompileBlocks } from "../hooks/useCompileBlocks";
+import { usePersistProject } from "../hooks/usePersistProject";
 import { translations } from "../i18n/translations";
 import type { ChatMessage, Project } from "../types/project";
 import type { Block } from "../types/block";
@@ -13,7 +16,7 @@ import { getCodingFacts } from "../constants/codingFacts";
 import { compileBlocks } from "../compiler/compileBlocks";
 import { DEFAULT_BLOCKS } from "../constants/defaultBlocks";
 import { ConfettiBurst } from "./ConfettiBurst";
-import { ChatHeader, type BuddyEmotion } from "./ChatHeader";
+import { ChatHeader } from "./ChatHeader";
 import { MessageList } from "./MessageList";
 import { MessageInput } from "./MessageInput";
 import { PreviewPanel } from "./PreviewPanel";
@@ -22,8 +25,6 @@ import { BadgeGallery } from "./BadgeGallery";
 import { BlockEditor } from "./blocks/BlockEditor";
 import { OnboardingTooltip } from "./OnboardingTooltip";
 import { useOnboarding } from "../hooks/useOnboarding";
-
-const COMPILE_DEBOUNCE_MS = 150;
 
 export interface EditorViewProps {
   project: Pick<
@@ -66,14 +67,12 @@ export function EditorView({
   const [isChatVisible, setIsChatVisible] = useState(true);
   const [isBlockPanelOpen, setIsBlockPanelOpen] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [buddyEmotion, setBuddyEmotion] = useState<BuddyEmotion>("idle");
-  const emotionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { buddyEmotion, triggerEmotion } = useBuddyEmotion(messages);
   const [suggestionChips, setSuggestionChips] = useState(() =>
     pickRandomChips(language),
   );
   const checksRef = useRef<string[]>([]);
 
-  const isLegacyProject = useRef(project.blocks === undefined);
   const inputRef = useRef<HTMLInputElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const confettiTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -83,28 +82,6 @@ export function EditorView({
   useEffect(() => {
     messagesRef.current = messages;
   }, [messages]);
-
-  // Wire "curious" emotion: when the last assistant message ends with "?"
-  useEffect(() => {
-    const lastMsg = messages[messages.length - 1];
-    if (
-      lastMsg?.role === "assistant" &&
-      lastMsg.content.trimEnd().endsWith("?")
-    ) {
-      setBuddyEmotion("curious");
-    } else if (buddyEmotion === "curious") {
-      setBuddyEmotion("idle");
-    }
-    // buddyEmotion intentionally excluded — we only read it to clear "curious",
-    // including it would cause an infinite re-render loop.
-  }, [messages]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Cleanup emotion timer on unmount
-  useEffect(() => {
-    return () => {
-      if (emotionTimerRef.current) clearTimeout(emotionTimerRef.current);
-    };
-  }, []);
 
   useEffect(() => {
     blocksRef.current = blocks;
@@ -168,20 +145,6 @@ export function EditorView({
       setInputValue(transcript);
     }
   }, [isListening, transcript]);
-
-  const triggerEmotion = useCallback(
-    (emotion: BuddyEmotion, durationMs: number) => {
-      if (emotionTimerRef.current) {
-        clearTimeout(emotionTimerRef.current);
-      }
-      setBuddyEmotion(emotion);
-      emotionTimerRef.current = setTimeout(() => {
-        setBuddyEmotion("idle");
-        emotionTimerRef.current = null;
-      }, durationMs);
-    },
-    [],
-  );
 
   const { object, submit, isLoading } = useObject({
     api: import.meta.env.VITE_API_URL ?? "http://localhost:3001/api/generate",
@@ -307,44 +270,23 @@ export function EditorView({
     [recordRemix],
   );
 
-  // Debounced compile: derive currentCode from blocks to avoid torn state.
-  // Skip initial compile for legacy projects (no blocks field) to preserve saved currentCode.
-  const compileTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(() => {
-    if (isLegacyProject.current) {
-      isLegacyProject.current = false;
-      return;
-    }
-    if (compileTimerRef.current) clearTimeout(compileTimerRef.current);
-    compileTimerRef.current = setTimeout(() => {
-      setCurrentCode(compileBlocks(blocks, checksRef.current));
-      compileTimerRef.current = null;
-    }, COMPILE_DEBOUNCE_MS);
-    return () => {
-      if (compileTimerRef.current) clearTimeout(compileTimerRef.current);
-    };
-  }, [blocks]);
+  useCompileBlocks({
+    blocks,
+    checksRef,
+    isLegacyProject: project.blocks === undefined,
+    setCurrentCode,
+  });
 
   const showSuggestions =
     messages.length === 1 && messages[0]?.role === "assistant" && !isLoading;
 
-  const projectId = project.id;
-
-  const saveTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
-
-  useEffect(() => {
-    onUpdate(projectId, { messages });
-  }, [messages, onUpdate, projectId]);
-
-  useEffect(() => {
-    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-    saveTimerRef.current = setTimeout(() => {
-      onUpdate(projectId, { currentCode, blocks });
-    }, 300);
-    return () => {
-      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-    };
-  }, [currentCode, blocks, onUpdate, projectId]);
+  usePersistProject({
+    projectId: project.id,
+    messages,
+    currentCode,
+    blocks,
+    onUpdate,
+  });
 
   const blockCount = blocks.filter((b) => b.enabled).length;
 
