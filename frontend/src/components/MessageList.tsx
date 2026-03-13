@@ -13,6 +13,7 @@ interface MessageListProps {
   onChipClick: (label: string) => void;
   thinkingText: string;
   magicButtonPrompt: string;
+  moreIdeasText: string;
   language?: VoiceLanguage;
 }
 
@@ -26,6 +27,7 @@ export function MessageList({
   onChipClick,
   thinkingText,
   magicButtonPrompt,
+  moreIdeasText,
   language,
 }: MessageListProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -105,7 +107,7 @@ export function MessageList({
               aria-label="Shuffle suggestions"
               data-testid="shuffle-chips"
             >
-              🔀 More ideas
+              🔀 {moreIdeasText}
             </button>
           </div>
           <div className="flex flex-wrap gap-3">

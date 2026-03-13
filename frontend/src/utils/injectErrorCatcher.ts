@@ -1,4 +1,4 @@
-const ERROR_CATCHER_SCRIPT = `<script>window.onerror=function(msg,src,line,col,err){window.parent.postMessage({type:"iframe-error",message:msg+" (line "+line+")"},"*");return true;};</script>`;
+const ERROR_CATCHER_SCRIPT = `<script>window.onerror=function(msg,src,line,col,err){window.parent.postMessage({type:"iframe-error",message:msg+" (line "+line+")"},window.location.origin);return true;};</script>`;
 
 export function injectErrorCatcher(code: string): string {
   const headClose = code.indexOf("</head>");

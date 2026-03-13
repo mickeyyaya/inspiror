@@ -58,6 +58,8 @@ export interface TranslationKeys {
   badge_achievements: string;
   badge_buddy_avatars: string;
   aria_close_gallery: string;
+  blocks_count: string;
+  more_ideas: string;
 }
 
 export const translations: Record<Language, TranslationKeys> = {
@@ -121,6 +123,8 @@ export const translations: Record<Language, TranslationKeys> = {
     badge_achievements: "Achievements",
     badge_buddy_avatars: "Buddy Avatars",
     aria_close_gallery: "Close gallery",
+    blocks_count: "Blocks",
+    more_ideas: "More ideas",
   },
   "zh-TW": {
     greeting: "嗨！我是你的建築夥伴。今天你想創造什麼呢？",
@@ -181,6 +185,8 @@ export const translations: Record<Language, TranslationKeys> = {
     badge_achievements: "成就",
     badge_buddy_avatars: "夥伴頭像",
     aria_close_gallery: "關閉徽章",
+    blocks_count: "積木",
+    more_ideas: "更多點子",
   },
   "zh-CN": {
     greeting: "嗨！我是你的建筑夥伴。今天你想创造什么呢？",
@@ -241,5 +247,7 @@ export const translations: Record<Language, TranslationKeys> = {
     badge_achievements: "成就",
     badge_buddy_avatars: "伙伴头像",
     aria_close_gallery: "关闭徽章",
+    blocks_count: "积木",
+    more_ideas: "更多点子",
   },
 };

@@ -193,7 +193,7 @@ export const RUNTIME_ENGINE = `
         type: "iframe-error",
         message: "Block " + blockId + " error: " + String(err && err.message ? err.message : err),
         blockId: blockId
-      }, "*");
+      }, window.location.origin);
     } catch(e) {}
   }
 

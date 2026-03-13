@@ -324,6 +324,7 @@ export function EditorView({
             onChipClick={handleChipClick}
             thinkingText={t.thinking}
             magicButtonPrompt={t.magic_button_prompt}
+            moreIdeasText={t.more_ideas}
             language={language}
           />
 

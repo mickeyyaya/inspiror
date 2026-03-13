@@ -280,7 +280,8 @@ export function useProjects(language: VoiceLanguage) {
           const baseUpdated = { ...p, ...updates, updatedAt: Date.now() };
           const shouldRename =
             (baseUpdated.title === "Untitled Project" ||
-              baseUpdated.title === "未命名項目") &&
+              baseUpdated.title === "未命名項目" ||
+              baseUpdated.title === "未命名项目") &&
             updates.messages;
           return shouldRename
             ? { ...baseUpdated, title: extractTitle(updates.messages!) }

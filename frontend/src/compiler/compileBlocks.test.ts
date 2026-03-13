@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { compileBlocks } from "./compileBlocks";
+import { compileBlocks, isSafeCheckExpression } from "./compileBlocks";
 import { substituteParams } from "./substituteParams";
 import type { Block, BlockParam } from "../types/block";
 
@@ -59,9 +59,14 @@ describe("compileBlocks", () => {
 
   it("substitutes params in block code", () => {
     const block = makeBlock({
-      code: 'game.setBackground({{bgColor}});',
+      code: "game.setBackground({{bgColor}});",
       params: [
-        { key: "bgColor", label: "Background", type: "color", value: "#00ff00" },
+        {
+          key: "bgColor",
+          label: "Background",
+          type: "color",
+          value: "#00ff00",
+        },
       ],
     });
     const html = compileBlocks([block]);
@@ -74,6 +79,92 @@ describe("compileBlocks", () => {
     const html = compileBlocks([block]);
     expect(html).toContain("try {");
     expect(html).toContain("} catch(err) {");
+  });
+
+  it("uses window.location.origin instead of wildcard for postMessage", () => {
+    const block = makeBlock();
+    const html = compileBlocks([block]);
+    expect(html).not.toContain('"*"');
+    expect(html).toContain("window.location.origin");
+  });
+
+  it("sanitizes </script> sequences in block code", () => {
+    const block = makeBlock({
+      code: 'var x = "</script><script>alert(1)</script>";',
+    });
+    const html = compileBlocks([block]);
+    expect(html).not.toContain("</script><script>");
+    expect(html).toContain("<\\/script");
+  });
+
+  it("only includes safe check expressions (filters unsafe)", () => {
+    const safeCheck = 'game.getEntity("player") !== null';
+    const unsafeCheck = "while(1){}";
+    const html = compileBlocks([], [safeCheck, unsafeCheck]);
+    expect(html).toContain("Self-verification checks");
+    expect(html).toContain("game.getEntity");
+    expect(html).not.toContain("while(1)");
+  });
+
+  it("skips check runner entirely when all checks are unsafe", () => {
+    const html = compileBlocks([], ['eval("malicious")', "while(1){}"]);
+    expect(html).not.toContain("Self-verification checks");
+  });
+
+  it("emits function calls instead of eval for safe checks", () => {
+    const html = compileBlocks([], ['game.getEntity("player") !== null']);
+    expect(html).not.toContain("eval(");
+    expect(html).toContain("fns[i]()");
+  });
+
+  it("sanitizes </script> in check expression entity names", () => {
+    // The check runner script itself should not contain raw </script> sequences
+    // that could break out of the <script> tag enclosing it.
+    // Extract just the check runner portion between the two <script> tags.
+    const html = compileBlocks([], ['game.getEntity("player") !== null']);
+    const scripts = html.match(/<script>([\s\S]*?)<\/script>/g) || [];
+    // The second <script> block contains block code + check runner
+    const checkRunnerScript = scripts[1] || "";
+    // The script content (between <script> and </script>) must not have </script>
+    const inner = checkRunnerScript
+      .replace(/^<script>/, "")
+      .replace(/<\/script>$/, "");
+    expect(inner).not.toContain("</script>");
+  });
+});
+
+describe("isSafeCheckExpression", () => {
+  it("allows game.getEntity checks", () => {
+    expect(isSafeCheckExpression('game.getEntity("player") !== null')).toBe(
+      true,
+    );
+    expect(isSafeCheckExpression("game.getEntity('enemy') !== undefined")).toBe(
+      true,
+    );
+  });
+
+  it("allows game.get numeric comparisons", () => {
+    expect(isSafeCheckExpression('game.get("score") > 0')).toBe(true);
+    expect(isSafeCheckExpression('game.get("lives") >= 3')).toBe(true);
+  });
+
+  it("allows game.allEntities().length checks", () => {
+    expect(isSafeCheckExpression("game.allEntities().length > 0")).toBe(true);
+    expect(isSafeCheckExpression("game.allEntities().length === 5")).toBe(true);
+  });
+
+  it("allows typeof game.getEntity checks", () => {
+    expect(
+      isSafeCheckExpression('typeof game.getEntity("bg") === "object"'),
+    ).toBe(true);
+  });
+
+  it("rejects arbitrary code", () => {
+    expect(isSafeCheckExpression("while(1){}")).toBe(false);
+    expect(isSafeCheckExpression('eval("malicious")')).toBe(false);
+    expect(isSafeCheckExpression("alert(1)")).toBe(false);
+    expect(isSafeCheckExpression('fetch("http://evil.com")')).toBe(false);
+    expect(isSafeCheckExpression("document.cookie")).toBe(false);
   });
 });
 

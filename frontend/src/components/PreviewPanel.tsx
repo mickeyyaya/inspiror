@@ -19,6 +19,7 @@ interface PreviewPanelProps {
     aria_look_inside: string;
     overlay_building: string;
     overlay_did_you_know: string;
+    blocks_count: string;
   };
 }
 
@@ -78,7 +79,7 @@ export function PreviewPanel({
           <Blocks size={20} strokeWidth={2.5} />
           <span className="hidden sm:inline">
             {blockCount !== undefined
-              ? `${blockCount} Blocks`
+              ? `${blockCount} ${t.blocks_count}`
               : t.aria_look_inside}
           </span>
         </button>
