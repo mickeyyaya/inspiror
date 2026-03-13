@@ -224,3 +224,14 @@
 - **Tests:** 365 frontend + 19 backend = 384 total, all passing. 22 new tests (6 useFocusTrap + 8 useOnboarding + 8 OnboardingTooltip).
 - **Deploy:** SUCCESS (commit 30e9595, pushed to main)
 - **Next cycle should consider:** WCAG contrast audit (candy-green #39ff14), publish/share feature, content moderation (after 2026-03-18), EditorView decomposition (477 lines), schema deduplication, daily streak mechanic
+
+## Cycle 20 — 2026-03-13
+- **Tasks:** EditorView decomposition (extract 3 hooks)
+- **Type:** Code quality / Maintainability
+- **Hooks extracted:** `useBuddyEmotion` (curious detection + timed triggers), `useCompileBlocks` (debounced compilation with legacy skip), `usePersistProject` (immediate message save + debounced code/blocks save)
+- **Impact:** EditorView.tsx reduced from 477 → 419 lines. Each hook independently testable with clear single responsibility.
+- **Schema dedup deferred:** Backend uses CJS with hand-compiled .js files, no build pipeline — cross-package Zod imports impractical until backend gets proper tooling.
+- **Security:** PASS (pure refactoring, no new surface area)
+- **Tests:** 381 frontend + 19 backend = 400 total, all passing. 16 new tests (7+5+4).
+- **Deploy:** SUCCESS (commit 00f5ac2, pushed to main)
+- **Next cycle should consider:** Publish/share feature, content moderation (after 2026-03-18), daily streak mechanic, window.confirm replacement, keyboard shortcuts, progressive difficulty/surprise unlocks
