@@ -245,3 +245,15 @@
 - **Tests:** 390 frontend + 19 backend = 409 total. 9 new ConfirmDialog tests, 2 existing tests updated.
 - **Deploy:** SUCCESS (commit c6f5b19, pushed to main)
 - **Next cycle should consider:** Publish/share feature (L), daily streak mechanic, keyboard shortcuts, progressive difficulty/surprise unlocks
+
+## Cycle 22 — 2026-03-13
+- **Tasks:** Web Share API + Copy HTML to clipboard
+- **Type:** Feature (sharing/engagement)
+- **Share button:** Uses navigator.share() with file attachment (mobile). Falls back to text-only share when canShare rejects files. Hidden on browsers without Web Share API support.
+- **Copy HTML button:** Copies currentCode to clipboard via navigator.clipboard.writeText(). Shows "Copied!" feedback with checkmark icon for 2s.
+- **Utilities:** New shareHtml.ts with canWebShare(), shareProject(), copyHtmlToClipboard(). AbortError (user cancel) silently caught.
+- **i18n:** 5 new keys in EN/zh-TW/zh-CN (share_project, aria_share, copy_html, aria_copy_html, copied_feedback)
+- **Security:** PASS (no user input, browser-native APIs only)
+- **Tests:** 400 frontend + 19 backend = 419 total. 10 new tests.
+- **Deploy:** SUCCESS (commit 18e491b, pushed to main)
+- **Next cycle should consider:** Daily streak mechanic, keyboard shortcuts, progressive difficulty/surprise unlocks, dark mode, PWA offline support
