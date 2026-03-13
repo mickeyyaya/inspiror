@@ -106,3 +106,86 @@
 - **Tests:** 188 total (176 frontend + 12 backend), all passing
 - **Warnings deferred:** postMessage wildcard origin, schema duplication, focus trap, EditorView 489 lines, window.confirm usage, i18n gaps (hardcoded English strings), bundle splitting, game.playSound stub, English-only chips
 - **Next cycle should consider:** Focus trap for modals (WCAG), i18n remaining hardcoded strings, EditorView decomposition (extract useAutoFix + useLegacyConversion hooks), schema deduplication, E2E block editor tests
+
+## Cycle 11 — 2026-03-13
+- **Task:** useVoice.ts Test Coverage + Backend /api/convert-to-blocks Tests
+- **Type:** Test coverage (stability)
+- **Coverage:** useVoice.ts: 39% → 98.41% statements, 97.05% branches. Backend overall: 69.44% → 86.27% statements, 83.05% branches.
+- **Review:** WARN (1 HIGH: vacuous assertion in synthRef test, 2 MEDIUM: language default not verified in mock args, imprecise mock event shape)
+- **E2E:** PASS (all acceptance criteria met)
+- **Security:** PASS (no issues, 0 npm vulnerabilities)
+- **Eval:** PASS (13/13 checks)
+- **Research:** COPPA 2025 compliance deadline April 22 2026 (CRITICAL), Azure/OpenAI content moderation tools, dnd-kit maintenance risk, block-based coding best practices, PWA opportunity
+- **Deploy:** SUCCESS (commit 3ea6304, merged to main)
+- **Instincts extracted:** 1 (speech-api-mocking: use function declarations not arrows for constructor mocks)
+- **Operator:** READY → CONTINUE → pending post-cycle
+- **Next cycle should consider:** Content moderation (deferred to 2026-03-18), suggestion chip i18n, block deletion UX, focus trap, EditorView decomposition, schema deduplication, COPPA compliance audit
+
+## Cycle 12 — 2026-03-13
+- **Task:** i18n Bug Fixes + Block Deletion
+- **Type:** Bug fix (i18n) + Feature (usability)
+- **i18n fixes:** Removed dead English fallback from confirm_reset, removed English-only greeting detection heuristic (now structural check only)
+- **Block deletion:** Added Trash2 delete button to BlockCard with onDelete prop, handleDelete in BlockEditor with filter + reindex pattern, instant delete (no confirmation, Scratch model)
+- **Coverage:** 7 new tests (4 BlockCard delete + 3 BlockEditor delete)
+- **Review:** WARN (1 MEDIUM: handleDelete uses `blocks` not `sortedBlocks` — non-blocking, low practical risk)
+- **E2E:** PASS (all acceptance criteria met)
+- **Security:** PASS (0 vulnerabilities)
+- **Eval:** PASS (10/10 checks)
+- **Research:** Suggestion chip i18n patterns (Scratch uses react-intl + Transifex, static JSON vs LLM-generated)
+- **Deploy:** SUCCESS (commit ef15200, merged to main)
+- **Instincts extracted:** 1 (structural-detection-over-content: prefer structural checks over content matching for locale safety)
+- **Tests:** 232 total (213 frontend + 19 backend), all passing
+- **Next cycle should consider:** Content moderation (deferred deadline 2026-03-18 approaching), suggestion chip i18n, game.playSound no-op fix, focus trap for modals, handleDelete sortedBlocks fix, EditorView decomposition, schema deduplication
+
+## Cycle 13 — 2026-03-13
+- **Tasks:** Block Panel i18n, Suggestion Chip i18n, EditorView Hook Extraction
+- **Audit:** PASS (all 3 tasks)
+- **Eval:** 3/3 passed
+- **Shipped:** YES (3 commits: 8dc84ff, e506860, a063922)
+- **Instincts:** 2 extracted (optional-t-prop-with-fallback, ref-sync-for-extracted-hooks)
+- **Details:**
+  - Block Panel i18n: Added 7 translation keys (block_panel_title, block_enable/disable, block_expand/collapse_params, param_on/off) to all 3 locales. Optional `t` prop with English fallbacks.
+  - Suggestion Chip i18n: Added 40 zh-TW + 40 zh-CN translated suggestion chips. getSuggestions(language) helper, pickRandomChips(language) wire-up in EditorView + MessageList.
+  - Hook Extraction: Extracted useAutoFix (135 lines, 8 tests) and useLegacyConversion (80 lines, 7 tests) from EditorView. Reduced EditorView from 486 → 404 lines.
+- **Tests:** 249+ frontend + 19 backend, all passing
+- **Next cycle should consider:** Content moderation (deferred to 2026-03-18), EditorView further decomposition (404 → target 360), schema deduplication, focus trap for modals, game.playSound stub
+
+## Cycle 14 — 2026-03-13
+- **Tasks:** Security hardening (eval removal + postMessage origin + script sanitization) + i18n regressions (Blocks label, More ideas) + zh-CN auto-rename bug
+- **Type:** Security + i18n + Bug fix
+- **Security fixes:**
+  - Replaced `eval()` in self-verification checks with allowlisted function closures (7 safe patterns: game.getEntity, game.get, game.allEntities, typeof checks)
+  - Tightened operator regex from `[><=!]+` to explicit `(?:===|!==|==|!=|>=|<=|>|<)`
+  - Changed `postMessage("*")` → `window.location.origin` in compileBlocks.ts, engine.ts, injectErrorCatcher.ts
+  - Added `sanitizeScript()` for `</script>` breakout prevention in block code and check expressions
+- **i18n fixes:** Added `blocks_count` and `more_ideas` translation keys for all 3 locales. Made `moreIdeasText` required prop.
+- **Bug fix:** Added zh-CN `"未命名项目"` to auto-rename conditions in useProjects.ts
+- **Security review:** PASS (no CRITICAL/HIGH issues remaining)
+- **Code review:** 1 CRITICAL fixed (check expressions needed sanitizeScript), 2 HIGH addressed (operator regex + moreIdeasText prop)
+- **Tests:** 258 frontend + 19 backend = 277 total, all passing
+- **Deploy:** SUCCESS (commit 1f9b8a5, merged to main, pushed)
+- **Next cycle should consider:** Content moderation (deferred to 2026-03-18), useProjects.test.ts, project export/share feature, auto-fix error context i18n
+
+## Cycle 15 — 2026-03-13
+- **Tasks:** Stability bundle (fetch timeout + achievement queue + save debounce)
+- **Type:** Stability + Performance
+- **Fixes:**
+  - Added 15s AbortController timeout on legacy conversion fetch (prevents indefinite isConverting hang)
+  - Fixed achievement unlock race condition: replaced single `justUnlocked` with a queue (`pendingUnlocksRef`), `dismissUnlock` now shows next queued achievement
+  - Debounced localStorage writes for currentCode+blocks by 300ms (prevents 30-60 writes/sec during LLM streaming, fixes Safari iOS jank)
+- **Security:** No new issues
+- **Tests:** 258 frontend + 19 backend = 277 total, all passing. Updated 1 test (`waitFor` for debounced save).
+- **Deploy:** SUCCESS (commit 9762f47, merged to main, pushed)
+- **Next cycle should consider:** Content moderation (deferred to 2026-03-18), useProjects.test.ts, project export/share feature, auto-fix error context i18n, schema deduplication
+
+## Cycle 16 — 2026-03-13
+- **Tasks:** HTML export button + localStorage safety (safeSave + saveError banner)
+- **Type:** Feature + Stability
+- **Export:** Added download button to PreviewPanel (candy green, bottom-left) that exports project as self-contained .html file. sanitizeFilename handles CJK, special chars, consecutive hyphens, truncation.
+- **Storage safety:** Created safeSave() utility wrapping localStorage.setItem in try/catch. Replaced all bare setItem calls in useProjects and useAchievements. useProjects exposes saveError state. App.tsx renders persistent red alert banner with role="alert" when storage is full.
+- **Review fixes:** Replaced .shift() array mutation with destructuring in useAchievements (immutability rule). Added consecutive hyphen collapse. Removed duplicated fallback string.
+- **Security:** PASS (no CRITICAL/HIGH issues — download of LLM-generated HTML is intentional)
+- **Code Review:** 2 HIGH fixed (saveError UI wiring, immutability violation), 3 MEDIUM addressed
+- **Tests:** 270 frontend + 19 backend = 289 total, all passing. 12 new tests.
+- **Deploy:** SUCCESS (commit b01825c, merged to main, pushed)
+- **Next cycle should consider:** useProjects unit tests (still zero coverage on critical hook), Vitest coverage thresholds, onboarding/first-run tutorial, focus trap for modals, schema deduplication, EditorView further decomposition
