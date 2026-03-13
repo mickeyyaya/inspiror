@@ -347,4 +347,14 @@
 - **A11y:** Added `inert` attribute to block panel container when closed. Keyboard Tab no longer reaches invisible off-screen buttons. Fixes WCAG 2.1 SC 2.4.3.
 - **Tests:** 475 frontend + 19 backend = 494 total. 17 new isValidBlock unit tests + 1 integration test.
 - **Deploy:** SUCCESS (commit ec49ab5, pushed to main)
-- **Next cycle should consider:** Dark mode, CSP headers, content moderation (after 2026-03-18), schema dedup, unbounded particles cap, VITE_API_URL fallback fix, time format singular/plural bug
+- **Next cycle should consider:** Dark mode, CSP headers, content moderation (after 2026-03-18), schema dedup, VITE_API_URL fallback fix
+
+## Cycle 32 — 2026-03-13
+- **Tasks:** Particle array cap + time-ago singular/plural fix
+- **Type:** Performance + Bug fix
+- **Particle cap:** Added MAX_PARTICLES=500 constant to runtime engine. burst() and trail() loops now break early when limit reached. Prevents unbounded array growth from rapid particle calls in kids' game loops.
+- **Time-ago fix:** timeAgo in ProjectCatalog now uses plural translation keys (time_mins_ago/time_hours_ago/time_days_ago) when count > 1, singular when count === 1. Added space between number and unit. 6 new singular/plural test cases.
+- **Security:** PASS (no user input involved)
+- **Tests:** 478 frontend + 19 backend = 497 total, all passing. Coverage 95.46%.
+- **Deploy:** SUCCESS (commit 91d7497, pushed to main)
+- **Next cycle should consider:** Dark mode, CSP headers, content moderation (after 2026-03-18), schema dedup, VITE_API_URL fallback fix, llmService.ts refactor

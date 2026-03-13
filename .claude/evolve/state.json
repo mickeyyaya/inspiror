@@ -469,6 +469,12 @@
       "date": "2026-03-13",
       "decision": "completed",
       "cycle": 31
+    },
+    {
+      "task": "Particle array cap + time-ago singular/plural fix",
+      "date": "2026-03-13",
+      "decision": "completed",
+      "cycle": 32
     }
   ],
   "failedApproaches": [],
@@ -497,6 +503,6 @@
   ],
   "instinctCount": 4,
   "operatorWarnings": [],
-  "lastUpdated": "2026-03-13T18:30:00Z",
+  "lastUpdated": "2026-03-13T18:45:00Z",
   "nothingToDoCount": 0
 }
