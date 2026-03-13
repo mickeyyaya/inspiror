@@ -257,3 +257,15 @@
 - **Tests:** 400 frontend + 19 backend = 419 total. 10 new tests.
 - **Deploy:** SUCCESS (commit 18e491b, pushed to main)
 - **Next cycle should consider:** Daily streak mechanic, keyboard shortcuts, progressive difficulty/surprise unlocks, dark mode, PWA offline support
+
+## Cycle 23 — 2026-03-13
+- **Tasks:** Daily streak mechanic
+- **Type:** Feature (retention/engagement)
+- **Streak hook:** useStreak tracks consecutive visit days in localStorage. Increments on consecutive days, resets after 1+ day gap, no-op on same day.
+- **Badge UI:** 🔥 N day streak! badge rendered on ProjectCatalog header for streaks >= 2. Candy-neubrutalism chip style.
+- **i18n:** streak_days key in EN/zh-TW/zh-CN
+- **Keyboard shortcuts deferred:** Enter-to-send already exists. Ctrl+Enter redundant. Deferred to future cycle if users request it.
+- **Security:** PASS (localStorage only, no PII)
+- **Tests:** 406 frontend + 19 backend = 425 total. 6 new tests.
+- **Deploy:** SUCCESS (commit 947ae5c, pushed to main)
+- **Next cycle should consider:** Progressive difficulty/surprise unlocks, dark mode, PWA offline, block categories/colors, error boundary improvements
