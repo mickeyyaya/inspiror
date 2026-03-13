@@ -189,3 +189,14 @@
 - **Tests:** 270 frontend + 19 backend = 289 total, all passing. 12 new tests.
 - **Deploy:** SUCCESS (commit b01825c, merged to main, pushed)
 - **Next cycle should consider:** useProjects unit tests (still zero coverage on critical hook), Vitest coverage thresholds, onboarding/first-run tutorial, focus trap for modals, schema deduplication, EditorView further decomposition
+
+## Cycle 17 — 2026-03-13
+- **Tasks:** useProjects unit tests (34 tests) + Vitest coverage thresholds (80%)
+- **Type:** Test coverage + CI enforcement
+- **Coverage:** useProjects.ts went from 0% → 97%+ statement coverage. 34 tests covering: initial state (4), legacy migration (5), createProject (2), openProject (2), deleteProject (3), goToCatalog (1), updateProject (6), updateCurrentProject (2), extractTitle edges (2), migrateRawMessages edges (1), resetCurrentProject (1), saveError (3), DEFAULT_CODE (2).
+- **Thresholds:** Vitest coverage thresholds enforced at 80% for branches/functions/lines/statements. Prevents future coverage regression.
+- **Review fixes:** Added afterEach localStorage mock cleanup (was leaking across tests), added updateCurrentProject tests (both active + no-op paths), added edge case tests for extractTitle, migrateRawMessages, openProject non-existent ID, saveError null-ID path.
+- **Security:** PASS (no issues)
+- **Tests:** 304 frontend + 19 backend = 323 total, all passing
+- **Deploy:** SUCCESS (commit 2ee5379, merged to main, pushed)
+- **Next cycle should consider:** Content moderation (deferred deadline 2026-03-18 approaching), onboarding/first-run tutorial, focus trap for modals, schema deduplication, EditorView further decomposition (404 lines), template gallery

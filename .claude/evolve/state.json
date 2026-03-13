@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-13T09:17:00Z",
+  "lastUpdated": "2026-03-13T09:55:00Z",
   "research": {
     "queries": [
       {
@@ -99,7 +99,8 @@
     { "task": "EditorView Hook Extraction (useAutoFix + useLegacyConversion)", "date": "2026-03-13", "decision": "completed", "cycle": 13 },
     { "task": "Security hardening (eval removal, postMessage origin, script sanitization) + i18n regressions (Blocks label, More ideas) + zh-CN auto-rename", "date": "2026-03-13", "decision": "completed", "cycle": 14 },
     { "task": "Stability bundle: fetch timeout, achievement unlock queue, localStorage save debounce", "date": "2026-03-13", "decision": "completed", "cycle": 15 },
-    { "task": "Export/share HTML download button + localStorage safety (safeSave, saveError banner)", "date": "2026-03-13", "decision": "completed", "cycle": 16 }
+    { "task": "Export/share HTML download button + localStorage safety (safeSave, saveError banner)", "date": "2026-03-13", "decision": "completed", "cycle": 16 },
+    { "task": "useProjects unit tests (34 tests) + Vitest coverage thresholds (80%)", "date": "2026-03-13", "decision": "completed", "cycle": 17 }
   ],
   "failedApproaches": [],
   "evalHistory": [
