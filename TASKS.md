@@ -449,3 +449,32 @@ Audited against actual source on `main` branch (March 2026 — Cycle 16).
 
 - [ ] **No block-chat provenance linking** — Blocks compiled and injected into the iframe have no reference back to the chat turn or AI generation that produced them (`blocksVersion` / `generatedAt` field missing). This makes debugging regressions and attributing block state to conversation history impossible. Add a provenance field to `BlockDefinition`. (Architecture)
 - [ ] **`useLegacyConversion` language dependency missing from effect deps array** — The conversion effect uses `language` from context but omits it from its dependency array (suppressed with eslint-disable). A language switch after mount will not re-trigger conversion. Add `language` to the dependency array and handle re-conversion correctly. (Architecture) [`hooks/useLegacyConversion.ts`] *(carried from Cycle 14)*
+
+---
+
+## Cycle 19 Audit [ ]
+
+Audit covers: Safety/Compliance, Accessibility, Onboarding, Features, Code Quality, Architecture, Security, Engagement.
+Audited against actual source on `main` branch (March 2026 — Cycle 19).
+Research sources: AI SDK changelog, COPPA 2025 FTC ruling, WCAG 2.1, competitor repositioning analysis, Day-1 retention data.
+
+### HIGH — Must Fix
+
+- [ ] **Content moderation in system prompt (COPPA deadline April 22, 2026)** — No explicit safety guardrails exist in `basePrompt` in `llmService.ts`. FTC COPPA 2025 rules require platforms targeting under-13 audiences to implement reasonable content filtering. Add explicit age-appropriate safety instructions directly to the system prompt before the deadline. (Safety / Compliance) [`backend/src/llmService.ts`]
+- [ ] **First-run onboarding tooltips** — 22% Day-1 retention rate indicates new users are not discovering key features (block panel, play mode, voice input). Add 3-4 step tooltip popovers triggered on first visit, localStorage-flagged so they do not repeat, targeting 60-second time-to-first-interaction. (Playability / Retention) [`components/EditorView.tsx`]
+- [ ] **WCAG contrast audit: candy-green #39ff14 fails AA** — The neon green used on CTA buttons does not meet the 4.5:1 contrast ratio required by WCAG 2.1 AA. Replace with a WCAG-compliant green variant on interactive elements. (Accessibility) [`index.css`, `tailwind.config.js`] *(carried from Cycle 2, 8)*
+- [ ] **Focus trap for `AchievementModal` and `BadgeGallery` (WCAG 2.1 SC 2.1.2)** — Tab key escapes modal dialogs into background content, violating WCAG 2.1 SC 2.1.2. Implement a focus trap via `focus-trap-react` or a custom hook for all modal dialogs. (Accessibility) *(carried from Cycle 7, 8, 16)*
+- [ ] **Publish / share feature** — Single biggest retention and word-of-mouth gap vs. Codorex, Rosebud, and Upit. At minimum, implement a client-side Blob URL download of the game HTML so kids can save and share their creation without a backend. (Features)
+
+### MEDIUM
+
+- [ ] **Schema deduplication: frontend `constants.ts` and backend `llmService.ts`** — `generationSchema`, `blockSchema`, and `blockParamSchema` are defined identically in both files. Extract to a shared package or generate one from the other to eliminate drift. (Code Quality / Architecture) *(carried from Cycle 8, 16)*
+- [ ] **`EditorView.tsx` decomposition (461 lines)** — Exceeds the 400-line soft ceiling. Extract block panel logic into a `useBlockCompiler` hook and autosave wiring into a `useProjectAutoSave` hook. (Code Quality) [`components/EditorView.tsx`] *(carried from Cycle 8, 16)*
+- [ ] **Block undo/redo (at least 1-level undo)** — Kids lose work on accidental block delete or reorder. Implement at minimum a single-level undo for the `blocks` state array. (Playability) *(carried from Cycle 14, 16)*
+- [ ] **No CSP headers** — No `Content-Security-Policy` response header restricts `script-src` or `frame-src`. Add a CSP in `vercel.json` and Express middleware to limit XSS and iframe injection surface. (Security) [`vercel.json`, `backend/src/server.ts`] *(carried from Cycle 8, 16)*
+- [ ] **`window.confirm` → custom modal for reset** — Native `window.confirm` is blocked in some iframe contexts and is not kid-friendly. Replace the project reset confirmation with a styled modal dialog. (Playability / UX) [`components/EditorView.tsx`]
+
+### LOW
+
+- [ ] **PWA manifest + service worker for offline play** — Classroom environments often have unreliable wifi. A basic PWA manifest and a cache-first service worker for static assets would enable offline use of existing projects. (Features / Accessibility)
+- [ ] **Daily streak / return mechanic** — Research shows role-playing and cooperation mechanics with daily return incentives are most effective for ages 8-10. Add a simple daily streak counter (localStorage-tracked) with a buddy congratulation message to drive Day-2+ retention. (Engagement)

@@ -69,12 +69,13 @@ Traditional text-based programming can be intimidating and syntax-heavy for chil
 |----------|----------|------------|-------------|-------------------|
 | **Codorex** | Rex the Dino | Teaches coding facts during 20-40s wait | Minimal | Zero-signup, code transparency |
 | **Upit** | AVA | Standard spinner | Contest prizes ($2,500) | Generates graphics + sound + code |
-| **Rosebud** | Rosie | Live preview | Game jams | Specialized builders (RPG, visual novel), 3D vibe coding |
+| **Rosebud** | Rosie | Live preview | Game jams | Repositioning toward creative/game-making audience (overlap with Inspiror); 3D vibe coding |
 | **Kodable** | CatBot | Standard | Certificates | Dual-mode (text + audio), multilingual |
 | **CodeCombat** | N/A (RPG heroes) | Quest progress | Loot drops, gear upgrades, XP | Learning IS the game |
 | **Codedex** | N/A | Standard | Region unlocking on fantasy map | 8-bit pixel art identity |
 | **Tynker** | N/A | Standard | Certificates | Block-to-text progression |
 | **Tynker Copilot** | AI Copilot | Standard | Certificates | Fine-tuned Llama2-13B outputs block code directly; targets ages 6-12 |
+| **Code Edu "Encode"** | AI tutor | Standard | Achievements | AI creative learning platform; new entrant targeting same audience |
 
 ### Inspiror's Competitive Advantages
 1. **Real-time streaming hacker mode** - Kids see code being written live (Codorex shows static facts; we show the actual build)
@@ -92,11 +93,24 @@ Tynker launched an AI Copilot feature using a fine-tuned **Llama2-13B** model tr
 ### Dependency Risk: dnd-kit
 The block editor uses **dnd-kit** for drag-and-drop. As of early 2026, dnd-kit maintainer activity has slowed significantly (see GitHub issue #1194). If the library is abandoned, migrating all drag-and-drop logic is a non-trivial effort. Mitigation: abstract dnd-kit behind an interface layer so the implementation can be swapped (to `@hello-pangea/dnd` or a native HTML5 DnD approach) without rewriting every component.
 
+### Competitor Moves (Updated March 2026 — Cycle 19)
+
+- **Code Edu "Encode"** — New AI creative learning platform entering the market directly targeting Inspiror's audience. Monitor feature set for differentiation opportunities.
+- **Rosebud repositioning** — Rosebud is shifting focus toward the creative and game-making audience, increasing direct overlap with Inspiror's core use case. Their community flywheel (2.2M+ user-created games) remains a significant advantage.
+- **Replit $400M Series D, pivoting away from K-12** — Replit raised $400M and is explicitly deprioritizing the K-12 segment. This opens a meaningful distribution opportunity for Inspiror in classrooms and educator channels that Replit is vacating.
+
+### Compliance Note
+
+- **COPPA 2025 — Deadline April 22, 2026** — The FTC's updated COPPA rules require platforms targeting children under 13 to implement reasonable content filtering and avoid data collection practices. Inspiror's local-storage-only approach covers data privacy, but content moderation guardrails in the system prompt must be in place before April 22, 2026. See TASKS.md Cycle 19 for the tracked item.
+
 ### Market Trends (Updated March 2026)
 - **"Vibe coding" is Collins Word of the Year 2026** — mainstream awareness of AI-assisted coding is accelerating
 - **Bolt.new hit $40M ARR** — proves massive demand for AI code generation platforms
 - **Scratch 4.0 delayed to 2027-2028** — window of opportunity for next-gen tools to capture young creators
 - **44% of children actively use generative AI** — target audience is already AI-literate, raising the bar for UX quality
+- **Day-1 retention is the critical metric** — only 22% of new users return after Day 1; onboarding and first-session experience are the highest-leverage areas for retention improvement
+- **Role-playing and cooperation mechanics most effective for ages 8-10** — research confirms interactive narrative and daily return incentives (streaks, buddy reactions) outperform passive reward systems for this cohort
+- **PWA opportunity in classroom environments** — unreliable wifi in schools makes offline capability a meaningful differentiator for educator adoption
 
 ### Design Principles for Kids 8-14 (from competitive research)
 - **Not too babyish** - They want to feel "grown up" and like real hackers/creators

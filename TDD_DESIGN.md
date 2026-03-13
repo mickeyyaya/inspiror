@@ -193,6 +193,22 @@ We use **Vitest** and **React Testing Library** for the frontend, and **Jest** +
 *   **Frontend Test:** Verify image upload converts to Base64 and attaches to prompt payload.
 *   **Frontend Test:** Verify `gamesBuilt` state triggers achievement modals upon reaching thresholds.
 
+### Cycle 19: Safety, Accessibility & Compliance Tests (Planned)
+
+#### Content Moderation
+*   **Backend Test — safety guardrails present in system prompt:** Snapshot-test the `basePrompt` string in `llmService.ts` to verify it contains explicit age-appropriate safety instructions (e.g., blocks for violence, adult content, and PII requests). Fail the test if the prompt is modified to remove safety clauses. (Safety) [`backend/src/llmService.ts`]
+*   **Backend Test — moderation survives prompt injection:** Send a crafted user message that attempts to override safety instructions via `convertToBlocks` prompt. Verify the system prompt instructions are not overridden in the assembled LLM payload. (Security) [`backend/src/llmService.ts`]
+
+#### WCAG Contrast
+*   **Unit Test — contrast ratio of CTA color tokens:** Write a Vitest test using a contrast-ratio utility (e.g., `wcag-contrast`) to assert that every color token used on interactive elements in `tailwind.config.js` meets the 4.5:1 AA ratio. Treat `#39ff14` (candy-green) as a known failure until replaced. (Accessibility)
+*   **E2E Test — Axe accessibility scan on catalog and editor:** Add a Playwright test using `@axe-core/playwright` to run an automated accessibility scan on both the `ProjectCatalog` and `EditorView` routes. Assert zero WCAG AA violations. (Accessibility)
+
+#### Focus Trap
+*   **Unit Test — `AchievementModal` traps focus:** Render `AchievementModal` in Vitest + React Testing Library. Tab through all focusable elements and verify focus wraps back to the first element rather than escaping to the document body. (Accessibility) [`components/AchievementModal`]
+*   **Unit Test — `BadgeGallery` traps focus:** Same pattern as `AchievementModal`. (Accessibility) [`components/BadgeGallery`]
+*   **Unit Test — `AchievementModal` restores focus on close:** Verify that when the modal is dismissed, focus returns to the element that triggered it. (Accessibility)
+*   **E2E Test — Tab key does not escape achievement modal:** Open the achievement modal via Playwright and press Tab repeatedly; assert that `document.activeElement` remains within the modal container throughout. (Accessibility)
+
 ## 5. Current Test Coverage
 
 ### Unit Tests (35+ tests - Vitest)
@@ -346,6 +362,8 @@ We use **Vitest** and **React Testing Library** for the frontend, and **Jest** +
 
 ## 8. Technology Considerations
 
+- **AI SDK version (Cycle 19):** AI SDK is at `6.0.121` stable. There is no v7 yet. `@ai-sdk/google` is at `4.0.0-beta.5` — hold off on upgrading the Google provider until a stable release ships. No breaking changes affect the current integration.
+- **Gemini model status (Cycle 19):** The project is already on `gemini-3.1-flash-lite-preview`, which is the correct current model. The previously deprecated Gemini 2.5 path is not in use — no migration needed.
 - **AI SDK 6 typed messages:** Vercel AI SDK 6 introduces typed `UIMessage` vs `ModelMessage` separation. Current project uses `experimental_useObject` from AI SDK. Future migration path: adopt the new message types to gain type safety and support for richer message payloads (tool calls, multi-modal content).
 - **Gemini native TTS:** Gemini 3 provides native text-to-speech output, enabling audio responses from the AI Buddy. This could power voice-guided coding tutorials without requiring a separate TTS service.
 

@@ -1,44 +1,52 @@
 {
-  "lastUpdated": "2026-03-13T10:27:00Z",
+  "lastUpdated": "2026-03-13T12:00:00Z",
   "research": {
     "queries": [
       {
-        "query": "AI-powered kids coding education trends 2025-2026",
-        "date": "2026-03-11",
+        "query": "AI powered kids coding education trends 2026",
+        "date": "2026-03-13",
         "keyFindings": [
-          "92% student AI usage",
-          "AI literacy replacing learn-to-code",
-          "personalized gamification trending"
+          "'Vibe coding' (AI-assisted real-time generation) maturing in 2026 — kids apps should embrace co-creation framing",
+          "AI literacy + architectural thinking now prioritized over syntax memorization; apps should teach prompting skills",
+          "Global AI education market hit $7.57B in 2025, projected $112B by 2034 — strong tailwinds for Inspiror",
+          "1:1 AI tutoring sessions with real-time feedback are the leading personalization model",
+          "Code Edu launched 'Encode' AI creative learning platform at AI Impact Summit 2026 — direct competitor signal"
         ],
         "ttlDays": 7
       },
       {
-        "query": "Rosebud AI Bolt.new Replit competitor updates 2026",
-        "date": "2026-03-11",
+        "query": "Rosebud AI Bolt.new Replit Codorex competitor updates March 2026",
+        "date": "2026-03-13",
         "keyFindings": [
-          "Replit exited K-12",
-          "Bolt.new switched to Claude",
-          "Rosebud 2.2M games + monetization"
+          "Replit raised $400M Series D; Agent 4 can build and maintain entire companies autonomously — pivoting further from K-12",
+          "Replit Agent 3 costs reported $70–350/night for complex projects — pricing pain point Inspiror avoids with LLM-for-kids model",
+          "Bolt.new and Lovable remain dominant in vibe-coding space; primary audience is adult developers, not children",
+          "Rosebud AI published 'Alternative to Bolt.new' blog — signals it is repositioning toward creative/game-making audience",
+          "No Codorex-specific updates found; market consolidating around Replit / Bolt / Lovable for general coding"
         ],
         "ttlDays": 7
       },
       {
-        "query": "UX best practices kids coding tools gamification CHI 2025",
-        "date": "2026-03-11",
+        "query": "UX gamification kids coding tools research 2026",
+        "date": "2026-03-13",
         "keyFindings": [
-          "expressive mascots improve engagement",
-          "adaptive gamification > generic badges",
-          "visual progress tracking critical"
+          "Role-playing and cooperation mechanics most effective for flow experience in 8–10 age group (295-student study, PLOS ONE)",
+          "Puzzle games most effective for motivation; reasoning strategy games best for academic achievement (meta-analysis, ScienceDirect)",
+          "Gamification largest positive effect on motivation, then achievement, least on cognitive load — keep UI simple",
+          "Children react negatively to content even one grade above/below their level — age-adaptive difficulty is critical",
+          "Instant, exaggerated reward loops + scaffolded pacing are the UX gold standard for kids coding tools"
         ],
         "ttlDays": 7
       },
       {
-        "query": "Vercel AI SDK 6 Google Gemini 3.1 API updates",
-        "date": "2026-03-11",
+        "query": "Vercel AI SDK 7 Google Gemini API updates March 2026",
+        "date": "2026-03-13",
         "keyFindings": [
-          "AI SDK 6 stable useObject",
-          "Gemini 3.1 Flash-Lite 2.5x faster TTFT",
-          "thinking_level parameter"
+          "Vercel AI SDK latest stable is 6.0.121 (patch March 7 2026); no v7 released yet",
+          "@ai-sdk/google updated to 4.0.0-beta.5 — watch for stable release before upgrading",
+          "gemini-2.5-flash-lite-preview-09-2025 model shutting down March 31 2026 — ACTION: verify Inspiror's configured model ID",
+          "Gemini 3.1 Pro Preview now live on Vercel AI Gateway; supports medium thinking_level parameter",
+          "Multimodal content support added to Google embedding provider options"
         ],
         "ttlDays": 7
       },
@@ -114,6 +122,30 @@
           "Time-to-delight is #1 predictor of retention in kids apps"
         ],
         "ttlDays": 12
+      },
+      {
+        "query": "PWA offline kids apps best practices 2026",
+        "date": "2026-03-13",
+        "keyFindings": [
+          "Service worker + cache-first for static assets, network-first for API, stale-while-revalidate for dynamic content",
+          "All PWA features must degrade gracefully offline — critical for classroom environments with spotty wifi",
+          "Web App Manifest + HTTPS required; responsive design across all input types (touch, mouse, stylus)",
+          "PWA install prompt + home-screen icon significantly boosts re-engagement for kids apps",
+          "Inspiror opportunity: cache templates and blocks offline so kids can prototype without network"
+        ],
+        "ttlDays": 14
+      },
+      {
+        "query": "kids coding app onboarding tutorial patterns first-run experience UX 2026",
+        "date": "2026-03-13",
+        "keyFindings": [
+          "Duolingo model: complete first meaningful interaction within 60 seconds of launch — no long tutorial screens",
+          "Only 23.9% iOS / 21.1% Android users return after Day 1 — first-run delight is existential",
+          "Kids coding apps must let children play/explore before asking them to code — 'try first, explain later'",
+          "Progressive disclosure: introduce one concept at a time; avoid feature dumps in welcome flow",
+          "Weekly engaged users are 90% more likely to retain long-term — onboarding goal is habit formation, not feature education"
+        ],
+        "ttlDays": 14
       }
     ]
   },
