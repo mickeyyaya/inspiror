@@ -369,3 +369,36 @@ Audited against actual source on `main` branch (March 2026 — Cycle 8).
 - [ ] **`getWelcomeCode` 90-line template in `useProjects.ts`** — Large inline HTML template inflates the hook file. Extract to `src/constants/welcomeCode.ts`. (Code Quality) [`useProjects.ts`]
 - [ ] **Color contrast of `#39ff14` neon green fails WCAG AA** — Neon green text on dark backgrounds does not meet the 4.5:1 contrast ratio. Replace with a WCAG-compliant green or add a high-contrast mode. (Accessibility) *(carried from Cycle 2)*
 - [ ] **Block panel empty state has no guidance message** — When the panel is empty (new project or failed conversion), kids see a blank area with no instructions. Add a short message explaining how to populate blocks. (Playability) *(carried from Cycle 7)*
+
+---
+
+## Cycle 14 Audit [ ]
+
+Audit covers: Security, Stability, Performance, UI/UX, Playability, Code Quality, Architecture.
+Audited against actual source on `main` branch (March 2026 — Cycle 14).
+
+### CRITICAL
+
+- [ ] **`eval()` on LLM-generated check expressions** — `buildCheckRunner` in `compileBlocks.ts:46` emits `eval(checks[i])` where checks originate from LLM output. An untrusted check like `while(1){}` freezes the iframe permanently. Replace with a whitelist of safe intrinsic expressions or strip self-verification checks. (Security) [`compileBlocks.ts`]
+- [ ] **postMessage wildcard `"*"` origin in all compiled output** — `compileBlocks.ts`, `engine.ts:196`, and `injectErrorCatcher.ts` all use `postMessage({...}, "*")`. Data-leak vector on shared hosting. Change to `window.location.origin`. (Security) *(re-prioritized from deferred)*
+
+### HIGH
+
+- [ ] **No fetch timeout on legacy conversion** — `useLegacyConversion.ts:50` fetch has no AbortController/timeout. `isConverting` hangs indefinitely if backend stalls. (Stability)
+- [ ] **Achievement unlock race condition** — `useAchievements.ts:64` uses `setTimeout(0)` in setState updater, causing stale closures + skipped achievements on rapid unlocks. (Stability)
+- [ ] **zh-CN untitled project never auto-renamed** — `useProjects.ts:282` checks zh-TW `"未命名項目"` but not zh-CN `"未命名项目"`. (Code Quality)
+- [ ] **Unbounded localStorage writes during streaming** — `EditorView.tsx:279` calls `onUpdate` on every streaming token with no debounce (30-60 writes/sec). Causes jank on Safari iOS. (Performance)
+- [ ] **"Blocks" label in PreviewPanel hardcoded English** — `PreviewPanel.tsx:81` shows "5 Blocks" for zh-TW/zh-CN users. (i18n)
+- [ ] **"More ideas" shuffle button not translated** — `MessageList.tsx:108` hardcoded English. (i18n)
+- [ ] **"Builder Buddy" app name not i18n** — `ChatHeader.tsx:74` hardcoded English. (i18n, may be intentional branding)
+
+### MEDIUM
+
+- [ ] **No unit tests for `useProjects.ts`** — Most critical data hook with zero test coverage. (Code Quality)
+- [ ] **No project share/export** — Competitive gap vs Codorex, Rosebud, Upit. Export as HTML download is trivial. (Features)
+- [ ] **Runtime engine 952 lines re-parsed on every compile** — `engine.ts` not minified, embedded verbatim in every srcDoc. (Performance)
+- [ ] **`injectErrorCatcher` naive `</head>` search** — Can inject script in wrong position if CSS comment contains `</head>`. (Stability)
+- [ ] **`useLegacyConversion` ignores language changes after mount** — Empty deps array with eslint-disable. (Architecture)
+- [ ] **No undo/redo for block edits** — Kids lose work on accidental delete/reorder. (Playability)
+- [ ] **localStorage quota exhaustion not handled** — `useProjects.ts:225` no try/catch on setItem. Silent data loss. (Stability)
+- [ ] **`</script>` breakout not sanitized in block code** — `compileBlocks.ts:80` embeds block JS inside `<script>` without sanitizing `</script>` sequences. (Security)
