@@ -276,12 +276,20 @@ export function EditorView({
 
   const projectId = project.id;
 
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
   useEffect(() => {
     onUpdate(projectId, { messages });
   }, [messages, onUpdate, projectId]);
 
   useEffect(() => {
-    onUpdate(projectId, { currentCode, blocks });
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(() => {
+      onUpdate(projectId, { currentCode, blocks });
+    }, 300);
+    return () => {
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    };
   }, [currentCode, blocks, onUpdate, projectId]);
 
   const blockCount = blocks.filter((b) => b.enabled).length;

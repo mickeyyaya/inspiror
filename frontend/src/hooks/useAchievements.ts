@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import {
   ACHIEVEMENTS,
   BUDDY_AVATARS,
@@ -19,7 +19,10 @@ function loadState(): AchievementState {
   } catch {
     // Corrupted data, start fresh
   }
-  return { ...DEFAULT_ACHIEVEMENT_STATE, stats: { ...DEFAULT_ACHIEVEMENT_STATE.stats } };
+  return {
+    ...DEFAULT_ACHIEVEMENT_STATE,
+    stats: { ...DEFAULT_ACHIEVEMENT_STATE.stats },
+  };
 }
 
 function saveState(state: AchievementState): void {
@@ -35,12 +38,19 @@ export function useAchievements() {
   const [selectedAvatarId, setSelectedAvatarId] = useState(loadSelectedAvatar);
   const [newlyUnlocked, setNewlyUnlocked] = useState<Achievement | null>(null);
 
+  const pendingUnlocksRef = useRef<Achievement[]>([]);
+
+  const showNextUnlock = useCallback(() => {
+    const next = pendingUnlocksRef.current.shift();
+    setNewlyUnlocked(next ?? null);
+  }, []);
+
   const incrementStat = useCallback(
     (type: keyof AchievementState["stats"]) => {
       setState((prev) => {
         const newStats = { ...prev.stats, [type]: prev.stats[type] + 1 };
         const newUnlocked = [...prev.unlockedIds];
-        let justUnlocked: Achievement | null = null;
+        const justUnlocked: Achievement[] = [];
 
         for (const achievement of ACHIEVEMENTS) {
           if (
@@ -49,7 +59,7 @@ export function useAchievements() {
             !newUnlocked.includes(achievement.id)
           ) {
             newUnlocked.push(achievement.id);
-            justUnlocked = achievement;
+            justUnlocked.push(achievement);
           }
         }
 
@@ -59,31 +69,47 @@ export function useAchievements() {
         };
         saveState(newState);
 
-        if (justUnlocked) {
-          // Use setTimeout to avoid setState during render
-          setTimeout(() => setNewlyUnlocked(justUnlocked), 0);
+        if (justUnlocked.length > 0) {
+          pendingUnlocksRef.current.push(...justUnlocked);
+          // Show the first unlock; subsequent ones shown via dismissUnlock
+          setTimeout(() => showNextUnlock(), 0);
         }
 
         return newState;
       });
     },
-    [],
+    [showNextUnlock],
   );
 
-  const recordBuild = useCallback(() => incrementStat("builds"), [incrementStat]);
-  const recordDebug = useCallback(() => incrementStat("debugs"), [incrementStat]);
-  const recordRemix = useCallback(() => incrementStat("remixes"), [incrementStat]);
-  const recordExplore = useCallback(() => incrementStat("explores"), [incrementStat]);
+  const recordBuild = useCallback(
+    () => incrementStat("builds"),
+    [incrementStat],
+  );
+  const recordDebug = useCallback(
+    () => incrementStat("debugs"),
+    [incrementStat],
+  );
+  const recordRemix = useCallback(
+    () => incrementStat("remixes"),
+    [incrementStat],
+  );
+  const recordExplore = useCallback(
+    () => incrementStat("explores"),
+    [incrementStat],
+  );
 
-  const dismissUnlock = useCallback(() => setNewlyUnlocked(null), []);
+  const dismissUnlock = useCallback(() => showNextUnlock(), [showNextUnlock]);
 
-  const selectAvatar = useCallback((avatarId: string) => {
-    const avatar = BUDDY_AVATARS.find((a) => a.id === avatarId);
-    if (avatar && state.stats.builds >= avatar.requiredBuilds) {
-      setSelectedAvatarId(avatarId);
-      localStorage.setItem(AVATAR_KEY, avatarId);
-    }
-  }, [state.stats.builds]);
+  const selectAvatar = useCallback(
+    (avatarId: string) => {
+      const avatar = BUDDY_AVATARS.find((a) => a.id === avatarId);
+      if (avatar && state.stats.builds >= avatar.requiredBuilds) {
+        setSelectedAvatarId(avatarId);
+        localStorage.setItem(AVATAR_KEY, avatarId);
+      }
+    },
+    [state.stats.builds],
+  );
 
   const selectedAvatar =
     BUDDY_AVATARS.find((a) => a.id === selectedAvatarId) || BUDDY_AVATARS[0];

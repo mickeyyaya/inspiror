@@ -1,5 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { render, screen, fireEvent, act } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  act,
+  waitFor,
+} from "@testing-library/react";
 import App from "./App";
 import * as aiSdkReact from "@ai-sdk/react";
 
@@ -966,12 +972,16 @@ describe("Inspiror App", () => {
       });
 
       // Project A should have updated code (compiled from blocks)
-      let saved = JSON.parse(mockStorage["inspiror_projects"]!);
-      let projA = saved.find((p: { id: string }) => p.id === "project-a");
-      expect(projA.currentCode).toContain("game.setBackground");
+      // Wait for debounced localStorage save (300ms)
+      await waitFor(() => {
+        const saved = JSON.parse(mockStorage["inspiror_projects"]!);
+        const projA = saved.find((p: { id: string }) => p.id === "project-a");
+        expect(projA.currentCode).toContain("game.setBackground");
+      });
 
       // Project B should be untouched
-      let projB = saved.find((p: { id: string }) => p.id === "project-b");
+      const saved = JSON.parse(mockStorage["inspiror_projects"]!);
+      const projB = saved.find((p: { id: string }) => p.id === "project-b");
       expect(projB.currentCode).toContain("DRAWING APP");
     });
   });
