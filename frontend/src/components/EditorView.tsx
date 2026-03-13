@@ -67,6 +67,14 @@ export function EditorView({
   );
   const [isChatVisible, setIsChatVisible] = useState(true);
   const [isBlockPanelOpen, setIsBlockPanelOpen] = useState(false);
+  useEffect(() => {
+    if (!isBlockPanelOpen) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsBlockPanelOpen(false);
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [isBlockPanelOpen]);
   const [showConfetti, setShowConfetti] = useState(false);
   const { buddyEmotion, triggerEmotion } = useBuddyEmotion(messages);
   const [suggestionChips, setSuggestionChips] = useState(() =>
