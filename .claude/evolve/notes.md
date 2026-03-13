@@ -212,3 +212,15 @@
 - **Tests:** 343 frontend + 19 backend = 362 total, all passing. 39 new tests (12 ChatHeader + 3 useAutoFix + 11 starterTemplates + 14 ProjectCatalog).
 - **Deploy:** SUCCESS (commits fdeb33d + 0d48da8, merged to main, pushed)
 - **Next cycle should consider:** First-run onboarding tooltips (most deferred HIGH item), daily streak/return mechanic, content moderation (after 2026-03-18), publish/share link, focus trap for modals
+
+## Cycle 19 — 2026-03-13
+- **Tasks:** Focus trap for modals (WCAG 2.1) + First-run onboarding tooltips
+- **Type:** Accessibility + Feature (Day-1 retention)
+- **Focus trap:** New `useFocusTrap` hook traps Tab/Shift+Tab within modal dialogs. Wired into AchievementModal and BadgeGallery. Closes WCAG 2.1 SC 2.1.2 violation (5 cycles overdue).
+- **Onboarding:** 3-step tooltip tour (suggestion chips → voice input → block panel). `useOnboarding` hook with localStorage persistence. `OnboardingTooltip` component with positioned arrows, Escape dismiss, ARIA dialog role, auto-focus. i18n in EN/zh-TW/zh-CN (8 keys).
+- **Review fixes:** Removed dead `arrowSide:"left"` branch, unused `onboarding_step_of` key, exported `TOTAL_STEPS` as shared constant, added Escape handler + ARIA + focus management to tooltip.
+- **Security:** PASS (0 CRITICAL, 0 HIGH — no user input, static content only)
+- **Architecture:** WARN (step count duplication fixed, EditorView 477 lines pre-existing)
+- **Tests:** 365 frontend + 19 backend = 384 total, all passing. 22 new tests (6 useFocusTrap + 8 useOnboarding + 8 OnboardingTooltip).
+- **Deploy:** SUCCESS (commit 30e9595, pushed to main)
+- **Next cycle should consider:** WCAG contrast audit (candy-green #39ff14), publish/share feature, content moderation (after 2026-03-18), EditorView decomposition (477 lines), schema deduplication, daily streak mechanic

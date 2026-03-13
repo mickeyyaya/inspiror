@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-13T12:00:00Z",
+  "lastUpdated": "2026-03-13T11:55:00Z",
   "research": {
     "queries": [
       {
@@ -379,6 +379,18 @@
       "date": "2026-03-13",
       "decision": "completed",
       "cycle": 18
+    },
+    {
+      "task": "Focus trap for AchievementModal + BadgeGallery (WCAG 2.1)",
+      "date": "2026-03-13",
+      "decision": "completed",
+      "cycle": 19
+    },
+    {
+      "task": "First-run onboarding tooltips (3-step tour)",
+      "date": "2026-03-13",
+      "decision": "completed",
+      "cycle": 19
     }
   ],
   "failedApproaches": [],
