@@ -445,6 +445,12 @@
       "date": "2026-03-13",
       "decision": "completed",
       "cycle": 27
+    },
+    {
+      "task": "i18n project count strings + PWA manifest with app icon",
+      "date": "2026-03-13",
+      "decision": "completed",
+      "cycle": 28
     }
   ],
   "failedApproaches": [],

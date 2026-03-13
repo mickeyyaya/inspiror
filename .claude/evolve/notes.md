@@ -309,3 +309,13 @@
 - **Tests:** 415 frontend (1 new rename test). All pass.
 - **Deploy:** SUCCESS (commit 16571d6, pushed to main)
 - **Next cycle should consider:** Dark mode, PWA offline, schema dedup, hardcoded strings i18n, PreviewPanel/MessageInput tests
+
+## Cycle 28 — 2026-03-13
+- **Tasks:** i18n project count strings + PWA manifest with app icon
+- **Type:** i18n fix + PWA foundation
+- **i18n fix:** Replaced hardcoded "project"/"projects"/"waiting for you!"/"正在等著你！" with proper TranslationKeys (project_count_one, project_count_many, projects_waiting). zh-CN now shows correct text instead of zh-TW.
+- **PWA:** Added manifest.json with app metadata, SVG icon, theme-color meta, description meta, apple-touch-icon link. Enables install prompt on mobile and home screen icon.
+- **Security:** PASS (static assets only)
+- **Tests:** 415 frontend. All pass.
+- **Deploy:** SUCCESS (commit 3afd050, pushed to main)
+- **Next cycle should consider:** Service worker for offline, dark mode, schema dedup, Builder Buddy i18n, PreviewPanel tests
