@@ -57,6 +57,7 @@ interface ChatHeaderProps {
     aria_reset: string;
     aria_hide_chat: string;
     badge_title: string;
+    buddy_name: string;
   };
 }
 
@@ -115,7 +116,7 @@ export function ChatHeader({
           className="text-2xl tracking-wide font-extrabold text-[#222]"
           style={{ textShadow: "2px 2px 0px white" }}
         >
-          Builder Buddy
+          {t.buddy_name}
         </span>
       </div>
       <div className="flex items-center gap-3">
