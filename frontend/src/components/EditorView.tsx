@@ -380,6 +380,7 @@ export function EditorView({
       <div
         data-testid="block-panel"
         aria-hidden={!isBlockPanelOpen}
+        inert={!isBlockPanelOpen ? true : undefined}
         className={`fixed top-0 right-0 h-full z-40 flex flex-col
           w-full sm:w-[400px]
           bg-[#fdfbf7]

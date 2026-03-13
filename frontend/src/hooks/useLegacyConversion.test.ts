@@ -1,6 +1,6 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { useLegacyConversion } from "./useLegacyConversion";
+import { useLegacyConversion, isValidBlock } from "./useLegacyConversion";
 import type { Block } from "../types/block";
 
 const validBlock: import("../types/block").Block = {
@@ -203,5 +203,123 @@ describe("useLegacyConversion", () => {
       expect(onBlocksConvertedMock).toHaveBeenCalledWith(mockBlocks);
     });
     expect(onConversionEndMock).toHaveBeenCalledOnce();
+  });
+
+  it("rejects blocks with invalid fields from conversion response", async () => {
+    const longCode = "x".repeat(150);
+    const invalidBlocks = [{ id: "b1", code: "x", enabled: true }]; // missing type, label, emoji, order, params
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ blocks: invalidBlocks }),
+    } as Response);
+
+    renderHook(() =>
+      useLegacyConversion({
+        project: makeProject({ currentCode: longCode }),
+        language: "en-US",
+        onBlocksConverted: onBlocksConvertedMock,
+        onConversionEnd: onConversionEndMock,
+      }),
+    );
+
+    await waitFor(() => {
+      expect(onConversionEndMock).toHaveBeenCalledOnce();
+    });
+    // Invalid blocks should NOT be passed to onBlocksConverted
+    expect(onBlocksConvertedMock).not.toHaveBeenCalled();
+  });
+});
+
+describe("isValidBlock", () => {
+  const valid: Block = {
+    id: "b1",
+    type: "custom",
+    label: "Test",
+    emoji: "🔲",
+    enabled: true,
+    params: [],
+    code: "console.log(1)",
+    order: 0,
+  };
+
+  it("returns true for a valid block", () => {
+    expect(isValidBlock(valid)).toBe(true);
+  });
+
+  it("returns true for a valid block with css", () => {
+    expect(isValidBlock({ ...valid, css: ".foo { color: red }" })).toBe(true);
+  });
+
+  it("returns true for a block with valid params", () => {
+    const withParams = {
+      ...valid,
+      params: [
+        { key: "speed", label: "Speed", type: "number", value: 5 },
+        { key: "color", label: "Color", type: "color", value: "#ff0000" },
+      ],
+    };
+    expect(isValidBlock(withParams)).toBe(true);
+  });
+
+  it("returns false for null", () => {
+    expect(isValidBlock(null)).toBe(false);
+  });
+
+  it("returns false for non-object", () => {
+    expect(isValidBlock("string")).toBe(false);
+    expect(isValidBlock(42)).toBe(false);
+  });
+
+  it("returns false when id is missing", () => {
+    const { id: _, ...noId } = valid;
+    expect(isValidBlock(noId)).toBe(false);
+  });
+
+  it("returns false when type is invalid category", () => {
+    expect(isValidBlock({ ...valid, type: "invalid" })).toBe(false);
+  });
+
+  it("returns false when label is missing", () => {
+    const { label: _, ...noLabel } = valid;
+    expect(isValidBlock(noLabel)).toBe(false);
+  });
+
+  it("returns false when emoji is missing", () => {
+    const { emoji: _, ...noEmoji } = valid;
+    expect(isValidBlock(noEmoji)).toBe(false);
+  });
+
+  it("returns false when enabled is not boolean", () => {
+    expect(isValidBlock({ ...valid, enabled: "yes" })).toBe(false);
+  });
+
+  it("returns false when code is missing", () => {
+    const { code: _, ...noCode } = valid;
+    expect(isValidBlock(noCode)).toBe(false);
+  });
+
+  it("returns false when order is not number", () => {
+    expect(isValidBlock({ ...valid, order: "zero" })).toBe(false);
+  });
+
+  it("returns false when params is not array", () => {
+    expect(isValidBlock({ ...valid, params: {} })).toBe(false);
+  });
+
+  it("returns false when params has invalid entry", () => {
+    expect(isValidBlock({ ...valid, params: [{ key: "x" }] })).toBe(false);
+  });
+
+  it("returns false when param has invalid type", () => {
+    expect(
+      isValidBlock({
+        ...valid,
+        params: [{ key: "x", label: "X", type: "invalid", value: 1 }],
+      }),
+    ).toBe(false);
+  });
+
+  it("returns false when css is non-string", () => {
+    expect(isValidBlock({ ...valid, css: 42 })).toBe(false);
   });
 });

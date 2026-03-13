@@ -14,13 +14,54 @@ export interface UseLegacyConversionReturn {
   isConverting: boolean;
 }
 
-function isValidBlock(b: unknown): b is Block {
+const VALID_BLOCK_CATEGORIES = new Set([
+  "setup",
+  "character",
+  "movement",
+  "collision",
+  "event",
+  "score",
+  "timer",
+  "visual",
+  "sound",
+  "custom",
+]);
+
+const VALID_PARAM_TYPES = new Set([
+  "number",
+  "color",
+  "string",
+  "boolean",
+  "enum",
+]);
+
+function isValidParam(p: unknown): boolean {
+  if (p === null || typeof p !== "object") return false;
+  const param = p as Record<string, unknown>;
   return (
-    b !== null &&
-    typeof b === "object" &&
-    "id" in b &&
-    "code" in b &&
-    "enabled" in b
+    typeof param.key === "string" &&
+    typeof param.label === "string" &&
+    typeof param.type === "string" &&
+    VALID_PARAM_TYPES.has(param.type) &&
+    param.value !== undefined
+  );
+}
+
+export function isValidBlock(b: unknown): b is Block {
+  if (b === null || typeof b !== "object") return false;
+  const block = b as Record<string, unknown>;
+  return (
+    typeof block.id === "string" &&
+    typeof block.type === "string" &&
+    VALID_BLOCK_CATEGORIES.has(block.type) &&
+    typeof block.label === "string" &&
+    typeof block.emoji === "string" &&
+    typeof block.enabled === "boolean" &&
+    typeof block.code === "string" &&
+    typeof block.order === "number" &&
+    Array.isArray(block.params) &&
+    block.params.every(isValidParam) &&
+    (block.css === undefined || typeof block.css === "string")
   );
 }
 
