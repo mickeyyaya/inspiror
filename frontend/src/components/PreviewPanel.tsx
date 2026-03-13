@@ -1,7 +1,19 @@
-import { useMemo, useCallback } from "react";
-import { MessageCircle, Blocks, Download } from "lucide-react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import {
+  MessageCircle,
+  Blocks,
+  Download,
+  Share2,
+  Copy,
+  Check,
+} from "lucide-react";
 import { injectErrorCatcher } from "../utils/injectErrorCatcher";
 import { downloadHtml } from "../utils/downloadHtml";
+import {
+  canWebShare,
+  shareProject,
+  copyHtmlToClipboard,
+} from "../utils/shareHtml";
 import { BuildingOverlay } from "./BuildingOverlay";
 import { BackgroundBubbles } from "./BackgroundBubbles";
 
@@ -24,6 +36,11 @@ interface PreviewPanelProps {
     blocks_count: string;
     download_project: string;
     aria_download: string;
+    share_project: string;
+    aria_share: string;
+    copy_html: string;
+    aria_copy_html: string;
+    copied_feedback: string;
   };
 }
 
@@ -45,6 +62,35 @@ export function PreviewPanel({
   const handleDownload = useCallback(() => {
     downloadHtml(currentCode, projectTitle ?? "");
   }, [currentCode, projectTitle]);
+
+  const showShareBtn = canWebShare();
+
+  const handleShare = useCallback(() => {
+    shareProject(currentCode, projectTitle ?? "My Project").catch(() => {
+      // Non-abort errors — silently ignore in UI
+    });
+  }, [currentCode, projectTitle]);
+
+  const [copied, setCopied] = useState(false);
+  const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
+    };
+  }, []);
+
+  const handleCopy = useCallback(async () => {
+    const ok = await copyHtmlToClipboard(currentCode);
+    if (ok) {
+      setCopied(true);
+      if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
+      copiedTimerRef.current = setTimeout(() => {
+        setCopied(false);
+        copiedTimerRef.current = null;
+      }, 2000);
+    }
+  }, [currentCode]);
 
   return (
     <div
@@ -79,7 +125,7 @@ export function PreviewPanel({
         />
       </div>
 
-      <div className="absolute bottom-4 left-4 sm:bottom-8 sm:left-8 z-30">
+      <div className="absolute bottom-4 left-4 sm:bottom-8 sm:left-8 z-30 flex gap-2">
         <button
           onClick={handleDownload}
           disabled={isLoading}
@@ -88,6 +134,36 @@ export function PreviewPanel({
         >
           <Download size={20} strokeWidth={2.5} />
           <span className="hidden sm:inline">{t.download_project}</span>
+        </button>
+
+        {showShareBtn && (
+          <button
+            onClick={handleShare}
+            disabled={isLoading}
+            className="bg-[var(--color-candy-blue,#89CFF0)] border-4 border-[#222] text-[#222] px-4 py-2 rounded-full shadow-[4px_4px_0_#222] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none transition-all flex items-center gap-2 btn-squish hover-wiggle font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label={t.aria_share}
+            data-testid="share-btn"
+          >
+            <Share2 size={20} strokeWidth={2.5} />
+            <span className="hidden sm:inline">{t.share_project}</span>
+          </button>
+        )}
+
+        <button
+          onClick={handleCopy}
+          disabled={isLoading}
+          className="bg-[var(--color-candy-yellow,#FFE66D)] border-4 border-[#222] text-[#222] px-4 py-2 rounded-full shadow-[4px_4px_0_#222] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none transition-all flex items-center gap-2 btn-squish hover-wiggle font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          aria-label={t.aria_copy_html}
+          data-testid="copy-html-btn"
+        >
+          {copied ? (
+            <Check size={20} strokeWidth={2.5} />
+          ) : (
+            <Copy size={20} strokeWidth={2.5} />
+          )}
+          <span className="hidden sm:inline">
+            {copied ? t.copied_feedback : t.copy_html}
+          </span>
         </button>
       </div>
 

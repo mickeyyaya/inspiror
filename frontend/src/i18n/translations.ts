@@ -86,6 +86,11 @@ export interface TranslationKeys {
   onboarding_skip: string;
   confirm_ok: string;
   confirm_cancel: string;
+  share_project: string;
+  aria_share: string;
+  copy_html: string;
+  aria_copy_html: string;
+  copied_feedback: string;
 }
 
 export const translations: Record<Language, TranslationKeys> = {
@@ -179,6 +184,11 @@ export const translations: Record<Language, TranslationKeys> = {
     onboarding_skip: "Skip tour",
     confirm_ok: "Yes, do it!",
     confirm_cancel: "Nope, go back",
+    share_project: "Share",
+    aria_share: "Share project",
+    copy_html: "Copy HTML",
+    aria_copy_html: "Copy project HTML to clipboard",
+    copied_feedback: "Copied!",
   },
   "zh-TW": {
     greeting: "嗨！我是你的建築夥伴。今天你想創造什麼呢？",
@@ -267,6 +277,11 @@ export const translations: Record<Language, TranslationKeys> = {
     onboarding_skip: "跳過導覽",
     confirm_ok: "好，執行！",
     confirm_cancel: "不，返回",
+    share_project: "分享",
+    aria_share: "分享專案",
+    copy_html: "複製 HTML",
+    aria_copy_html: "複製專案 HTML 到剪貼簿",
+    copied_feedback: "已複製！",
   },
   "zh-CN": {
     greeting: "嗨！我是你的建筑夥伴。今天你想创造什么呢？",
@@ -355,5 +370,10 @@ export const translations: Record<Language, TranslationKeys> = {
     onboarding_skip: "跳过导览",
     confirm_ok: "好，执行！",
     confirm_cancel: "不，返回",
+    share_project: "分享",
+    aria_share: "分享项目",
+    copy_html: "复制 HTML",
+    aria_copy_html: "复制项目 HTML 到剪贴板",
+    copied_feedback: "已复制！",
   },
 };
