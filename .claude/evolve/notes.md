@@ -279,3 +279,13 @@
 - **Tests:** 408 frontend + 19 backend = 427 total. 2 new tests.
 - **Deploy:** SUCCESS (commit a6accfb, pushed to main)
 - **Next cycle should consider:** Dark mode, PWA offline, error boundary, Escape key close for block panel, project renaming UX
+
+## Cycle 25 — 2026-03-13
+- **Tasks:** ErrorBoundary component + Escape key close for block panel
+- **Type:** Stability + UX polish
+- **ErrorBoundary:** Class component wrapping entire App in main.tsx. Kid-friendly crash UI with emoji, reassuring text ("your projects are saved"), and reload button. Candy-neubrutalism styled.
+- **Escape key:** useEffect in EditorView closes block panel on Escape keydown when panel is open. Listener cleaned up when panel closes.
+- **Security:** PASS (no user input, no data flow)
+- **Tests:** 412 frontend (4 new ErrorBoundary tests). All pass.
+- **Deploy:** SUCCESS (commit f518958, pushed to main)
+- **Next cycle should consider:** Dark mode, PWA offline, project renaming UX, content moderation (after 2026-03-18), keyboard shortcuts panel

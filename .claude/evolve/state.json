@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-13T11:55:00Z",
+  "lastUpdated": "2026-03-13T17:35:00Z",
   "research": {
     "queries": [
       {
@@ -427,6 +427,12 @@
       "date": "2026-03-13",
       "decision": "rejected",
       "reason": "Already implemented in Cycle 7 — BlockCard has color bands, blockCategories.ts has 10 categories with distinct colors"
+    },
+    {
+      "task": "ErrorBoundary component + Escape key close for block panel",
+      "date": "2026-03-13",
+      "decision": "completed",
+      "cycle": 25
     }
   ],
   "failedApproaches": [],
