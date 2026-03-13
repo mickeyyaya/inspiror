@@ -234,4 +234,14 @@
 - **Security:** PASS (pure refactoring, no new surface area)
 - **Tests:** 381 frontend + 19 backend = 400 total, all passing. 16 new tests (7+5+4).
 - **Deploy:** SUCCESS (commit 00f5ac2, pushed to main)
-- **Next cycle should consider:** Publish/share feature, content moderation (after 2026-03-18), daily streak mechanic, window.confirm replacement, keyboard shortcuts, progressive difficulty/surprise unlocks
+- **Next cycle should consider:** Publish/share feature, content moderation (after 2026-03-18), daily streak mechanic, keyboard shortcuts, progressive difficulty/surprise unlocks
+
+## Cycle 21 — 2026-03-13
+- **Tasks:** Replace window.confirm with custom ConfirmDialog
+- **Type:** UI/UX polish + Accessibility + i18n
+- **ConfirmDialog:** Candy-neubrutalism styled dialog with focus trap, Escape dismiss, scrim click cancel, auto-focus on cancel (safe default for destructive actions). ARIA dialog role + aria-modal. i18n confirm/cancel labels in EN/zh-TW/zh-CN.
+- **Removed:** All `window.confirm` calls (2 call sites: reset + delete). Zero occurrences remaining.
+- **Security:** PASS (no new surface area, static UI component)
+- **Tests:** 390 frontend + 19 backend = 409 total. 9 new ConfirmDialog tests, 2 existing tests updated.
+- **Deploy:** SUCCESS (commit c6f5b19, pushed to main)
+- **Next cycle should consider:** Publish/share feature (L), daily streak mechanic, keyboard shortcuts, progressive difficulty/surprise unlocks
