@@ -269,3 +269,13 @@
 - **Tests:** 406 frontend + 19 backend = 425 total. 6 new tests.
 - **Deploy:** SUCCESS (commit 947ae5c, pushed to main)
 - **Next cycle should consider:** Progressive difficulty/surprise unlocks, dark mode, PWA offline, block categories/colors, error boundary improvements
+
+## Cycle 24 — 2026-03-13
+- **Tasks:** Hidden surprise achievements (mystery badges)
+- **Type:** Feature (gamification/engagement)
+- **Block categories/colors:** Skipped — already implemented in Cycle 7 (BlockCard has color bands, 10 categories with distinct colors)
+- **Surprise achievements:** 3 new hidden achievements (Remix Master, Explorer Pro, Bug Hunter) with hidden? field on Achievement interface. BadgeGallery shows locked hidden achievements as ❓/??? with "Keep playing to discover!" text. Reveals actual icon/title/description once earned.
+- **Security:** PASS (static data, no user input)
+- **Tests:** 408 frontend + 19 backend = 427 total. 2 new tests.
+- **Deploy:** SUCCESS (commit a6accfb, pushed to main)
+- **Next cycle should consider:** Dark mode, PWA offline, error boundary, Escape key close for block panel, project renaming UX

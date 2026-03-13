@@ -415,6 +415,18 @@
       "date": "2026-03-13",
       "decision": "completed",
       "cycle": 23
+    },
+    {
+      "task": "Hidden surprise achievements (3 mystery badges)",
+      "date": "2026-03-13",
+      "decision": "completed",
+      "cycle": 24
+    },
+    {
+      "task": "Block categories/colors",
+      "date": "2026-03-13",
+      "decision": "rejected",
+      "reason": "Already implemented in Cycle 7 — BlockCard has color bands, blockCategories.ts has 10 categories with distinct colors"
     }
   ],
   "failedApproaches": [],
