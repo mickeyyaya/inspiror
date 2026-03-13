@@ -40,6 +40,7 @@ export interface EditorViewProps {
   onBack: () => void;
   language: VoiceLanguage;
   onToggleLanguage: () => void;
+  onBuild?: () => void;
 }
 
 export function EditorView({
@@ -49,6 +50,7 @@ export function EditorView({
   onBack,
   language,
   onToggleLanguage,
+  onBuild,
 }: EditorViewProps) {
   const t = translations[language];
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
@@ -180,6 +182,7 @@ export function EditorView({
       }
       playChimeRef.current();
       recordBuildRef.current();
+      onBuild?.();
 
       if (confettiTimerRef.current) {
         clearTimeout(confettiTimerRef.current);

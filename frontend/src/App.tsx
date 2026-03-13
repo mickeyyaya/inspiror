@@ -23,7 +23,7 @@ function App() {
     resetCurrentProject,
     saveError,
   } = useProjects(language);
-  const { streakDays } = useStreak();
+  const { streakDays, recordActivity } = useStreak();
 
   const toggleLanguage = () => {
     setLanguage((prev) => {
@@ -82,6 +82,7 @@ function App() {
         onBack={goToCatalog}
         language={language}
         onToggleLanguage={toggleLanguage}
+        onBuild={recordActivity}
       />
     </>
   );

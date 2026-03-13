@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
 export const STREAK_STORAGE_KEY = "inspiror-streak-v1";
 
@@ -10,6 +10,7 @@ interface StreakData {
 interface UseStreakResult {
   streakDays: number;
   isNewDay: boolean;
+  recordActivity: () => void;
 }
 
 function todayStr(): string {
@@ -44,31 +45,37 @@ function writeStreak(data: StreakData): void {
   }
 }
 
-export function useStreak(): UseStreakResult {
-  const [{ streakDays, isNewDay }] = useState<UseStreakResult>(() => {
-    const today = todayStr();
-    const saved = readStreak();
+function computeStreak(): { streakDays: number; isNewDay: boolean } {
+  const today = todayStr();
+  const saved = readStreak();
 
-    if (!saved) {
-      writeStreak({ lastDate: today, streak: 1 });
-      return { streakDays: 1, isNewDay: true };
-    }
-
-    if (saved.lastDate === today) {
-      return { streakDays: saved.streak, isNewDay: false };
-    }
-
-    const gap = daysBetween(saved.lastDate, today);
-    if (gap === 1) {
-      const newStreak = saved.streak + 1;
-      writeStreak({ lastDate: today, streak: newStreak });
-      return { streakDays: newStreak, isNewDay: true };
-    }
-
-    // Gap > 1 day — reset
+  if (!saved) {
     writeStreak({ lastDate: today, streak: 1 });
     return { streakDays: 1, isNewDay: true };
-  });
+  }
 
-  return { streakDays, isNewDay };
+  if (saved.lastDate === today) {
+    return { streakDays: saved.streak, isNewDay: false };
+  }
+
+  const gap = daysBetween(saved.lastDate, today);
+  if (gap === 1) {
+    const newStreak = saved.streak + 1;
+    writeStreak({ lastDate: today, streak: newStreak });
+    return { streakDays: newStreak, isNewDay: true };
+  }
+
+  // Gap > 1 day — reset
+  writeStreak({ lastDate: today, streak: 1 });
+  return { streakDays: 1, isNewDay: true };
+}
+
+export function useStreak(): UseStreakResult {
+  const [{ streakDays, isNewDay }, setStreak] = useState(computeStreak);
+
+  const recordActivity = useCallback(() => {
+    setStreak(computeStreak());
+  }, []);
+
+  return { streakDays, isNewDay, recordActivity };
 }

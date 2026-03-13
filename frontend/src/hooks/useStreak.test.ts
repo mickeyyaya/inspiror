@@ -1,5 +1,13 @@
-import { renderHook } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach, afterEach, afterAll } from "vitest";
+import { renderHook, act } from "@testing-library/react";
+import {
+  describe,
+  it,
+  expect,
+  vi,
+  beforeEach,
+  afterEach,
+  afterAll,
+} from "vitest";
 import { useStreak, STREAK_STORAGE_KEY } from "./useStreak";
 
 describe("useStreak", () => {
@@ -96,5 +104,38 @@ describe("useStreak", () => {
     const { result } = renderHook(() => useStreak());
     expect(result.current.streakDays).toBe(1);
     expect(result.current.isNewDay).toBe(true);
+  });
+
+  it("recordActivity updates streak when date has changed", () => {
+    // Mount on day 1
+    setDate("2026-03-13T10:00:00");
+    const { result } = renderHook(() => useStreak());
+    expect(result.current.streakDays).toBe(1);
+
+    // Simulate next day (tab kept open overnight)
+    vi.setSystemTime(new Date("2026-03-14T09:00:00"));
+    // Update localStorage to simulate day 1 was written
+    // (it already was by the initial mount)
+
+    // Call recordActivity to refresh streak
+    act(() => {
+      result.current.recordActivity();
+    });
+
+    expect(result.current.streakDays).toBe(2);
+    expect(result.current.isNewDay).toBe(true);
+  });
+
+  it("recordActivity returns same streak on same day", () => {
+    setDate("2026-03-13T10:00:00");
+    const { result } = renderHook(() => useStreak());
+    expect(result.current.streakDays).toBe(1);
+
+    act(() => {
+      result.current.recordActivity();
+    });
+
+    expect(result.current.streakDays).toBe(1);
+    expect(result.current.isNewDay).toBe(false);
   });
 });
