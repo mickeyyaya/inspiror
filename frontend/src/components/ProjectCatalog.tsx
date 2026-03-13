@@ -17,6 +17,7 @@ interface ProjectCatalogProps {
   onCreateFromTemplate: (template: StarterTemplate) => void;
   language: VoiceLanguage;
   onToggleLanguage: () => void;
+  streakDays?: number;
 }
 
 export function ProjectCatalog({
@@ -27,6 +28,7 @@ export function ProjectCatalog({
   onCreateFromTemplate,
   language,
   onToggleLanguage,
+  streakDays,
 }: ProjectCatalogProps) {
   const t = translations[language];
   const sorted = [...projects].sort((a, b) => b.updatedAt - a.updatedAt);
@@ -75,6 +77,14 @@ export function ProjectCatalog({
                 ? t.tell_buddy
                 : `${projects.length} ${projects.length === 1 ? "project" : "projects"} ${language === "en-US" ? "waiting for you!" : "正在等著你！"}`}
             </p>
+            {streakDays !== undefined && streakDays >= 2 && (
+              <span
+                className="inline-block mt-1 px-3 py-1 bg-[var(--color-candy-yellow)] border-2 border-[#222] rounded-full font-extrabold text-sm shadow-[2px_2px_0_#222]"
+                data-testid="streak-badge"
+              >
+                🔥 {streakDays} {t.streak_days}
+              </span>
+            )}
           </div>
         </div>
         <div className="flex items-center gap-4">

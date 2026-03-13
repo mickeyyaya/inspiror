@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { useProjects } from "./hooks/useProjects";
+import { useStreak } from "./hooks/useStreak";
 import type { VoiceLanguage } from "./hooks/useVoice";
 import { translations } from "./i18n/translations";
 import { ProjectCatalog } from "./components/ProjectCatalog";
@@ -22,6 +23,7 @@ function App() {
     resetCurrentProject,
     saveError,
   } = useProjects(language);
+  const { streakDays } = useStreak();
 
   const toggleLanguage = () => {
     setLanguage((prev) => {
@@ -55,6 +57,7 @@ function App() {
         onCreateFromTemplate={handleCreateFromTemplate}
         language={language}
         onToggleLanguage={toggleLanguage}
+        streakDays={streakDays}
       />
     );
   }

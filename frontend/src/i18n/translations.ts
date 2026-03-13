@@ -91,6 +91,7 @@ export interface TranslationKeys {
   copy_html: string;
   aria_copy_html: string;
   copied_feedback: string;
+  streak_days: string;
 }
 
 export const translations: Record<Language, TranslationKeys> = {
@@ -189,6 +190,7 @@ export const translations: Record<Language, TranslationKeys> = {
     copy_html: "Copy HTML",
     aria_copy_html: "Copy project HTML to clipboard",
     copied_feedback: "Copied!",
+    streak_days: "day streak!",
   },
   "zh-TW": {
     greeting: "嗨！我是你的建築夥伴。今天你想創造什麼呢？",
@@ -282,6 +284,7 @@ export const translations: Record<Language, TranslationKeys> = {
     copy_html: "複製 HTML",
     aria_copy_html: "複製專案 HTML 到剪貼簿",
     copied_feedback: "已複製！",
+    streak_days: "天連續！",
   },
   "zh-CN": {
     greeting: "嗨！我是你的建筑夥伴。今天你想创造什么呢？",
@@ -375,5 +378,6 @@ export const translations: Record<Language, TranslationKeys> = {
     copy_html: "复制 HTML",
     aria_copy_html: "复制项目 HTML 到剪贴板",
     copied_feedback: "已复制！",
+    streak_days: "天连续！",
   },
 };
