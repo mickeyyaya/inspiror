@@ -55,6 +55,57 @@ describe("MessageList", () => {
     expect(screen.getByText("Make a game")).toBeInTheDocument();
   });
 
+  it("renders tip messages with distinct styling and lightbulb", () => {
+    render(
+      <MessageList
+        {...defaultProps}
+        messages={[
+          {
+            id: "tip-1",
+            role: "assistant",
+            content: "Great detail about color!",
+            type: "tip",
+          },
+        ]}
+        buddyTipLabel="Buddy Tip"
+      />,
+    );
+    expect(screen.getByText("Great detail about color!")).toBeInTheDocument();
+    expect(screen.getByText("Buddy Tip")).toBeInTheDocument();
+    expect(screen.getByText("💡")).toBeInTheDocument();
+  });
+
+  it("renders tip with fallback label when buddyTipLabel not provided", () => {
+    render(
+      <MessageList
+        {...defaultProps}
+        messages={[
+          {
+            id: "tip-2",
+            role: "assistant",
+            content: "Nice prompt!",
+            type: "tip",
+          },
+        ]}
+      />,
+    );
+    expect(screen.getByText("Buddy Tip")).toBeInTheDocument();
+  });
+
+  it("renders normal assistant messages without tip styling", () => {
+    render(
+      <MessageList
+        {...defaultProps}
+        messages={[
+          { id: "msg-1", role: "assistant", content: "Here is your game!" },
+        ]}
+      />,
+    );
+    expect(screen.getByText("Here is your game!")).toBeInTheDocument();
+    expect(screen.getByText("✨")).toBeInTheDocument();
+    expect(screen.queryByText("💡")).not.toBeInTheDocument();
+  });
+
   it("shows thinking dots when loading without streaming reply", () => {
     render(
       <MessageList

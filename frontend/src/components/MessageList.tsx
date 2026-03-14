@@ -15,6 +15,7 @@ interface MessageListProps {
   magicButtonPrompt: string;
   moreIdeasText: string;
   ariaShuffleLabel?: string;
+  buddyTipLabel?: string;
   language?: VoiceLanguage;
 }
 
@@ -30,6 +31,7 @@ export function MessageList({
   magicButtonPrompt,
   moreIdeasText,
   ariaShuffleLabel,
+  buddyTipLabel,
   language,
 }: MessageListProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -40,23 +42,38 @@ export function MessageList({
 
   return (
     <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-6 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9IiM4ODgiIG9wYWNpdHk9IjAuMiIvPjwvc3ZnPg==')] z-10">
-      {messages.map((msg) => (
-        <div
-          key={msg.id}
-          className={`max-w-[85%] p-4 rounded-[1.5rem] text-[17px] leading-relaxed font-bold shadow-[4px_4px_0_#222] border-4 border-[#222] relative ${
-            msg.role === "user"
-              ? "bg-[var(--color-candy-pink)] text-[#222] self-end rounded-tr-sm msg-user"
-              : "bg-white text-[#222] self-start rounded-tl-sm msg-buddy"
-          }`}
-        >
-          {msg.role === "assistant" && (
-            <div className="absolute top-[-15px] left-[-15px] text-2xl rotate-[-15deg] drop-shadow-sm">
-              ✨
+      {messages.map((msg) =>
+        msg.type === "tip" ? (
+          <div
+            key={msg.id}
+            className="max-w-[85%] p-3 rounded-[1.5rem] text-[15px] leading-relaxed font-bold shadow-[3px_3px_0_#b8860b] border-3 border-[#b8860b] bg-[var(--color-candy-yellow)] text-[#222] self-start rounded-tl-sm msg-buddy relative"
+          >
+            <div className="absolute top-[-12px] left-[-12px] text-xl drop-shadow-sm">
+              💡
             </div>
-          )}
-          {msg.content}
-        </div>
-      ))}
+            <span className="text-xs font-extrabold uppercase tracking-wider text-[#b8860b] mr-2">
+              {buddyTipLabel ?? "Buddy Tip"}
+            </span>
+            {msg.content}
+          </div>
+        ) : (
+          <div
+            key={msg.id}
+            className={`max-w-[85%] p-4 rounded-[1.5rem] text-[17px] leading-relaxed font-bold shadow-[4px_4px_0_#222] border-4 border-[#222] relative ${
+              msg.role === "user"
+                ? "bg-[var(--color-candy-pink)] text-[#222] self-end rounded-tr-sm msg-user"
+                : "bg-white text-[#222] self-start rounded-tl-sm msg-buddy"
+            }`}
+          >
+            {msg.role === "assistant" && (
+              <div className="absolute top-[-15px] left-[-15px] text-2xl rotate-[-15deg] drop-shadow-sm">
+                ✨
+              </div>
+            )}
+            {msg.content}
+          </div>
+        ),
+      )}
 
       {isLoading && streamingReply && (
         <div

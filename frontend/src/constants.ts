@@ -174,6 +174,7 @@ export const generationSchema = z.object({
   reply: z.string(),
   blocks: z.array(blockSchema),
   checks: z.array(z.string()).optional(),
+  tip: z.string().optional(),
 });
 
 export function getSuggestions(language: VoiceLanguage) {
@@ -191,6 +192,15 @@ export function pickRandomChips(language?: VoiceLanguage) {
 export function withId(
   role: "user" | "assistant" | "system",
   content: string,
-): { id: string; role: "user" | "assistant" | "system"; content: string } {
-  return { id: crypto.randomUUID(), role, content };
+  type?: "tip",
+): {
+  id: string;
+  role: "user" | "assistant" | "system";
+  content: string;
+  type?: "tip";
+} {
+  const msg: { id: string; role: typeof role; content: string; type?: "tip" } =
+    { id: crypto.randomUUID(), role, content };
+  if (type) msg.type = type;
+  return msg;
 }

@@ -68,6 +68,12 @@ export const generationSchema = z.object({
     .describe(
       "Array of JS expressions that should evaluate to true after blocks run for ~30 frames. Used for self-verification. E.g. \"game.getEntity('ball') !== null\", \"game.get('score') === 0\".",
     ),
+  tip: z
+    .string()
+    .optional()
+    .describe(
+      "A short, friendly coaching tip (1-2 sentences) about the child's prompt or AI collaboration skill. Examples: praise specific detail in their description, suggest adding more detail next time, reflect on what changed. Only include when there is a genuine teaching moment — not every turn.",
+    ),
 });
 
 export type GenerationResult = z.infer<typeof generationSchema>;
@@ -156,6 +162,17 @@ Before finalizing your blocks, mentally run through this checklist and fix any i
 9. For games: is there clear visual feedback when the user interacts (particles, tweens, sounds)?
 10. Will the creation actually do something visible and interesting on first load (not require user action to see anything)?
 If you find issues, fix them silently — do not mention the checklist to the child.
+
+CRITICAL - TEACH AI COLLABORATION SKILLS:
+You are not just building games — you are teaching kids to collaborate effectively with AI.
+Include a short "tip" field (1-2 sentences) when you notice a teaching moment:
+- When the child writes a detailed, specific prompt: praise what made it effective. ("Great description! You told me the color, speed, AND what happens on collision — that helps me build exactly what you imagined!")
+- When the child's prompt is vague: gently suggest what details would help. ("Tip: Try telling me HOW it should move — fast? bouncy? zigzag? The more detail you give, the cooler I can make it!")
+- After a debug/fix cycle: reflect on what changed. ("Nice — you spotted that the ball was too fast. Noticing differences between what you imagined and what I built is a superpower!")
+- When the child iterates on a project: celebrate the iteration. ("Love that you're refining your game! Real game developers iterate just like this.")
+- When the child responds to your scaffolding question: acknowledge their input.
+Do NOT include a tip on every turn — only when there's a genuine teaching moment (roughly every 2-3 turns).
+Keep tips encouraging, specific, and forward-looking. Never criticize.
 
 CRITICAL - GENERATE SELF-VERIFICATION CHECKS:
 Always include a "checks" array with 2-5 short JS expressions that verify your blocks work.

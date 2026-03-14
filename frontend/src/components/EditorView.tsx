@@ -161,10 +161,13 @@ export function EditorView({
     schema: generationSchema,
     onFinish({ object: finalObj }) {
       if (finalObj?.reply) {
-        setMessages((prev) => [
-          ...prev,
+        const newMessages: ReturnType<typeof withId>[] = [
           withId("assistant", finalObj.reply as string),
-        ]);
+        ];
+        if (finalObj.tip && typeof finalObj.tip === "string") {
+          newMessages.push(withId("assistant", finalObj.tip as string, "tip"));
+        }
+        setMessages((prev) => [...prev, ...newMessages]);
         speakRef.current(finalObj.reply as string);
       }
       if (
@@ -346,6 +349,7 @@ export function EditorView({
             magicButtonPrompt={t.magic_button_prompt}
             moreIdeasText={t.more_ideas}
             ariaShuffleLabel={t.aria_shuffle}
+            buddyTipLabel={t.buddy_tip_label}
             language={language}
           />
 
