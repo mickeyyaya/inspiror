@@ -53,6 +53,8 @@ const defaultT = {
   aria_copy_html: "Copy HTML code",
   copied_feedback: "Copied!",
   aria_preview_sandbox: "Preview Sandbox",
+  play_hud_tap: "Tap to interact!",
+  play_hud_drag: "Drag things around to play",
 };
 
 function renderPanel(

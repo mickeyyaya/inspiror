@@ -127,6 +127,8 @@ export interface TranslationKeys {
   daily_challenge: string;
   daily_accept: string;
   daily_completed: string;
+  play_hud_tap: string;
+  play_hud_drag: string;
 }
 
 export const translations: Record<Language, TranslationKeys> = {
@@ -262,6 +264,8 @@ export const translations: Record<Language, TranslationKeys> = {
     daily_challenge: "Daily Challenge",
     daily_accept: "Accept Challenge!",
     daily_completed: "Completed!",
+    play_hud_tap: "Tap to interact!",
+    play_hud_drag: "Drag things around to play",
   },
   "zh-TW": {
     greeting: "嗨！我是你的建築夥伴。今天你想創造什麼呢？",
@@ -391,6 +395,8 @@ export const translations: Record<Language, TranslationKeys> = {
     daily_challenge: "每日挑戰",
     daily_accept: "接受挑戰！",
     daily_completed: "已完成！",
+    play_hud_tap: "點擊來互動！",
+    play_hud_drag: "拖動物件來玩",
   },
   "zh-CN": {
     greeting: "嗨！我是你的建筑夥伴。今天你想创造什么呢？",
@@ -520,5 +526,7 @@ export const translations: Record<Language, TranslationKeys> = {
     daily_challenge: "每日挑战",
     daily_accept: "接受挑战！",
     daily_completed: "已完成！",
+    play_hud_tap: "点击来互动！",
+    play_hud_drag: "拖动物件来玩",
   },
 };

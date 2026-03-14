@@ -286,6 +286,16 @@ code {
   animation: onboarding-pulse 1.5s ease-in-out infinite;
 }
 
+/* === Play Mode HUD Fade-Out === */
+@keyframes fade-out-delayed {
+  0%, 60% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.animate-fade-out {
+  animation: fade-out-delayed 3s ease-out forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

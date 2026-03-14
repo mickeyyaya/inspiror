@@ -42,6 +42,8 @@ interface PreviewPanelProps {
     aria_copy_html: string;
     copied_feedback: string;
     aria_preview_sandbox: string;
+    play_hud_tap: string;
+    play_hud_drag: string;
   };
 }
 
@@ -71,6 +73,29 @@ export function PreviewPanel({
       // Non-abort errors — silently ignore in UI
     });
   }, [currentCode, projectTitle]);
+
+  const [showPlayHud, setShowPlayHud] = useState(false);
+  const playHudTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (!isChatVisible && !isLoading) {
+      setShowPlayHud(true);
+      if (playHudTimerRef.current) clearTimeout(playHudTimerRef.current);
+      playHudTimerRef.current = setTimeout(() => {
+        setShowPlayHud(false);
+        playHudTimerRef.current = null;
+      }, 3000);
+    } else {
+      setShowPlayHud(false);
+      if (playHudTimerRef.current) {
+        clearTimeout(playHudTimerRef.current);
+        playHudTimerRef.current = null;
+      }
+    }
+    return () => {
+      if (playHudTimerRef.current) clearTimeout(playHudTimerRef.current);
+    };
+  }, [isChatVisible, isLoading]);
 
   const [copied, setCopied] = useState(false);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -183,6 +208,18 @@ export function PreviewPanel({
           </span>
         </button>
       </div>
+
+      {showPlayHud && (
+        <div
+          className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none animate-fade-out"
+          data-testid="play-mode-hud"
+        >
+          <div className="bg-black/60 backdrop-blur-sm text-white px-6 py-4 rounded-2xl border-2 border-white/20 text-center max-w-xs">
+            <p className="text-lg font-extrabold mb-1">🎮 {t.play_hud_tap}</p>
+            <p className="text-sm font-bold opacity-80">{t.play_hud_drag}</p>
+          </div>
+        </div>
+      )}
 
       <BuildingOverlay
         isLoading={isLoading}
