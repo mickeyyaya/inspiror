@@ -424,3 +424,14 @@
 - **Tests:** 492 frontend + 20 backend = 512 total, all passing.
 - **Deploy:** SUCCESS (commit bc722e7, pushed to main)
 - **Next cycle should consider:** Content moderation (after 2026-03-18), dark mode (candy dark), schema dedup, EditorView decomposition, empty-state guidance for disabled blocks
+
+## Cycle 39 — 2026-03-14
+- **Tasks:** Block editor UX (drag hint + all-disabled nudge + memoize getWelcomeCode)
+- **Type:** Feature (UX) + Performance
+- **Block editor hint:** Added "Drag to reorder · tap to toggle" subtitle in BlockEditor header. i18n in EN/zh-TW/zh-CN. Hidden when no blocks present.
+- **All-disabled nudge:** Shows lightbulb emoji + "Enable a block to see your creation!" when all blocks have `enabled: false`. Addresses silent failure where kids disable all blocks and see blank preview.
+- **getWelcomeCode memoization:** Wrapped in `useMemo(() => getWelcomeCode(language), [language])` — was re-building 60-line HTML string on every useProjects render.
+- **Security:** PASS (static UI, no user input)
+- **Tests:** 497 frontend + 20 backend = 517 total, all passing. 5 new tests.
+- **Deploy:** SUCCESS (commit b59d62b, pushed to main)
+- **Next cycle should consider:** Content moderation (after 2026-03-18), dark mode (candy dark), schema dedup, EditorView decomposition (still ~420 lines)
