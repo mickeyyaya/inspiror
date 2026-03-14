@@ -530,3 +530,13 @@
 - **Tests:** 559 frontend + 20 backend = 579 total, all passing
 - **Deploy:** SUCCESS (commit 04ff700, pushed to main)
 - **Next cycle should consider:** Sound block completion, play mode HUD, dark mode (multi-cycle), project card thumbnails, "remix this" on templates
+
+## Cycle 49 — 2026-03-14
+- **Tasks:** Sound block support (playTone/playNote LLM prompt examples)
+- **Type:** Feature (innovation — audio in creations)
+- **Changes:** Added 2 sound block examples (collision tone with frequency/duration params, tap note with musical note enum param) to backend block examples prompt. Updated system prompt to instruct AI to include sound effects for collisions, pickups, and celebrations using "sound" type blocks.
+- **Runtime already supports:** game.playTone(freq, duration, opts), game.playNote(note, duration, opts), AudioContext synthesis with sine/triangle/square/sawtooth wave types.
+- **Block category:** sound type already defined with lime green color and 🔊 emoji in blockCategories.ts.
+- **Tests:** 559 frontend + 20 backend = 579 total, all passing
+- **Deploy:** SUCCESS (commit d4382ae, pushed to main)
+- **Next cycle should consider:** Play mode HUD, "remix this" on templates, project card thumbnails, dark mode (multi-cycle refactor)
