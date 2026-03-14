@@ -141,4 +141,33 @@ export const BLOCK_EXAMPLES = `
   "code": "game.set('score', 0);\\ngame.addText('score-text', 'Score: 0', 20, 40, { font: 'bold 28px sans-serif', color: {{color}}, shadowBlur: 10, shadowColor: {{color}} });\\ngame.onUpdate('score-display', function() {\\n  var t = game.getEntity('score-text');\\n  if (t) t.text = 'Score: ' + (game.get('score') || 0);\\n});",
   "order": 10
 }
+
+### Sound Block (play a tone on collision or event)
+{
+  "id": "collision-sound",
+  "type": "sound",
+  "label": "Bounce Sound",
+  "emoji": "🔔",
+  "enabled": true,
+  "params": [
+    { "key": "freq", "label": "Frequency", "type": "number", "value": 440, "min": 200, "max": 2000, "step": 50 },
+    { "key": "duration", "label": "Duration (ms)", "type": "number", "value": 150, "min": 50, "max": 500, "step": 50 }
+  ],
+  "code": "game.onCollision('collision-sound', 'ball', 'wall', function() {\\n  game.playTone({{freq}}, {{duration}}, { type: 'triangle' });\\n});",
+  "order": 15
+}
+
+### Sound Block (musical note on tap)
+{
+  "id": "tap-note",
+  "type": "sound",
+  "label": "Tap Note",
+  "emoji": "🎵",
+  "enabled": true,
+  "params": [
+    { "key": "note", "label": "Note", "type": "enum", "value": "C4", "options": ["C3", "D3", "E3", "F3", "G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"] }
+  ],
+  "code": "game.onTapAnywhere('tap-note', function() {\\n  game.playNote('{{note}}', 200, { type: 'sine', volume: 0.4 });\\n});",
+  "order": 16
+}
 `;

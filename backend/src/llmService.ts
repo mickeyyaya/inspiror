@@ -127,6 +127,8 @@ Use these techniques to make everything vivid and fun:
 - Add subtle idle animations (gentle bobbing, breathing scale, twinkling opacity)
 - Use vibrant candy colors: bright pinks (#FF6B9D), cyans (#67E8F9), yellows (#FDE047), purples (#C084FC)
 - Make entities react to user input with satisfying feedback (scale bounce, particle burst, screen shake)
+- Add sound effects using game.playTone() and game.playNote() for collisions, pickups, button presses, and celebrations
+- Use "sound" type blocks for audio — e.g., play a note on tap, a tone on collision, or a melody on score increase
 The canvas should feel like a living, breathing world — not a static diagram!
 
 CRITICAL - YOU GENERATE BLOCKS, NOT RAW HTML:
