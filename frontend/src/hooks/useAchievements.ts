@@ -99,6 +99,15 @@ export function useAchievements() {
     () => incrementStat("explores"),
     [incrementStat],
   );
+  const recordDescribe = useCallback(
+    () => incrementStat("describes"),
+    [incrementStat],
+  );
+  const recordIterate = useCallback(
+    () => incrementStat("iterates"),
+    [incrementStat],
+  );
+  const recordTip = useCallback(() => incrementStat("tips"), [incrementStat]);
 
   const dismissUnlock = useCallback(() => showNextUnlock(), [showNextUnlock]);
 
@@ -130,6 +139,9 @@ export function useAchievements() {
     recordDebug,
     recordRemix,
     recordExplore,
+    recordDescribe,
+    recordIterate,
+    recordTip,
     selectedAvatar,
     unlockedAvatars,
     selectAvatar,

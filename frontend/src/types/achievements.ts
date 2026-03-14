@@ -4,7 +4,14 @@ export interface Achievement {
   description: string;
   icon: string;
   threshold: number;
-  type: "builds" | "debugs" | "remixes" | "explores";
+  type:
+    | "builds"
+    | "debugs"
+    | "remixes"
+    | "explores"
+    | "describes"
+    | "iterates"
+    | "tips";
   hidden?: boolean;
 }
 
@@ -15,6 +22,9 @@ export interface AchievementState {
     debugs: number;
     remixes: number;
     explores: number;
+    describes: number;
+    iterates: number;
+    tips: number;
   };
 }
 
@@ -117,6 +127,31 @@ export const ACHIEVEMENTS: Achievement[] = [
     type: "debugs",
     hidden: true,
   },
+  {
+    id: "great-describer",
+    title: "Great Describer",
+    description:
+      "Write 5 detailed prompts — the more detail, the better the AI builds!",
+    icon: "📝",
+    threshold: 5,
+    type: "describes",
+  },
+  {
+    id: "iteration-master",
+    title: "Iteration Master",
+    description: "Improve the same project 10 times — real devs iterate!",
+    icon: "🔄",
+    threshold: 10,
+    type: "iterates",
+  },
+  {
+    id: "tip-collector",
+    title: "Tip Collector",
+    description: "Receive 5 coaching tips from Buddy — you're learning fast!",
+    icon: "💡",
+    threshold: 5,
+    type: "tips",
+  },
 ];
 
 export const BUDDY_AVATARS: BuddyAvatar[] = [
@@ -134,5 +169,8 @@ export const DEFAULT_ACHIEVEMENT_STATE: AchievementState = {
     debugs: 0,
     remixes: 0,
     explores: 0,
+    describes: 0,
+    iterates: 0,
+    tips: 0,
   },
 };

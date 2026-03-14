@@ -117,6 +117,9 @@ export function EditorView({
     recordDebug,
     recordExplore,
     recordRemix,
+    recordDescribe,
+    recordIterate,
+    recordTip,
     selectedAvatar,
     unlockedAvatars,
     selectAvatar,
@@ -131,6 +134,8 @@ export function EditorView({
   const codingFacts = useMemo(() => getCodingFacts(language), [language]);
   const recordBuildRef = useRef(recordBuild);
   const recordDebugRef = useRef(recordDebug);
+  const recordIterateRef = useRef(recordIterate);
+  const recordTipRef = useRef(recordTip);
   const playChimeRef = useRef(playChime);
   const speakRef = useRef(speak);
 
@@ -141,6 +146,14 @@ export function EditorView({
   useEffect(() => {
     recordDebugRef.current = recordDebug;
   }, [recordDebug]);
+
+  useEffect(() => {
+    recordIterateRef.current = recordIterate;
+  }, [recordIterate]);
+
+  useEffect(() => {
+    recordTipRef.current = recordTip;
+  }, [recordTip]);
 
   useEffect(() => {
     playChimeRef.current = playChime;
@@ -166,6 +179,7 @@ export function EditorView({
         ];
         if (finalObj.tip && typeof finalObj.tip === "string") {
           newMessages.push(withId("assistant", finalObj.tip as string, "tip"));
+          recordTipRef.current();
         }
         setMessages((prev) => [...prev, ...newMessages]);
         speakRef.current(finalObj.reply as string);
@@ -184,6 +198,10 @@ export function EditorView({
       }
       playChimeRef.current();
       recordBuildRef.current();
+      // Track iteration: if there are already assistant messages, this is an iteration
+      if (messagesRef.current.some((m) => m.role === "assistant")) {
+        recordIterateRef.current();
+      }
       onBuild?.();
 
       if (confettiTimerRef.current) {
@@ -232,6 +250,9 @@ export function EditorView({
     stopListening();
     resetAutoFixCount();
     playPop();
+    if (inputValue.trim().length >= 20) {
+      recordDescribe();
+    }
     const newMessages: ChatMessage[] = [
       ...messages,
       withId("user", inputValue),

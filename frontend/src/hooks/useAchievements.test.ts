@@ -158,4 +158,49 @@ describe("useAchievements", () => {
         .length,
     ).toBe(1);
   });
+
+  it("increments describes stat on recordDescribe", () => {
+    const { result } = renderHook(() => useAchievements());
+    act(() => result.current.recordDescribe());
+    expect(result.current.stats.describes).toBe(1);
+  });
+
+  it("unlocks great-describer achievement after 5 detailed prompts", () => {
+    const { result } = renderHook(() => useAchievements());
+    for (let i = 0; i < 5; i++) {
+      act(() => result.current.recordDescribe());
+      act(() => vi.runAllTimers());
+    }
+    expect(result.current.unlockedIds).toContain("great-describer");
+  });
+
+  it("increments iterates stat on recordIterate", () => {
+    const { result } = renderHook(() => useAchievements());
+    act(() => result.current.recordIterate());
+    expect(result.current.stats.iterates).toBe(1);
+  });
+
+  it("unlocks iteration-master after 10 iterations", () => {
+    const { result } = renderHook(() => useAchievements());
+    for (let i = 0; i < 10; i++) {
+      act(() => result.current.recordIterate());
+      act(() => vi.runAllTimers());
+    }
+    expect(result.current.unlockedIds).toContain("iteration-master");
+  });
+
+  it("increments tips stat on recordTip", () => {
+    const { result } = renderHook(() => useAchievements());
+    act(() => result.current.recordTip());
+    expect(result.current.stats.tips).toBe(1);
+  });
+
+  it("unlocks tip-collector after 5 tips", () => {
+    const { result } = renderHook(() => useAchievements());
+    for (let i = 0; i < 5; i++) {
+      act(() => result.current.recordTip());
+      act(() => vi.runAllTimers());
+    }
+    expect(result.current.unlockedIds).toContain("tip-collector");
+  });
 });
