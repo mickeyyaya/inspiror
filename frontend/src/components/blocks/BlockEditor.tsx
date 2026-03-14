@@ -130,7 +130,7 @@ export function BlockEditor({
       <div
         className="flex-1 overflow-y-auto p-3 space-y-2"
         role="list"
-        aria-label="Logic blocks"
+        aria-label={t?.aria_logic_blocks ?? "Logic blocks"}
       >
         {isLoading && blocks.length === 0 && (
           <div className="space-y-2">

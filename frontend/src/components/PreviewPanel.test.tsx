@@ -52,6 +52,7 @@ const defaultT = {
   copy_html: "Copy HTML",
   aria_copy_html: "Copy HTML code",
   copied_feedback: "Copied!",
+  aria_preview_sandbox: "Preview Sandbox",
 };
 
 function renderPanel(

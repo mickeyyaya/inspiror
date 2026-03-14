@@ -14,6 +14,7 @@ interface MessageListProps {
   thinkingText: string;
   magicButtonPrompt: string;
   moreIdeasText: string;
+  ariaShuffleLabel?: string;
   language?: VoiceLanguage;
 }
 
@@ -28,6 +29,7 @@ export function MessageList({
   thinkingText,
   magicButtonPrompt,
   moreIdeasText,
+  ariaShuffleLabel,
   language,
 }: MessageListProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -104,7 +106,7 @@ export function MessageList({
                 onSuggestionChipsShuffle(pickRandomChips(language))
               }
               className="bg-white border-2 border-[#222] px-3 py-1 rounded-full text-sm font-bold text-[#222] hover:scale-105 active:scale-95 transition-all shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none"
-              aria-label="Shuffle suggestions"
+              aria-label={ariaShuffleLabel ?? "Shuffle suggestions"}
               data-testid="shuffle-chips"
             >
               🔀 {moreIdeasText}

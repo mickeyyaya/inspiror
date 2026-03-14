@@ -345,6 +345,7 @@ export function EditorView({
             thinkingText={t.thinking}
             magicButtonPrompt={t.magic_button_prompt}
             moreIdeasText={t.more_ideas}
+            ariaShuffleLabel={t.aria_shuffle}
             language={language}
           />
 

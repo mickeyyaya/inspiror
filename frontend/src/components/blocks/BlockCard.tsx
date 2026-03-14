@@ -113,7 +113,7 @@ export function BlockCard({
           <button
             onClick={() => onDelete(block.id)}
             className="p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-red-500 transition-colors"
-            aria-label={`Delete ${block.label}`}
+            aria-label={`${t?.aria_delete_block ?? "Delete"} ${block.label}`}
           >
             <Trash2 size={14} />
           </button>

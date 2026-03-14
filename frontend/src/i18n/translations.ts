@@ -16,6 +16,10 @@ export interface TranslationKeys {
   aria_send: string;
   aria_show_chat: string;
   aria_look_inside: string;
+  aria_delete_block: string;
+  aria_logic_blocks: string;
+  aria_shuffle: string;
+  aria_preview_sandbox: string;
   magic_button_prompt: string;
   input_placeholder: string;
   mode_build: string;
@@ -121,6 +125,10 @@ export const translations: Record<Language, TranslationKeys> = {
     aria_send: "Send",
     aria_show_chat: "Show Chat",
     aria_look_inside: "Look Inside",
+    aria_delete_block: "Delete",
+    aria_logic_blocks: "Logic blocks",
+    aria_shuffle: "Shuffle suggestions",
+    aria_preview_sandbox: "Preview Sandbox",
     magic_button_prompt: "Try a Magic Button! 👇",
     input_placeholder: "Type your grand idea...",
     mode_build: "Build Mode!",
@@ -226,6 +234,10 @@ export const translations: Record<Language, TranslationKeys> = {
     aria_send: "發送",
     aria_show_chat: "顯示聊天",
     aria_look_inside: "看看程式碼",
+    aria_delete_block: "刪除",
+    aria_logic_blocks: "邏輯積木",
+    aria_shuffle: "換一批建議",
+    aria_preview_sandbox: "預覽沙盒",
     magic_button_prompt: "試試魔法按鈕！ 👇",
     input_placeholder: "輸入你的超棒點子...",
     mode_build: "建造模式！",
@@ -328,6 +340,10 @@ export const translations: Record<Language, TranslationKeys> = {
     aria_send: "发送",
     aria_show_chat: "显示聊天",
     aria_look_inside: "看看程序码",
+    aria_delete_block: "删除",
+    aria_logic_blocks: "逻辑积木",
+    aria_shuffle: "换一批建议",
+    aria_preview_sandbox: "预览沙盒",
     magic_button_prompt: "试试魔法按钮！ 👇",
     input_placeholder: "输入你的超棒点子...",
     mode_build: "建造模式！",
