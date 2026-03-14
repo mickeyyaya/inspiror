@@ -466,3 +466,12 @@
 - **Tests:** 506 frontend + 20 backend = 526 total, all passing. 6 new tests.
 - **Deploy:** SUCCESS (commit c5780f1, pushed to main)
 - **Next cycle should consider:** Prompt scaffold templates (fill-in-the-blank → fading), AI contribution transparency, content moderation (after 2026-03-18)
+
+## Cycle 43 — 2026-03-14
+- **Tasks:** Prompt scaffold templates (fill-in-the-blank → fading)
+- **Type:** Feature (AI literacy + prompt training)
+- **Scaffold chips:** 6 templates per language with ___ blanks (EN/zh-TW/zh-CN). Click fills input without submitting — child completes blanks themselves. Distinct dashed purple border + pencil emoji + "Fill in the blanks!" hint.
+- **Progressive fading:** Scaffolds shown when `stats.describes < 5`, hidden once the child demonstrates prompt skill via detailed prompts. Vygotsky ZPD pattern.
+- **Tests:** 509 frontend + 20 backend = 529 total, all passing. 3 new tests.
+- **Deploy:** SUCCESS (commit 402b748, pushed to main)
+- **Next cycle should consider:** AI contribution transparency ("Who Made This?"), content moderation (after 2026-03-18), dark mode
