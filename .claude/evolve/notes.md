@@ -506,3 +506,14 @@
 - **Tests:** 534 frontend + 20 backend = 554 total, all passing. 25 new tests (4 personality + 17 greeting + 4 updated App tests).
 - **Deploy:** SUCCESS (commit 735322a, pushed to main)
 - **Next cycle should consider:** Dark mode ("candy dark"), session recap screen, daily challenge/quests, visible progress bar on catalog, sound block completion
+
+## Cycle 47 — 2026-03-14
+- **Tasks:** Buddy progress bar on catalog + session recap after builds
+- **Type:** Feature (innovation — engagement + reflection)
+- **Progress bar:** Shows "X more builds to unlock [next avatar]!" with animated candy-purple fill bar on project catalog. Uses BUDDY_AVATARS thresholds. Shows "All buddies unlocked!" at 20+ builds. Has `role="progressbar"` with aria attributes.
+- **Session recap:** Modal appears every 3rd build with 4 stat cards (builds, messages, blocks, tips), block origin badges (AI/template/remix), and buddy-personalized congratulation. Dismissible via button or backdrop click.
+- **New files:** BuddyProgressBar.tsx, SessionRecap.tsx + tests for both
+- **i18n:** 14 new keys in EN/zh-TW/zh-CN (progress_*, recap_*)
+- **Tests:** 548 frontend + 20 backend = 568 total, all passing. 14 new tests.
+- **Deploy:** SUCCESS (commit e449cd4, pushed to main)
+- **Next cycle should consider:** Dark mode ("candy dark"), daily challenge/quests, sound block completion, play mode HUD, project card thumbnails
