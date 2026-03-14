@@ -540,3 +540,14 @@
 - **Tests:** 559 frontend + 20 backend = 579 total, all passing
 - **Deploy:** SUCCESS (commit d4382ae, pushed to main)
 - **Next cycle should consider:** Play mode HUD, "remix this" on templates, project card thumbnails, dark mode (multi-cycle refactor)
+
+## Cycle 50 — 2026-03-14
+- **Tasks:** Play mode HUD (tap/drag instructions on fullscreen)
+- **Type:** Feature (innovation — UX polish)
+- **HUD overlay:** 3-second instructional overlay appears when chat is hidden (play mode) showing "Tap to interact!" + "Drag things around to play". Auto-fades using CSS animation (60% visible, then fades to 0). Clears immediately when chat is re-shown or during loading.
+- **CSS animation:** New `fade-out-delayed` keyframe + `.animate-fade-out` class. Respects `prefers-reduced-motion`.
+- **i18n:** 2 new keys (play_hud_tap, play_hud_drag) in EN/zh-TW/zh-CN.
+- **Tests:** 559 frontend + 20 backend = 579 total, all passing.
+- **Deploy:** SUCCESS (commit 1864b80, pushed to main)
+- **5-cycle innovate session complete.** Shipped: buddy personalities, personalized greetings, progress bar, session recap, daily challenges, sound blocks, play mode HUD.
+- **Remaining backlog:** Dark mode (multi-cycle refactor), "remix this" on templates, project card thumbnails, content moderation (COPPA deadline April 22), community gallery

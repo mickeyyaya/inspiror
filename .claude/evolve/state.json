@@ -673,6 +673,12 @@
       "date": "2026-03-14",
       "decision": "completed",
       "cycle": 49
+    },
+    {
+      "task": "Play mode HUD (tap/drag instructions on entering fullscreen)",
+      "date": "2026-03-14",
+      "decision": "completed",
+      "cycle": 50
     }
   ],
   "failedApproaches": [],
