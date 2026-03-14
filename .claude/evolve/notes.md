@@ -446,3 +446,14 @@
 - **Tests:** 497 frontend + 20 backend = 517 total, all passing.
 - **Deploy:** SUCCESS (commit 50cd349, pushed to main)
 - **Next cycle should consider:** Content moderation (after 2026-03-18), dark mode (candy dark), schema dedup, EditorView decomposition
+
+## Cycle 41 — 2026-03-14
+- **Tasks:** Buddy Coaching Tips ("Cognitive Mirror" system for AI co-creation pedagogy)
+- **Type:** Major Feature (AI literacy + pedagogy)
+- **Research conducted:** 7 web searches on AI co-creation pedagogy, prompt scaffolding, metacognition, OECD AI literacy, Scratch Copilot, gamification. Sources: ACM IDC 2025, MIT/arXiv, OECD, Frontiers, ScienceDirect, Nature Human Behaviour, Taylor & Francis, PMC, UNESCO.
+- **Key insight:** The Cognitive Mirror pattern (post-generation reflection) is the #1 metacognitive intervention per Frontiers 2025. Ages 8-14 are the critical AI literacy window per OECD.
+- **Implementation:** Backend: optional `tip` field in generationSchema + coaching section in system prompt. Frontend: tip chat bubbles with candy-yellow styling + 💡 emoji + i18n (EN/zh-TW/zh-CN).
+- **Tests:** 500 frontend + 20 backend = 520 total, all passing. 3 new tests.
+- **Deploy:** SUCCESS (commit ca8458c, pushed to main)
+- **Roadmap identified:** Prompt Scaffold Templates (M), AI Contribution Transparency (M), AI Skill Passport (M), Iterative Refinement Challenges (L)
+- **Next cycle should consider:** Prompt scaffold templates, AI collaboration achievements, content moderation (after 2026-03-18)

@@ -186,6 +186,22 @@
           "No new critical Express CVEs found as of March 2026 — existing helmet + rate-limit + input validation in Inspiror backend covers known attack surface"
         ],
         "ttlDays": 7
+      },
+      {
+        "query": "AI co-creation pedagogy children + prompt scaffolding + metacognition + OECD AI literacy + Scratch Copilot + gamification",
+        "date": "2026-03-14",
+        "keyFindings": [
+          "ACM IDC 2025: 6 design considerations for child-AI co-creation (agency, transparency, explainability, safety, equity, iteration)",
+          "Vygotsky ZPD: AI as 'more capable peer' with fading scaffolds is the gold standard for learning",
+          "ScienceDirect 2025 meta-analysis: scaffolded prompt templates significantly outperform free-text for AI literacy",
+          "MIT Scratch Copilot 2025: 50% of kids (8-12) rejected AI suggestions to preserve originality — ownership matters deeply",
+          "Frontiers 2025 Cognitive Mirror: post-generation reflection questions are the #1 metacognitive intervention",
+          "OECD 2025 AI Literacy Framework: 7 competencies for ages 8-14 (create, evaluate, collaborate, communicate, problem-solve, think critically, self-aware)",
+          "HASRL model: child sets goals, AI executes, child reflects — never generate unprompted",
+          "Taylor & Francis 2025: badge process behaviors (iterate, reflect, edit) over outcomes (finished game)",
+          "Nature Human Behaviour 2024: human-AI teams outperform solo only when human contributes creativity/judgment"
+        ],
+        "ttlDays": 14
       }
     ]
   },
@@ -563,6 +579,12 @@
       "date": "2026-03-14",
       "decision": "completed",
       "cycle": 40
+    },
+    {
+      "task": "Buddy coaching tips (Cognitive Mirror) — tip field in schema, coaching system prompt, tip chat bubbles",
+      "date": "2026-03-14",
+      "decision": "completed",
+      "cycle": 41
     }
   ],
   "failedApproaches": [],
@@ -591,6 +613,6 @@
   ],
   "instinctCount": 4,
   "operatorWarnings": [],
-  "lastUpdated": "2026-03-14T03:30:00Z",
+  "lastUpdated": "2026-03-14T04:00:00Z",
   "nothingToDoCount": 0
 }
