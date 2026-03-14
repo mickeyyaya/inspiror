@@ -475,3 +475,13 @@
 - **Tests:** 509 frontend + 20 backend = 529 total, all passing. 3 new tests.
 - **Deploy:** SUCCESS (commit 402b748, pushed to main)
 - **Next cycle should consider:** AI contribution transparency ("Who Made This?"), content moderation (after 2026-03-18), dark mode
+
+## Cycle 44 — 2026-03-14
+- **Tasks:** Block origin tracking ("Who Made This?" transparency)
+- **Type:** Feature (AI literacy + ownership)
+- **Origin field:** Added `BlockOrigin` type (`"ai" | "template" | "remix"`) to Block interface. Blocks tagged at creation: `"ai"` from LLM in onFinish, `"template"` from starter templates, `"remix"` on param changes.
+- **Origin badge:** Visual emoji badge on each BlockCard — 🤖 AI / 📋 Template / ✏️ Remix with distinct colors and title tooltips. No badge when origin is undefined (backward compat with existing projects).
+- **Research basis:** MIT Scratch Copilot 2025 — 50% of kids worry about losing originality. OECD AI Literacy Framework — "creativity" defined as maintaining human authorship while collaborating with AI.
+- **Tests:** 513 frontend + 20 backend = 533 total, all passing. 4 new tests.
+- **Deploy:** SUCCESS (commit 3670525, pushed to main)
+- **Next cycle should consider:** AI Skill Passport (6 OECD competency badges), content moderation (after 2026-03-18), dark mode, iterative refinement challenges
