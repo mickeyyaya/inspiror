@@ -435,3 +435,14 @@
 - **Tests:** 497 frontend + 20 backend = 517 total, all passing. 5 new tests.
 - **Deploy:** SUCCESS (commit b59d62b, pushed to main)
 - **Next cycle should consider:** Content moderation (after 2026-03-18), dark mode (candy dark), schema dedup, EditorView decomposition (still ~420 lines)
+
+## Cycle 40 — 2026-03-14
+- **Tasks:** i18n remaining hardcoded aria labels
+- **Type:** Accessibility + i18n
+- **Keys added:** `aria_delete_block`, `aria_logic_blocks`, `aria_shuffle`, `aria_preview_sandbox` in EN/zh-TW/zh-CN.
+- **Wired:** BlockCard delete button, BlockEditor list container, MessageList shuffle button (via new `ariaShuffleLabel` prop), PreviewPanel iframe title.
+- **Note:** Verified that prefers-reduced-motion and WCAG contrast are non-issues (global catch-all rule handles motion, dark-on-green contrast is 7.6:1).
+- **Security:** PASS (static strings only)
+- **Tests:** 497 frontend + 20 backend = 517 total, all passing.
+- **Deploy:** SUCCESS (commit 50cd349, pushed to main)
+- **Next cycle should consider:** Content moderation (after 2026-03-18), dark mode (candy dark), schema dedup, EditorView decomposition
