@@ -478,3 +478,38 @@ Research sources: AI SDK changelog, COPPA 2025 FTC ruling, WCAG 2.1, competitor 
 
 - [ ] **PWA manifest + service worker for offline play** — Classroom environments often have unreliable wifi. A basic PWA manifest and a cache-first service worker for static assets would enable offline use of existing projects. (Features / Accessibility)
 - [ ] **Daily streak / return mechanic** — Research shows role-playing and cooperation mechanics with daily return incentives are most effective for ages 8-10. Add a simple daily streak counter (localStorage-tracked) with a buddy congratulation message to drive Day-2+ retention. (Engagement)
+
+---
+
+## Cycle 46 Audit — Innovation Focus [ ]
+
+Audited against actual source on `main` branch (March 2026 — Cycle 46).
+Research sources: Lyria 3 music gen, Scratch/Hopscotch community data, child TTS market, codebase exploration.
+
+### Innovation Features (HIGH — Differentiation)
+
+- [ ] **Dark mode ("Candy Dark")** — 61% of apps ship dark mode; kids code at night; "candy dark" (dark BG + vivid accents) proven more engaging than greyscale inversion. Use Tailwind v4 `dark:` prefix with CSS variables + localStorage toggle. Prevent FOUC with inline `<script>` in index.html. (Features / UX)
+- [ ] **Session recap screen ("What You Built Today")** — After a build, show illustrated summary: blocks used, bugs fixed, skills practiced. Data already exists in `useAchievements` stats. Feeds the Cognitive Mirror reflection loop from pedagogy research. (Features / Playability)
+- [ ] **Daily challenge / quest of the day** — "Today's challenge: add a score counter!" drives return visits. Codorex does this with daily quests. Rotate from a curated list or LLM-generate based on kid's skill level. (Features / Engagement)
+- [ ] **Visible progress bar on catalog** — "3 more builds to unlock Dragon!" Always-visible XP/progress indicator. Current badge gallery is passive (kid must open it). Scratch/Duolingo/Codedex all show continuous progress. (Features / Playability)
+- [ ] **Play Mode HUD** — When chat is hidden (fullscreen preview), no instruction for how to interact. Add a brief 3-second "how to play" overlay on entering play mode. (UX / Playability)
+- [ ] **Sound block completion** — `sound` block category exists in type system and schema but has zero implementation. Add "Play Sound" block with curated sfx picker. (Features)
+- [ ] **Buddy personality variants per avatar** — When kid unlocks "Sparky the Dragon", Buddy should speak differently (more excitable, dragon puns). Makes avatar unlocks meaningful, not cosmetic. (Features / Engagement)
+- [ ] **Project card thumbnails** — Catalog shows colored cards with no preview. Canvas screenshot on last save would make catalog scannable. (UX)
+- [ ] **"Remix This" on templates** — Fork template into project with AI context pre-loaded. Core Scratch mechanic. (Features)
+- [ ] **Returning user greeting** — After 20 builds, Buddy still says same greeting. Use `streakDays` + build count to personalize ("Welcome back legend!"). (Playability)
+
+### Innovation Features (MEDIUM — Future Differentiation)
+
+- [ ] **AI-generated background music (Lyria 3 via Gemini)** — Google DeepMind Lyria 3 now in Gemini app (March 2026). Text prompt → 30s music loop. No kids coding tool bundles AI audio. Genuine first-mover territory. Requires new backend route + UI. (Features / Innovation)
+- [ ] **AI-generated sprite assets (Imagen via Gemini)** — "Generate sprite" button: child describes character → AI returns PNG for game canvas. Currently limited to emoji. (Features / Innovation)
+- [ ] **Community gallery / Hall of Fame** — Read-only gallery where exported projects are displayed by title + screenshot. #1 return-visit driver per Scratch/Hopscotch data. Requires content moderation first (COPPA). (Features / Social)
+- [ ] **Voice mode enhancement (TTS Buddy responses)** — useVoice.ts exists for STT. Add SpeechSynthesis for Buddy speaking responses. Lowers barrier for ages 8-9 and kids with dyslexia. (Features / Accessibility)
+
+### Carried Tech Debt (HIGH)
+
+- [ ] **`eval()` on LLM check expressions** — `compileBlocks.ts` `buildCheckRunner` emits `eval(checks[i])` where checks come from LLM output. `while(1){}` freezes iframe permanently. CRITICAL security issue. (Security) *(carried from Cycle 14)*
+- [ ] **`postMessage` wildcard `"*"` origin** — `engine.ts:196` and `injectErrorCatcher.ts` use `postMessage({...}, "*")`. Data-leak vector on shared hosting. (Security) *(carried from Cycle 14)*
+- [ ] **Content moderation (COPPA deadline April 22, 2026)** — No explicit safety guardrails in system prompt. 39 days to deadline. (Safety/Compliance) *(carried from Cycle 19)*
+- [ ] **`experimental_useObject` → stable `useObject`** — Deprecated API that will break on future SDK release. (Code Quality) *(carried from Cycle 3)*
+- [ ] **Zod schema duplication frontend/backend** — Identical schemas in `constants.ts` and `llmService.ts`. (Code Quality) *(carried from Cycle 8)*

@@ -111,6 +111,9 @@ The block editor uses **dnd-kit** for drag-and-drop. As of early 2026, dnd-kit m
 - **Day-1 retention is the critical metric** — only 22% of new users return after Day 1; onboarding and first-session experience are the highest-leverage areas for retention improvement
 - **Role-playing and cooperation mechanics most effective for ages 8-10** — research confirms interactive narrative and daily return incentives (streaks, buddy reactions) outperform passive reward systems for this cohort
 - **PWA opportunity in classroom environments** — unreliable wifi in schools makes offline capability a meaningful differentiator for educator adoption
+- **AI music generation goes mainstream (March 2026)** — Suno AI hit 100M users ($2.45B valuation); Google DeepMind Lyria 3 now live in Gemini app generating 30-second tracks from text prompts. No kids coding tool bundles AI-generated audio into the creation flow — genuine first-mover opportunity for Inspiror.
+- **Community galleries are the #1 retention driver** — Scratch, Hopscotch, and Tynker all identify browsable project galleries as their top return-visit mechanic. Inspiror's local-only model is the single biggest architectural gap vs. competitors.
+- **Child voice AI market growing** — Specialized child TTS voices (excited, curious, gentle) available via Speechgen, Resemble AI, Narakeet. Web Speech API provides zero-dependency STT/TTS in all modern browsers.
 
 ### Design Principles for Kids 8-14 (from competitive research)
 - **Not too babyish** - They want to feel "grown up" and like real hackers/creators

@@ -202,6 +202,46 @@
           "Nature Human Behaviour 2024: human-AI teams outperform solo only when human contributes creativity/judgment"
         ],
         "ttlDays": 14
+      },
+      {
+        "query": "generative AI creative tools kids sound music art 2025 2026",
+        "date": "2026-03-14",
+        "keyFindings": [
+          "Google DeepMind Lyria 3 now in Gemini app (March 2026): text-prompt → 30-second music track + cover art; directly callable via Gemini API Inspiror already uses",
+          "Soundverse AI generates kids songs from simple prompts ('a happy tune about friendship') in 10+ languages — sets UX precedent for in-app sound generation",
+          "Suno AI reached 100M users with $250M raise ($2.45B valuation) — AI music creation is now mainstream, not niche",
+          "Opportunity: Inspiror could add 'Add background music' button — child describes mood, Lyria 3 generates 30s loop for their game via Gemini API",
+          "AI art gen (DALL-E, Imagen) could power 'Generate sprite' button — child describes character, AI returns PNG for use in game canvas",
+          "Precedent gap: no kids coding tool currently bundles AI-generated audio/art assets into the creation flow — genuine differentiation opportunity"
+        ],
+        "ttlDays": 14
+      },
+      {
+        "query": "kids coding app social features community gallery showcase 2025 2026",
+        "date": "2026-03-14",
+        "keyFindings": [
+          "Hopscotch, Scratch, Tynker all identify community gallery + project showcase as #1 return-visit driver for ages 8-14",
+          "Coolest Projects global showcase (Jan 2026) demonstrates demand: children want external recognition, not just personal achievement",
+          "Tynker Code Jam: in-app competitions with peer judging drive engagement spikes — tournament format proven for retention",
+          "Social features gap: Inspiror has Web Share API (export) but no in-app gallery where kids browse each other's projects",
+          "Actionable: 'Hall of Fame' read-only gallery page (no auth required) where exported HTML projects are submitted and displayed by title/screenshot",
+          "Risk: social features require moderation pipeline (COPPA compliance) — defer until content moderation is implemented (currently deferred to 2026-03-18)"
+        ],
+        "ttlDays": 14
+      },
+      {
+        "query": "AI voice interaction kids apps text-to-speech speech-to-text accessibility 2026",
+        "date": "2026-03-14",
+        "keyFindings": [
+          "Child TTS market growing strongly: specialized child AI voices (excited, gentle humor, surprise) available via Speechgen, Resemble AI, Narakeet, Acapela Group",
+          "Web Speech API (SpeechRecognition + SpeechSynthesis) is built into all modern browsers — zero dependency cost for Inspiror",
+          "Voice-first coding lowers barrier for early readers (ages 8-9) and children with dyslexia — strong accessibility and COPPA alignment story",
+          "Opportunity: 'Voice mode' for chat input — child speaks to Builder Buddy instead of typing; Web Speech API sends transcript to existing LLM pipeline",
+          "Opportunity: Buddy speaks responses via SpeechSynthesis using a child-appropriate voice — transforms text chat into a more natural tutoring experience",
+          "Inspiror already has useVoice.ts hook — this is partially scaffolded; extending it to cover both STT input and TTS output is a low-effort, high-impact feature",
+          "Therapeutic angle: children with speech delays or anxiety benefit from AI voice companions — broadens addressable market beyond coding-focused kids"
+        ],
+        "ttlDays": 14
       }
     ]
   },
