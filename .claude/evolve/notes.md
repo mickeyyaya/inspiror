@@ -399,3 +399,16 @@
 - **Tests:** 485 frontend + 20 backend = 505 total, all passing.
 - **Deploy:** SUCCESS (commit 98b7d6b, pushed to main)
 - **Next cycle should consider:** Dark mode (candy dark), content moderation (after 2026-03-18), schema dedup, EditorView further decomposition (still ~420 lines), getWelcomeCode memoization
+
+## Cycle 37 — 2026-03-14
+- **Tasks:** Fix broken starter templates (game.updateText + game.onTapAnywhere + entity-specific taps)
+- **Type:** Bug fix (CRITICAL — 4 of 6 templates broken at runtime)
+- **Engine additions:** Added `game.updateText(id, text)` to update text entity content. Added `game.onTapAnywhere(blockId, fn)` for global tap handling (pushes fn directly, consistent with onTap).
+- **Tap fix:** Added `wasDragging` guard in `handlePointerUp` — drag-end events no longer fire tap/onTapAnywhere callbacks. Previously, releasing a drag in counting-game would increment the counter.
+- **Template fixes:** Catch the Star checks `entity._id === "star"` before scoring (was scoring on any tap). Color Mixer uses single `onTap` with entity identity loop (was registering 6 callbacks that all fired). Counting Game and Magic Wand pass blockId as first arg to `onTapAnywhere`.
+- **API reference:** Updated `runtimeApiReference.ts` with `updateText` and `onTapAnywhere` docs, plus entity identity checking guidance for `onTap`.
+- **Security:** PASS (no CRITICAL/HIGH — canvas fillText is not a DOM sink, entity._id is engine-owned)
+- **Code Review:** WARN → PASS after 2 HIGH fixes (drag-tap suppression, wrapper closure removal)
+- **Tests:** 492 frontend + 20 backend = 512 total, all passing. 7 new tests.
+- **Deploy:** SUCCESS (commit 447016f, pushed to main)
+- **Next cycle should consider:** Content moderation (after 2026-03-18), dark mode (candy dark), prefers-reduced-motion for buddy-bounce animations, WCAG AA contrast (candy-green 3.7:1 → 4.5:1), schema dedup
