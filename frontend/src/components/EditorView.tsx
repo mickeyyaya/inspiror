@@ -31,6 +31,8 @@ import { BlockPanelDrawer } from "./BlockPanelDrawer";
 import { OnboardingTooltip } from "./OnboardingTooltip";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { useOnboarding } from "../hooks/useOnboarding";
+import { getPersonalizedGreeting } from "../utils/greetingTiers";
+import { useStreak } from "../hooks/useStreak";
 
 if (!import.meta.env.VITE_API_URL && import.meta.env.MODE !== "development") {
   console.warn(
@@ -64,12 +66,39 @@ export function EditorView({
   onBuild,
 }: EditorViewProps) {
   const t = translations[language];
+  const { streakDays } = useStreak();
+  const {
+    unlockedIds,
+    stats,
+    newlyUnlocked,
+    dismissUnlock,
+    recordBuild,
+    recordDebug,
+    recordExplore,
+    recordRemix,
+    recordDescribe,
+    recordIterate,
+    recordTip,
+    selectedAvatar,
+    unlockedAvatars,
+    selectAvatar,
+  } = useAchievements();
+  const personalizedGreeting = useMemo(
+    () =>
+      getPersonalizedGreeting(
+        stats.builds,
+        streakDays,
+        selectedAvatar,
+        language,
+      ),
+    [stats.builds, streakDays, selectedAvatar, language],
+  );
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
     if (
       project.messages.length === 1 &&
       project.messages[0].role === "assistant"
     ) {
-      return [withId("assistant", t.greeting)];
+      return [withId("assistant", personalizedGreeting)];
     }
     return project.messages;
   });
@@ -116,22 +145,6 @@ export function EditorView({
     speak,
     toggleAutoSpeak,
   } = useVoice(language, isMuted);
-  const {
-    unlockedIds,
-    stats,
-    newlyUnlocked,
-    dismissUnlock,
-    recordBuild,
-    recordDebug,
-    recordExplore,
-    recordRemix,
-    recordDescribe,
-    recordIterate,
-    recordTip,
-    selectedAvatar,
-    unlockedAvatars,
-    selectAvatar,
-  } = useAchievements();
   const [isBadgeGalleryOpen, setIsBadgeGalleryOpen] = useState(false);
   const {
     step: onboardingStep,
@@ -236,6 +249,7 @@ export function EditorView({
     submit,
     playBuzzer,
     language,
+    avatarId: selectedAvatar.id,
     t,
     blocksRef,
     messagesRef,
@@ -274,6 +288,7 @@ export function EditorView({
       messages: newMessages,
       currentBlocks: JSON.stringify(blocksRef.current),
       language,
+      avatarId: selectedAvatar.id,
     });
   };
 
@@ -289,6 +304,7 @@ export function EditorView({
       messages: newMessages,
       currentBlocks: JSON.stringify(blocksRef.current),
       language,
+      avatarId: selectedAvatar.id,
     });
   };
 
@@ -312,7 +328,7 @@ export function EditorView({
     onReset();
     const freshBlocks = DEFAULT_BLOCKS.map((b) => ({ ...b }));
     checksRef.current = [];
-    setMessages([withId("assistant", t.greeting)]);
+    setMessages([withId("assistant", personalizedGreeting)]);
     setBlocks(freshBlocks);
     setCurrentCode(compileBlocks(freshBlocks));
     setInputValue("");

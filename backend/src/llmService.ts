@@ -3,6 +3,7 @@ import { streamObject } from "ai";
 import { google } from "@ai-sdk/google";
 import { RUNTIME_API_REFERENCE } from "./prompts/runtimeApiReference";
 import { BLOCK_EXAMPLES } from "./prompts/blockExamples";
+import { getPersonalityPrompt } from "./prompts/buddyPersonalities";
 
 const GEMINI_MODEL =
   process.env.GEMINI_MODEL || "gemini-3.1-flash-lite-preview";
@@ -95,6 +96,7 @@ export class LLMService {
     messages: Array<{ role: string; content: string }>,
     currentBlocks?: string,
     language: string = "en-US",
+    avatarId: string = "dog",
   ) {
     try {
       const languageHint =
@@ -173,6 +175,7 @@ Include a short "tip" field (1-2 sentences) when you notice a teaching moment:
 - When the child responds to your scaffolding question: acknowledge their input.
 Do NOT include a tip on every turn — only when there's a genuine teaching moment (roughly every 2-3 turns).
 Keep tips encouraging, specific, and forward-looking. Never criticize.
+${getPersonalityPrompt(avatarId)}
 
 CRITICAL - GENERATE SELF-VERIFICATION CHECKS:
 Always include a "checks" array with 2-5 short JS expressions that verify your blocks work.

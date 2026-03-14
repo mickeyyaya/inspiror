@@ -307,7 +307,7 @@ describe("Inspiror App", () => {
     it("renders initial chat greeting from AI Buddy", () => {
       render(<App />);
       expect(
-        screen.getByText(/Hi! I'm your builder buddy/i),
+        screen.getByText(/I'm Buddy, your builder buddy/i),
       ).toBeInTheDocument();
     });
 
@@ -359,17 +359,17 @@ describe("Inspiror App", () => {
     it("can toggle the floating chat visibility", () => {
       render(<App />);
       expect(
-        screen.getByText(/Hi! I'm your builder buddy/i),
+        screen.getByText(/I'm Buddy, your builder buddy/i),
       ).toBeInTheDocument();
 
       fireEvent.click(screen.getByRole("button", { name: /Hide Chat/i }));
       expect(
-        screen.queryByText(/Hi! I'm your builder buddy/i),
+        screen.queryByText(/I'm Buddy, your builder buddy/i),
       ).not.toBeInTheDocument();
 
       fireEvent.click(screen.getByRole("button", { name: /Show Chat/i }));
       expect(
-        screen.getByText(/Hi! I'm your builder buddy/i),
+        screen.getByText(/I'm Buddy, your builder buddy/i),
       ).toBeInTheDocument();
     });
 

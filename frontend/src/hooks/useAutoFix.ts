@@ -16,9 +16,11 @@ export interface UseAutoFixParams {
     messages: ChatMessage[];
     currentBlocks: string;
     language: string;
+    avatarId?: string;
   }) => void;
   playBuzzer: () => void;
   language: VoiceLanguage;
+  avatarId?: string;
   t: Pick<T, "error_oops" | "error_autofix_limit" | "error_block_fix">;
   blocksRef: React.MutableRefObject<Block[]>;
   messagesRef: React.MutableRefObject<ChatMessage[]>;
@@ -36,6 +38,7 @@ export function useAutoFix({
   submit,
   playBuzzer,
   language,
+  avatarId,
   t,
   blocksRef,
   messagesRef,
@@ -66,6 +69,11 @@ export function useAutoFix({
   useEffect(() => {
     languageRef.current = language;
   }, [language]);
+
+  const avatarIdRef = useRef(avatarId);
+  useEffect(() => {
+    avatarIdRef.current = avatarId;
+  }, [avatarId]);
 
   const tRef = useRef(t);
   useEffect(() => {
@@ -133,6 +141,7 @@ export function useAutoFix({
         messages: updatedMessages,
         currentBlocks: JSON.stringify(blocksRef.current),
         language: languageRef.current,
+        avatarId: avatarIdRef.current,
       });
     };
 

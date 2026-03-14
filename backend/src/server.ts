@@ -9,6 +9,7 @@ export const app = express();
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "http://localhost:5173";
 const VALID_ROLES = new Set(["user", "assistant"]);
 const VALID_LANGUAGES = new Set(["en-US", "zh-TW", "zh-CN"]);
+const VALID_AVATARS = new Set(["dog", "cat", "dragon", "robot", "unicorn"]);
 const MAX_MESSAGES = 50;
 const MAX_CONTENT_LENGTH = 5000;
 const MAX_CODE_LENGTH = 50000;
@@ -119,10 +120,14 @@ app.post("/api/generate", async (req, res) => {
     const language = VALID_LANGUAGES.has(req.body.language)
       ? req.body.language
       : "en-US";
+    const avatarId = VALID_AVATARS.has(req.body.avatarId)
+      ? req.body.avatarId
+      : "dog";
     const result = await llmService.generateStream(
       req.body.messages,
       req.body.currentBlocks,
       language,
+      avatarId,
     );
     result.pipeTextStreamToResponse(res);
   } catch (error) {
