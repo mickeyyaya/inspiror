@@ -19,7 +19,7 @@ export interface UseAutoFixParams {
   }) => void;
   playBuzzer: () => void;
   language: VoiceLanguage;
-  t: Pick<T, "error_oops" | "error_autofix_limit">;
+  t: Pick<T, "error_oops" | "error_autofix_limit" | "error_block_fix">;
   blocksRef: React.MutableRefObject<Block[]>;
   messagesRef: React.MutableRefObject<ChatMessage[]>;
   recordDebugRef: React.MutableRefObject<() => void>;
@@ -111,17 +111,17 @@ export function useAutoFix({
       }
 
       autoFixCountRef.current += 1;
-      console.log(
-        `[App] Triggering Auto-Fix (${autoFixCountRef.current}/${AUTO_FIX_LIMIT})`,
-      );
 
       onErrorRef.current?.();
       playBuzzerRef.current();
       recordDebugRef.current();
       const oopsMessage = withId("assistant", tRef.current.error_oops);
+      const blockLabel = blockId ? `"${blockId}"` : "";
       const errorContext = withId(
         "user",
-        `The block${blockId ? ` "${blockId}"` : ""} caused this error: ${errorMsg}. Please fix it.`,
+        tRef.current.error_block_fix
+          .replace("{blockId}", blockLabel)
+          .replace("{error}", errorMsg),
       );
       const updatedMessages = [
         ...messagesRef.current,

@@ -88,7 +88,7 @@ export function ProjectCatalog({
   ];
 
   return (
-    <div className="w-screen h-screen bg-[#fdfbf7] flex flex-col overflow-hidden relative">
+    <div className="w-screen h-dvh bg-[#fdfbf7] flex flex-col overflow-hidden relative">
       {/* Playful Background Elements */}
       <div className="absolute top-[-10%] left-[-5%] w-[40%] h-[40%] bg-[var(--color-candy-yellow)] rounded-full opacity-20 blur-[80px] pointer-events-none"></div>
       <div className="absolute bottom-[-10%] right-[-5%] w-[50%] h-[50%] bg-[var(--color-candy-pink)] rounded-full opacity-20 blur-[100px] pointer-events-none"></div>

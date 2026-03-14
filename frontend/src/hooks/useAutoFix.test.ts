@@ -39,6 +39,8 @@ describe("useAutoFix", () => {
     t: {
       error_oops: "Oops!",
       error_autofix_limit: "Auto-fix limit reached.",
+      error_block_fix:
+        "The block {blockId} caused this error: {error}. Please fix it.",
     },
     blocksRef,
     messagesRef,
