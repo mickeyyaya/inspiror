@@ -134,7 +134,35 @@ export const ALL_SUGGESTIONS_ZH_CN = [
 ];
 
 export const CHIPS_PER_SET = 4;
+export const SCAFFOLD_CHIPS_PER_SET = 2;
 export const CONFETTI_COUNT = 80;
+
+const SCAFFOLD_TEMPLATES_EN = [
+  { emoji: "🎮", label: "Make a game where ___ tries to catch ___" },
+  { emoji: "🌟", label: "Create a ___ that glows when you click it" },
+  { emoji: "🏃", label: "Build a ___ that moves ___ across the screen" },
+  { emoji: "🎵", label: "Make a ___ that plays a sound when ___" },
+  { emoji: "🎨", label: "Create a ___ that changes color to ___" },
+  { emoji: "💥", label: "Build a game where ___ bounces off ___" },
+];
+
+const SCAFFOLD_TEMPLATES_ZH_TW = [
+  { emoji: "🎮", label: "做一個___試著去抓___的遊戲" },
+  { emoji: "🌟", label: "創造一個點擊會發光的___" },
+  { emoji: "🏃", label: "做一個___在畫面上___移動" },
+  { emoji: "🎵", label: "做一個___當___時會發出聲音" },
+  { emoji: "🎨", label: "創造一個___會變成___顏色" },
+  { emoji: "💥", label: "做一個___會彈開___的遊戲" },
+];
+
+const SCAFFOLD_TEMPLATES_ZH_CN = [
+  { emoji: "🎮", label: "做一个___试着去抓___的游戏" },
+  { emoji: "🌟", label: "创造一个点击会发光的___" },
+  { emoji: "🏃", label: "做一个___在画面上___移动" },
+  { emoji: "🎵", label: "做一个___当___时会发出声音" },
+  { emoji: "🎨", label: "创造一个___会变成___颜色" },
+  { emoji: "💥", label: "做一个___会弹开___的游戏" },
+];
 
 const blockParamSchema = z.object({
   key: z.string(),
@@ -187,6 +215,20 @@ export function pickRandomChips(language?: VoiceLanguage) {
   const pool = language ? getSuggestions(language) : ALL_SUGGESTIONS_EN;
   const shuffled = [...pool].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, CHIPS_PER_SET);
+}
+
+function getScaffoldTemplates(language: VoiceLanguage) {
+  if (language === "zh-TW") return SCAFFOLD_TEMPLATES_ZH_TW;
+  if (language === "zh-CN") return SCAFFOLD_TEMPLATES_ZH_CN;
+  return SCAFFOLD_TEMPLATES_EN;
+}
+
+export function pickRandomScaffolds(language?: VoiceLanguage) {
+  const pool = language
+    ? getScaffoldTemplates(language)
+    : SCAFFOLD_TEMPLATES_EN;
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, SCAFFOLD_CHIPS_PER_SET);
 }
 
 export function withId(

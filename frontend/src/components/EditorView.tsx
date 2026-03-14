@@ -11,7 +11,12 @@ import { usePersistProject } from "../hooks/usePersistProject";
 import { translations } from "../i18n/translations";
 import type { ChatMessage, Project } from "../types/project";
 import type { Block } from "../types/block";
-import { generationSchema, pickRandomChips, withId } from "../constants";
+import {
+  generationSchema,
+  pickRandomChips,
+  pickRandomScaffolds,
+  withId,
+} from "../constants";
 import { getCodingFacts } from "../constants/codingFacts";
 import { compileBlocks } from "../compiler/compileBlocks";
 import { DEFAULT_BLOCKS } from "../constants/defaultBlocks";
@@ -80,6 +85,9 @@ export function EditorView({
   const { buddyEmotion, triggerEmotion } = useBuddyEmotion(messages);
   const [suggestionChips, setSuggestionChips] = useState(() =>
     pickRandomChips(language),
+  );
+  const [scaffoldChips, setScaffoldChips] = useState(() =>
+    pickRandomScaffolds(language),
   );
   const checksRef = useRef<string[]>([]);
 
@@ -281,6 +289,15 @@ export function EditorView({
     });
   };
 
+  const handleScaffoldClick = (template: string) => {
+    if (isLoading) return;
+    playChipClick();
+    setInputValue(template);
+    inputRef.current?.focus();
+  };
+
+  const showScaffolds = stats.describes < 5;
+
   const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
 
   const handleResetRequest = () => {
@@ -371,6 +388,10 @@ export function EditorView({
             moreIdeasText={t.more_ideas}
             ariaShuffleLabel={t.aria_shuffle}
             buddyTipLabel={t.buddy_tip_label}
+            scaffoldChips={showScaffolds ? scaffoldChips : []}
+            onScaffoldClick={handleScaffoldClick}
+            onScaffoldShuffle={setScaffoldChips}
+            scaffoldHint={t.scaffold_hint}
             language={language}
           />
 

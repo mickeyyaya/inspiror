@@ -7,6 +7,7 @@ export interface TranslationKeys {
   error_oops: string;
   error_block_fix: string;
   buddy_tip_label: string;
+  scaffold_hint: string;
   aria_my_projects: string;
   aria_hide_chat: string;
   aria_reset: string;
@@ -117,6 +118,7 @@ export const translations: Record<Language, TranslationKeys> = {
     error_block_fix:
       "The block {blockId} caused this error: {error}. Please fix it.",
     buddy_tip_label: "Buddy Tip",
+    scaffold_hint: "Fill in the blanks, then send!",
     aria_my_projects: "My Projects",
     aria_hide_chat: "Hide Chat",
     aria_reset: "Reset",
@@ -227,6 +229,7 @@ export const translations: Record<Language, TranslationKeys> = {
     error_oops: "哎呀，我犯了個小錯誤！讓我趕快修正一下...",
     error_block_fix: "積木 {blockId} 出現了這個錯誤：{error}。請幫我修正。",
     buddy_tip_label: "小幫手提示",
+    scaffold_hint: "填入空白處，然後送出！",
     aria_my_projects: "我的專案",
     aria_hide_chat: "隱藏聊天",
     aria_reset: "重設",
@@ -334,6 +337,7 @@ export const translations: Record<Language, TranslationKeys> = {
     error_oops: "哎呀，我犯了个小错误！让我赶快修正一下...",
     error_block_fix: "积木 {blockId} 出现了这个错误：{error}。请帮我修正。",
     buddy_tip_label: "小帮手提示",
+    scaffold_hint: "填入空白处，然后发送！",
     aria_my_projects: "我的项目",
     aria_hide_chat: "隐藏聊天",
     aria_reset: "重置",

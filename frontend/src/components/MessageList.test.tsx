@@ -1,5 +1,5 @@
-import { render, screen } from "@testing-library/react";
-import { describe, it, expect, beforeAll } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect, beforeAll, vi } from "vitest";
 import { MessageList } from "./MessageList";
 
 beforeAll(() => {
@@ -115,5 +115,52 @@ describe("MessageList", () => {
       />,
     );
     expect(screen.getByText("Thinking")).toBeInTheDocument();
+  });
+
+  it("renders scaffold chips with dashed border when provided", () => {
+    const onScaffoldClick = vi.fn();
+    render(
+      <MessageList
+        {...defaultProps}
+        showSuggestions={true}
+        scaffoldChips={[
+          { emoji: "🎮", label: "Make a game where ___ catches ___" },
+        ]}
+        onScaffoldClick={onScaffoldClick}
+        scaffoldHint="Fill in the blanks!"
+      />,
+    );
+    expect(
+      screen.getByText("Make a game where ___ catches ___"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Fill in the blanks!", { exact: false }),
+    ).toBeInTheDocument();
+  });
+
+  it("calls onScaffoldClick with template text when scaffold is clicked", () => {
+    const onScaffoldClick = vi.fn();
+    render(
+      <MessageList
+        {...defaultProps}
+        showSuggestions={true}
+        scaffoldChips={[{ emoji: "🎮", label: "Make a ___ game" }]}
+        onScaffoldClick={onScaffoldClick}
+      />,
+    );
+    fireEvent.click(screen.getByTestId("scaffold-chip"));
+    expect(onScaffoldClick).toHaveBeenCalledWith("Make a ___ game");
+  });
+
+  it("does not render scaffold chips when array is empty", () => {
+    render(
+      <MessageList
+        {...defaultProps}
+        showSuggestions={true}
+        scaffoldChips={[]}
+        onScaffoldClick={vi.fn()}
+      />,
+    );
+    expect(screen.queryByTestId("scaffold-chip")).not.toBeInTheDocument();
   });
 });

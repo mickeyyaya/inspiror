@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 import type { ChatMessage } from "../types/project";
-import { pickRandomChips } from "../constants";
+import { pickRandomChips, pickRandomScaffolds } from "../constants";
 import type { VoiceLanguage } from "../hooks/useVoice";
 
 interface MessageListProps {
@@ -16,6 +16,10 @@ interface MessageListProps {
   moreIdeasText: string;
   ariaShuffleLabel?: string;
   buddyTipLabel?: string;
+  scaffoldChips?: { emoji: string; label: string }[];
+  onScaffoldClick?: (template: string) => void;
+  onScaffoldShuffle?: (chips: { emoji: string; label: string }[]) => void;
+  scaffoldHint?: string;
   language?: VoiceLanguage;
 }
 
@@ -32,6 +36,10 @@ export function MessageList({
   moreIdeasText,
   ariaShuffleLabel,
   buddyTipLabel,
+  scaffoldChips = [],
+  onScaffoldClick,
+  onScaffoldShuffle,
+  scaffoldHint,
   language,
 }: MessageListProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -152,6 +160,41 @@ export function MessageList({
               );
             })}
           </div>
+
+          {scaffoldChips.length > 0 && onScaffoldClick && (
+            <div className="mt-3">
+              <p className="text-[#222] text-xs font-extrabold ml-2 mb-2 uppercase tracking-wider bg-[var(--color-candy-purple)]/30 w-fit px-3 py-1 rounded-full border-2 border-[var(--color-candy-purple)]/40">
+                ✏️ {scaffoldHint ?? "Fill in the blanks, then send!"}
+              </p>
+              <div className="flex flex-wrap gap-3">
+                {scaffoldChips.map((chip, index) => (
+                  <button
+                    key={chip.label}
+                    onClick={() => onScaffoldClick(chip.label)}
+                    className="chip-enter bg-white text-[#222] border-4 border-dashed border-[var(--color-candy-purple)] px-4 py-3 rounded-[1.5rem] shadow-[3px_3px_0_var(--color-candy-purple)] active:translate-y-[3px] active:translate-x-[3px] active:shadow-none hover:shadow-[5px_5px_0_var(--color-candy-purple)] transition-all text-[15px] font-bold flex items-center btn-squish"
+                    style={{ animationDelay: `${(index + 4) * 150}ms` }}
+                    data-testid="scaffold-chip"
+                  >
+                    <span className="text-2xl mr-2 drop-shadow-sm">
+                      {chip.emoji}
+                    </span>
+                    {chip.label}
+                  </button>
+                ))}
+                {onScaffoldShuffle && (
+                  <button
+                    onClick={() =>
+                      onScaffoldShuffle(pickRandomScaffolds(language))
+                    }
+                    className="bg-white border-2 border-[var(--color-candy-purple)] px-3 py-1 rounded-full text-sm font-bold text-[#222] hover:scale-105 active:scale-95 transition-all shadow-[2px_2px_0_var(--color-candy-purple)]"
+                    data-testid="shuffle-scaffolds"
+                  >
+                    🔀
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
