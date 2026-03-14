@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import {
   Plus,
   Trash2,
@@ -41,6 +41,19 @@ export function ProjectCatalog({
 }: ProjectCatalogProps) {
   const t = translations[language];
   const sorted = [...projects].sort((a, b) => b.updatedAt - a.updatedAt);
+
+  const skillStats = useMemo(() => {
+    try {
+      const stored = localStorage.getItem("inspiror-achievements");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        return parsed.stats ?? null;
+      }
+    } catch {
+      // ignore
+    }
+    return null;
+  }, []);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState("");
@@ -117,6 +130,51 @@ export function ProjectCatalog({
                 🔥 {streakDays} {t.streak_days}
               </span>
             )}
+            {skillStats &&
+              (skillStats.builds > 0 || skillStats.describes > 0) && (
+                <div
+                  className="mt-3 bg-white/80 border-3 border-[#222] rounded-2xl p-3 shadow-[3px_3px_0_#222]"
+                  data-testid="skill-card"
+                >
+                  <p className="text-xs font-extrabold uppercase tracking-wider text-[#7c3aed] mb-2">
+                    🎯 {t.skill_card_title}
+                  </p>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div className="flex items-center gap-1">
+                      <span>🏗️</span>
+                      <span className="font-bold">{skillStats.builds}</span>
+                      <span className="text-gray-500 text-xs">
+                        {t.skill_builds}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span>📝</span>
+                      <span className="font-bold">
+                        {skillStats.describes ?? 0}
+                      </span>
+                      <span className="text-gray-500 text-xs">
+                        {t.skill_describes}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span>🔄</span>
+                      <span className="font-bold">
+                        {skillStats.iterates ?? 0}
+                      </span>
+                      <span className="text-gray-500 text-xs">
+                        {t.skill_iterates}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span>💡</span>
+                      <span className="font-bold">{skillStats.tips ?? 0}</span>
+                      <span className="text-gray-500 text-xs">
+                        {t.skill_tips}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
           </div>
         </div>
         <div className="flex items-center gap-4">

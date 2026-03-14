@@ -8,6 +8,11 @@ export interface TranslationKeys {
   error_block_fix: string;
   buddy_tip_label: string;
   scaffold_hint: string;
+  skill_card_title: string;
+  skill_builds: string;
+  skill_describes: string;
+  skill_iterates: string;
+  skill_tips: string;
   aria_my_projects: string;
   aria_hide_chat: string;
   aria_reset: string;
@@ -119,6 +124,11 @@ export const translations: Record<Language, TranslationKeys> = {
       "The block {blockId} caused this error: {error}. Please fix it.",
     buddy_tip_label: "Buddy Tip",
     scaffold_hint: "Fill in the blanks, then send!",
+    skill_card_title: "My AI Skills",
+    skill_builds: "Builds",
+    skill_describes: "Detailed Prompts",
+    skill_iterates: "Iterations",
+    skill_tips: "Tips Earned",
     aria_my_projects: "My Projects",
     aria_hide_chat: "Hide Chat",
     aria_reset: "Reset",
@@ -230,6 +240,11 @@ export const translations: Record<Language, TranslationKeys> = {
     error_block_fix: "積木 {blockId} 出現了這個錯誤：{error}。請幫我修正。",
     buddy_tip_label: "小幫手提示",
     scaffold_hint: "填入空白處，然後送出！",
+    skill_card_title: "我的 AI 技能",
+    skill_builds: "建造次數",
+    skill_describes: "詳細提示",
+    skill_iterates: "迭代次數",
+    skill_tips: "獲得提示",
     aria_my_projects: "我的專案",
     aria_hide_chat: "隱藏聊天",
     aria_reset: "重設",
@@ -338,6 +353,11 @@ export const translations: Record<Language, TranslationKeys> = {
     error_block_fix: "积木 {blockId} 出现了这个错误：{error}。请帮我修正。",
     buddy_tip_label: "小帮手提示",
     scaffold_hint: "填入空白处，然后发送！",
+    skill_card_title: "我的 AI 技能",
+    skill_builds: "建造次数",
+    skill_describes: "详细提示",
+    skill_iterates: "迭代次数",
+    skill_tips: "获得提示",
     aria_my_projects: "我的项目",
     aria_hide_chat: "隐藏聊天",
     aria_reset: "重置",
