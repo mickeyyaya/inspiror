@@ -79,7 +79,8 @@ game.addText("scoreText", "Score: 0", 10, 10, {
   height: {{size}},
   fontSize: {{size}}
 });
-game.onTap("star", function() {
+game.onTap("catch-star-entity", function(x, y, entity) {
+  if (!entity || entity._id !== "star") return;
   var score = game.get("score") + 1;
   game.set("score", score);
   game.updateText("scoreText", "Score: " + score);
@@ -212,11 +213,17 @@ game.onTap("star", function() {
         borderColor: "#222",
         borderWidth: 3
       });
-      game.onTap("btn-" + idx, function() {
-        game.setBackground(colors[idx]);
-      });
     })(i);
   }
+  game.onTap("color-mixer-buttons", function(x, y, entity) {
+    if (!entity || !entity._id) return;
+    for (var j = 0; j < colors.length; j++) {
+      if (entity._id === "btn-" + j) {
+        game.setBackground(colors[j]);
+        break;
+      }
+    }
+  });
   game.addText("title", "Pick a Color!", game.width() / 2, 30, {
     font: "bold 28px sans-serif",
     color: "#222",
@@ -290,7 +297,7 @@ game.onTap("star", function() {
     color: "#888",
     align: "center"
   });
-  game.onTapAnywhere(function() {
+  game.onTapAnywhere("counting-display", function() {
     var c = game.get("count");
     if (c >= {{maxCount}}) {
       game.set("count", 0);
@@ -358,7 +365,7 @@ game.onTap("star", function() {
     color: "#ffe66d",
     align: "center"
   });
-  game.onTapAnywhere(function(x, y) {
+  game.onTapAnywhere("magic-sparkles", function(x, y) {
     for (var i = 0; i < {{sparkleCount}}; i++) {
       (function() {
         var id = "spark-" + (sparkleId++);

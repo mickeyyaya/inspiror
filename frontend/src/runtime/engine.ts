@@ -143,6 +143,7 @@ export const RUNTIME_ENGINE = `
     pointerState.x = pos.x;
     pointerState.y = pos.y;
     pointerState.down = false;
+    var wasDragging = dragState.dragging;
     if (dragState.dragging && dragState.entityId) {
       var ent = entities[dragState.entityId];
       for (var i = 0; i < dragCallbacks.length; i++) {
@@ -154,10 +155,12 @@ export const RUNTIME_ENGINE = `
       dragState.dragging = false;
       dragState.entityId = null;
     }
-    for (var j = 0; j < tapCallbacks.length; j++) {
-      var tc = tapCallbacks[j];
-      if (disabledBlocks[tc.blockId]) continue;
-      try { tc.fn(pos.x, pos.y, hitTestEntity(pos.x, pos.y)); } catch(err) { reportError(tc.blockId, err); }
+    if (!wasDragging) {
+      for (var j = 0; j < tapCallbacks.length; j++) {
+        var tc = tapCallbacks[j];
+        if (disabledBlocks[tc.blockId]) continue;
+        try { tc.fn(pos.x, pos.y, hitTestEntity(pos.x, pos.y)); } catch(err) { reportError(tc.blockId, err); }
+      }
     }
   }
 
@@ -710,6 +713,15 @@ export const RUNTIME_ENGINE = `
       var octave = parseInt((note || "A4").replace(/[^0-9]/g, "")) || 4;
       var freq = base * Math.pow(2, octave - 4);
       game.playTone(freq, duration, opts);
+    },
+
+    updateText: function(id, text) {
+      var e = entities[id];
+      if (e) e.text = text;
+    },
+
+    onTapAnywhere: function(blockId, fn) {
+      tapCallbacks.push({ blockId: blockId, fn: fn });
     },
 
     playSound: function(name) {

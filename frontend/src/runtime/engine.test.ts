@@ -110,6 +110,25 @@ describe("RUNTIME_ENGINE", () => {
     );
   });
 
+  it("contains updateText API for updating text entity content", () => {
+    expect(RUNTIME_ENGINE).toContain("updateText: function(id, text)");
+  });
+
+  it("contains onTapAnywhere API for global tap handling", () => {
+    expect(RUNTIME_ENGINE).toContain("onTapAnywhere: function(blockId, fn)");
+    // Should push fn directly without wrapper closure
+    expect(RUNTIME_ENGINE).toContain(
+      "tapCallbacks.push({ blockId: blockId, fn: fn })",
+    );
+  });
+
+  it("suppresses tap callbacks when drag just ended", () => {
+    // handlePointerUp should capture wasDragging before clearing dragState
+    expect(RUNTIME_ENGINE).toContain("var wasDragging = dragState.dragging");
+    // Tap callbacks should only fire when not dragging
+    expect(RUNTIME_ENGINE).toContain("if (!wasDragging)");
+  });
+
   it("cleans up timers, taps, drags, and overlaps in game.off()", () => {
     expect(RUNTIME_ENGINE).toContain(
       "overlapCallbacks = overlapCallbacks.filter",

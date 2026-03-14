@@ -93,6 +93,103 @@ describe("STARTER_TEMPLATES data", () => {
     }
   });
 
+  it("block code only uses documented game.* API methods", () => {
+    // Extract all game.* method calls from template code
+    const VALID_GAME_METHODS = new Set([
+      "addEntity",
+      "getEntity",
+      "removeEntity",
+      "allEntities",
+      "onUpdate",
+      "on",
+      "off",
+      "onCollision",
+      "set",
+      "get",
+      "setBackground",
+      "setBackgroundGradient",
+      "addText",
+      "updateText",
+      "width",
+      "height",
+      "burst",
+      "trail",
+      "shake",
+      "tween",
+      "deltaTime",
+      "frameCount",
+      "time",
+      "lerp",
+      "clamp",
+      "distance",
+      "randomRange",
+      "randomInt",
+      "pointerX",
+      "pointerY",
+      "pointerDown",
+      "onTap",
+      "onTapAnywhere",
+      "onDrag",
+      "after",
+      "every",
+      "bounceOffWalls",
+      "moveToward",
+      "addBar",
+      "onOverlap",
+      "followEntity",
+      "wander",
+      "patrol",
+      "loadImage",
+      "playTone",
+      "playNote",
+      "playSound",
+    ]);
+
+    for (const template of STARTER_TEMPLATES) {
+      for (const block of template.blocks) {
+        const calls = block.code.matchAll(/game\.(\w+)\s*\(/g);
+        for (const match of calls) {
+          expect(
+            VALID_GAME_METHODS.has(match[1]),
+            `Template "${template.id}" block "${block.id}" uses undocumented API: game.${match[1]}()`,
+          ).toBe(true);
+        }
+      }
+    }
+  });
+
+  it("catch-the-star template checks entity identity on tap", () => {
+    const catchStar = STARTER_TEMPLATES.find((t) => t.id === "catch-the-star")!;
+    const starBlock = catchStar.blocks.find(
+      (b) => b.id === "catch-star-entity",
+    )!;
+    // The tap handler should check that the tapped entity is the star
+    expect(starBlock.code).toContain("_id");
+    // Should use block's own ID as the blockId for onTap
+    expect(starBlock.code).toContain('game.onTap("catch-star-entity"');
+  });
+
+  it("color-mixer template checks entity identity on tap", () => {
+    const colorMixer = STARTER_TEMPLATES.find((t) => t.id === "color-mixer")!;
+    const buttonsBlock = colorMixer.blocks.find(
+      (b) => b.id === "color-mixer-buttons",
+    )!;
+    // Should use a single onTap with entity identity checking
+    expect(buttonsBlock.code).toContain("entity._id");
+  });
+
+  it("onTapAnywhere calls include blockId as first argument", () => {
+    for (const template of STARTER_TEMPLATES) {
+      for (const block of template.blocks) {
+        const calls = [...block.code.matchAll(/game\.onTapAnywhere\(/g)];
+        for (const _match of calls) {
+          // Ensure onTapAnywhere is called with blockId, not just a bare function
+          expect(block.code).toMatch(/game\.onTapAnywhere\("[^"]+"/);
+        }
+      }
+    }
+  });
+
   it("templates_header key exists in all 3 locales", () => {
     expect(translations["en-US"].templates_header).toBe(
       "Start from a Template",

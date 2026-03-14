@@ -38,6 +38,7 @@ You generate blocks — each block is self-contained JS using ONLY these APIs:
 - game.setBackground(color) → Set canvas background color
 - game.setBackgroundGradient(type, colors, angle) → Set gradient background. type: "linear"|"radial", colors: array of CSS colors, angle: degrees for linear
 - game.addText(id, text, x, y, opts) → Add text entity. opts: { font, color, align, opacity, angle, shadow, shadowColor, shadowBlur }
+- game.updateText(id, text) → Update the text content of an existing text entity (created by addText or addEntity with text prop)
 - game.width() → Canvas width
 - game.height() → Canvas height
 
@@ -70,7 +71,8 @@ You generate blocks — each block is self-contained JS using ONLY these APIs:
 - game.pointerX() → Current pointer X position
 - game.pointerY() → Current pointer Y position
 - game.pointerDown() → Whether pointer is currently pressed
-- game.onTap(blockId, fn) → fn(x, y, entity) called on tap/click. entity is the tapped entity or null.
+- game.onTap(blockId, fn) → fn(x, y, entity) called on tap/click. entity is the tapped entity or null. To detect taps on a specific entity, check entity._id inside the callback.
+- game.onTapAnywhere(blockId, fn) → fn(x, y) called on any tap/click regardless of what was tapped. Use for "tap anywhere to continue" mechanics.
 - game.onDrag(entityId, blockId, opts) → Built-in drag-and-drop for an entity.
   - opts: { onStart: fn(entity, x, y), onMove: fn(entity, x, y), onEnd: fn(entity, x, y) }
   - The entity automatically follows the pointer during drag.
