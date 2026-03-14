@@ -485,3 +485,13 @@
 - **Tests:** 513 frontend + 20 backend = 533 total, all passing. 4 new tests.
 - **Deploy:** SUCCESS (commit 3670525, pushed to main)
 - **Next cycle should consider:** AI Skill Passport (6 OECD competency badges), content moderation (after 2026-03-18), dark mode, iterative refinement challenges
+
+## Cycle 45 — 2026-03-14
+- **Tasks:** AI skill summary card on ProjectCatalog
+- **Type:** Feature (AI literacy visibility)
+- **Skill card:** Shows 4 AI collaboration stats (builds, detailed prompts, iterations, tips earned) as a compact card on the project catalog page. Reads from localStorage snapshot of achievement state. Candy-neubrutalism purple-header card.
+- **Visibility:** Only shown when child has 1+ build or 1+ detailed prompt. Zero-state users see nothing extra.
+- **i18n:** 5 new keys (skill_card_title, skill_builds, skill_describes, skill_iterates, skill_tips) in EN/zh-TW/zh-CN.
+- **Tests:** 513 frontend + 20 backend = 533 total, all passing.
+- **Deploy:** SUCCESS (commit d204759, pushed to main)
+- **Next cycle should consider:** Full AI Skill Passport (6 OECD competencies with levels), iterative refinement challenges, content moderation (after 2026-03-18), dark mode
