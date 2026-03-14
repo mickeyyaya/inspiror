@@ -495,3 +495,14 @@
 - **Tests:** 513 frontend + 20 backend = 533 total, all passing.
 - **Deploy:** SUCCESS (commit d204759, pushed to main)
 - **Next cycle should consider:** Full AI Skill Passport (6 OECD competencies with levels), iterative refinement challenges, content moderation (after 2026-03-18), dark mode
+
+## Cycle 46 — 2026-03-14
+- **Tasks:** Buddy personality variants + personalized returning user greetings
+- **Type:** Feature (innovation — kid delight + engagement)
+- **Personalities:** 5 distinct buddy personalities (dog=friendly, cat=witty, dragon=bold, robot=analytical, unicorn=magical) with per-avatar speech style, catchphrases, greeting flavor, streak celebrations, and tip prefixes in EN/zh-TW/zh-CN.
+- **LLM integration:** Personality prompt injected into system prompt via `avatarId` passed from frontend → backend. Each avatar influences AI tone, tips, and responses.
+- **Greetings:** 5 greeting tiers (new_user, returning, active, streak_champion, veteran) based on build count + streak days. Personalized with avatar name, catchphrase, and stats. Used for initial greeting and reset.
+- **New files:** `buddyPersonalities.ts` (frontend constants), `greetingTiers.ts` (greeting logic), `buddyPersonalities.ts` (backend prompts)
+- **Tests:** 534 frontend + 20 backend = 554 total, all passing. 25 new tests (4 personality + 17 greeting + 4 updated App tests).
+- **Deploy:** SUCCESS (commit 735322a, pushed to main)
+- **Next cycle should consider:** Dark mode ("candy dark"), session recap screen, daily challenge/quests, visible progress bar on catalog, sound block completion
