@@ -412,3 +412,15 @@
 - **Tests:** 492 frontend + 20 backend = 512 total, all passing. 7 new tests.
 - **Deploy:** SUCCESS (commit 447016f, pushed to main)
 - **Next cycle should consider:** Content moderation (after 2026-03-18), dark mode (candy dark), prefers-reduced-motion for buddy-bounce animations, WCAG AA contrast (candy-green 3.7:1 → 4.5:1), schema dedup
+
+## Cycle 38 — 2026-03-14
+- **Tasks:** Quality bundle (console.log removal + i18n error context + h-dvh fix)
+- **Type:** Code quality + i18n + Bug fix
+- **console.log:** Removed `console.log` from useAutoFix production path (was logging auto-fix count on every sandbox error). `console.error` and `console.warn` kept for actual error reporting.
+- **i18n error context:** Replaced hardcoded English auto-fix error prompt with `error_block_fix` translation key using `{blockId}` and `{error}` placeholders. Added translations for EN/zh-TW/zh-CN. LLM now receives localized error context.
+- **h-dvh:** Fixed ProjectCatalog `h-screen` → `h-dvh` for mobile viewport consistency (matches EditorView, prevents scroll gap on mobile browsers with dynamic address bars).
+- **Note:** prefers-reduced-motion for buddy-bounce is already handled by the global `@media (prefers-reduced-motion: reduce)` catch-all at index.css line 289 which forces `animation-duration: 0.01ms !important` on all elements. WCAG AA contrast for #2ecc71 with dark text (#222) is ~7.6:1, well above 4.5:1. Both items confirmed non-issues.
+- **Security:** PASS (no new surface area)
+- **Tests:** 492 frontend + 20 backend = 512 total, all passing.
+- **Deploy:** SUCCESS (commit bc722e7, pushed to main)
+- **Next cycle should consider:** Content moderation (after 2026-03-18), dark mode (candy dark), schema dedup, EditorView decomposition, empty-state guidance for disabled blocks
