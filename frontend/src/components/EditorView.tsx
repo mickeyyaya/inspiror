@@ -55,6 +55,7 @@ export interface EditorViewProps {
   language: VoiceLanguage;
   onToggleLanguage: () => void;
   onBuild?: () => void;
+  initialPrompt?: string;
 }
 
 export function EditorView({
@@ -65,6 +66,7 @@ export function EditorView({
   language,
   onToggleLanguage,
   onBuild,
+  initialPrompt,
 }: EditorViewProps) {
   const t = translations[language];
   const { streakDays } = useStreak();
@@ -103,7 +105,7 @@ export function EditorView({
     }
     return project.messages;
   });
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(initialPrompt ?? "");
   const [currentCode, setCurrentCode] = useState(project.currentCode);
   const [blocks, setBlocks] = useState<Block[]>(
     () => project.blocks ?? DEFAULT_BLOCKS.map((b) => ({ ...b })),

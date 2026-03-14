@@ -124,6 +124,9 @@ export interface TranslationKeys {
   recap_template: string;
   recap_remix: string;
   recap_awesome: string;
+  daily_challenge: string;
+  daily_accept: string;
+  daily_completed: string;
 }
 
 export const translations: Record<Language, TranslationKeys> = {
@@ -256,6 +259,9 @@ export const translations: Record<Language, TranslationKeys> = {
     recap_template: "Template",
     recap_remix: "Remixed",
     recap_awesome: "Awesome! Keep building!",
+    daily_challenge: "Daily Challenge",
+    daily_accept: "Accept Challenge!",
+    daily_completed: "Completed!",
   },
   "zh-TW": {
     greeting: "嗨！我是你的建築夥伴。今天你想創造什麼呢？",
@@ -382,6 +388,9 @@ export const translations: Record<Language, TranslationKeys> = {
     recap_template: "範本",
     recap_remix: "改造",
     recap_awesome: "太棒了！繼續加油！",
+    daily_challenge: "每日挑戰",
+    daily_accept: "接受挑戰！",
+    daily_completed: "已完成！",
   },
   "zh-CN": {
     greeting: "嗨！我是你的建筑夥伴。今天你想创造什么呢？",
@@ -508,5 +517,8 @@ export const translations: Record<Language, TranslationKeys> = {
     recap_template: "模板",
     recap_remix: "改造",
     recap_awesome: "太棒了！继续加油！",
+    daily_challenge: "每日挑战",
+    daily_accept: "接受挑战！",
+    daily_completed: "已完成！",
   },
 };

@@ -16,6 +16,11 @@ import {
 } from "../constants/starterTemplates";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { BuddyProgressBar } from "./BuddyProgressBar";
+import { DailyChallengeCard } from "./DailyChallengeCard";
+import {
+  getTodayChallenge,
+  isChallengeCompleted,
+} from "../constants/dailyChallenges";
 
 interface ProjectCatalogProps {
   projects: Project[];
@@ -24,6 +29,7 @@ interface ProjectCatalogProps {
   onCreate: () => void;
   onCreateFromTemplate: (template: StarterTemplate) => void;
   onRename?: (id: string, title: string) => void;
+  onAcceptChallenge?: (prompt: string) => void;
   language: VoiceLanguage;
   onToggleLanguage: () => void;
   streakDays?: number;
@@ -36,6 +42,7 @@ export function ProjectCatalog({
   onCreate,
   onCreateFromTemplate,
   onRename,
+  onAcceptChallenge,
   language,
   onToggleLanguage,
   streakDays,
@@ -55,6 +62,11 @@ export function ProjectCatalog({
     }
     return null;
   }, []);
+  const todayChallenge = useMemo(() => getTodayChallenge(), []);
+  const challengeCompleted = useMemo(
+    () => isChallengeCompleted(todayChallenge.id),
+    [todayChallenge.id],
+  );
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState("");
@@ -206,6 +218,17 @@ export function ProjectCatalog({
 
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto p-6 sm:p-8 z-10">
+        {/* Daily Challenge */}
+        {onAcceptChallenge && (
+          <DailyChallengeCard
+            challenge={todayChallenge}
+            isCompleted={challengeCompleted}
+            language={language}
+            onAccept={onAcceptChallenge}
+            t={t}
+          />
+        )}
+
         {/* Template Gallery Section */}
         <div className="mb-8">
           <h2

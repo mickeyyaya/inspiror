@@ -7,6 +7,10 @@ import { ProjectCatalog } from "./components/ProjectCatalog";
 import { EditorView } from "./components/EditorView";
 import { compileBlocks } from "./compiler/compileBlocks";
 import type { StarterTemplate } from "./constants/starterTemplates";
+import {
+  markChallengeCompleted,
+  getTodayChallenge,
+} from "./constants/dailyChallenges";
 import "./index.css";
 
 function App() {
@@ -32,6 +36,18 @@ function App() {
       return "en-US";
     });
   };
+
+  const [initialPrompt, setInitialPrompt] = useState<string | undefined>();
+
+  const handleAcceptChallenge = useCallback(
+    (prompt: string) => {
+      const challenge = getTodayChallenge();
+      markChallengeCompleted(challenge.id);
+      createProject();
+      setInitialPrompt(prompt);
+    },
+    [createProject],
+  );
 
   const handleCreateFromTemplate = useCallback(
     (template: StarterTemplate) => {
@@ -61,6 +77,7 @@ function App() {
         onCreate={createProject}
         onCreateFromTemplate={handleCreateFromTemplate}
         onRename={(id, title) => updateProject(id, { title })}
+        onAcceptChallenge={handleAcceptChallenge}
         language={language}
         onToggleLanguage={toggleLanguage}
         streakDays={streakDays}
@@ -85,10 +102,14 @@ function App() {
         project={currentProject}
         onUpdate={updateProject}
         onReset={resetCurrentProject}
-        onBack={goToCatalog}
+        onBack={() => {
+          setInitialPrompt(undefined);
+          goToCatalog();
+        }}
         language={language}
         onToggleLanguage={toggleLanguage}
         onBuild={recordActivity}
+        initialPrompt={initialPrompt}
       />
     </>
   );
