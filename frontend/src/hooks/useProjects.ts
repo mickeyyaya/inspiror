@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import type { Project, ChatMessage } from "../types/project";
 import { translations } from "../i18n/translations";
 import { DEFAULT_BLOCKS } from "../constants/defaultBlocks";
@@ -235,7 +235,7 @@ export function useProjects(language: VoiceLanguage) {
     }
   }, [projects, currentId]);
 
-  const DEFAULT_CODE = getWelcomeCode(language);
+  const DEFAULT_CODE = useMemo(() => getWelcomeCode(language), [language]);
 
   const createProject = useCallback((): Project => {
     const blocks = DEFAULT_BLOCKS.map((b) => ({ ...b }));

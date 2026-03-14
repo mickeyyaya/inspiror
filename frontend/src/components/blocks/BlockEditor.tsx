@@ -109,14 +109,21 @@ export function BlockEditor({
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#a855f7] to-[#7c3aed] text-white p-4 flex items-center gap-2 font-bold shadow-md flex-shrink-0">
-        <Blocks size={20} />
-        <span className="text-lg font-extrabold tracking-tight">
-          {t?.block_panel_title ?? "Blocks"}
-        </span>
-        <span className="ml-auto text-sm opacity-80">
-          {blocks.filter((b) => b.enabled).length}/{blocks.length}
-        </span>
+      <div className="bg-gradient-to-r from-[#a855f7] to-[#7c3aed] text-white p-4 shadow-md flex-shrink-0">
+        <div className="flex items-center gap-2 font-bold">
+          <Blocks size={20} />
+          <span className="text-lg font-extrabold tracking-tight">
+            {t?.block_panel_title ?? "Blocks"}
+          </span>
+          <span className="ml-auto text-sm opacity-80">
+            {blocks.filter((b) => b.enabled).length}/{blocks.length}
+          </span>
+        </div>
+        {blocks.length > 0 && (
+          <p className="text-xs opacity-60 mt-1">
+            {t?.block_panel_hint ?? "Drag to reorder · tap to toggle"}
+          </p>
+        )}
       </div>
 
       {/* Block list */}
@@ -157,6 +164,15 @@ export function BlockEditor({
             ))}
           </SortableContext>
         </DndContext>
+
+        {blocks.length > 0 && blocks.every((b) => !b.enabled) && (
+          <div className="text-center py-6 px-4">
+            <p className="text-3xl mb-2">💡</p>
+            <p className="text-sm text-gray-500 font-semibold">
+              {t?.block_all_disabled ?? "Enable a block to see your creation!"}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

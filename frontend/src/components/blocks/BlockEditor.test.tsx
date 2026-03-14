@@ -279,6 +279,52 @@ describe("BlockEditor", () => {
     });
   });
 
+  describe("hint and empty-state", () => {
+    it("shows drag hint when blocks are present", () => {
+      const blocks = [makeBlock({ id: "a", order: 0 })];
+      render(<BlockEditor blocks={blocks} onBlocksChange={vi.fn()} />);
+      expect(
+        screen.getByText("Drag to reorder · tap to toggle"),
+      ).toBeInTheDocument();
+    });
+
+    it("does not show drag hint when no blocks", () => {
+      render(<BlockEditor blocks={[]} onBlocksChange={vi.fn()} />);
+      expect(
+        screen.queryByText("Drag to reorder · tap to toggle"),
+      ).not.toBeInTheDocument();
+    });
+
+    it("shows empty-state message when all blocks are disabled", () => {
+      const blocks = [
+        makeBlock({ id: "a", enabled: false, order: 0 }),
+        makeBlock({ id: "b", enabled: false, order: 1 }),
+      ];
+      render(<BlockEditor blocks={blocks} onBlocksChange={vi.fn()} />);
+      expect(
+        screen.getByText("Enable a block to see your creation!"),
+      ).toBeInTheDocument();
+    });
+
+    it("does not show empty-state when at least one block is enabled", () => {
+      const blocks = [
+        makeBlock({ id: "a", enabled: true, order: 0 }),
+        makeBlock({ id: "b", enabled: false, order: 1 }),
+      ];
+      render(<BlockEditor blocks={blocks} onBlocksChange={vi.fn()} />);
+      expect(
+        screen.queryByText("Enable a block to see your creation!"),
+      ).not.toBeInTheDocument();
+    });
+
+    it("does not show empty-state when blocks array is empty", () => {
+      render(<BlockEditor blocks={[]} onBlocksChange={vi.fn()} />);
+      expect(
+        screen.queryByText("Enable a block to see your creation!"),
+      ).not.toBeInTheDocument();
+    });
+  });
+
   describe("param change interaction", () => {
     it("calls onBlocksChange with updated param value", () => {
       const onBlocksChange = vi.fn();

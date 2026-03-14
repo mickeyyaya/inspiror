@@ -44,6 +44,8 @@ export interface TranslationKeys {
   confirm_reset: string;
   block_panel_close: string;
   block_panel_title: string;
+  block_panel_hint: string;
+  block_all_disabled: string;
   block_enable: string;
   block_disable: string;
   block_expand_params: string;
@@ -148,6 +150,8 @@ export const translations: Record<Language, TranslationKeys> = {
     confirm_reset: "Reset this project? Your current work will be cleared.",
     block_panel_close: "Close",
     block_panel_title: "Blocks",
+    block_panel_hint: "Drag to reorder · tap to toggle",
+    block_all_disabled: "Enable a block to see your creation!",
     block_enable: "Enable",
     block_disable: "Disable",
     block_expand_params: "Expand parameters",
@@ -250,6 +254,8 @@ export const translations: Record<Language, TranslationKeys> = {
     confirm_reset: "要重設這個專案嗎？目前的作品會被清除。",
     block_panel_close: "關閉",
     block_panel_title: "積木",
+    block_panel_hint: "拖曳排序 · 點擊切換",
+    block_all_disabled: "啟用一個積木來看看你的作品吧！",
     block_enable: "啟用",
     block_disable: "停用",
     block_expand_params: "展開參數",
@@ -350,6 +356,8 @@ export const translations: Record<Language, TranslationKeys> = {
     confirm_reset: "要重置这个项目吗？目前的作品会被清除。",
     block_panel_close: "关闭",
     block_panel_title: "积木",
+    block_panel_hint: "拖拽排序 · 点击切换",
+    block_all_disabled: "启用一个积木来看看你的作品吧！",
     block_enable: "启用",
     block_disable: "停用",
     block_expand_params: "展开参数",
