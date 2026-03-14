@@ -457,3 +457,12 @@
 - **Deploy:** SUCCESS (commit ca8458c, pushed to main)
 - **Roadmap identified:** Prompt Scaffold Templates (M), AI Contribution Transparency (M), AI Skill Passport (M), Iterative Refinement Challenges (L)
 - **Next cycle should consider:** Prompt scaffold templates, AI collaboration achievements, content moderation (after 2026-03-18)
+
+## Cycle 42 — 2026-03-14
+- **Tasks:** AI collaboration achievements (3 new badges)
+- **Type:** Feature (gamification + AI literacy)
+- **New badges:** "Great Describer" (📝, 5 detailed prompts), "Iteration Master" (🔄, 10 iterations), "Tip Collector" (💡, 5 coaching tips). Rewards AI collaboration process behaviors over outcomes (Taylor & Francis 2025).
+- **New stat types:** `describes`, `iterates`, `tips` added to AchievementState. recordDescribe fires on 20+ char prompts. recordIterate fires on builds with prior messages. recordTip fires when Buddy returns a tip.
+- **Tests:** 506 frontend + 20 backend = 526 total, all passing. 6 new tests.
+- **Deploy:** SUCCESS (commit c5780f1, pushed to main)
+- **Next cycle should consider:** Prompt scaffold templates (fill-in-the-blank → fading), AI contribution transparency, content moderation (after 2026-03-18)
