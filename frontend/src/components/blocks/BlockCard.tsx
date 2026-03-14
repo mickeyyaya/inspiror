@@ -68,13 +68,37 @@ export function BlockCard({
           <GripVertical size={16} className="text-gray-400" />
         </button>
 
-        {/* Emoji + label */}
+        {/* Emoji + label + origin badge */}
         <span className="text-lg" aria-hidden="true">
           {block.emoji}
         </span>
         <span className="flex-1 text-sm font-extrabold text-[#222] truncate">
           {block.label}
         </span>
+        {block.origin && (
+          <span
+            className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full border ${
+              block.origin === "remix"
+                ? "bg-[var(--color-candy-pink)]/20 border-[var(--color-candy-pink)] text-[#b44]"
+                : block.origin === "template"
+                  ? "bg-[var(--color-candy-blue)]/20 border-[var(--color-candy-blue)] text-[#2a8]"
+                  : "bg-[var(--color-candy-purple)]/20 border-[var(--color-candy-purple)] text-[#7c3aed]"
+            }`}
+            title={
+              block.origin === "remix"
+                ? "You modified this block"
+                : block.origin === "template"
+                  ? "From a starter template"
+                  : "AI generated"
+            }
+          >
+            {block.origin === "remix"
+              ? "✏️"
+              : block.origin === "template"
+                ? "📋"
+                : "🤖"}
+          </span>
+        )}
 
         {/* Enable/disable toggle */}
         <button

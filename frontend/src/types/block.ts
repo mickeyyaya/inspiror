@@ -21,6 +21,8 @@ export interface BlockParam {
   options?: string[];
 }
 
+export type BlockOrigin = "ai" | "template" | "remix";
+
 export interface Block {
   id: string;
   type: BlockCategory;
@@ -31,4 +33,5 @@ export interface Block {
   code: string;
   css?: string;
   order: number;
+  origin?: BlockOrigin;
 }

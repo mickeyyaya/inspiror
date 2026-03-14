@@ -86,6 +86,7 @@ export function BlockEditor({
         if (b.id !== blockId) return b;
         return {
           ...b,
+          origin: "remix" as const,
           params: b.params.map((p) =>
             p.key === paramKey ? { ...p, value } : p,
           ),

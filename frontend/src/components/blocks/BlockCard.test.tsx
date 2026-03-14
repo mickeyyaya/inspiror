@@ -413,4 +413,56 @@ describe("BlockCard", () => {
       ).toBeInTheDocument();
     });
   });
+
+  describe("origin badge", () => {
+    it("shows AI badge for blocks with origin 'ai'", () => {
+      render(
+        <BlockCard
+          block={makeBlock({ origin: "ai" })}
+          onToggle={vi.fn()}
+          onParamChange={vi.fn()}
+        />,
+      );
+      expect(screen.getByTitle("AI generated")).toBeInTheDocument();
+    });
+
+    it("shows template badge for blocks with origin 'template'", () => {
+      render(
+        <BlockCard
+          block={makeBlock({ origin: "template" })}
+          onToggle={vi.fn()}
+          onParamChange={vi.fn()}
+        />,
+      );
+      expect(screen.getByTitle("From a starter template")).toBeInTheDocument();
+    });
+
+    it("shows remix badge for blocks with origin 'remix'", () => {
+      render(
+        <BlockCard
+          block={makeBlock({ origin: "remix" })}
+          onToggle={vi.fn()}
+          onParamChange={vi.fn()}
+        />,
+      );
+      expect(screen.getByTitle("You modified this block")).toBeInTheDocument();
+    });
+
+    it("does not show origin badge when origin is undefined", () => {
+      render(
+        <BlockCard
+          block={makeBlock()}
+          onToggle={vi.fn()}
+          onParamChange={vi.fn()}
+        />,
+      );
+      expect(screen.queryByTitle("AI generated")).not.toBeInTheDocument();
+      expect(
+        screen.queryByTitle("From a starter template"),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTitle("You modified this block"),
+      ).not.toBeInTheDocument();
+    });
+  });
 });

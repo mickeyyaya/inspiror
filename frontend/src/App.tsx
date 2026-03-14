@@ -36,7 +36,10 @@ function App() {
   const handleCreateFromTemplate = useCallback(
     (template: StarterTemplate) => {
       const newProject = createProject();
-      const blocks = template.blocks.map((b) => ({ ...b }));
+      const blocks = template.blocks.map((b) => ({
+        ...b,
+        origin: "template" as const,
+      }));
       const compiledCode = compileBlocks(blocks);
       updateProject(newProject.id, {
         blocks,

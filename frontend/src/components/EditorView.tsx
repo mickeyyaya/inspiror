@@ -197,7 +197,10 @@ export function EditorView({
         Array.isArray(finalObj.blocks) &&
         finalObj.blocks.length > 0
       ) {
-        const newBlocks = finalObj.blocks as Block[];
+        const newBlocks = (finalObj.blocks as Block[]).map((b) => ({
+          ...b,
+          origin: b.origin ?? ("ai" as const),
+        }));
         checksRef.current = Array.isArray(finalObj.checks)
           ? (finalObj.checks as string[])
           : [];
