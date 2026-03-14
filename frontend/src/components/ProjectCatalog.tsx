@@ -15,6 +15,7 @@ import {
   type StarterTemplate,
 } from "../constants/starterTemplates";
 import { ConfirmDialog } from "./ConfirmDialog";
+import { BuddyProgressBar } from "./BuddyProgressBar";
 
 interface ProjectCatalogProps {
   projects: Project[];
@@ -175,6 +176,9 @@ export function ProjectCatalog({
                   </div>
                 </div>
               )}
+            {skillStats && (
+              <BuddyProgressBar builds={skillStats.builds ?? 0} t={t} />
+            )}
           </div>
         </div>
         <div className="flex items-center gap-4">

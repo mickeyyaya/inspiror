@@ -30,6 +30,7 @@ import { BadgeGallery } from "./BadgeGallery";
 import { BlockPanelDrawer } from "./BlockPanelDrawer";
 import { OnboardingTooltip } from "./OnboardingTooltip";
 import { ConfirmDialog } from "./ConfirmDialog";
+import { SessionRecap } from "./SessionRecap";
 import { useOnboarding } from "../hooks/useOnboarding";
 import { getPersonalizedGreeting } from "../utils/greetingTiers";
 import { useStreak } from "../hooks/useStreak";
@@ -111,6 +112,10 @@ export function EditorView({
   const [isBlockPanelOpen, setIsBlockPanelOpen] = useState(false);
   const closeBlockPanel = useCallback(() => setIsBlockPanelOpen(false), []);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [showRecap, setShowRecap] = useState(false);
+  const sessionBuildsRef = useRef(0);
+  const sessionTipsRef = useRef(0);
+  const sessionStartMessagesRef = useRef(messages.length);
   const { buddyEmotion, triggerEmotion } = useBuddyEmotion(messages);
   const [suggestionChips, setSuggestionChips] = useState(() =>
     pickRandomChips(language),
@@ -222,11 +227,19 @@ export function EditorView({
       }
       playChimeRef.current();
       recordBuildRef.current();
+      sessionBuildsRef.current += 1;
+      if (finalObj?.tip) {
+        sessionTipsRef.current += 1;
+      }
       // Track iteration: if there are already assistant messages, this is an iteration
       if (messagesRef.current.some((m) => m.role === "assistant")) {
         recordIterateRef.current();
       }
       onBuild?.();
+      // Show session recap every 3rd build
+      if (sessionBuildsRef.current > 0 && sessionBuildsRef.current % 3 === 0) {
+        setTimeout(() => setShowRecap(true), 3000);
+      }
 
       if (confettiTimerRef.current) {
         clearTimeout(confettiTimerRef.current);
@@ -482,6 +495,23 @@ export function EditorView({
         onCancel={() => setIsResetConfirmOpen(false)}
         confirmLabel={t.confirm_ok}
         cancelLabel={t.confirm_cancel}
+      />
+
+      <SessionRecap
+        isOpen={showRecap}
+        onDismiss={() => setShowRecap(false)}
+        blocksUsed={blocks.filter((b) => b.enabled).length}
+        messagesExchanged={messages.length - sessionStartMessagesRef.current}
+        buildsThisSession={sessionBuildsRef.current}
+        tipsEarned={sessionTipsRef.current}
+        blockOrigins={{
+          ai: blocks.filter((b) => b.origin === "ai").length,
+          template: blocks.filter((b) => b.origin === "template").length,
+          remix: blocks.filter((b) => b.origin === "remix").length,
+        }}
+        buddyEmoji={selectedAvatar.emoji}
+        buddyName={selectedAvatar.name}
+        t={t}
       />
     </div>
   );

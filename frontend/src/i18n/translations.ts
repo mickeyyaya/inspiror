@@ -111,6 +111,19 @@ export interface TranslationKeys {
   project_count_many: string;
   projects_waiting: string;
   buddy_name: string;
+  progress_next_buddy: string;
+  progress_builds_to_go: string;
+  progress_all_unlocked: string;
+  recap_title: string;
+  recap_subtitle: string;
+  recap_builds: string;
+  recap_messages: string;
+  recap_blocks: string;
+  recap_tips: string;
+  recap_origins: string;
+  recap_template: string;
+  recap_remix: string;
+  recap_awesome: string;
 }
 
 export const translations: Record<Language, TranslationKeys> = {
@@ -230,6 +243,19 @@ export const translations: Record<Language, TranslationKeys> = {
     project_count_many: "projects",
     projects_waiting: "waiting for you!",
     buddy_name: "Builder Buddy",
+    progress_next_buddy: "Next Buddy Unlock",
+    progress_builds_to_go: "more builds to go!",
+    progress_all_unlocked: "All buddies unlocked!",
+    recap_title: "What You Built!",
+    recap_subtitle: "is proud of you!",
+    recap_builds: "Builds",
+    recap_messages: "Messages",
+    recap_blocks: "Blocks",
+    recap_tips: "Tips",
+    recap_origins: "Block Origins",
+    recap_template: "Template",
+    recap_remix: "Remixed",
+    recap_awesome: "Awesome! Keep building!",
   },
   "zh-TW": {
     greeting: "嗨！我是你的建築夥伴。今天你想創造什麼呢？",
@@ -343,6 +369,19 @@ export const translations: Record<Language, TranslationKeys> = {
     project_count_many: "個專案",
     projects_waiting: "正在等著你！",
     buddy_name: "小幫手",
+    progress_next_buddy: "下一個夥伴解鎖",
+    progress_builds_to_go: "個作品就能解鎖！",
+    progress_all_unlocked: "所有夥伴都解鎖了！",
+    recap_title: "你做了什麼！",
+    recap_subtitle: "為你驕傲！",
+    recap_builds: "建造",
+    recap_messages: "訊息",
+    recap_blocks: "積木",
+    recap_tips: "提示",
+    recap_origins: "積木來源",
+    recap_template: "範本",
+    recap_remix: "改造",
+    recap_awesome: "太棒了！繼續加油！",
   },
   "zh-CN": {
     greeting: "嗨！我是你的建筑夥伴。今天你想创造什么呢？",
@@ -456,5 +495,18 @@ export const translations: Record<Language, TranslationKeys> = {
     project_count_many: "个项目",
     projects_waiting: "正在等着你！",
     buddy_name: "小帮手",
+    progress_next_buddy: "下一个伙伴解锁",
+    progress_builds_to_go: "个作品就能解锁！",
+    progress_all_unlocked: "所有伙伴都解锁了！",
+    recap_title: "你做了什么！",
+    recap_subtitle: "为你骄傲！",
+    recap_builds: "建造",
+    recap_messages: "消息",
+    recap_blocks: "积木",
+    recap_tips: "提示",
+    recap_origins: "积木来源",
+    recap_template: "模板",
+    recap_remix: "改造",
+    recap_awesome: "太棒了！继续加油！",
   },
 };
