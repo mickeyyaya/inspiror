@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { APP_THEMES } from "../constants/themes";
 
 const THEME_STORAGE_KEY = "inspiror-theme-id";
+const DARK_MODE_KEY = "inspiror-dark-mode";
 
 export function useTheme() {
   const [themeId, setThemeId] = useState<string>(() => {
@@ -16,6 +17,29 @@ export function useTheme() {
     return "default";
   });
 
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    try {
+      const stored = localStorage.getItem(DARK_MODE_KEY);
+      if (stored !== null) return stored === "true";
+    } catch {
+      // ignore
+    }
+    return typeof window.matchMedia === "function"
+      ? window.matchMedia("(prefers-color-scheme: dark)").matches
+      : false;
+  });
+
+  const toggleDark = () => setIsDark((prev) => !prev);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(DARK_MODE_KEY, String(isDark));
+    } catch {
+      // ignore
+    }
+    document.documentElement.setAttribute("data-dark", String(isDark));
+  }, [isDark]);
+
   useEffect(() => {
     try {
       localStorage.setItem(THEME_STORAGE_KEY, themeId);
@@ -27,7 +51,7 @@ export function useTheme() {
     const root = document.body;
 
     root.style.backgroundColor = theme.backgroundColor;
-    
+
     if (theme.backgroundImage) {
       root.style.backgroundImage = theme.backgroundImage;
     } else {
@@ -48,8 +72,7 @@ export function useTheme() {
 
     // Default to repeat if not specified
     root.style.backgroundRepeat = "repeat";
-
   }, [themeId]);
 
-  return { themeId, setThemeId, themes: APP_THEMES };
+  return { themeId, setThemeId, themes: APP_THEMES, isDark, toggleDark };
 }

@@ -177,7 +177,7 @@ export function EditorView({
     speak,
     toggleAutoSpeak,
   } = useVoice(language, isMuted);
-  const { themeId, setThemeId } = useTheme();
+  const { themeId, setThemeId, isDark, toggleDark } = useTheme();
   const [isThemeSelectorOpen, setIsThemeSelectorOpen] = useState(false);
   const [isBadgeGalleryOpen, setIsBadgeGalleryOpen] = useState(false);
   const {
@@ -527,6 +527,8 @@ export function EditorView({
             onHideChat={() => setIsChatVisible(false)}
             onOpenBadges={() => setIsBadgeGalleryOpen(true)}
             onOpenThemes={() => setIsThemeSelectorOpen(true)}
+            isDark={isDark}
+            onToggleDark={toggleDark}
             isClassroom={isClassroom}
             classroomLabel={
               lessonTopic

@@ -8,6 +8,8 @@ import {
   MessageSquareQuote,
   Trophy,
   Palette,
+  Moon,
+  Sun,
 } from "lucide-react";
 import type { VoiceLanguage } from "../hooks/useVoice";
 
@@ -49,6 +51,8 @@ interface ChatHeaderProps {
   onHideChat: () => void;
   onOpenBadges: () => void;
   onOpenThemes: () => void;
+  isDark?: boolean;
+  onToggleDark?: () => void;
   isClassroom?: boolean;
   classroomLabel?: string;
   classroomEmoji?: string;
@@ -82,6 +86,8 @@ export function ChatHeader({
   onHideChat,
   onOpenBadges,
   onOpenThemes,
+  isDark = false,
+  onToggleDark,
   isClassroom = false,
   classroomLabel,
   classroomEmoji,
@@ -153,6 +159,20 @@ export function ChatHeader({
         >
           <Palette size={16} className="text-[#222]" strokeWidth={2.5} />
         </button>
+        {onToggleDark && (
+          <button
+            onClick={onToggleDark}
+            className={`border-2 border-[#222] p-1.5 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none ${isDark ? "bg-[var(--color-candy-purple)]" : "bg-white"}`}
+            aria-label={isDark ? "Light mode" : "Dark mode"}
+            data-testid="dark-mode-toggle"
+          >
+            {isDark ? (
+              <Sun size={16} className="text-white" strokeWidth={2.5} />
+            ) : (
+              <Moon size={16} className="text-[#222]" strokeWidth={2.5} />
+            )}
+          </button>
+        )}
         <button
           onClick={onOpenBadges}
           className="bg-[var(--color-candy-yellow)] border-2 border-[#222] p-1.5 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none"

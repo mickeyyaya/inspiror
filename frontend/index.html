@@ -8,6 +8,15 @@
     <meta name="description" content="AI-powered coding for kids ages 8-12. Build games, apps, and animations with your Builder Buddy!" />
     <link rel="apple-touch-icon" href="/assets/app-icon.png" />
     <title>Inspiror - Build Anything!</title>
+    <script>
+      // Prevent FOUC: apply dark mode before React renders
+      try {
+        var d = localStorage.getItem('inspiror-dark-mode');
+        if (d === 'true' || (d === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.setAttribute('data-dark', 'true');
+        }
+      } catch(e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

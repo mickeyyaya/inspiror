@@ -23,7 +23,50 @@
   --candy-green: #00f5d4;
   --candy-purple: #9b5de5;
   --candy-orange: #ff9f1c;
+
+  /* Dark mode semantic tokens */
+  --surface-primary: #fdfbf7;
+  --surface-card: #ffffff;
+  --text-primary: #222222;
+  --text-secondary: #333333;
+  --text-muted: #666666;
+  --border-primary: #222222;
+  --shadow-color: rgba(0, 0, 0, 0.1);
 }
+
+[data-dark="true"] {
+  --surface-primary: #1a1b2e;
+  --surface-card: #252640;
+  --text-primary: #f0f0f5;
+  --text-secondary: #d0d0e0;
+  --text-muted: #8888aa;
+  --border-primary: #444466;
+  --shadow-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Dark mode overrides for hardcoded colors */
+[data-dark="true"] .bg-\[\#fdfbf7\] { background-color: var(--surface-primary) !important; }
+[data-dark="true"] .bg-white { background-color: var(--surface-card) !important; }
+[data-dark="true"] .bg-white\/90 { background-color: rgb(37 38 64 / 0.9) !important; }
+[data-dark="true"] .text-\[\#222\] { color: var(--text-primary) !important; }
+[data-dark="true"] .text-\[\#333\] { color: var(--text-secondary) !important; }
+[data-dark="true"] .border-\[\#222\] { border-color: var(--border-primary) !important; }
+[data-dark="true"] .border-\[3px\].border-\[\#222\] { border-color: var(--border-primary) !important; }
+[data-dark="true"] .shadow-\[4px_4px_0_\#222\] { box-shadow: 4px 4px 0 var(--border-primary) !important; }
+[data-dark="true"] .shadow-\[6px_6px_0_\#222\] { box-shadow: 6px 6px 0 var(--border-primary) !important; }
+[data-dark="true"] .shadow-\[6px_6px_0px_\#222\] { box-shadow: 6px 6px 0 var(--border-primary) !important; }
+[data-dark="true"] .shadow-\[8px_0px_0px_rgba\(0\,0\,0\,0\.1\)\] { box-shadow: 8px 0 0 var(--shadow-color) !important; }
+[data-dark="true"] .shadow-\[12px_12px_0_\#222\] { box-shadow: 12px 12px 0 var(--border-primary) !important; }
+[data-dark="true"] .shadow-\[2px_2px_0_\#222\] { box-shadow: 2px 2px 0 var(--border-primary) !important; }
+[data-dark="true"] .shadow-\[0_4px_0_\#222\] { box-shadow: 0 4px 0 var(--border-primary) !important; }
+[data-dark="true"] .shadow-\[0_-4px_0_\#222\] { box-shadow: 0 -4px 0 var(--border-primary) !important; }
+[data-dark="true"] .bg-gray-100 { background-color: #2a2b45 !important; }
+[data-dark="true"] .bg-gray-300 { background-color: #3a3b55 !important; }
+[data-dark="true"] .text-gray-400 { color: #7777aa !important; }
+[data-dark="true"] .text-gray-500 { color: #8888aa !important; }
+[data-dark="true"] .text-gray-600 { color: #9999bb !important; }
+[data-dark="true"] .border-gray-200 { border-color: #3a3b55 !important; }
+[data-dark="true"] .placeholder-gray-500::placeholder { color: #7777aa !important; }
 
 @font-face {
   font-family: 'Comic Neue';
