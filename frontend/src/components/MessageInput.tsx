@@ -31,7 +31,7 @@ export function MessageInput({
       <button
         onClick={onToggleListening}
         data-onboarding="voice"
-        className={`border-4 border-[#222] p-3 rounded-full shadow-[4px_4px_0_#222] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none transition-all flex items-center justify-center cursor-pointer btn-squish ${
+        className={`border-4 border-[#222] p-4 rounded-full shadow-[6px_6px_0_#222] active:translate-y-[6px] active:translate-x-[6px] active:shadow-none transition-all flex items-center justify-center cursor-pointer btn-squish ${
           isListening
             ? "bg-[var(--color-candy-pink)] animate-pulse"
             : "bg-white"
@@ -51,14 +51,14 @@ export function MessageInput({
         value={inputValue}
         onChange={(e) => onInputChange(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && onSend()}
-        className={`flex-1 bg-white text-[#222] px-5 py-3 rounded-[2rem] border-4 border-[#222] focus:outline-none placeholder-gray-500 text-[17px] font-bold transition-all input-glow ${
+        className={`flex-1 bg-white text-[#222] px-6 py-4 rounded-[2rem] border-4 border-[#222] focus:outline-none placeholder-gray-500 text-[18px] font-extrabold transition-all input-glow ${
           inputValue.trim() ? "input-glow-active" : ""
         }`}
       />
       <button
         onClick={onSend}
         disabled={isLoading || !inputValue.trim()}
-        className="bg-[var(--color-candy-green)] text-[#222] border-4 border-[#222] p-3 rounded-full disabled:opacity-50 disabled:cursor-not-allowed shadow-[4px_4px_0_#222] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none transition-all flex items-center justify-center cursor-pointer btn-squish"
+        className="bg-[var(--color-candy-green)] text-[#222] border-4 border-[#222] p-4 rounded-full disabled:opacity-50 disabled:cursor-not-allowed shadow-[6px_6px_0_#222] active:translate-y-[6px] active:translate-x-[6px] active:shadow-none transition-all flex items-center justify-center cursor-pointer btn-squish"
         aria-label={t.aria_send}
       >
         <Send size={28} className="ml-1" strokeWidth={2.5} />

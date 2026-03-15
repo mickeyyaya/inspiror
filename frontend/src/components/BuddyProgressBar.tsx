@@ -12,13 +12,13 @@ export function BuddyProgressBar({ builds, t }: BuddyProgressBarProps) {
   if (!nextAvatar) {
     return (
       <div
-        className="mt-3 bg-white/80 border-3 border-[#222] rounded-2xl p-3 shadow-[3px_3px_0_#222]"
+        className="mt-3 bg-white/80 border-4 border-[#222] rounded-[1.5rem] p-4 shadow-[6px_6px_0_#222]"
         data-testid="buddy-progress-bar"
       >
         <p className="text-xs font-extrabold uppercase tracking-wider text-[var(--color-candy-green)] mb-1">
           {t.progress_all_unlocked}
         </p>
-        <div className="w-full h-4 rounded-full bg-[var(--color-candy-green)] border-2 border-[#222] overflow-hidden">
+        <div className="w-full h-5 rounded-full bg-[var(--color-candy-green)] border-[3px] border-[#222] overflow-hidden">
           <div className="h-full bg-[var(--color-candy-yellow)] rounded-full w-full" />
         </div>
       </div>
@@ -36,7 +36,7 @@ export function BuddyProgressBar({ builds, t }: BuddyProgressBarProps) {
 
   return (
     <div
-      className="mt-3 bg-white/80 border-3 border-[#222] rounded-2xl p-3 shadow-[3px_3px_0_#222]"
+      className="mt-3 bg-white/80 border-4 border-[#222] rounded-[1.5rem] p-4 shadow-[6px_6px_0_#222]"
       data-testid="buddy-progress-bar"
     >
       <div className="flex items-center justify-between mb-1">
@@ -47,7 +47,7 @@ export function BuddyProgressBar({ builds, t }: BuddyProgressBarProps) {
           {nextAvatar.emoji} {nextAvatar.name}
         </span>
       </div>
-      <div className="w-full h-4 rounded-full bg-gray-200 border-2 border-[#222] overflow-hidden">
+      <div className="w-full h-5 rounded-full bg-gray-200 border-[3px] border-[#222] overflow-hidden">
         <div
           className="h-full bg-[var(--color-candy-purple)] rounded-full transition-all duration-500"
           style={{ width: `${pct}%` }}

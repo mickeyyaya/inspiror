@@ -75,6 +75,18 @@ export const generationSchema = z.object({
     .describe(
       "A short, friendly coaching tip (1-2 sentences) about the child's prompt or AI collaboration skill. Examples: praise specific detail in their description, suggest adding more detail next time, reflect on what changed. Only include when there is a genuine teaching moment — not every turn.",
     ),
+  isComplete: z
+    .boolean()
+    .optional()
+    .describe(
+      "Set to false if the requested app is complex (like a piano, game with many levels) and requires multiple phases to build reliably. Set to true if the app is simple or this phase finishes the request.",
+    ),
+  nextPhasePlan: z
+    .string()
+    .optional()
+    .describe(
+      "If isComplete is false, briefly describe (1 sentence) what you will build in the very next phase.",
+    ),
 });
 
 export type GenerationResult = z.infer<typeof generationSchema>;
@@ -157,12 +169,13 @@ ${RUNTIME_API_REFERENCE}
 
 ${BLOCK_EXAMPLES}
 
-CRITICAL - ITERATIVE VISUAL SCAFFOLDING:
-Never build a complex game all at once. Break large goals into small visual steps.
-1. For a complex request, generate 2-3 foundational blocks first (background + main character).
-2. Explain what you built in simple terms.
-3. Ask a guiding question to lead them to the next step.
-4. Each turn should add 1-2 new blocks. The child sees the project grow step by step.
+CRITICAL - ITERATIVE VISUAL SCAFFOLDING (AUTONOMOUS PHASES):
+Never build a complex app (like a piano, a multi-level game, or a complex simulation) all at once. It will fail or be too complex. Break large goals into small, functional phases.
+1. For a complex request, generate 2-3 foundational blocks first (e.g., background + ONE piano key, or main character + basic movement).
+2. Set "isComplete" to false, and set "nextPhasePlan" to a brief description of the next phase (e.g., "Add the remaining piano keys and sound effects").
+3. Each phase MUST be fully functional and interactive so the child can test the progress in the app panel. 
+4. Explain what you built in simple terms in the "reply" field, and mention that you are pausing for them to test before continuing to the next phase automatically.
+5. If the app is simple or this is the final phase, set "isComplete" to true.
 
 CRITICAL - WHEN MODIFYING EXISTING BLOCKS:
 When the user has existing blocks and asks for changes:

@@ -129,6 +129,7 @@ export interface TranslationKeys {
   daily_completed: string;
   play_hud_tap: string;
   play_hud_drag: string;
+  themes_title: string;
 }
 
 export const translations: Record<Language, TranslationKeys> = {
@@ -266,6 +267,7 @@ export const translations: Record<Language, TranslationKeys> = {
     daily_completed: "Completed!",
     play_hud_tap: "Tap to interact!",
     play_hud_drag: "Drag things around to play",
+    themes_title: "Choose a Background!",
   },
   "zh-TW": {
     greeting: "嗨！我是你的建築夥伴。今天你想創造什麼呢？",
@@ -397,6 +399,7 @@ export const translations: Record<Language, TranslationKeys> = {
     daily_completed: "已完成！",
     play_hud_tap: "點擊來互動！",
     play_hud_drag: "拖動物件來玩",
+    themes_title: "選擇一個背景！",
   },
   "zh-CN": {
     greeting: "嗨！我是你的建筑夥伴。今天你想创造什么呢？",
@@ -528,5 +531,6 @@ export const translations: Record<Language, TranslationKeys> = {
     daily_completed: "已完成！",
     play_hud_tap: "点击来互动！",
     play_hud_drag: "拖动物件来玩",
+    themes_title: "选择一个背景！",
   },
 };

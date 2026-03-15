@@ -7,6 +7,7 @@ import {
   Languages,
   MessageSquareQuote,
   Trophy,
+  Palette,
 } from "lucide-react";
 import type { VoiceLanguage } from "../hooks/useVoice";
 
@@ -47,6 +48,7 @@ interface ChatHeaderProps {
   onReset: () => void;
   onHideChat: () => void;
   onOpenBadges: () => void;
+  onOpenThemes: () => void;
   t: {
     switch_language: string;
     aria_my_projects: string;
@@ -75,28 +77,29 @@ export function ChatHeader({
   onReset,
   onHideChat,
   onOpenBadges,
+  onOpenThemes,
   t,
 }: ChatHeaderProps) {
   const resolvedEmotion: BuddyEmotion = isLoading ? "thinking" : emotion;
   const overlayEmoji = EMOTION_OVERLAY[resolvedEmotion];
 
   return (
-    <div className="bg-[var(--color-candy-blue)] text-[#222] p-4 flex justify-between items-center border-b-4 border-[#222] z-10 shadow-[0_4px_0_#222]">
-      <div className="flex items-center gap-3">
+    <div className="bg-[var(--color-candy-blue)] text-[#222] px-3 py-2 flex justify-between items-center border-b-4 border-[#222] z-10 shadow-[0_4px_0_#222]">
+      <div className="flex items-center gap-2 min-w-0">
         <button
           onClick={onBack}
-          className="bg-white border-2 border-[#222] p-2 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none"
+          className="bg-white border-2 border-[#222] p-1.5 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none flex-shrink-0"
           aria-label={t.aria_my_projects}
           data-testid="back-to-catalog"
         >
-          <ArrowLeft size={22} className="text-[#222]" strokeWidth={3} />
+          <ArrowLeft size={18} className="text-[#222]" strokeWidth={3} />
         </button>
         <span
-          className="relative inline-block"
+          className="relative inline-block flex-shrink-0"
           data-testid="buddy-avatar-wrapper"
         >
           <span
-            className={`text-4xl ${EMOTION_CLASS[resolvedEmotion]}`}
+            className={`text-3xl ${EMOTION_CLASS[resolvedEmotion]}`}
             data-testid="buddy-avatar"
             data-emotion={resolvedEmotion}
           >
@@ -104,7 +107,7 @@ export function ChatHeader({
           </span>
           {overlayEmoji !== null && (
             <span
-              className="absolute -top-2 -right-2 text-lg leading-none"
+              className="absolute -top-1.5 -right-1.5 text-sm leading-none"
               aria-hidden="true"
               data-testid="buddy-emotion-overlay"
             >
@@ -113,34 +116,42 @@ export function ChatHeader({
           )}
         </span>
         <span
-          className="text-2xl tracking-wide font-extrabold text-[#222]"
-          style={{ textShadow: "2px 2px 0px white" }}
+          className="text-lg tracking-wide font-extrabold text-[#222] truncate"
+          style={{ textShadow: "1px 1px 0px white" }}
         >
           {t.buddy_name}
         </span>
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-1.5 flex-shrink-0">
+        <button
+          onClick={onOpenThemes}
+          className="bg-[var(--color-candy-blue)] border-2 border-[#222] p-1.5 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none"
+          title="Change Theme"
+          data-testid="theme-selector-btn"
+        >
+          <Palette size={16} className="text-[#222]" strokeWidth={2.5} />
+        </button>
         <button
           onClick={onOpenBadges}
-          className="bg-[var(--color-candy-yellow)] border-2 border-[#222] p-2 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none"
+          className="bg-[var(--color-candy-yellow)] border-2 border-[#222] p-1.5 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none"
           aria-label={t.badge_title}
           data-testid="badge-gallery-btn"
         >
-          <Trophy size={20} className="text-[#222]" strokeWidth={2.5} />
+          <Trophy size={16} className="text-[#222]" strokeWidth={2.5} />
         </button>
         <button
           onClick={onToggleLanguage}
-          className={`border-2 border-[#222] px-3 py-2 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none flex items-center gap-2 font-bold text-sm ${
+          className={`border-2 border-[#222] px-2 py-1.5 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none flex items-center gap-1 font-bold text-xs ${
             language !== "en-US" ? "bg-[var(--color-candy-green)]" : "bg-white"
           }`}
           title={t.switch_language}
         >
-          <Languages size={18} strokeWidth={2.5} />
+          <Languages size={14} strokeWidth={2.5} />
           {language === "zh-TW" ? "TW" : language === "zh-CN" ? "CN" : "EN"}
         </button>
         <button
           onClick={onToggleAutoSpeak}
-          className={`border-2 border-[#222] p-2 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none ${
+          className={`border-2 border-[#222] p-1.5 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none ${
             isAutoSpeakEnabled
               ? "bg-[var(--color-candy-purple)] text-white"
               : "bg-white text-[#222]"
@@ -149,33 +160,33 @@ export function ChatHeader({
             isAutoSpeakEnabled ? t.aria_disable_voice : t.aria_enable_voice
           }
         >
-          <MessageSquareQuote size={20} strokeWidth={2.5} />
+          <MessageSquareQuote size={16} strokeWidth={2.5} />
         </button>
         <button
           onClick={onToggleMute}
-          className="bg-white border-2 border-[#222] p-2 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none"
+          className="bg-white border-2 border-[#222] p-1.5 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none"
           aria-label={isMuted ? t.aria_unmute : t.aria_mute}
           data-testid="mute-toggle"
         >
           {isMuted ? (
-            <VolumeX size={20} className="text-[#222]" strokeWidth={2.5} />
+            <VolumeX size={16} className="text-[#222]" strokeWidth={2.5} />
           ) : (
-            <Volume2 size={20} className="text-[#222]" strokeWidth={2.5} />
+            <Volume2 size={16} className="text-[#222]" strokeWidth={2.5} />
           )}
         </button>
         <button
           onClick={onReset}
-          className="bg-[var(--color-candy-orange)] border-2 border-[#222] p-2 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none hover-wiggle"
+          className="bg-[var(--color-candy-orange)] border-2 border-[#222] p-1.5 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none hover-wiggle"
           aria-label={t.aria_reset}
         >
-          <RotateCcw size={20} className="text-[#222]" strokeWidth={2.5} />
+          <RotateCcw size={16} className="text-[#222]" strokeWidth={2.5} />
         </button>
         <button
           onClick={onHideChat}
-          className="bg-[var(--color-candy-pink)] border-2 border-[#222] p-2 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none"
+          className="bg-[var(--color-candy-pink)] border-2 border-[#222] p-1.5 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none"
           aria-label={t.aria_hide_chat}
         >
-          <X size={20} className="text-[#222]" strokeWidth={3} />
+          <X size={16} className="text-[#222]" strokeWidth={3} />
         </button>
       </div>
     </div>

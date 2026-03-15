@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { useProjects } from "./hooks/useProjects";
 import { useStreak } from "./hooks/useStreak";
+import { useTheme } from "./hooks/useTheme";
 import type { VoiceLanguage } from "./hooks/useVoice";
 import { translations, type TranslationKeys } from "./i18n/translations";
 import { ProjectCatalog } from "./components/ProjectCatalog";
@@ -14,6 +15,7 @@ import {
 import "./index.css";
 
 function App() {
+  useTheme();
   const [language, setLanguage] = useState<VoiceLanguage>("en-US");
 
   const {

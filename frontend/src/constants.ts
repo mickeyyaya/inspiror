@@ -206,6 +206,8 @@ export const generationSchema = z.object({
   blocks: z.array(blockSchema),
   checks: z.array(z.string()).optional(),
   tip: z.string().optional(),
+  isComplete: z.boolean().optional(),
+  nextPhasePlan: z.string().optional(),
 });
 
 export function getSuggestions(language: VoiceLanguage) {

@@ -43,7 +43,7 @@ export function AchievementModal({
     >
       <div
         ref={dialogRef}
-        className="bg-white border-4 border-[#222] rounded-[2rem] p-8 shadow-[8px_8px_0_#222] text-center max-w-sm mx-4 animate-bounce-in"
+        className="bg-white border-[6px] border-[#222] rounded-[2.5rem] p-8 shadow-[12px_12px_0_#222] text-center max-w-sm mx-4 animate-bounce-in"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="text-6xl mb-4 drop-shadow-lg">{achievement.icon}</div>
@@ -62,7 +62,7 @@ export function AchievementModal({
         <button
           ref={dismissBtnRef}
           onClick={onDismiss}
-          className="bg-[var(--color-candy-green)] text-[#222] border-4 border-[#222] px-6 py-3 rounded-full font-extrabold shadow-[4px_4px_0_#222] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none transition-all btn-squish"
+          className="bg-[var(--color-candy-green)] text-[#222] border-4 border-[#222] px-8 py-4 rounded-full font-extrabold text-xl shadow-[8px_8px_0_#222] active:translate-y-[8px] active:translate-x-[8px] active:shadow-none transition-all btn-squish"
         >
           {t.achievement_awesome}
         </button>

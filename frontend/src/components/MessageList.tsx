@@ -54,7 +54,7 @@ export function MessageList({
         msg.type === "tip" ? (
           <div
             key={msg.id}
-            className="max-w-[85%] p-3 rounded-[1.5rem] text-[15px] leading-relaxed font-bold shadow-[3px_3px_0_#b8860b] border-3 border-[#b8860b] bg-[var(--color-candy-yellow)] text-[#222] self-start rounded-tl-sm msg-buddy relative"
+            className="max-w-[85%] p-4 rounded-[2rem] text-[15px] leading-relaxed font-extrabold shadow-[6px_6px_0_#b8860b] border-4 border-[#b8860b] bg-[var(--color-candy-yellow)] text-[#222] self-start rounded-tl-sm msg-buddy relative"
           >
             <div className="absolute top-[-12px] left-[-12px] text-xl drop-shadow-sm">
               💡
@@ -67,7 +67,7 @@ export function MessageList({
         ) : (
           <div
             key={msg.id}
-            className={`max-w-[85%] p-4 rounded-[1.5rem] text-[17px] leading-relaxed font-bold shadow-[4px_4px_0_#222] border-4 border-[#222] relative ${
+            className={`max-w-[85%] p-5 rounded-[2rem] text-[17px] leading-relaxed font-extrabold shadow-[6px_6px_0_#222] border-4 border-[#222] relative ${
               msg.role === "user"
                 ? "bg-[var(--color-candy-pink)] text-[#222] self-end rounded-tr-sm msg-user"
                 : "bg-white text-[#222] self-start rounded-tl-sm msg-buddy"
@@ -86,7 +86,7 @@ export function MessageList({
       {isLoading && streamingReply && (
         <div
           aria-live="polite"
-          className="max-w-[85%] p-4 rounded-[1.5rem] text-[17px] leading-relaxed font-bold shadow-[4px_4px_0_#222] border-4 border-[#222] bg-white text-[#222] self-start rounded-tl-sm msg-buddy relative"
+          className="max-w-[85%] p-5 rounded-[2rem] text-[17px] leading-relaxed font-extrabold shadow-[6px_6px_0_#222] border-4 border-[#222] bg-white text-[#222] self-start rounded-tl-sm msg-buddy relative"
         >
           <div className="absolute top-[-15px] left-[-15px] text-2xl rotate-[-15deg] drop-shadow-sm animate-pulse">
             ✨
@@ -97,7 +97,7 @@ export function MessageList({
       )}
 
       {isLoading && !streamingReply && (
-        <div className="max-w-[85%] p-4 rounded-[1.5rem] text-[17px] leading-relaxed font-bold shadow-[4px_4px_0_#222] border-4 border-[#222] bg-white text-[#222] self-start rounded-tl-sm msg-buddy flex items-center gap-2">
+        <div className="max-w-[85%] p-5 rounded-[2rem] text-[17px] leading-relaxed font-extrabold shadow-[6px_6px_0_#222] border-4 border-[#222] bg-white text-[#222] self-start rounded-tl-sm msg-buddy flex items-center gap-2">
           <span
             className="animate-bounce inline-block"
             style={{ animationDelay: "0ms" }}
@@ -149,7 +149,7 @@ export function MessageList({
                 <button
                   key={chip.label}
                   onClick={() => onChipClick(chip.label)}
-                  className={`chip-enter ${bgColors[index % bgColors.length]} text-[#222] border-4 border-[#222] px-4 py-3 rounded-[1.5rem] shadow-[4px_4px_0_#222] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none hover:shadow-[6px_6px_0_#222] transition-all text-[15px] font-bold flex items-center btn-squish`}
+                  className={`chip-enter ${bgColors[index % bgColors.length]} text-[#222] border-4 border-[#222] px-5 py-3 rounded-[2rem] shadow-[6px_6px_0_#222] active:translate-y-[6px] active:translate-x-[6px] active:shadow-none hover:shadow-[8px_8px_0_#222] transition-all text-[16px] font-extrabold flex items-center btn-squish`}
                   style={{ animationDelay: `${index * 150}ms` }}
                 >
                   <span className="text-2xl mr-2 drop-shadow-sm">
@@ -171,7 +171,7 @@ export function MessageList({
                   <button
                     key={chip.label}
                     onClick={() => onScaffoldClick(chip.label)}
-                    className="chip-enter bg-white text-[#222] border-4 border-dashed border-[var(--color-candy-purple)] px-4 py-3 rounded-[1.5rem] shadow-[3px_3px_0_var(--color-candy-purple)] active:translate-y-[3px] active:translate-x-[3px] active:shadow-none hover:shadow-[5px_5px_0_var(--color-candy-purple)] transition-all text-[15px] font-bold flex items-center btn-squish"
+                    className="chip-enter bg-white text-[#222] border-4 border-dashed border-[var(--color-candy-purple)] px-5 py-3 rounded-[2rem] shadow-[4px_4px_0_var(--color-candy-purple)] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none hover:shadow-[6px_6px_0_var(--color-candy-purple)] transition-all text-[16px] font-extrabold flex items-center btn-squish"
                     style={{ animationDelay: `${(index + 4) * 150}ms` }}
                     data-testid="scaffold-chip"
                   >

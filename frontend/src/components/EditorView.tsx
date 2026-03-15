@@ -31,6 +31,8 @@ import { BlockPanelDrawer } from "./BlockPanelDrawer";
 import { OnboardingTooltip } from "./OnboardingTooltip";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { SessionRecap } from "./SessionRecap";
+import { ThemeSelector } from "./ThemeSelector";
+import { useTheme } from "../hooks/useTheme";
 import { useOnboarding } from "../hooks/useOnboarding";
 import { getPersonalizedGreeting } from "../utils/greetingTiers";
 import { useStreak } from "../hooks/useStreak";
@@ -130,6 +132,7 @@ export function EditorView({
   const inputRef = useRef<HTMLInputElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const confettiTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const autoResumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const messagesRef = useRef(messages);
   const blocksRef = useRef(blocks);
 
@@ -152,6 +155,8 @@ export function EditorView({
     speak,
     toggleAutoSpeak,
   } = useVoice(language, isMuted);
+  const { themeId, setThemeId } = useTheme();
+  const [isThemeSelectorOpen, setIsThemeSelectorOpen] = useState(false);
   const [isBadgeGalleryOpen, setIsBadgeGalleryOpen] = useState(false);
   const {
     step: onboardingStep,
@@ -252,6 +257,25 @@ export function EditorView({
         confettiTimerRef.current = null;
       }, 2500);
       triggerEmotion("proud", 2500);
+
+      if (finalObj?.isComplete === false && finalObj?.nextPhasePlan) {
+        const plan = finalObj.nextPhasePlan;
+        const msgStr = `Continuing to next phase: ${plan}`;
+        autoResumeTimerRef.current = setTimeout(() => {
+          autoResumeTimerRef.current = null;
+          const nextMessages: ChatMessage[] = [
+            ...messagesRef.current,
+            withId("user", msgStr)
+          ];
+          setMessages(nextMessages);
+          submit({
+            messages: nextMessages,
+            currentBlocks: JSON.stringify(blocksRef.current),
+            language,
+            avatarId: selectedAvatar.id,
+          });
+        }, 8000);
+      }
     },
     onError(err) {
       console.error("[UI] Stream error:", err);
@@ -287,6 +311,10 @@ export function EditorView({
 
   const handleSend = () => {
     if (!inputValue.trim() || isLoading) return;
+    if (autoResumeTimerRef.current) {
+      clearTimeout(autoResumeTimerRef.current);
+      autoResumeTimerRef.current = null;
+    }
     stopListening();
     resetAutoFixCount();
     playPop();
@@ -309,6 +337,10 @@ export function EditorView({
 
   const handleChipClick = (label: string) => {
     if (isLoading) return;
+    if (autoResumeTimerRef.current) {
+      clearTimeout(autoResumeTimerRef.current);
+      autoResumeTimerRef.current = null;
+    }
     stopListening();
     resetAutoFixCount();
     playChipClick();
@@ -339,6 +371,10 @@ export function EditorView({
   };
 
   const handleResetConfirm = () => {
+    if (autoResumeTimerRef.current) {
+      clearTimeout(autoResumeTimerRef.current);
+      autoResumeTimerRef.current = null;
+    }
     setIsResetConfirmOpen(false);
     onReset();
     const freshBlocks = DEFAULT_BLOCKS.map((b) => ({ ...b }));
@@ -381,12 +417,12 @@ export function EditorView({
   const blockCount = blocks.filter((b) => b.enabled).length;
 
   return (
-    <div className="w-screen h-dvh bg-[#fdfbf7] flex font-sans overflow-hidden">
+    <div className="w-screen h-dvh bg-transparent flex font-sans overflow-hidden">
       <ConfettiBurst show={showConfetti} />
 
       {isChatVisible && (
         <div
-          className="h-full w-full sm:w-[26rem] lg:w-[30rem] flex-shrink-0 bg-[#fdfbf7] border-r-4 border-[#222] flex flex-col z-20 relative shadow-[8px_0px_0px_rgba(0,0,0,0.1)]"
+          className="h-full w-full sm:w-[26rem] lg:w-[30rem] flex-shrink-0 bg-transparent border-r-[6px] border-[#222] flex flex-col z-20 relative shadow-[8px_0px_0px_rgba(0,0,0,0.1)]"
           aria-hidden="false"
           onMouseEnter={() => inputRef.current?.focus()}
         >
@@ -406,6 +442,7 @@ export function EditorView({
             onReset={handleResetRequest}
             onHideChat={() => setIsChatVisible(false)}
             onOpenBadges={() => setIsBadgeGalleryOpen(true)}
+            onOpenThemes={() => setIsThemeSelectorOpen(true)}
             t={t}
           />
 
@@ -497,6 +534,14 @@ export function EditorView({
         onCancel={() => setIsResetConfirmOpen(false)}
         confirmLabel={t.confirm_ok}
         cancelLabel={t.confirm_cancel}
+      />
+
+      <ThemeSelector
+        isOpen={isThemeSelectorOpen}
+        onClose={() => setIsThemeSelectorOpen(false)}
+        currentThemeId={themeId}
+        onSelectTheme={setThemeId}
+        t={t}
       />
 
       <SessionRecap

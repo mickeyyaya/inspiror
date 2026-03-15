@@ -1,12 +1,28 @@
 @import "tailwindcss";
 
 @theme {
-  --color-candy-pink: #ff6b6b;
-  --color-candy-blue: #4ecdc4;
-  --color-candy-yellow: #ffe66d;
-  --color-candy-green: #2ecc71;
-  --color-candy-purple: #c3aed6;
-  --color-candy-orange: #ffb86c;
+  --color-candy-pink: var(--candy-pink);
+  --color-candy-blue: var(--candy-blue);
+  --color-candy-yellow: var(--candy-yellow);
+  --color-candy-green: var(--candy-green);
+  --color-candy-purple: var(--candy-purple);
+  --color-candy-orange: var(--candy-orange);
+}
+
+:root {
+  --color-candy-pink: #ff477e;
+  --color-candy-blue: #00bbf9;
+  --color-candy-yellow: #fee440;
+  --color-candy-green: #00f5d4;
+  --color-candy-purple: #9b5de5;
+  --color-candy-orange: #ff9f1c;
+
+  --candy-pink: #ff477e;
+  --candy-blue: #00bbf9;
+  --candy-yellow: #fee440;
+  --candy-green: #00f5d4;
+  --candy-purple: #9b5de5;
+  --candy-orange: #ff9f1c;
 }
 
 @font-face {
@@ -30,7 +46,10 @@ body {
   font-family: 'Comic Neue', 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #fdfbf7;
+  background-color: #fffaf0;
+  background-image: url('/assets/cartoon-pattern.png');
+  background-repeat: repeat;
+  background-size: 300px 300px;
 }
 
 code {

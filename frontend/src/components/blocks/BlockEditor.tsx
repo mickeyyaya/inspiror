@@ -138,7 +138,7 @@ export function BlockEditor({
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="h-16 rounded-2xl border-3 border-gray-200 bg-gray-100 animate-pulse"
+                className="h-16 rounded-[1.5rem] border-4 border-gray-200 bg-gray-100 animate-pulse"
               />
             ))}
           </div>

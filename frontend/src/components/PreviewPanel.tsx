@@ -120,7 +120,7 @@ export function PreviewPanel({
 
   return (
     <div
-      className="flex-1 relative bg-[#fdfbf7] overflow-hidden flex flex-col p-4 sm:p-8"
+      className="flex-1 relative bg-transparent overflow-hidden flex flex-col p-4 sm:p-8"
       onMouseEnter={() => iframeRef.current?.focus()}
     >
       <BackgroundBubbles />
@@ -129,7 +129,7 @@ export function PreviewPanel({
         <div className="absolute top-4 left-4 sm:top-8 sm:left-8 z-30">
           <button
             onClick={onShowChat}
-            className="bg-[var(--color-candy-pink)] border-4 border-[#222] text-[#222] p-3 rounded-full shadow-[4px_4px_0_#222] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none transition-all flex items-center justify-center btn-squish hover-wiggle"
+            className="bg-[var(--color-candy-pink)] border-4 border-[#222] text-[#222] p-3 rounded-full shadow-[6px_6px_0_#222] active:translate-y-[6px] active:translate-x-[6px] active:shadow-none transition-all flex items-center justify-center btn-squish hover-wiggle"
             aria-label={t.aria_show_chat}
           >
             <MessageCircle size={28} strokeWidth={2.5} />
@@ -137,7 +137,7 @@ export function PreviewPanel({
         </div>
       )}
 
-      <div className="flex-1 w-full h-full relative z-10 bg-transparent border-4 border-[#222] rounded-[2rem] overflow-hidden shadow-[8px_8px_0_#222]">
+      <div className="flex-1 w-full h-full relative z-10 bg-transparent border-[6px] border-[#222] rounded-[2.5rem] overflow-hidden shadow-[12px_12px_0_#222]">
         <iframe
           ref={iframeRef}
           title={t.aria_preview_sandbox}
@@ -155,7 +155,7 @@ export function PreviewPanel({
         <button
           onClick={handleDownload}
           disabled={isLoading}
-          className="bg-[var(--color-candy-green,#2ecc71)] border-4 border-[#222] text-[#222] px-4 py-2 rounded-full shadow-[4px_4px_0_#222] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none transition-all flex items-center gap-2 btn-squish hover-wiggle font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-[var(--color-candy-green,#2ecc71)] border-4 border-[#222] text-[#222] px-4 py-2 rounded-full shadow-[6px_6px_0_#222] active:translate-y-[6px] active:translate-x-[6px] active:shadow-none transition-all flex items-center gap-2 btn-squish hover-wiggle font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label={t.aria_download}
         >
           <Download size={20} strokeWidth={2.5} />
@@ -166,7 +166,7 @@ export function PreviewPanel({
           <button
             onClick={handleShare}
             disabled={isLoading}
-            className="bg-[var(--color-candy-blue,#89CFF0)] border-4 border-[#222] text-[#222] px-4 py-2 rounded-full shadow-[4px_4px_0_#222] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none transition-all flex items-center gap-2 btn-squish hover-wiggle font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-[var(--color-candy-blue,#89CFF0)] border-4 border-[#222] text-[#222] px-4 py-2 rounded-full shadow-[6px_6px_0_#222] active:translate-y-[6px] active:translate-x-[6px] active:shadow-none transition-all flex items-center gap-2 btn-squish hover-wiggle font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label={t.aria_share}
             data-testid="share-btn"
           >
@@ -178,7 +178,7 @@ export function PreviewPanel({
         <button
           onClick={handleCopy}
           disabled={isLoading}
-          className="bg-[var(--color-candy-yellow,#FFE66D)] border-4 border-[#222] text-[#222] px-4 py-2 rounded-full shadow-[4px_4px_0_#222] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none transition-all flex items-center gap-2 btn-squish hover-wiggle font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-[var(--color-candy-yellow,#FFE66D)] border-4 border-[#222] text-[#222] px-4 py-2 rounded-full shadow-[6px_6px_0_#222] active:translate-y-[6px] active:translate-x-[6px] active:shadow-none transition-all flex items-center gap-2 btn-squish hover-wiggle font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label={t.aria_copy_html}
           data-testid="copy-html-btn"
         >
@@ -197,7 +197,7 @@ export function PreviewPanel({
         <button
           onClick={onLookInside}
           data-onboarding="blocks"
-          className="bg-[var(--color-candy-purple)] border-4 border-[#222] text-[#222] px-4 py-2 rounded-full shadow-[4px_4px_0_#222] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none transition-all flex items-center gap-2 btn-squish hover-wiggle font-bold text-sm"
+          className="bg-[var(--color-candy-purple)] border-4 border-[#222] text-[#222] px-4 py-2 rounded-full shadow-[6px_6px_0_#222] active:translate-y-[6px] active:translate-x-[6px] active:shadow-none transition-all flex items-center gap-2 btn-squish hover-wiggle font-bold text-sm"
           aria-label={t.aria_look_inside}
         >
           <Blocks size={20} strokeWidth={2.5} />

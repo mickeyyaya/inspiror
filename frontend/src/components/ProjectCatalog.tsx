@@ -6,17 +6,20 @@ import {
   Clock,
   Languages,
   Pencil,
+  Palette,
 } from "lucide-react";
 import type { Project } from "../types/project";
 import { translations } from "../i18n/translations";
 import type { VoiceLanguage } from "../hooks/useVoice";
+import { useTheme } from "../hooks/useTheme";
 import {
   STARTER_TEMPLATES,
   type StarterTemplate,
 } from "../constants/starterTemplates";
 import { ConfirmDialog } from "./ConfirmDialog";
-import { BuddyProgressBar } from "./BuddyProgressBar";
 import { DailyChallengeCard } from "./DailyChallengeCard";
+import { BUDDY_AVATARS } from "../types/achievements";
+import { ThemeSelector } from "./ThemeSelector";
 import {
   getTodayChallenge,
   isChallengeCompleted,
@@ -48,6 +51,8 @@ export function ProjectCatalog({
   streakDays,
 }: ProjectCatalogProps) {
   const t = translations[language];
+  const { themeId, setThemeId } = useTheme();
+  const [isThemeSelectorOpen, setIsThemeSelectorOpen] = useState(false);
   const sorted = [...projects].sort((a, b) => b.updatedAt - a.updatedAt);
 
   const skillStats = useMemo(() => {
@@ -114,103 +119,109 @@ export function ProjectCatalog({
   ];
 
   return (
-    <div className="w-screen h-dvh bg-[#fdfbf7] flex flex-col overflow-hidden relative">
+    <div className="w-screen h-dvh bg-transparent flex flex-col overflow-hidden relative">
       {/* Playful Background Elements */}
       <div className="absolute top-[-10%] left-[-5%] w-[40%] h-[40%] bg-[var(--color-candy-yellow)] rounded-full opacity-20 blur-[80px] pointer-events-none"></div>
       <div className="absolute bottom-[-10%] right-[-5%] w-[50%] h-[50%] bg-[var(--color-candy-pink)] rounded-full opacity-20 blur-[100px] pointer-events-none"></div>
 
       {/* Header */}
-      <div className="p-6 sm:p-8 flex items-center justify-between border-b-4 border-[var(--color-candy-yellow)] bg-white/50 backdrop-blur-md z-10 shadow-sm rounded-b-3xl">
-        <div className="flex items-center gap-3">
-          <span className="text-5xl buddy-avatar">🐶</span>
-          <div>
-            <h1
-              className="text-3xl sm:text-4xl font-extrabold text-[#333] tracking-wide"
-              style={{ textShadow: "2px 2px 0px var(--color-candy-yellow)" }}
-            >
-              {t.catalog_title}
-            </h1>
-            <p className="text-gray-600 font-bold mt-1 text-lg">
-              {projects.length === 0
-                ? t.tell_buddy
-                : `${projects.length} ${projects.length === 1 ? t.project_count_one : t.project_count_many} ${t.projects_waiting}`}
-            </p>
-            {streakDays !== undefined && streakDays >= 2 && (
-              <span
-                className="inline-block mt-1 px-3 py-1 bg-[var(--color-candy-yellow)] border-2 border-[#222] rounded-full font-extrabold text-sm shadow-[2px_2px_0_#222]"
-                data-testid="streak-badge"
-              >
-                🔥 {streakDays} {t.streak_days}
-              </span>
-            )}
-            {skillStats &&
-              (skillStats.builds > 0 || skillStats.describes > 0) && (
-                <div
-                  className="mt-3 bg-white/80 border-3 border-[#222] rounded-2xl p-3 shadow-[3px_3px_0_#222]"
-                  data-testid="skill-card"
-                >
-                  <p className="text-xs font-extrabold uppercase tracking-wider text-[#7c3aed] mb-2">
-                    🎯 {t.skill_card_title}
-                  </p>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div className="flex items-center gap-1">
-                      <span>🏗️</span>
-                      <span className="font-bold">{skillStats.builds}</span>
-                      <span className="text-gray-500 text-xs">
-                        {t.skill_builds}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span>📝</span>
-                      <span className="font-bold">
-                        {skillStats.describes ?? 0}
-                      </span>
-                      <span className="text-gray-500 text-xs">
-                        {t.skill_describes}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span>🔄</span>
-                      <span className="font-bold">
-                        {skillStats.iterates ?? 0}
-                      </span>
-                      <span className="text-gray-500 text-xs">
-                        {t.skill_iterates}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span>💡</span>
-                      <span className="font-bold">{skillStats.tips ?? 0}</span>
-                      <span className="text-gray-500 text-xs">
-                        {t.skill_tips}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
-            {skillStats && (
-              <BuddyProgressBar builds={skillStats.builds ?? 0} t={t} />
-            )}
-          </div>
+      <div className="px-4 py-3 sm:px-6 sm:py-4 flex items-center gap-3 border-b-4 border-[var(--color-candy-yellow)] bg-white/50 backdrop-blur-md z-10 shadow-sm rounded-b-3xl flex-wrap sm:flex-nowrap">
+        {/* Logo + Title */}
+        <img
+          src="/assets/app-icon.png"
+          alt="Inspiror Buddy"
+          className="w-10 h-10 sm:w-12 sm:h-12 buddy-avatar rounded-xl border-2 border-[#222] shadow-[2px_2px_0_#222] flex-shrink-0"
+        />
+        <div className="flex-shrink-0">
+          <h1
+            className="text-xl sm:text-2xl font-extrabold text-[#333] tracking-wide leading-tight"
+            style={{ textShadow: "1px 1px 0px var(--color-candy-yellow)" }}
+          >
+            {t.catalog_title}
+          </h1>
+          <p className="text-gray-600 font-bold text-xs sm:text-sm">
+            {projects.length === 0
+              ? t.tell_buddy
+              : `${projects.length} ${projects.length === 1 ? t.project_count_one : t.project_count_many}`}
+          </p>
         </div>
-        <div className="flex items-center gap-4">
+
+        {/* Inline badges row */}
+        <div className="flex items-center gap-2 flex-wrap flex-1 min-w-0">
+          {streakDays !== undefined && streakDays >= 2 && (
+            <span
+              className="px-2 py-0.5 bg-[var(--color-candy-yellow)] border-2 border-[#222] rounded-full font-extrabold text-xs shadow-[2px_2px_0_#222] whitespace-nowrap flex-shrink-0"
+              data-testid="streak-badge"
+            >
+              🔥 {streakDays} {t.streak_days}
+            </span>
+          )}
+          {skillStats &&
+            (skillStats.builds > 0 || skillStats.describes > 0) && (
+              <div
+                className="flex items-center gap-2 bg-white/80 border-2 border-[#222] rounded-full px-3 py-1 shadow-[2px_2px_0_#222] text-xs font-bold flex-shrink-0"
+                data-testid="skill-card"
+              >
+                <span>🏗️ {skillStats.builds}</span>
+                <span>📝 {skillStats.describes ?? 0}</span>
+                <span>🔄 {skillStats.iterates ?? 0}</span>
+                <span>💡 {skillStats.tips ?? 0}</span>
+              </div>
+            )}
+          {skillStats &&
+            (() => {
+              const nextAvatar = BUDDY_AVATARS.find(
+                (a) => a.requiredBuilds > (skillStats.builds ?? 0),
+              );
+              if (!nextAvatar) {
+                return (
+                  <span
+                    className="px-2 py-0.5 bg-[var(--color-candy-green)] border-2 border-[#222] rounded-full font-extrabold text-xs shadow-[2px_2px_0_#222] whitespace-nowrap flex-shrink-0"
+                    data-testid="buddy-progress-bar"
+                  >
+                    ✅ {t.progress_all_unlocked}
+                  </span>
+                );
+              }
+              const remaining =
+                nextAvatar.requiredBuilds - (skillStats.builds ?? 0);
+              return (
+                <span
+                  className="px-2 py-0.5 bg-[var(--color-candy-purple)] border-2 border-[#222] rounded-full font-extrabold text-xs shadow-[2px_2px_0_#222] whitespace-nowrap flex-shrink-0"
+                  data-testid="buddy-progress-bar"
+                >
+                  {nextAvatar.emoji} {remaining} {t.progress_builds_to_go}
+                </span>
+              );
+            })()}
+        </div>
+
+        {/* Right actions */}
+        <div className="flex items-center gap-2 flex-shrink-0 ml-auto">
+          <button
+            onClick={() => setIsThemeSelectorOpen(true)}
+            className="bg-[var(--color-candy-blue)] border-2 border-[#222] p-2 rounded-full hover:scale-105 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none flex items-center justify-center"
+            title="Change Theme"
+          >
+            <Palette size={20} strokeWidth={2.5} className="text-[#222]" />
+          </button>
           <button
             onClick={onToggleLanguage}
-            className={`border-4 border-[#222] px-4 py-3 rounded-full hover:scale-105 active:scale-95 transition-transform shadow-[4px_4px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none flex items-center gap-2 font-bold text-lg ${
+            className={`border-2 border-[#222] px-3 py-1.5 rounded-full hover:scale-105 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none flex items-center gap-1 font-bold text-sm ${
               language !== "en-US"
                 ? "bg-[var(--color-candy-green)]"
                 : "bg-white"
             }`}
           >
-            <Languages size={22} strokeWidth={2.5} />
+            <Languages size={16} strokeWidth={2.5} />
             {language === "zh-TW" ? "TW" : language === "zh-CN" ? "CN" : "EN"}
           </button>
           <button
             onClick={onCreate}
-            className="btn-squish bg-[var(--color-candy-green)] border-4 border-[#222] text-[#222] px-6 py-4 rounded-[2rem] font-bold text-lg flex items-center gap-2 shadow-[4px_4px_0px_#222] hover-wiggle"
+            className="btn-squish bg-[var(--color-candy-green)] border-2 border-[#222] text-[#222] px-4 py-2 rounded-full font-bold text-sm flex items-center gap-1 shadow-[2px_2px_0px_#222] hover-wiggle"
             data-testid="new-project-btn"
           >
-            <Plus size={24} strokeWidth={3} />
+            <Plus size={18} strokeWidth={3} />
             {t.create_new}
           </button>
         </div>
@@ -248,7 +259,7 @@ export function ProjectCatalog({
                 <button
                   key={template.id}
                   onClick={() => onCreateFromTemplate(template)}
-                  className={`${cardBg} rounded-[1.5rem] border-4 border-[#222] shadow-[4px_4px_0px_#222] hover:shadow-[8px_8px_0px_#222] hover:-translate-y-1 transition-all duration-200 btn-squish flex-shrink-0 w-40 sm:w-48 flex flex-col items-center p-4 text-left`}
+                  className={`${cardBg} rounded-[2rem] border-4 border-[#222] shadow-[6px_6px_0px_#222] hover:shadow-[10px_10px_0px_#222] hover:-translate-y-2 transition-all duration-200 btn-squish flex-shrink-0 w-44 sm:w-52 flex flex-col items-center p-5 text-left`}
                   data-testid="template-card"
                   aria-label={t[template.titleKey as keyof typeof t]}
                 >
@@ -353,7 +364,7 @@ export function ProjectCatalog({
                       <div className="mt-auto flex items-center gap-3">
                         <button
                           onClick={() => onOpen(project.id)}
-                          className="flex-1 bg-white border-4 border-[#222] text-[#222] px-4 py-3 rounded-2xl font-extrabold text-lg shadow-[3px_3px_0px_#222] active:translate-y-[3px] active:translate-x-[3px] active:shadow-none transition-all flex items-center justify-center gap-2 hover-wiggle"
+                          className="flex-1 bg-white border-4 border-[#222] text-[#222] px-4 py-3 rounded-[1.5rem] font-extrabold text-lg shadow-[6px_6px_0_#222] active:translate-y-[6px] active:translate-x-[6px] active:shadow-none transition-all flex items-center justify-center gap-2 hover-wiggle"
                           data-testid="open-project-btn"
                         >
                           <FolderOpen size={20} strokeWidth={2.5} />
@@ -361,7 +372,7 @@ export function ProjectCatalog({
                         </button>
                         <button
                           onClick={() => setPendingDeleteId(project.id)}
-                          className="bg-white border-4 border-[#222] text-[#222] p-3 rounded-2xl shadow-[3px_3px_0px_#222] active:translate-y-[3px] active:translate-x-[3px] active:shadow-none transition-all hover:bg-red-400 hover:text-white"
+                          className="bg-white border-4 border-[#222] text-[#222] p-3 rounded-[1.5rem] shadow-[6px_6px_0_#222] active:translate-y-[6px] active:translate-x-[6px] active:shadow-none transition-all hover:bg-red-400 hover:text-white"
                           aria-label={`${t.delete_project} ${project.title}`}
                           data-testid="delete-project-btn"
                         >
@@ -387,6 +398,14 @@ export function ProjectCatalog({
         onCancel={() => setPendingDeleteId(null)}
         confirmLabel={t.confirm_ok}
         cancelLabel={t.confirm_cancel}
+      />
+
+      <ThemeSelector
+        isOpen={isThemeSelectorOpen}
+        onClose={() => setIsThemeSelectorOpen(false)}
+        currentThemeId={themeId}
+        onSelectTheme={setThemeId}
+        t={t}
       />
     </div>
   );

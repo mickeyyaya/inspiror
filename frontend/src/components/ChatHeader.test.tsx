@@ -28,6 +28,7 @@ const defaultProps = {
   onReset: vi.fn(),
   onHideChat: vi.fn(),
   onOpenBadges: vi.fn(),
+  onOpenThemes: vi.fn(),
   t: defaultT,
 };
 

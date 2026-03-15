@@ -47,8 +47,8 @@ export function BlockCard({
     <div
       ref={setNodeRef}
       style={style}
-      className={`rounded-2xl border-3 border-[#222] bg-white overflow-hidden transition-all
-        ${isDragging ? "opacity-50 shadow-none" : "shadow-[4px_4px_0_#222]"}
+      className={`rounded-[1.5rem] border-4 border-[#222] bg-white overflow-hidden transition-all
+        ${isDragging ? "opacity-50 shadow-none" : "shadow-[6px_6px_0_#222]"}
         ${!block.enabled ? "opacity-60" : ""}`}
       role="listitem"
       aria-label={`Block: ${block.label}`}
@@ -103,16 +103,16 @@ export function BlockCard({
         {/* Enable/disable toggle */}
         <button
           onClick={() => onToggle(block.id)}
-          className={`w-10 h-6 rounded-full border-2 border-[#222] transition-colors relative flex-shrink-0 ${
-            block.enabled ? "bg-[#39ff14]" : "bg-gray-300"
+          className={`w-12 h-7 rounded-full border-[3px] border-[#222] transition-colors relative flex-shrink-0 ${
+            block.enabled ? "bg-[var(--color-candy-green)]" : "bg-gray-300"
           }`}
           aria-label={`${block.enabled ? (t?.block_disable ?? "Disable") : (t?.block_enable ?? "Enable")} ${block.label}`}
           role="switch"
           aria-checked={block.enabled}
         >
           <div
-            className={`absolute top-0.5 w-4 h-4 rounded-full bg-white border border-[#222] transition-transform ${
-              block.enabled ? "translate-x-[18px]" : "translate-x-0.5"
+            className={`absolute top-0.5 w-5 h-5 rounded-full bg-white border-2 border-[#222] transition-transform ${
+              block.enabled ? "translate-x-[20px]" : "translate-x-0.5"
             }`}
           />
         </button>
