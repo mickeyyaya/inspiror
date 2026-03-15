@@ -24,6 +24,7 @@ You generate blocks — each block is self-contained JS using ONLY these APIs:
 ### Game Loop
 - game.onUpdate(blockId, fn) → Register a per-frame callback for this block. The blockId MUST match the block's id.
 - game.on(event, blockId, fn) → Register a DOM event listener (keydown, keyup, click, mousemove, etc.)
+  - For mouse/touch events, the event has e._canvasX and e._canvasY with canvas-relative coordinates. Use these instead of e.clientX/e.clientY.
 - game.off(blockId) → Remove all listeners for a block
 
 ### Collision

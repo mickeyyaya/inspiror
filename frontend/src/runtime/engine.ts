@@ -378,9 +378,21 @@ export const RUNTIME_ENGINE = `
 
     on: function(event, blockId, fn) {
       if (!blockListeners[blockId]) blockListeners[blockId] = [];
+      var isMouseEvent = ["click", "mousemove", "mousedown", "mouseup", "touchstart", "touchmove", "touchend"].indexOf(event) !== -1;
       var handler = function(e) {
         if (disabledBlocks[blockId]) return;
-        try { fn(e); } catch(err) { reportError(blockId, err); }
+        try {
+          if (isMouseEvent && canvas) {
+            var rect = canvas.getBoundingClientRect();
+            var scaleX = canvas.width / rect.width;
+            var scaleY = canvas.height / rect.height;
+            var cx = ((e.clientX || 0) - rect.left) * scaleX;
+            var cy = ((e.clientY || 0) - rect.top) * scaleY;
+            e._canvasX = cx;
+            e._canvasY = cy;
+          }
+          fn(e);
+        } catch(err) { reportError(blockId, err); }
       };
       window.addEventListener(event, handler);
       blockListeners[blockId].push({ event: event, handler: handler });
