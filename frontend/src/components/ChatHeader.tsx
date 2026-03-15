@@ -47,6 +47,9 @@ interface ChatHeaderProps {
   onReset: () => void;
   onHideChat: () => void;
   onOpenBadges: () => void;
+  isClassroom?: boolean;
+  classroomLabel?: string;
+  classroomEmoji?: string;
   t: {
     switch_language: string;
     aria_my_projects: string;
@@ -75,6 +78,9 @@ export function ChatHeader({
   onReset,
   onHideChat,
   onOpenBadges,
+  isClassroom = false,
+  classroomLabel,
+  classroomEmoji,
   t,
 }: ChatHeaderProps) {
   const resolvedEmotion: BuddyEmotion = isLoading ? "thinking" : emotion;
@@ -83,14 +89,24 @@ export function ChatHeader({
   return (
     <div className="bg-[var(--color-candy-blue)] text-[#222] p-4 flex justify-between items-center border-b-4 border-[#222] z-10 shadow-[0_4px_0_#222]">
       <div className="flex items-center gap-3">
-        <button
-          onClick={onBack}
-          className="bg-white border-2 border-[#222] p-2 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none"
-          aria-label={t.aria_my_projects}
-          data-testid="back-to-catalog"
-        >
-          <ArrowLeft size={22} className="text-[#222]" strokeWidth={3} />
-        </button>
+        {isClassroom ? (
+          <div
+            className="bg-[var(--color-candy-yellow)] border-2 border-[#222] px-3 py-1.5 rounded-full font-bold text-sm shadow-[2px_2px_0_#222] flex items-center gap-1.5"
+            data-testid="classroom-badge"
+          >
+            <span>{classroomEmoji}</span>
+            <span>{classroomLabel}</span>
+          </div>
+        ) : (
+          <button
+            onClick={onBack}
+            className="bg-white border-2 border-[#222] p-2 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-[2px_2px_0_#222] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none"
+            aria-label={t.aria_my_projects}
+            data-testid="back-to-catalog"
+          >
+            <ArrowLeft size={22} className="text-[#222]" strokeWidth={3} />
+          </button>
+        )}
         <span
           className="relative inline-block"
           data-testid="buddy-avatar-wrapper"

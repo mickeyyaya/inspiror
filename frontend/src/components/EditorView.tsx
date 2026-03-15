@@ -34,6 +34,12 @@ import { SessionRecap } from "./SessionRecap";
 import { useOnboarding } from "../hooks/useOnboarding";
 import { getPersonalizedGreeting } from "../utils/greetingTiers";
 import { useStreak } from "../hooks/useStreak";
+import type { LessonTopic } from "../hooks/useClassroomMode";
+import {
+  getLessonChips,
+  getTopicLabel,
+  getTopicEmoji,
+} from "../constants/lessonChips";
 
 if (!import.meta.env.VITE_API_URL && import.meta.env.MODE !== "development") {
   console.warn(
@@ -56,6 +62,9 @@ export interface EditorViewProps {
   onToggleLanguage: () => void;
   onBuild?: () => void;
   initialPrompt?: string;
+  isClassroom?: boolean;
+  lessonTopic?: string | null;
+  classroomUrl?: string;
 }
 
 export function EditorView({
@@ -67,6 +76,9 @@ export function EditorView({
   onToggleLanguage,
   onBuild,
   initialPrompt,
+  isClassroom = false,
+  lessonTopic,
+  classroomUrl,
 }: EditorViewProps) {
   const t = translations[language];
   const { streakDays } = useStreak();
@@ -119,9 +131,13 @@ export function EditorView({
   const sessionTipsRef = useRef(0);
   const sessionStartMessagesRef = useRef(messages.length);
   const { buddyEmotion, triggerEmotion } = useBuddyEmotion(messages);
-  const [suggestionChips, setSuggestionChips] = useState(() =>
-    pickRandomChips(language),
-  );
+  const [suggestionChips, setSuggestionChips] = useState(() => {
+    if (isClassroom && lessonTopic) {
+      const topicChips = getLessonChips(lessonTopic as LessonTopic, language);
+      return [...topicChips].sort(() => Math.random() - 0.5).slice(0, 4);
+    }
+    return pickRandomChips(language);
+  });
   const [scaffoldChips, setScaffoldChips] = useState(() =>
     pickRandomScaffolds(language),
   );
@@ -444,6 +460,17 @@ export function EditorView({
             onReset={handleResetRequest}
             onHideChat={() => setIsChatVisible(false)}
             onOpenBadges={() => setIsBadgeGalleryOpen(true)}
+            isClassroom={isClassroom}
+            classroomLabel={
+              lessonTopic
+                ? getTopicLabel(lessonTopic as LessonTopic, language)
+                : undefined
+            }
+            classroomEmoji={
+              lessonTopic
+                ? getTopicEmoji(lessonTopic as LessonTopic)
+                : undefined
+            }
             t={t}
           />
 
