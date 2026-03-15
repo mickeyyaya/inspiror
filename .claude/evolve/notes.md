@@ -627,3 +627,9 @@
 - **Tests:** 595 total (595 frontend), all passing
 - **COPPA progress:** Input filtering + AI disclosure done. Still needed: server-side output filtering, parental consent flow (Phase 8.2 partially complete)
 - **Next cycle should consider:** Dark mode ("candy dark"), mobile layout bottom-sheet, per-block undo, session summary on catalog
+
+## Cycle 63 — 2026-03-15
+- **Item 1: Lesson Plan Templates** — 6 curated lesson plans in ProjectCatalog (Gravity Bounce, Quiz Game, Music Maker, Virtual Pet, Rocket Launch, Story Chooser). Each has age range badge, pre-filled prompt, and lesson-scoped chips. i18n in 3 languages.
+- **Item 2: Candy Dark Mode** — CSS variable-based dark mode via `[data-dark="true"]` selectors. Moon/sun toggle in ChatHeader. localStorage persistence + prefers-color-scheme default. FOUC prevention inline script. Deep navy surfaces (#1a1b2e) with vivid candy accents preserved.
+- **Tests:** 595 total, all passing
+- **Next cycle should consider:** Mobile layout bottom-sheet, per-block undo, session summary on catalog, bundle optimization
