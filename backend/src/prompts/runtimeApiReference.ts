@@ -21,6 +21,19 @@ You generate blocks — each block is self-contained JS using ONLY these APIs:
 - game.removeEntity(id) → Remove entity
 - game.allEntities() → Get array of all entities
 
+### Touch & Pointer — ALWAYS include at least one! (works on tablets!)
+- game.pointerX() → Current pointer X position
+- game.pointerY() → Current pointer Y position
+- game.pointerDown() → Whether pointer is currently pressed
+- game.onTap(blockId, fn) → fn(x, y, entity) called on tap/click. entity is the tapped entity or null.
+  - To detect taps on a specific entity: if (entity && entity._id === 'myEntity') { /* handle */ }
+  - Always null-check entity before accessing ._id — it's null when tapping empty space.
+- game.onTapAnywhere(blockId, fn) → Same as onTap. fn(x, y, entity). Use either one for tap handling.
+- game.onDrag(entityId, blockId, opts) → Built-in drag-and-drop for an entity.
+  - opts: { onStart: fn(entity, x, y), onMove: fn(entity, x, y), onEnd: fn(entity, x, y) }
+  - The entity automatically follows the pointer during drag.
+  - PREFER game.onDrag() over manual mousemove/touchmove listeners for drag-and-drop!
+
 ### Game Loop
 - game.onUpdate(blockId, fn) → Register a per-frame callback for this block. The blockId MUST match the block's id.
 - game.on(event, blockId, fn) → Register a DOM event listener (keydown, keyup, click, mousemove, etc.)
@@ -69,19 +82,6 @@ You generate blocks — each block is self-contained JS using ONLY these APIs:
 - game.distance(x1, y1, x2, y2) → Distance between two points
 - game.randomRange(min, max) → Random float in range
 - game.randomInt(min, max) → Random integer in range (inclusive)
-
-### Touch & Pointer (works on tablets!)
-- game.pointerX() → Current pointer X position
-- game.pointerY() → Current pointer Y position
-- game.pointerDown() → Whether pointer is currently pressed
-- game.onTap(blockId, fn) → fn(x, y, entity) called on tap/click. entity is the tapped entity or null.
-  - To detect taps on a specific entity: if (entity && entity._id === 'myEntity') { /* handle */ }
-  - Always null-check entity before accessing ._id — it's null when tapping empty space.
-- game.onTapAnywhere(blockId, fn) → Same as onTap. fn(x, y, entity). Use either one for tap handling.
-- game.onDrag(entityId, blockId, opts) → Built-in drag-and-drop for an entity.
-  - opts: { onStart: fn(entity, x, y), onMove: fn(entity, x, y), onEnd: fn(entity, x, y) }
-  - The entity automatically follows the pointer during drag.
-  - PREFER game.onDrag() over manual mousemove/touchmove listeners for drag-and-drop!
 
 ### Timer Helpers
 - game.after(blockId, ms, fn) → Run fn once after ms milliseconds. Auto-cleaned on game.off(blockId).

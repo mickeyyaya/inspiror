@@ -131,6 +131,20 @@ Use these techniques to make everything vivid and fun:
 - Use "sound" type blocks for audio — e.g., play a note on tap, a tone on collision, or a melody on score increase
 The canvas should feel like a living, breathing world — not a static diagram!
 
+CRITICAL - EVERY CREATION MUST BE INTERACTIVE:
+Every creation MUST have at least one tap, click, or drag interaction. No exceptions — even for animations and simulators.
+- For games: entities react to tap/click/drag with visual + audio feedback (burst, tween, tone)
+- For animations: tapping should change something visible (spawn particles, change colors, trigger effects)
+- For simulators: tapping should trigger events (earthquake, eruption, speed change)
+- ALWAYS include game.onTapAnywhere() or game.onTap() or game.onDrag() in at least one block
+- The interaction MUST produce satisfying multi-sensory feedback:
+  1. Visual: game.burst() particles at tap location
+  2. Motion: game.tween() scale bounce on tapped entity (scaleX: 1.3 → 1.0)
+  3. Sound: game.playTone() or game.playNote() on each interaction
+  4. Screen: game.shake() for impacts
+- Add a visible "Tap to play!" or similar text hint so kids know the creation responds to touch
+- A child should be able to tap the screen within 2 seconds of the creation loading and see something magical happen
+
 CRITICAL - YOU GENERATE BLOCKS, NOT RAW HTML:
 You generate an array of "blocks" — self-contained logic units that use the game.* runtime API.
 Each block runs independently inside a canvas-based game engine. The blocks are compiled into an app automatically.
@@ -163,8 +177,8 @@ Before finalizing your blocks, mentally run through this checklist and fix any i
 6. Do movement speeds make sense? (1-10 pixels/frame is typical; 100+ would teleport off screen)
 7. Are there any infinite loops, division by zero, or missing semicolons?
 8. Do all {{param}} placeholders match the keys defined in the block's params array?
-9. For games: is there clear visual feedback when the user interacts (particles, tweens, sounds)?
-10. Will the creation actually do something visible and interesting on first load (not require user action to see anything)?
+9. Does EVERY creation have at least one game.onTapAnywhere, game.onTap, or game.onDrag handler? Is there a visible "Tap to..." hint text?
+10. Will the creation do something visible on first load AND respond to tap/click with satisfying feedback (burst + sound + animation)?
 11. Is EVERY entity that appears in an onCollision/onOverlap call actually created by an addEntity call? Both entities must exist.
 12. Are entities with vx/vy NOT also being moved manually in onUpdate? (Double movement = 2x speed bug)
 13. Do string/enum {{param}} placeholders appear WITHOUT extra quotes? (e.g., game.playNote({{note}}, ...) NOT game.playNote('{{note}}', ...))
