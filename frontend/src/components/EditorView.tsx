@@ -44,6 +44,7 @@ import {
 } from "../constants/lessonChips";
 import { moderateInput } from "../utils/moderateContent";
 import { MODERATION_MESSAGES } from "../constants/moderation";
+import { generateFollowUps } from "../utils/generateFollowUps";
 
 if (!import.meta.env.VITE_API_URL && import.meta.env.MODE !== "development") {
   console.warn(
@@ -131,6 +132,9 @@ export function EditorView({
   const closeBlockPanel = useCallback(() => setIsBlockPanelOpen(false), []);
   const [showConfetti, setShowConfetti] = useState(false);
   const [showRecap, setShowRecap] = useState(false);
+  const [followUpChips, setFollowUpChips] = useState<
+    { emoji: string; label: string }[]
+  >([]);
   const sessionBuildsRef = useRef(0);
   const sessionTipsRef = useRef(0);
   const sessionStartMessagesRef = useRef(messages.length);
@@ -265,6 +269,14 @@ export function EditorView({
         recordIterateRef.current();
       }
       onBuild?.();
+      // Generate contextual follow-up suggestions based on current blocks
+      const newFollowUps = generateFollowUps(
+        finalObj?.blocks && Array.isArray(finalObj.blocks)
+          ? (finalObj.blocks as Block[])
+          : blocksRef.current,
+        language,
+      );
+      setFollowUpChips(newFollowUps);
       // Show session recap every 3rd build
       if (sessionBuildsRef.current > 0 && sessionBuildsRef.current % 3 === 0) {
         setTimeout(() => setShowRecap(true), 3000);
@@ -355,6 +367,7 @@ export function EditorView({
     }
 
     playPop();
+    setFollowUpChips([]);
     if (inputValue.trim().length >= 20) {
       recordDescribe();
     }
@@ -574,6 +587,29 @@ export function EditorView({
         t={t}
         convertingText={isConverting ? t.converting_blocks : undefined}
       />
+
+      {/* Follow-up suggestion chips after build */}
+      {followUpChips.length > 0 && !isLoading && (
+        <div
+          className="absolute top-16 right-4 sm:right-8 z-30 flex flex-col gap-2 max-w-[250px]"
+          data-testid="follow-up-chips"
+        >
+          {followUpChips.map((chip, idx) => (
+            <button
+              key={chip.label}
+              onClick={() => {
+                handleChipClick(chip.label);
+                setFollowUpChips([]);
+              }}
+              className="bg-white/90 backdrop-blur-sm border-3 border-[#222] rounded-2xl px-3 py-2 text-left text-sm font-bold shadow-[3px_3px_0_#222] hover:scale-105 active:translate-y-[3px] active:shadow-none transition-all btn-squish chip-enter"
+              style={{ animationDelay: `${idx * 100}ms` }}
+            >
+              <span className="mr-1.5">{chip.emoji}</span>
+              {chip.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       <BlockPanelDrawer
         isOpen={isBlockPanelOpen}
