@@ -10,13 +10,13 @@ export const DEFAULT_BLOCKS: Block[] = [
     type: "setup",
     label: "Background",
     emoji: "🎨",
-    enabled: false,
+    enabled: true,
     params: [
       {
         key: "bgColor",
         label: "Background Color",
         type: "color",
-        value: "#a8e6cf",
+        value: "#1a1a2e",
       },
     ],
     code: `game.setBackground({{bgColor}});`,
@@ -39,7 +39,7 @@ export const DEFAULT_BLOCKS: Block[] = [
         key: "color",
         label: "Text Color",
         type: "color",
-        value: "#222222",
+        value: "#FDE047",
       },
     ],
     code: `game.addText("title", {{title}}, game.width() / 2, game.height() / 2, {
@@ -98,5 +98,32 @@ export const DEFAULT_BLOCKS: Block[] = [
   });
 })();`,
     order: 2,
+  },
+  {
+    id: "default-tap",
+    type: "event",
+    label: "Tap Magic",
+    emoji: "👆",
+    enabled: true,
+    params: [],
+    code: `(function() {
+  game.addText("tapHint", "Tap anywhere!", game.width() / 2, game.height() / 2 + 60, {
+    font: "bold 20px sans-serif",
+    color: "#888",
+    align: "center"
+  });
+  var _tapCount = 0;
+  var _colors = ["#FF6B9D", "#67E8F9", "#FDE047", "#C084FC", "#4ADE80", "#FFB86C"];
+  game.onTapAnywhere("default-tap", function(x, y) {
+    _tapCount++;
+    var c = _colors[_tapCount % _colors.length];
+    game.burst(x, y, { count: 12, spread: 4, colors: [c, "#ffffff"], shape: "star", life: 25 });
+    game.playTone(300 + _tapCount * 40, 100, { type: "sine", volume: 0.3 });
+    game.shake(2, 80);
+    var title = game.getEntity("title");
+    if (title) game.tween(title, { scaleX: 1.1, scaleY: 1.1 }, 80, { easing: "easeOut", onComplete: function() { game.tween(title, { scaleX: 1, scaleY: 1 }, 80); } });
+  });
+})();`,
+    order: 3,
   },
 ];
