@@ -123,7 +123,63 @@ The block editor uses **dnd-kit** for drag-and-drop. As of early 2026, dnd-kit m
 - **Large touch targets** and clear visual hierarchy
 - **Reward loops** - Small celebrations for every win
 
-## 9. UI/UX Improvements (Implemented)
+## 9. Next-Gen LLM Co-Working & Classroom Vision
+
+### Research Summary (March 2026)
+
+#### Child-AI Co-Creation Research
+
+**MIT Scratch Copilot (IDC 2025)**
+A study of 18 children ages 7-12 testing an AI coding assistant found that AI provides most value at the "blank canvas" phase — the exact moment Inspiror's suggestion chips target. Critically, 50% of older kids (ages 10-12) expressed anxiety about losing originality when AI generates code for them. This validates a core design principle: AI as helper, not replacer. The block-level accept/reject model (Phase 7.1) directly addresses this ownership anxiety.
+
+**"Six Scaffolds" Framework (IJCCI, November 2025)**
+Disney-inspired research on child-AI interaction design identified six interaction scaffolds: Signals, Sound, Synchrony, Sidekick, Storyplay, and Structure. These map directly to Inspiror's existing Buddy character design and provide a framework for extending it in Phase 7.
+
+**AIStoryBot (ACM 2025)**
+Creative co-authorship with AI was found to build both engagement AND AI literacy simultaneously — validating Inspiror's co-creation model over a tutoring or correction model.
+
+**Graduated AI Agency by Age**
+Research converges on three developmental bands:
+- Ages 5-7: AI does, child directs
+- Ages 8-10: AI suggests, child leads
+- Ages 11-14: child critiques and remixes AI output
+
+**Stanford SCALE Guardrails (August 2025)**
+A framework for AI safety in education covering: prompt engineering, input threat detection, async content moderation agent, and human-in-the-loop review. Aligns with Inspiror's COPPA compliance work and Phase 7.2.
+
+**CSTA 2026 Standards**
+The first revision of K-12 CS standards to include AI literacy as a first-class component, across five categories. B2B school procurement will increasingly require demonstrated alignment with these standards.
+
+#### Classroom & Training Market
+
+- AI education market: $7.57B (2025) → $112B projected (2034)
+- Leading platforms by scale: Code.org (2M+ classrooms), Khanmigo (1M+ students, 266 districts), Tynker, CodeMonkey, AIClub
+- Dominant distribution model shifting from B2C parent to B2B school district with hybrid freemium
+- Teacher dashboard now an essential B2B procurement requirement: real-time student activity, mastery tracking, assignment tools, at-risk alerts
+- Standard lesson anatomy adopted across leading platforms: Hook (5 min) → Concept (10 min) → Guided Practice (15 min) → Creative Project (15-20 min) → Reflection (5 min)
+
+#### Emerging Interaction Paradigms
+
+- Voice-first coding for ages 5-8 is achievable via Web Speech API with zero external dependencies
+- Multimodal inputs (drawing + voice + text) are active research at MIT Media Lab — TalkSketch (arXiv 2025) demonstrates real-time sketch + speech ideation
+- AI autonomy levels emerging as a design pattern:
+  - L1: respond only (current Inspiror model)
+  - L2: proactive hints on inactivity
+  - L3: active co-creation with guardrails
+
+### Design Principles Derived from Research
+
+1. AI as helper, not replacer — preserve child agency at all times
+2. Graduated autonomy by age band (5-7 / 8-10 / 11-14)
+3. Block-level negotiation to address co-creation ownership anxiety
+4. Six Scaffolds (Signals, Sound, Synchrony, Sidekick, Storyplay, Structure) as Buddy design guide
+5. Stanford SCALE guardrails: prompt engineering + threat detection + async moderation + human-in-loop
+6. 5-phase lesson anatomy for structured classroom deployment
+7. Teacher dashboard as prerequisite for B2B school distribution
+
+---
+
+## 10. UI/UX Improvements (Implemented)
 
 Based on competitive research, the following improvements have been shipped:
 
@@ -147,7 +203,7 @@ Based on competitive research, the following improvements have been shipped:
 | 16 | Block-to-code compiler | Shipped | `compileBlocks` runtime engine converts `BlockDefinition[]` to iframe-ready HTML |
 | 17 | AI block conversion | Shipped | `/api/convert-to-blocks` endpoint decomposes existing code into editable blocks |
 
-## 10. Future Enhancements
+## 11. Future Enhancements
 *   **"Look Inside" / Code Remixing:** Now partially addressed by the block editor. A deeper implementation would expose raw HTML/JS in a syntax-highlighted panel alongside the blocks view.
 *   **Asset Upload & Personalization:** Allow kids to upload their own drawings or photos (e.g., "Make my pet dog the main character") to deeply personalize their creations.
 *   **Gamified Progression:** Implement an achievement system (e.g., "Code Ninja badge unlocked for making 5 games!") and unlockable AI Buddy avatars to drive long-term retention.

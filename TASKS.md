@@ -513,3 +513,101 @@ Research sources: Lyria 3 music gen, Scratch/Hopscotch community data, child TTS
 - [ ] **Content moderation (COPPA deadline April 22, 2026)** — No explicit safety guardrails in system prompt. 39 days to deadline. (Safety/Compliance) *(carried from Cycle 19)*
 - [ ] **`experimental_useObject` → stable `useObject`** — Deprecated API that will break on future SDK release. (Code Quality) *(carried from Cycle 3)*
 - [ ] **Zod schema duplication frontend/backend** — Identical schemas in `constants.ts` and `llmService.ts`. (Code Quality) *(carried from Cycle 8)*
+
+---
+
+## Phase 8: Next-Gen LLM Co-Working & Classroom Platform
+
+*Research basis: MIT Scratch Copilot (IDC 2025), Six Scaffolds Framework (IJCCI Nov 2025), Stanford SCALE (Aug 2025), CSTA 2026 Standards, AI education market analysis (March 2026). See PRD.md §9 and RESEARCH_FINDINGS.md §9.*
+
+### 8.1 Block-Level Accept/Reject Negotiation
+
+*Addresses MIT ownership anxiety finding: 50% of older kids (10-12) worried about losing originality when AI generates for them.*
+
+- [ ] After AI generation, render newly generated blocks in a "pending review" visual state (distinct border/color treatment)
+- [ ] Display individual Accept and Reject controls on each pending block before compilation
+- [ ] Child explicitly approves or rejects individual blocks; only accepted blocks are compiled into the live preview
+- [ ] Write unit tests for pending state transitions and accept/reject reducer logic
+
+### 8.2 Content Moderation Pipeline
+
+*COPPA 2025 deadline: April 22, 2026. Stanford SCALE framework applied.*
+
+- [ ] Add output filtering on all LLM responses: keyword blocklist + integration with a content safety API
+- [ ] Add prompt-level threat detection on user input before forwarding to LLM
+- [ ] Add async content moderation agent for code outputs (separate check pass before iframe injection)
+- [ ] Add explicit "I'm an AI buddy" disclosure in the chat UI (COPPA AI disclosure requirement)
+- [ ] Verify COPPA 2025 compliance checklist before April 22, 2026 deadline
+- [ ] Write tests for blocklist filtering, threat detection bypass attempts, and disclosure rendering
+
+### 8.3 Classroom Mode (No Auth Required)
+
+*URL-parameter-driven session mode for teacher-led classes. No login, no catalog, QR-shareable.*
+
+- [ ] Implement URL parameter mode: `?mode=class&lesson=physics` activates classroom mode
+- [ ] Constrain suggestion chips to the lesson topic specified in the URL parameter
+- [ ] Hide project catalog in classroom mode (single-session project only)
+- [ ] Generate and display a QR code shareable link for teacher display on projector
+- [ ] Add session time limit configuration (URL param or teacher dashboard setting)
+- [ ] Write tests for URL param parsing, chip constraint logic, and catalog hide behavior
+
+### 8.4 Teacher Dashboard (Phase 8.5 — requires backend)
+
+*B2B school procurement requirement. Backend work required before implementation.*
+
+- [ ] Class roster with student join-by-code flow
+- [ ] Real-time student activity view (websocket or polling)
+- [ ] Per-student mastery tracking (builds completed, blocks used, error rate)
+- [ ] Assignment creation and distribution to class roster
+- [ ] Progress export (CSV and PDF formats)
+- [ ] At-risk student alerts (inactivity threshold, repeated errors)
+
+### 8.5 Lesson Plan Templates
+
+*CSTA 2026 alignment enables B2B procurement. 5-phase lesson anatomy from platform research.*
+
+- [ ] Implement structured lesson mode with topic constraints bound to a lesson template
+- [ ] Design and implement a progressive difficulty skill tree across lesson templates
+- [ ] Create CSTA 2026 standard alignment mapping for each lesson template
+- [ ] Implement 5-phase lesson flow: Hook (5 min) → Concept (10 min) → Guided Practice (15 min) → Creative Project (15-20 min) → Reflection (5 min)
+- [ ] Write tests for phase transitions and constraint enforcement
+
+### 8.6 AI Co-Working Enhancements
+
+*Graduated AI agency model (L1/L2/L3). Per MIT and Six Scaffolds research.*
+
+- [ ] Add "What do you want to change?" proactive question from Buddy after each generation (L2 agency)
+- [ ] Implement per-block undo: revert a single block to its prior state without full project reset
+- [ ] Add session summary / "what we built so far" recap surfaced across sessions in Buddy's greeting
+- [ ] Surface AI self-verification results to the child in friendly language ("I found a bug!")
+- [ ] Implement conversation limits and interaction guardrails per Stanford SCALE framework
+- [ ] Write tests for proactive hint trigger logic and per-block undo reducer
+
+### 8.7 Dark Mode ("Candy Dark")
+
+*61% of apps ship dark mode; vivid accents on dark background proven more engaging than greyscale inversion. Carried from Cycle 46 audit.*
+
+- [ ] Implement CSS variables + React Context theme system (light / candy-dark)
+- [ ] Default to `prefers-color-scheme` system setting; allow localStorage override
+- [ ] Add FOUC prevention inline script in `index.html` to apply saved theme before React hydrates
+- [ ] Apply vivid accent colors on dark background (not greyscale inversion)
+- [ ] Write tests for theme context, localStorage persistence, and FOUC script
+
+### 8.8 Mobile Layout Fix
+
+*Usability requirement: preview must be always visible on phones.*
+
+- [ ] Replace full-width chat panel on mobile with a bottom sheet or tab-bar navigation pattern
+- [ ] Ensure live preview is always visible above the fold on phones
+- [ ] Add header overflow menu for the dense button row on narrow viewports
+- [ ] Write responsive layout tests (Playwright viewport variants)
+
+### 8.9 Bundle Optimization
+
+*Performance: reduce initial load time and per-route payload. Carried from Cycle 46 audit.*
+
+- [ ] Run `vite build --report` with `rollup-plugin-visualizer` to identify largest chunks
+- [ ] Configure manual chunks in `vite.config.ts`: `@ai-sdk/react`, `dnd-kit`, `lucide-react`
+- [ ] Split translations by locale using dynamic `import()` (load only active locale at startup)
+- [ ] Lazy-load block editor and all dnd-kit dependencies behind a dynamic import split point
+- [ ] Verify no chunk exceeds 250 KB gzipped after optimization

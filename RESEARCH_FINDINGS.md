@@ -179,3 +179,63 @@ A broader market trend observed across Itch.io, Product Hunt, and r/gamedev comm
 3. Lower cognitive overhead for younger learners
 
 Platforms exploiting this trend: Bolt.new (general), Rosebud AI (games), and Inspiror. The trend supports continuing Inspiror's core approach of generating single-file HTML/JS games rather than pivoting to an engine-based output. Quantitative signal: Bolt.new at $40M ARR (confirmed March 2026) with a significant portion of usage attributed to game-like interactive experiments.
+
+## 9. Deep Research: Next-Gen LLM Co-Working (March 2026)
+
+### Academic Sources
+
+| Paper | Venue | Key Finding |
+|-------|-------|-------------|
+| Scratch Copilot | IDC 2025 | AI most valuable at blank-canvas phase; 50% of ages 10-12 worried about losing originality | arxiv.org/abs/2505.03867 |
+| Six Scaffolds Framework | IJCCI Nov 2025 | Disney-inspired child-AI design: Signals, Sound, Synchrony, Sidekick, Storyplay, Structure | sciencedirect.com/science/article/pii/S2212868925000698 |
+| AIStoryBot | ACM 2025 | Creative co-authorship with AI builds engagement AND AI literacy simultaneously | dl.acm.org/doi/10.1145/3713043.3731520 |
+| Child-AI Co-Creation Review | ACM 2025 | Systematic review of child-AI co-creation research | dl.acm.org/doi/10.1145/3713043.3731506 |
+| Stanford SCALE Guardrails | arXiv Aug 2025 | AI safety framework for education: prompt engineering, input threat detection, async moderation, human-in-loop | arxiv.org/abs/2508.05360 |
+| Safe AI Companions for Youth | arXiv 2025 | Design principles for age-safe AI companion systems | arxiv.org/html/2510.11185v1 |
+| AI Pair Programming Study | STEM Education Journal 2025 | Impact of AI pair programming on learning outcomes | stemeducationjournal.springeropen.com/articles/10.1186/s40594-025-00537-3 |
+| Multimodal GenAI Education | CHI 2025 | Drawing + voice + text multimodal inputs in educational AI | dl.acm.org/doi/10.1145/3706598.3714146 |
+| TalkSketch | arXiv 2025 | Real-time sketch + speech ideation with AI | (arXiv 2025) |
+
+### Market Intelligence
+
+**AI Education Market Scale**
+- Market size: $7.57B (2025) → $112B projected by 2034
+- Growth rate driven by post-pandemic institutional AI adoption and CSTA 2026 standard mandates
+
+**Leading Platform Benchmarks**
+- Khanmigo: 1M+ students, 266 school districts, ECHO teacher professional development program
+- Code.org: 2M+ classrooms globally, primary B2B distribution channel
+- SchoolAI Mission Control: real-time classroom AI management panel (direct teacher-dashboard competitor)
+- CodeMonkey: SIS (Student Information System) integration, auto-grading, established procurement pipeline
+- Tynker: curriculum partnerships, block-to-AI progression path, Copilot subscription feature
+
+**Standards and Compliance**
+- CSTA 2026: first K-12 CS standards revision to include AI literacy as a first-class component across five categories
+- B2B school procurement is beginning to require demonstrated CSTA alignment — a prerequisite for Inspiror's classroom distribution ambitions
+
+### Graduated AI Agency Model
+
+Research converges on three developmental bands that should drive Inspiror's UX decisions:
+
+| Age Band | AI Role | Child Role | Inspiror Implication |
+|----------|---------|-----------|----------------------|
+| 5-7 | AI does | Child directs | Voice-first, minimal typing required |
+| 8-10 | AI suggests | Child leads | Current model; proactive hints (L2) appropriate |
+| 11-14 | AI generates | Child critiques and remixes | Block-level accept/reject; raw code view |
+
+### AI Autonomy Levels (L1/L2/L3)
+
+A three-level taxonomy for AI initiative in co-working tools:
+- **L1 (respond only):** AI acts only when the child explicitly prompts it. Current Inspiror model.
+- **L2 (proactive hints on inactivity):** AI surfaces hints or asks questions after a period of inactivity, without taking action.
+- **L3 (active co-creation with guardrails):** AI proposes changes, generates content proactively, subject to safety constraints. Requires block-level accept/reject to preserve child agency.
+
+### Key Design Principles for Inspiror (Derived from Research)
+
+1. **AI as helper, not replacer** — preserve child agency; never auto-apply changes without consent (block-level accept/reject)
+2. **Graduated autonomy by age** — UX should adapt to the 5-7 / 8-10 / 11-14 developmental band
+3. **Block-level negotiation** — addresses ownership anxiety finding from MIT Scratch Copilot study
+4. **Six Scaffolds** — use as a design checklist for Buddy character: Signals (visual cues), Sound (audio feedback), Synchrony (timing), Sidekick (non-threatening persona), Storyplay (narrative framing), Structure (scaffolded steps)
+5. **Stanford SCALE guardrails** — prompt engineering + input threat detection + async moderation agent + human-in-loop; maps to Phase 7.2
+6. **5-phase lesson anatomy** — Hook → Concept → Guided Practice → Creative Project → Reflection; maps to Phase 7.5
+7. **Teacher dashboard as B2B prerequisite** — required for school district procurement; maps to Phase 7.4
