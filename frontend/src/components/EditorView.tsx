@@ -127,7 +127,10 @@ export function EditorView({
   const [blocks, setBlocks] = useState<Block[]>(
     () => project.blocks ?? DEFAULT_BLOCKS.map((b) => ({ ...b })),
   );
+  const [blocksHistory, setBlocksHistory] = useState<Block[][]>([]);
+  const MAX_UNDO_HISTORY = 10;
   const [isChatVisible, setIsChatVisible] = useState(true);
+  const [mobileTab, setMobileTab] = useState<"chat" | "preview">("chat");
   const [isBlockPanelOpen, setIsBlockPanelOpen] = useState(false);
   const closeBlockPanel = useCallback(() => setIsBlockPanelOpen(false), []);
   const [showConfetti, setShowConfetti] = useState(false);
@@ -437,14 +440,33 @@ export function EditorView({
     resetAutoFixCount();
   };
 
+  // Save blocks history before changes for undo
+  const pushBlocksHistory = useCallback((currentBlocks: Block[]) => {
+    setBlocksHistory((prev) => {
+      const next = [...prev, currentBlocks];
+      return next.length > MAX_UNDO_HISTORY
+        ? next.slice(-MAX_UNDO_HISTORY)
+        : next;
+    });
+  }, []);
+
   // Handle block edits from the BlockEditor (param changes, reorder, toggle)
   const handleBlocksChange = useCallback(
     (newBlocks: Block[]) => {
+      pushBlocksHistory(blocks);
       setBlocks(newBlocks);
       recordRemix();
     },
-    [recordRemix],
+    [blocks, recordRemix, pushBlocksHistory],
   );
+
+  // Undo last block change
+  const handleUndo = useCallback(() => {
+    if (blocksHistory.length === 0) return;
+    const previousBlocks = blocksHistory[blocksHistory.length - 1];
+    setBlocksHistory((prev) => prev.slice(0, -1));
+    setBlocks(previousBlocks);
+  }, [blocksHistory]);
 
   // Accept a single pending block
   const handleAcceptBlock = useCallback((id: string) => {
@@ -501,12 +523,12 @@ export function EditorView({
   const blockCount = blocks.filter((b) => b.enabled).length;
 
   return (
-    <div className="w-screen h-dvh bg-transparent flex font-sans overflow-hidden">
+    <div className="w-screen h-dvh bg-transparent flex flex-col sm:flex-row font-sans overflow-hidden">
       <ConfettiBurst show={showConfetti} />
 
       {isChatVisible && (
         <div
-          className="h-full w-full sm:w-[26rem] lg:w-[30rem] flex-shrink-0 bg-transparent border-r-[6px] border-[#222] flex flex-col z-20 relative shadow-[8px_0px_0px_rgba(0,0,0,0.1)]"
+          className={`h-full w-full sm:w-[26rem] lg:w-[30rem] flex-shrink-0 bg-transparent border-r-0 sm:border-r-[6px] border-[#222] flex flex-col z-20 relative shadow-[8px_0px_0px_rgba(0,0,0,0.1)] ${mobileTab !== "chat" ? "hidden sm:flex" : "flex"}`}
           aria-hidden="false"
           onMouseEnter={() => inputRef.current?.focus()}
         >
@@ -576,19 +598,23 @@ export function EditorView({
         </div>
       )}
 
-      <PreviewPanel
-        currentCode={currentCode}
-        isLoading={isLoading || isConverting}
-        isChatVisible={isChatVisible}
-        onShowChat={() => setIsChatVisible(true)}
-        onLookInside={() => setIsBlockPanelOpen(true)}
-        iframeRef={iframeRef}
-        codingFacts={codingFacts}
-        blockCount={blockCount}
-        projectTitle={project.title}
-        t={t}
-        convertingText={isConverting ? t.converting_blocks : undefined}
-      />
+      <div
+        className={`flex-1 ${mobileTab !== "preview" ? "hidden sm:block" : "block"}`}
+      >
+        <PreviewPanel
+          currentCode={currentCode}
+          isLoading={isLoading || isConverting}
+          isChatVisible={isChatVisible}
+          onShowChat={() => setIsChatVisible(true)}
+          onLookInside={() => setIsBlockPanelOpen(true)}
+          iframeRef={iframeRef}
+          codingFacts={codingFacts}
+          blockCount={blockCount}
+          projectTitle={project.title}
+          t={t}
+          convertingText={isConverting ? t.converting_blocks : undefined}
+        />
+      </div>
 
       {/* Follow-up suggestion chips after build */}
       {followUpChips.length > 0 && !isLoading && (
@@ -622,6 +648,7 @@ export function EditorView({
         onRejectBlock={handleRejectBlock}
         onAcceptAll={handleAcceptAll}
         onRejectAll={handleRejectAll}
+        onUndo={blocksHistory.length > 0 ? handleUndo : undefined}
         isLoading={isLoading}
         t={t}
       />
@@ -684,6 +711,24 @@ export function EditorView({
         buddyName={selectedAvatar.name}
         t={t}
       />
+
+      {/* Mobile tab bar — visible only on small screens */}
+      <div className="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-[var(--color-candy-blue)] border-t-4 border-[#222] flex">
+        <button
+          onClick={() => setMobileTab("chat")}
+          className={`flex-1 py-3 text-center font-extrabold text-sm transition-colors ${mobileTab === "chat" ? "bg-white/30 text-[#222]" : "text-[#222]/60"}`}
+          aria-label="Chat"
+        >
+          💬 Chat
+        </button>
+        <button
+          onClick={() => setMobileTab("preview")}
+          className={`flex-1 py-3 text-center font-extrabold text-sm transition-colors ${mobileTab === "preview" ? "bg-white/30 text-[#222]" : "text-[#222]/60"}`}
+          aria-label="Preview"
+        >
+          👀 Preview
+        </button>
+      </div>
     </div>
   );
 }

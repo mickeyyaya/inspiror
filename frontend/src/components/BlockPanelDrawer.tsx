@@ -12,6 +12,7 @@ export interface BlockPanelDrawerProps {
   onRejectBlock?: (id: string) => void;
   onAcceptAll?: () => void;
   onRejectAll?: () => void;
+  onUndo?: () => void;
   isLoading: boolean;
   t: TranslationKeys;
 }
@@ -25,6 +26,7 @@ export function BlockPanelDrawer({
   onRejectBlock,
   onAcceptAll,
   onRejectAll,
+  onUndo,
   isLoading,
   t,
 }: BlockPanelDrawerProps) {
@@ -60,10 +62,21 @@ export function BlockPanelDrawer({
         isLoading={isLoading}
         t={t}
       />
-      <div className="p-3 border-t-2 border-gray-200 flex-shrink-0">
+      <div className="p-3 border-t-2 border-gray-200 flex-shrink-0 flex gap-2">
+        {onUndo && (
+          <button
+            onClick={onUndo}
+            className="px-4 py-2 rounded-2xl bg-[var(--color-candy-orange)] text-[#222] font-bold text-sm
+              border-2 border-[#222] shadow-[4px_4px_0_rgba(0,0,0,0.2)]
+              active:translate-y-[4px] active:shadow-none transition-all"
+            aria-label="Undo"
+          >
+            ↩ Undo
+          </button>
+        )}
         <button
           onClick={onClose}
-          className="w-full px-4 py-2 rounded-2xl bg-[#222] text-white font-bold text-sm
+          className="flex-1 px-4 py-2 rounded-2xl bg-[#222] text-white font-bold text-sm
             border-2 border-[#222] shadow-[4px_4px_0_rgba(0,0,0,0.2)]
             active:translate-y-[4px] active:shadow-none transition-all"
         >
