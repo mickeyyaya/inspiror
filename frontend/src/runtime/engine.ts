@@ -569,6 +569,15 @@ export const RUNTIME_ENGINE = `
     },
 
     every: function(blockId, ms, fn) {
+      // Clear existing timers for this blockId to prevent stacking on re-runs
+      if (blockTimers[blockId]) {
+        for (var t = 0; t < blockTimers[blockId].length; t++) {
+          var timer = blockTimers[blockId][t];
+          if (timer.type === "interval") clearInterval(timer.id);
+          else clearTimeout(timer.id);
+        }
+        blockTimers[blockId] = [];
+      }
       if (!blockTimers[blockId]) blockTimers[blockId] = [];
       var iid = setInterval(function() {
         if (disabledBlocks[blockId]) return;
@@ -924,23 +933,30 @@ export const RUNTIME_ENGINE = `
       }
     }
 
-    // Check collisions
+    // Check collisions (debounced — fires once on contact, not every frame)
     for (var i = 0; i < collisionCallbacks.length; i++) {
       var cc = collisionCallbacks[i];
       if (disabledBlocks[cc.blockId]) continue;
       var ea = entities[cc.a];
       var eb = entities[cc.b];
+      var ckey = cc.a + "|" + cc.b + "|" + cc.blockId;
       if (ea && eb && aabb(ea, eb)) {
-        try { cc.fn(ea, eb); } catch(err) { reportError(cc.blockId, err); }
+        if (!cc._active) {
+          cc._active = true;
+          try { cc.fn(ea, eb); } catch(err) { reportError(cc.blockId, err); }
+        }
+      } else {
+        cc._active = false;
       }
     }
 
-    // Check overlap (circle collision)
+    // Check overlap (circle collision, debounced)
     for (var oi = 0; oi < overlapCallbacks.length; oi++) {
       var oc = overlapCallbacks[oi];
       if (disabledBlocks[oc.blockId]) continue;
       var oa = entities[oc.a];
       var ob = entities[oc.b];
+      var overlapping = false;
       if (oa && ob) {
         var acx = (oa.x || 0) + (oa.width || 0) / 2;
         var acy = (oa.y || 0) + (oa.height || 0) / 2;
@@ -949,9 +965,15 @@ export const RUNTIME_ENGINE = `
         var ar = Math.max(oa.width || 0, oa.height || 0) / 2;
         var br = Math.max(ob.width || 0, ob.height || 0) / 2;
         var dx = acx - bcx, dy = acy - bcy;
-        if (Math.sqrt(dx * dx + dy * dy) < ar + br) {
+        overlapping = Math.sqrt(dx * dx + dy * dy) < ar + br;
+      }
+      if (overlapping) {
+        if (!oc._active) {
+          oc._active = true;
           try { oc.fn(oa, ob); } catch(err) { reportError(oc.blockId, err); }
         }
+      } else {
+        oc._active = false;
       }
     }
 

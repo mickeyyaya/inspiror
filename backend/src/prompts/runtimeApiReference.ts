@@ -27,11 +27,10 @@ You generate blocks — each block is self-contained JS using ONLY these APIs:
 - game.off(blockId) → Remove all listeners for a block
 
 ### Collision
-- game.onCollision(entityA_id, entityB_id, blockId, fn) → Check AABB overlap each frame. fn(entityA, entityB) called on collision.
+- game.onCollision(entityA_id, entityB_id, blockId, fn) → Check AABB overlap. fn(entityA, entityB) called ONCE when collision starts.
+  - Debounced: fires once on contact, then waits until entities separate before firing again.
   - No-op if either entity is missing.
-  - WARNING: Fires EVERY FRAME while entities overlap! To handle once, use a flag:
-    var _collected = false; game.onCollision('player','coin','pickup', function(p,c){ if(_collected) return; _collected = true; /* handle */ });
-  - Or immediately remove/reposition the entity to stop the overlap.
+  - To handle repeated pickups: reposition or remove the entity after collection so it can collide again.
 
 ### State
 - game.set(key, val) → Store a value in the shared state
@@ -87,7 +86,7 @@ You generate blocks — each block is self-contained JS using ONLY these APIs:
 - game.after(blockId, ms, fn) → Run fn once after ms milliseconds. Auto-cleaned on game.off(blockId).
 - game.every(blockId, ms, fn) → Run fn repeatedly every ms milliseconds. Auto-cleaned on game.off(blockId).
   - PREFER game.every() over setInterval — it auto-cleans and has error handling!
-  - WARNING: game.every() is additive — calling it twice with the same blockId creates TWO intervals. Only call it once in block init, never inside onUpdate.
+  - game.every() auto-clears previous intervals for the same blockId — safe to re-call without stacking.
 
 ### Physics
 - Entity physics props: vx, vy (velocity), gravity, bounce, friction
@@ -134,6 +133,6 @@ You generate blocks — each block is self-contained JS using ONLY these APIs:
 5. Use {{key}} placeholders for editable parameters. The runtime substitutes them with values.
 6. For numbers, use {{key}} directly (no quotes). For strings/colors/enums, use {{key}} directly — they are JSON-quoted automatically. NEVER wrap {{key}} in extra quotes like '{{key}}' — that creates double-quoting.
 7. If an entity uses vx/vy, the engine moves it automatically — do NOT also move it manually in onUpdate.
-8. onCollision fires EVERY FRAME while overlapping — reposition or remove the entity, or use a flag to handle once.
-9. Call game.every() only ONCE in block init — never inside onUpdate or another callback, or it creates duplicate timers.
+8. onCollision is debounced — fires once per contact. To collect multiple items, reposition or remove the collected entity.
+9. game.every() auto-clears previous intervals for the same blockId — safe to call in block init without stacking.
 `;
