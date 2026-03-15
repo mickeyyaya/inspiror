@@ -9,6 +9,7 @@ import { ProjectCatalog } from "./components/ProjectCatalog";
 import { EditorView } from "./components/EditorView";
 import { compileBlocks } from "./compiler/compileBlocks";
 import type { StarterTemplate } from "./constants/starterTemplates";
+import type { LessonPlan } from "./constants/lessonPlans";
 import {
   markChallengeCompleted,
   getTodayChallenge,
@@ -72,6 +73,19 @@ function App() {
     [createProject, updateProject, language],
   );
 
+  const [lessonTopicOverride, setLessonTopicOverride] = useState<string | null>(
+    null,
+  );
+
+  const handleCreateFromLessonPlan = useCallback(
+    (plan: LessonPlan) => {
+      createProject();
+      setInitialPrompt(plan.initialPrompt);
+      setLessonTopicOverride(plan.topic);
+    },
+    [createProject],
+  );
+
   // In classroom mode, auto-create a project and skip catalog
   if (classroom.isClassroom && !currentProject) {
     createProject();
@@ -85,6 +99,7 @@ function App() {
         onDelete={deleteProject}
         onCreate={createProject}
         onCreateFromTemplate={handleCreateFromTemplate}
+        onCreateFromLessonPlan={handleCreateFromLessonPlan}
         onRename={(id, title) => updateProject(id, { title })}
         onAcceptChallenge={handleAcceptChallenge}
         language={language}
@@ -120,7 +135,7 @@ function App() {
         onBuild={recordActivity}
         initialPrompt={initialPrompt}
         isClassroom={classroom.isClassroom}
-        lessonTopic={classroom.lessonTopic}
+        lessonTopic={classroom.lessonTopic ?? lessonTopicOverride}
         classroomUrl={classroom.classroomUrl}
       />
     </>

@@ -137,6 +137,19 @@ export interface TranslationKeys {
   block_reject: string;
   block_pending_label: string;
   ai_disclosure: string;
+  lesson_plans_header: string;
+  lesson_gravity_title: string;
+  lesson_gravity_desc: string;
+  lesson_quiz_title: string;
+  lesson_quiz_desc: string;
+  lesson_music_title: string;
+  lesson_music_desc: string;
+  lesson_pet_title: string;
+  lesson_pet_desc: string;
+  lesson_rocket_title: string;
+  lesson_rocket_desc: string;
+  lesson_story_title: string;
+  lesson_story_desc: string;
 }
 
 export const translations: Record<Language, TranslationKeys> = {
@@ -282,6 +295,19 @@ export const translations: Record<Language, TranslationKeys> = {
     block_reject: "Remove this block",
     block_pending_label: "New",
     ai_disclosure: "I'm an AI buddy — not a real person!",
+    lesson_plans_header: "Lesson Plans",
+    lesson_gravity_title: "Gravity Bounce",
+    lesson_gravity_desc: "Learn physics by making a bouncing ball!",
+    lesson_quiz_title: "Quiz Game",
+    lesson_quiz_desc: "Build a quiz with right/wrong feedback!",
+    lesson_music_title: "Music Maker",
+    lesson_music_desc: "Create a piano with tappable keys!",
+    lesson_pet_title: "Virtual Pet",
+    lesson_pet_desc: "Care for a pet that grows when fed!",
+    lesson_rocket_title: "Rocket Launch",
+    lesson_rocket_desc: "Launch a rocket and dodge asteroids!",
+    lesson_story_title: "Story Chooser",
+    lesson_story_desc: "Write a choose-your-own-adventure!",
   },
   "zh-TW": {
     greeting: "嗨！我是你的建築夥伴。今天你想創造什麼呢？",
@@ -421,6 +447,19 @@ export const translations: Record<Language, TranslationKeys> = {
     block_reject: "移除這個積木",
     block_pending_label: "新",
     ai_disclosure: "我是 AI 小幫手 — 不是真人喔！",
+    lesson_plans_header: "課程計畫",
+    lesson_gravity_title: "重力彈跳",
+    lesson_gravity_desc: "做彈跳球學物理！",
+    lesson_quiz_title: "問答遊戲",
+    lesson_quiz_desc: "做有對錯反饋的問答！",
+    lesson_music_title: "音樂創作",
+    lesson_music_desc: "做可以點擊的鋼琴！",
+    lesson_pet_title: "虛擬寵物",
+    lesson_pet_desc: "照顧會長大的寵物！",
+    lesson_rocket_title: "火箭發射",
+    lesson_rocket_desc: "發射火箭閃避隕石！",
+    lesson_story_title: "故事選擇器",
+    lesson_story_desc: "寫一個選擇冒險故事！",
   },
   "zh-CN": {
     greeting: "嗨！我是你的建筑夥伴。今天你想创造什么呢？",
@@ -560,5 +599,18 @@ export const translations: Record<Language, TranslationKeys> = {
     block_reject: "移除这个积木",
     block_pending_label: "新",
     ai_disclosure: "我是 AI 小帮手 — 不是真人哦！",
+    lesson_plans_header: "课程计划",
+    lesson_gravity_title: "重力弹跳",
+    lesson_gravity_desc: "做弹跳球学物理！",
+    lesson_quiz_title: "问答游戏",
+    lesson_quiz_desc: "做有对错反馈的问答！",
+    lesson_music_title: "音乐创作",
+    lesson_music_desc: "做可以点击的钢琴！",
+    lesson_pet_title: "虚拟宠物",
+    lesson_pet_desc: "照顾会长大的宠物！",
+    lesson_rocket_title: "火箭发射",
+    lesson_rocket_desc: "发射火箭闪避陨石！",
+    lesson_story_title: "故事选择器",
+    lesson_story_desc: "写一个选择冒险故事！",
   },
 };

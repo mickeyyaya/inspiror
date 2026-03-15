@@ -16,6 +16,7 @@ import {
   STARTER_TEMPLATES,
   type StarterTemplate,
 } from "../constants/starterTemplates";
+import { LESSON_PLANS, type LessonPlan } from "../constants/lessonPlans";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { DailyChallengeCard } from "./DailyChallengeCard";
 import { BUDDY_AVATARS } from "../types/achievements";
@@ -31,6 +32,7 @@ interface ProjectCatalogProps {
   onDelete: (id: string) => void;
   onCreate: () => void;
   onCreateFromTemplate: (template: StarterTemplate) => void;
+  onCreateFromLessonPlan?: (plan: LessonPlan) => void;
   onRename?: (id: string, title: string) => void;
   onAcceptChallenge?: (prompt: string) => void;
   language: VoiceLanguage;
@@ -44,6 +46,7 @@ export function ProjectCatalog({
   onDelete,
   onCreate,
   onCreateFromTemplate,
+  onCreateFromLessonPlan,
   onRename,
   onAcceptChallenge,
   language,
@@ -275,6 +278,44 @@ export function ProjectCatalog({
             })}
           </div>
         </div>
+
+        {/* Lesson Plans */}
+        {onCreateFromLessonPlan && (
+          <div className="mb-8">
+            <h2
+              className="text-2xl font-extrabold text-[#333] mb-4"
+              style={{ textShadow: "1px 1px 0px var(--color-candy-blue)" }}
+            >
+              {t.lesson_plans_header}
+            </h2>
+            <div
+              className="flex gap-4 overflow-x-auto pb-3 -mx-2 px-2"
+              style={{ scrollbarWidth: "thin" }}
+              data-testid="lesson-plan-gallery"
+            >
+              {LESSON_PLANS.map((plan) => (
+                <button
+                  key={plan.id}
+                  onClick={() => onCreateFromLessonPlan(plan)}
+                  className="bg-white rounded-[2rem] border-4 border-[#222] shadow-[6px_6px_0px_#222] hover:shadow-[10px_10px_0px_#222] hover:-translate-y-2 transition-all duration-200 btn-squish flex-shrink-0 w-44 sm:w-52 flex flex-col items-center p-5 text-left"
+                  data-testid="lesson-plan-card"
+                  aria-label={t[plan.titleKey as keyof typeof t]}
+                >
+                  <span className="text-5xl mb-3 block">{plan.emoji}</span>
+                  <span className="font-extrabold text-[#222] text-base leading-tight mb-1 text-center">
+                    {t[plan.titleKey as keyof typeof t]}
+                  </span>
+                  <span className="text-[#333]/70 text-xs font-bold text-center leading-snug">
+                    {t[plan.descKey as keyof typeof t]}
+                  </span>
+                  <span className="mt-2 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[var(--color-candy-blue)]/20 border border-[var(--color-candy-blue)] text-[#222]">
+                    Ages {plan.ageRange}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Project Grid */}
         {sorted.length === 0 ? (
