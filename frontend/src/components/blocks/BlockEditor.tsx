@@ -13,7 +13,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { Blocks } from "lucide-react";
+import { Blocks, Check, X } from "lucide-react";
 import type { Block } from "../../types/block";
 import type { TranslationKeys } from "../../i18n/translations";
 import { BlockCard } from "./BlockCard";
@@ -21,6 +21,10 @@ import { BlockCard } from "./BlockCard";
 interface BlockEditorProps {
   blocks: Block[];
   onBlocksChange: (blocks: Block[]) => void;
+  onAcceptBlock?: (id: string) => void;
+  onRejectBlock?: (id: string) => void;
+  onAcceptAll?: () => void;
+  onRejectAll?: () => void;
   isLoading?: boolean;
   t?: TranslationKeys;
 }
@@ -28,6 +32,10 @@ interface BlockEditorProps {
 export function BlockEditor({
   blocks,
   onBlocksChange,
+  onAcceptBlock,
+  onRejectBlock,
+  onAcceptAll,
+  onRejectAll,
   isLoading = false,
   t,
 }: BlockEditorProps) {
@@ -42,6 +50,11 @@ export function BlockEditor({
 
   const sortedBlocks = useMemo(
     () => [...blocks].sort((a, b) => a.order - b.order),
+    [blocks],
+  );
+
+  const pendingCount = useMemo(
+    () => blocks.filter((b) => b.status === "pending").length,
     [blocks],
   );
 
@@ -127,6 +140,33 @@ export function BlockEditor({
         )}
       </div>
 
+      {/* Pending review banner */}
+      {pendingCount > 0 && (
+        <div className="px-3 py-2 bg-amber-50 border-b-2 border-amber-200 flex-shrink-0">
+          <p className="text-sm font-bold text-amber-800 mb-2">
+            {t?.block_pending_banner ?? "Review new blocks from your buddy!"}
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={onAcceptAll}
+              className="flex-1 flex items-center justify-center gap-1 px-3 py-1.5 rounded-xl bg-green-100 hover:bg-green-200 text-green-700 border-2 border-green-400 font-bold text-sm transition-colors"
+              aria-label={t?.block_accept_all ?? "Accept All"}
+            >
+              <Check size={14} strokeWidth={3} />
+              {t?.block_accept_all ?? "Accept All"}
+            </button>
+            <button
+              onClick={onRejectAll}
+              className="flex-1 flex items-center justify-center gap-1 px-3 py-1.5 rounded-xl bg-red-100 hover:bg-red-200 text-red-600 border-2 border-red-400 font-bold text-sm transition-colors"
+              aria-label={t?.block_reject_all ?? "Reject All"}
+            >
+              <X size={14} strokeWidth={3} />
+              {t?.block_reject_all ?? "Reject All"}
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Block list */}
       <div
         className="flex-1 overflow-y-auto p-3 space-y-2"
@@ -160,6 +200,8 @@ export function BlockEditor({
                 onToggle={handleToggle}
                 onParamChange={handleParamChange}
                 onDelete={handleDelete}
+                onAccept={onAcceptBlock}
+                onReject={onRejectBlock}
                 t={t}
               />
             ))}

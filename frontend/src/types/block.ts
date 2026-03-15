@@ -23,6 +23,8 @@ export interface BlockParam {
 
 export type BlockOrigin = "ai" | "template" | "remix";
 
+export type BlockStatus = "pending" | "accepted";
+
 export interface Block {
   id: string;
   type: BlockCategory;
@@ -34,4 +36,5 @@ export interface Block {
   css?: string;
   order: number;
   origin?: BlockOrigin;
+  status?: BlockStatus;
 }

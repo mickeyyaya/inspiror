@@ -129,6 +129,12 @@ export interface TranslationKeys {
   daily_completed: string;
   play_hud_tap: string;
   play_hud_drag: string;
+  block_pending_banner: string;
+  block_accept_all: string;
+  block_reject_all: string;
+  block_accept: string;
+  block_reject: string;
+  block_pending_label: string;
 }
 
 export const translations: Record<Language, TranslationKeys> = {
@@ -266,6 +272,12 @@ export const translations: Record<Language, TranslationKeys> = {
     daily_completed: "Completed!",
     play_hud_tap: "Tap to interact!",
     play_hud_drag: "Drag things around to play",
+    block_pending_banner: "Review new blocks from your buddy!",
+    block_accept_all: "Accept All",
+    block_reject_all: "Reject All",
+    block_accept: "Keep this block",
+    block_reject: "Remove this block",
+    block_pending_label: "New",
   },
   "zh-TW": {
     greeting: "嗨！我是你的建築夥伴。今天你想創造什麼呢？",
@@ -397,6 +409,12 @@ export const translations: Record<Language, TranslationKeys> = {
     daily_completed: "已完成！",
     play_hud_tap: "點擊來互動！",
     play_hud_drag: "拖動物件來玩",
+    block_pending_banner: "看看小幫手做的新積木！",
+    block_accept_all: "全部保留",
+    block_reject_all: "全部移除",
+    block_accept: "保留這個積木",
+    block_reject: "移除這個積木",
+    block_pending_label: "新",
   },
   "zh-CN": {
     greeting: "嗨！我是你的建筑夥伴。今天你想创造什么呢？",
@@ -528,5 +546,11 @@ export const translations: Record<Language, TranslationKeys> = {
     daily_completed: "已完成！",
     play_hud_tap: "点击来互动！",
     play_hud_drag: "拖动物件来玩",
+    block_pending_banner: "看看小帮手做的新积木！",
+    block_accept_all: "全部保留",
+    block_reject_all: "全部移除",
+    block_accept: "保留这个积木",
+    block_reject: "移除这个积木",
+    block_pending_label: "新",
   },
 };

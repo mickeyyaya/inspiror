@@ -220,12 +220,16 @@ export function EditorView({
         const newBlocks = (finalObj.blocks as Block[]).map((b) => ({
           ...b,
           origin: b.origin ?? ("ai" as const),
+          status: "pending" as const,
         }));
         checksRef.current = Array.isArray(finalObj.checks)
           ? (finalObj.checks as string[])
           : [];
         setBlocks(newBlocks);
+        // Show preview immediately so child can see what AI built
         setCurrentCode(compileBlocks(newBlocks, checksRef.current));
+        // Auto-open block panel so child can review and accept/reject
+        setIsBlockPanelOpen(true);
       }
       playChimeRef.current();
       recordBuildRef.current();
@@ -360,6 +364,40 @@ export function EditorView({
     [recordRemix],
   );
 
+  // Accept a single pending block
+  const handleAcceptBlock = useCallback((id: string) => {
+    setBlocks((prev) =>
+      prev.map((b) =>
+        b.id === id ? { ...b, status: "accepted" as const } : b,
+      ),
+    );
+  }, []);
+
+  // Reject a single pending block
+  const handleRejectBlock = useCallback((id: string) => {
+    setBlocks((prev) => {
+      const filtered = prev.filter((b) => b.id !== id);
+      return filtered.map((b, idx) => ({ ...b, order: idx }));
+    });
+  }, []);
+
+  // Accept all pending blocks
+  const handleAcceptAll = useCallback(() => {
+    setBlocks((prev) =>
+      prev.map((b) =>
+        b.status === "pending" ? { ...b, status: "accepted" as const } : b,
+      ),
+    );
+  }, []);
+
+  // Reject all pending blocks
+  const handleRejectAll = useCallback(() => {
+    setBlocks((prev) => {
+      const filtered = prev.filter((b) => b.status !== "pending");
+      return filtered.map((b, idx) => ({ ...b, order: idx }));
+    });
+  }, []);
+
   useCompileBlocks({
     blocks,
     checksRef,
@@ -461,6 +499,10 @@ export function EditorView({
         onClose={closeBlockPanel}
         blocks={blocks}
         onBlocksChange={handleBlocksChange}
+        onAcceptBlock={handleAcceptBlock}
+        onRejectBlock={handleRejectBlock}
+        onAcceptAll={handleAcceptAll}
+        onRejectAll={handleRejectAll}
         isLoading={isLoading}
         t={t}
       />
