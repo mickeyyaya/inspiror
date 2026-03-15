@@ -136,7 +136,7 @@ describe("BlockCard", () => {
         />,
       );
       const toggle = screen.getByRole("switch");
-      expect(toggle).toHaveClass("bg-[#39ff14]");
+      expect(toggle).toHaveClass("bg-[var(--color-candy-green)]");
     });
 
     it("toggle shows gray background class when block is disabled", () => {

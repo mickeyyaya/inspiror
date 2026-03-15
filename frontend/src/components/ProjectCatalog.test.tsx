@@ -96,14 +96,14 @@ describe("ProjectCatalog", () => {
 
   it("shows singular project count", () => {
     renderCatalog({ projects: [makeProject()] });
-    expect(screen.getByText(/1 project /)).toBeInTheDocument();
+    expect(screen.getByText(/1 project/)).toBeInTheDocument();
   });
 
   it("shows plural project count", () => {
     renderCatalog({
       projects: [makeProject(), makeProject({ id: "p2", title: "Two" })],
     });
-    expect(screen.getByText(/2 projects /)).toBeInTheDocument();
+    expect(screen.getByText(/2 projects/)).toBeInTheDocument();
   });
 
   // --- timeAgo ---
