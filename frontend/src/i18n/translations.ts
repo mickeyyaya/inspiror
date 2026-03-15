@@ -136,6 +136,7 @@ export interface TranslationKeys {
   block_accept: string;
   block_reject: string;
   block_pending_label: string;
+  ai_disclosure: string;
 }
 
 export const translations: Record<Language, TranslationKeys> = {
@@ -280,6 +281,7 @@ export const translations: Record<Language, TranslationKeys> = {
     block_accept: "Keep this block",
     block_reject: "Remove this block",
     block_pending_label: "New",
+    ai_disclosure: "I'm an AI buddy — not a real person!",
   },
   "zh-TW": {
     greeting: "嗨！我是你的建築夥伴。今天你想創造什麼呢？",
@@ -418,6 +420,7 @@ export const translations: Record<Language, TranslationKeys> = {
     block_accept: "保留這個積木",
     block_reject: "移除這個積木",
     block_pending_label: "新",
+    ai_disclosure: "我是 AI 小幫手 — 不是真人喔！",
   },
   "zh-CN": {
     greeting: "嗨！我是你的建筑夥伴。今天你想创造什么呢？",
@@ -556,5 +559,6 @@ export const translations: Record<Language, TranslationKeys> = {
     block_accept: "保留这个积木",
     block_reject: "移除这个积木",
     block_pending_label: "新",
+    ai_disclosure: "我是 AI 小帮手 — 不是真人哦！",
   },
 };

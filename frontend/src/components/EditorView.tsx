@@ -42,6 +42,8 @@ import {
   getTopicLabel,
   getTopicEmoji,
 } from "../constants/lessonChips";
+import { moderateInput } from "../utils/moderateContent";
+import { MODERATION_MESSAGES } from "../constants/moderation";
 
 if (!import.meta.env.VITE_API_URL && import.meta.env.MODE !== "development") {
   console.warn(
@@ -285,7 +287,7 @@ export function EditorView({
           autoResumeTimerRef.current = null;
           const nextMessages: ChatMessage[] = [
             ...messagesRef.current,
-            withId("user", msgStr)
+            withId("user", msgStr),
           ];
           setMessages(nextMessages);
           submit({
@@ -337,6 +339,21 @@ export function EditorView({
     }
     stopListening();
     resetAutoFixCount();
+
+    // Content moderation check
+    const modResult = moderateInput(inputValue);
+    if (modResult.isBlocked) {
+      playBuzzer();
+      triggerEmotion("worried", 2000);
+      const langKey = language as keyof typeof MODERATION_MESSAGES;
+      const msg =
+        MODERATION_MESSAGES[langKey]?.inputBlocked ??
+        MODERATION_MESSAGES["en-US"].inputBlocked;
+      setMessages((prev) => [...prev, withId("assistant", msg)]);
+      setInputValue("");
+      return;
+    }
+
     playPop();
     if (inputValue.trim().length >= 20) {
       recordDescribe();

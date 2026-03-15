@@ -63,6 +63,7 @@ interface ChatHeaderProps {
     aria_hide_chat: string;
     badge_title: string;
     buddy_name: string;
+    ai_disclosure?: string;
   };
 }
 
@@ -137,6 +138,11 @@ export function ChatHeader({
         >
           {t.buddy_name}
         </span>
+        {t.ai_disclosure && (
+          <span className="text-[10px] text-[#222]/60 font-bold truncate">
+            {t.ai_disclosure}
+          </span>
+        )}
       </div>
       <div className="flex items-center gap-1.5 flex-shrink-0">
         <button
