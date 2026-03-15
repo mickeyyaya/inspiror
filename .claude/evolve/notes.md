@@ -586,3 +586,27 @@
 - **API docs:** Documented _canvasX/_canvasY properties.
 - **Tests:** 563 frontend + 20 backend = 583 total, all passing.
 - **5-cycle LLM quality session complete.** Fixed: self-verification (was no-op), broken examples, collision spam, timer stacking, missing game patterns, common mistake prevention, mouse coordinates.
+
+## Cycle 56 — 2026-03-15
+- **Tasks:** Mandatory interactivity in system prompt + reordered block examples + API reference restructured
+- **Type:** Fix (LLM interactivity — CRITICAL)
+- **System prompt:** Added "EVERY CREATION MUST BE INTERACTIVE" CRITICAL rule requiring tap/click/drag handlers with multi-sensory feedback (burst + tween + sound) for ALL creation types. Updated self-check items 9-10.
+- **Block examples:** Reordered — interactive examples first (tap-to-spawn, drag, tap-sound, tap-color-change). Added "INTERACTIVE:" labels. New tap-color-change example for passive animations.
+- **API reference:** Touch & Pointer section moved from position 8 to position 2 with "ALWAYS include" label.
+
+## Cycle 57 — 2026-03-15
+- **Tasks:** Rich interactive feedback in all 6 starter templates
+- All templates now have burst + tween + sound on tap. Previously bouncing-emoji and emoji-rain were 100% passive. All now show "Tap to..." hint text.
+
+## Cycle 58 — 2026-03-15
+- **Tasks:** Interactive default blocks
+- New projects now show dark background + yellow title + sparkles + tap-anywhere magic (colorful burst + rising tone + screen shake). Previously entirely passive.
+
+## Cycle 59 — 2026-03-15
+- **Tasks:** Interactive suggestion chips
+- Updated 5 ambiguous chips in EN/zh-TW/zh-CN to emphasize tap interaction (clock, ocean, todo, volcano, weather).
+
+## Cycle 60 — 2026-03-15
+- **Tasks:** Pulsing interaction hint block example + context-aware hints
+- Added "ALWAYS INCLUDE: Interaction Hint" as first block example with pulsing opacity. System prompt now requires context-specific hints.
+- **5-cycle interactivity session complete.** Every layer now mandates interaction: prompt, examples, templates, defaults, chips.
