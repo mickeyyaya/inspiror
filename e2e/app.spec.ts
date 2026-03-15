@@ -41,7 +41,7 @@ test.describe("Inspiror App - E2E", () => {
             "first-remix",
             "first-explore",
           ],
-          stats: { builds: 100, debugs: 100, remixes: 100, explores: 100 },
+          stats: { builds: 0, debugs: 0, remixes: 0, explores: 0 },
         }),
       );
       // Seed a project so the app opens directly in the editor view

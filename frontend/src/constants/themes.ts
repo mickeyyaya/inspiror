@@ -262,236 +262,231 @@ export const APP_THEMES: AppTheme[] = [
     name: "Candy Polka",
     emoji: "🍬",
     backgroundColor: "#fffaf0",
-    backgroundImage: "radial-gradient(var(--color-candy-yellow) 4px, transparent 4px), radial-gradient(var(--color-candy-pink) 4px, transparent 4px)",
-    backgroundSize: "40px 40px",
-    backgroundPosition: "0 0, 20px 20px"
+    backgroundImage: "url('/assets/theme-legacy-0.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "mint-stripes",
     name: "Mint Stripes",
     emoji: "🌿",
     backgroundColor: "var(--color-candy-green)",
-    backgroundImage: "repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.4) 10px, rgba(255,255,255,0.4) 20px)"
+    backgroundImage: "url('/assets/theme-legacy-1.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "purple-grid",
     name: "Purple Grid",
     emoji: "🟪",
     backgroundColor: "var(--color-candy-purple)",
-    backgroundImage: "linear-gradient(white 2px, transparent 2px), linear-gradient(90deg, white 2px, transparent 2px), linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)",
-    backgroundSize: "50px 50px, 50px 50px, 10px 10px, 10px 10px",
-    backgroundPosition: "-2px -2px, -2px -2px, -1px -1px, -1px -1px"
+    backgroundImage: "url('/assets/theme-legacy-2.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "starry-night",
     name: "Starry Night",
     emoji: "⭐",
     backgroundColor: "#2c3e50",
-    backgroundImage: "radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 4px), radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 3px)",
-    backgroundSize: "100px 100px, 50px 50px",
-    backgroundPosition: "0 0, 25px 25px"
+    backgroundImage: "url('/assets/theme-legacy-3.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "sunny-chevrons",
     name: "Sunny Chevrons",
     emoji: "☀️",
     backgroundColor: "var(--color-candy-yellow)",
-    backgroundImage: "linear-gradient(135deg, rgba(255,255,255,0.6) 25%, transparent 25%), linear-gradient(225deg, rgba(255,255,255,0.6) 25%, transparent 25%), linear-gradient(45deg, rgba(255,255,255,0.6) 25%, transparent 25%), linear-gradient(315deg, rgba(255,255,255,0.6) 25%, transparent 25%)",
-    backgroundSize: "40px 40px",
-    backgroundPosition: "20px 0, 20px 0, 0 0, 0 0"
+    backgroundImage: "url('/assets/theme-legacy-4.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "watermelon",
     name: "Watermelon",
     emoji: "🍉",
     backgroundColor: "var(--color-candy-pink)",
-    backgroundImage: "radial-gradient(#222 3px, transparent 4px)",
-    backgroundSize: "40px 40px",
-    backgroundPosition: "0 0, 20px 20px"
+    backgroundImage: "url('/assets/theme-legacy-5.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "lemonade",
     name: "Lemonade",
     emoji: "🍋",
     backgroundColor: "#fff3b0",
-    backgroundImage: "repeating-radial-gradient(circle, #fff 0, #fff 10px, transparent 10px, transparent 20px)",
-    backgroundSize: "60px 60px"
+    backgroundImage: "url('/assets/theme-legacy-6.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "bubblegum",
     name: "Bubblegum",
     emoji: "🎈",
     backgroundColor: "#ffb7b2",
-    backgroundImage: "radial-gradient(circle, #ff9aa2 20%, transparent 20%), radial-gradient(circle, #ff9aa2 20%, transparent 20%)",
-    backgroundSize: "50px 50px",
-    backgroundPosition: "0 0, 25px 25px"
+    backgroundImage: "url('/assets/theme-legacy-7.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "electric-blue",
     name: "Electric Blue",
     emoji: "⚡",
     backgroundColor: "var(--color-candy-blue)",
-    backgroundImage: "repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.5) 10px, rgba(255,255,255,0.5) 20px)"
+    backgroundImage: "url('/assets/theme-legacy-8.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "neon-lights",
     name: "Neon Lights",
     emoji: "🏮",
     backgroundColor: "#111",
-    backgroundImage: "linear-gradient(45deg, var(--color-candy-pink) 25%, transparent 25%, transparent 75%, var(--color-candy-blue) 75%, var(--color-candy-blue)), linear-gradient(45deg, var(--color-candy-pink) 25%, transparent 25%, transparent 75%, var(--color-candy-blue) 75%, var(--color-candy-blue))",
-    backgroundSize: "60px 60px",
-    backgroundPosition: "0 0, 30px 30px"
+    backgroundImage: "url('/assets/theme-legacy-9.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "checkerboard",
     name: "Checkerboard",
     emoji: "🏁",
     backgroundColor: "#fff",
-    backgroundImage: "linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc), linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc)",
-    backgroundSize: "40px 40px",
-    backgroundPosition: "0 0, 20px 20px"
+    backgroundImage: "url('/assets/theme-legacy-10.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "rainbow-gradient",
     name: "Rainbow",
     emoji: "🌈",
     backgroundColor: "#ff7b00",
-    backgroundImage: "linear-gradient(45deg, var(--color-candy-pink), var(--color-candy-orange), var(--color-candy-yellow), var(--color-candy-green), var(--color-candy-blue), var(--color-candy-purple))",
+    backgroundImage: "url('/assets/theme-legacy-11.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "sunset",
     name: "Sunset",
     emoji: "🌅",
     backgroundColor: "#ff9f1c",
-    backgroundImage: "linear-gradient(to bottom, var(--color-candy-purple), var(--color-candy-pink), var(--color-candy-orange), var(--color-candy-yellow))"
+    backgroundImage: "url('/assets/theme-legacy-12.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "blue-sky",
     name: "Blue Sky",
     emoji: "☁️",
     backgroundColor: "#87CEEB",
-    backgroundImage: "radial-gradient(circle at 20% 30%, white 10%, transparent 10%), radial-gradient(circle at 80% 60%, white 15%, transparent 15%)",
-    backgroundSize: "200px 200px"
+    backgroundImage: "url('/assets/theme-legacy-13.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "grass-field",
     name: "Grass Field",
     emoji: "🌱",
     backgroundColor: "#7CFC00",
-    backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(0,100,0,0.1) 20px, rgba(0,100,0,0.1) 40px)"
+    backgroundImage: "url('/assets/theme-legacy-14.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "fireball",
     name: "Fireball",
     emoji: "🔥",
     backgroundColor: "var(--color-candy-orange)",
-    backgroundImage: "radial-gradient(circle, var(--color-candy-yellow) 10%, transparent 40%)",
-    backgroundSize: "60px 60px"
+    backgroundImage: "url('/assets/theme-legacy-15.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "cotton-candy",
     name: "Cotton Candy",
     emoji: "🍡",
     backgroundColor: "var(--color-candy-pink)",
-    backgroundImage: "radial-gradient(circle, var(--color-candy-blue) 30%, transparent 30%)",
-    backgroundSize: "80px 80px",
-    backgroundPosition: "0 0, 40px 40px"
+    backgroundImage: "url('/assets/theme-legacy-16.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "gummy-bear",
     name: "Gummy Bear",
     emoji: "🧸",
     backgroundColor: "var(--color-candy-green)",
-    backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.4) 20%, transparent 20%)",
-    backgroundSize: "30px 30px"
+    backgroundImage: "url('/assets/theme-legacy-17.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "chocolate-chip",
     name: "Chocolate Chip",
     emoji: "🍪",
     backgroundColor: "#D2B48C",
-    backgroundImage: "radial-gradient(circle, #8B4513 15%, transparent 15%)",
-    backgroundSize: "50px 50px",
-    backgroundPosition: "10px 10px, 35px 35px"
+    backgroundImage: "url('/assets/theme-legacy-18.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "strawberry",
     name: "Strawberry",
     emoji: "🍓",
     backgroundColor: "#ff4d4d",
-    backgroundImage: "radial-gradient(circle, #fff 10%, transparent 10%)",
-    backgroundSize: "20px 20px",
-    backgroundPosition: "0 0, 10px 10px"
+    backgroundImage: "url('/assets/theme-legacy-19.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "magic-carpet",
     name: "Magic Carpet",
     emoji: "🧞",
     backgroundColor: "var(--color-candy-purple)",
-    backgroundImage: "repeating-linear-gradient(45deg, rgba(255,255,255,0.2) 0, rgba(255,255,255,0.2) 10px, transparent 10px, transparent 20px), repeating-linear-gradient(-45deg, rgba(255,255,255,0.2) 0, rgba(255,255,255,0.2) 10px, transparent 10px, transparent 20px)"
+    backgroundImage: "url('/assets/theme-legacy-20.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "treasure-map",
     name: "Treasure Map",
     emoji: "🗺️",
     backgroundColor: "#F5DEB3",
-    backgroundImage: "linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px)",
-    backgroundSize: "30px 30px"
+    backgroundImage: "url('/assets/theme-legacy-21.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "fairy-dust",
     name: "Fairy Dust",
     emoji: "✨",
     backgroundColor: "var(--color-candy-pink)",
-    backgroundImage: "radial-gradient(white 1px, transparent 1px)",
-    backgroundSize: "20px 20px",
-    backgroundPosition: "0 0, 10px 10px"
+    backgroundImage: "url('/assets/theme-legacy-22.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "space-void",
     name: "Space",
     emoji: "🚀",
     backgroundColor: "#0B0C10",
-    backgroundImage: "radial-gradient(white 2px, transparent 3px)",
-    backgroundSize: "40px 40px",
-    backgroundPosition: "0 0, 20px 20px"
+    backgroundImage: "url('/assets/theme-legacy-23.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "ocean-depths",
     name: "Ocean Depths",
     emoji: "🦑",
     backgroundColor: "#001f3f",
-    backgroundImage: "linear-gradient(to top, #001f3f, var(--color-candy-blue))"
+    backgroundImage: "url('/assets/theme-legacy-24.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "watermelon-sugar",
     name: "Watermelon Sugar",
     emoji: "🍉",
     backgroundColor: "var(--color-candy-green)",
-    backgroundImage: "linear-gradient(to bottom, var(--color-candy-pink) 50%, var(--color-candy-green) 50%)"
+    backgroundImage: "url('/assets/theme-legacy-25.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "confetti-party",
     name: "Confetti",
     emoji: "🎉",
     backgroundColor: "#fff",
-    backgroundImage: "radial-gradient(circle, var(--color-candy-pink) 3px, transparent 4px), radial-gradient(circle, var(--color-candy-blue) 3px, transparent 4px), radial-gradient(circle, var(--color-candy-yellow) 3px, transparent 4px)",
-    backgroundSize: "40px 40px",
-    backgroundPosition: "0 0, 15px 15px, 30px 30px"
+    backgroundImage: "url('/assets/theme-legacy-26.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "tiger-stripes",
     name: "Tiger Stripes",
     emoji: "🐅",
     backgroundColor: "var(--color-candy-orange)",
-    backgroundImage: "repeating-linear-gradient(-45deg, #222, #222 10px, transparent 10px, transparent 20px)"
+    backgroundImage: "url('/assets/theme-legacy-27.png')",
+    backgroundSize: "400px 400px"
   },
   {
     id: "honeycomb",
     name: "Honeycomb",
     emoji: "🐝",
     backgroundColor: "var(--color-candy-yellow)",
-    backgroundImage: "radial-gradient(circle, rgba(0,0,0,0.1) 10px, transparent 11px)",
-    backgroundSize: "30px 30px"
+    backgroundImage: "url('/assets/theme-legacy-28.png')",
+    backgroundSize: "400px 400px"
   }
 ];

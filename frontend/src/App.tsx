@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { useProjects } from "./hooks/useProjects";
 import { useStreak } from "./hooks/useStreak";
 import { useTheme } from "./hooks/useTheme";
+import { useClassroomMode } from "./hooks/useClassroomMode";
 import type { VoiceLanguage } from "./hooks/useVoice";
 import { translations, type TranslationKeys } from "./i18n/translations";
 import { ProjectCatalog } from "./components/ProjectCatalog";
@@ -17,6 +18,7 @@ import "./index.css";
 function App() {
   useTheme();
   const [language, setLanguage] = useState<VoiceLanguage>("en-US");
+  const classroom = useClassroomMode();
 
   const {
     projects,
@@ -70,6 +72,11 @@ function App() {
     [createProject, updateProject, language],
   );
 
+  // In classroom mode, auto-create a project and skip catalog
+  if (classroom.isClassroom && !currentProject) {
+    createProject();
+  }
+
   if (!currentProject) {
     return (
       <ProjectCatalog
@@ -112,6 +119,9 @@ function App() {
         onToggleLanguage={toggleLanguage}
         onBuild={recordActivity}
         initialPrompt={initialPrompt}
+        isClassroom={classroom.isClassroom}
+        lessonTopic={classroom.lessonTopic}
+        classroomUrl={classroom.classroomUrl}
       />
     </>
   );

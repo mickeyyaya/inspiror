@@ -8,6 +8,10 @@ export interface BlockPanelDrawerProps {
   onClose: () => void;
   blocks: Block[];
   onBlocksChange: (blocks: Block[]) => void;
+  onAcceptBlock?: (id: string) => void;
+  onRejectBlock?: (id: string) => void;
+  onAcceptAll?: () => void;
+  onRejectAll?: () => void;
   isLoading: boolean;
   t: TranslationKeys;
 }
@@ -17,6 +21,10 @@ export function BlockPanelDrawer({
   onClose,
   blocks,
   onBlocksChange,
+  onAcceptBlock,
+  onRejectBlock,
+  onAcceptAll,
+  onRejectAll,
   isLoading,
   t,
 }: BlockPanelDrawerProps) {
@@ -45,6 +53,10 @@ export function BlockPanelDrawer({
       <BlockEditor
         blocks={blocks}
         onBlocksChange={onBlocksChange}
+        onAcceptBlock={onAcceptBlock}
+        onRejectBlock={onRejectBlock}
+        onAcceptAll={onAcceptAll}
+        onRejectAll={onRejectAll}
         isLoading={isLoading}
         t={t}
       />
