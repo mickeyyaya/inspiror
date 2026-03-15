@@ -7,6 +7,12 @@ export interface ChatMessage {
   type?: "tip";
 }
 
+export interface ProjectSessionStats {
+  totalBuilds: number;
+  totalMessages: number;
+  blockCategories: string[];
+}
+
 export interface Project {
   id: string;
   title: string;
@@ -16,4 +22,5 @@ export interface Project {
   currentCode: string;
   blocks?: Block[];
   version?: number;
+  sessionStats?: ProjectSessionStats;
 }

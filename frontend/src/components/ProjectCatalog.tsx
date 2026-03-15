@@ -398,10 +398,33 @@ export function ProjectCatalog({
                           )}
                         </h3>
                       )}
-                      <div className="flex items-center gap-2 text-[#222]/70 font-bold text-sm mb-6 bg-white/30 w-fit px-3 py-1 rounded-full border-2 border-[#222]/20">
+                      <div className="flex items-center gap-2 text-[#222]/70 font-bold text-sm mb-3 bg-white/30 w-fit px-3 py-1 rounded-full border-2 border-[#222]/20">
                         <Clock size={16} strokeWidth={2.5} />
                         <span>{timeAgo(project.updatedAt)}</span>
                       </div>
+                      {project.sessionStats && (
+                        <div
+                          className="flex flex-wrap gap-1.5 mb-4"
+                          data-testid="session-stats"
+                        >
+                          {project.sessionStats.totalBuilds > 0 && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/50 border border-[#222]/20 text-[#222]">
+                              🔨 {project.sessionStats.totalBuilds} builds
+                            </span>
+                          )}
+                          {project.sessionStats.totalMessages > 2 && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/50 border border-[#222]/20 text-[#222]">
+                              💬 {project.sessionStats.totalMessages} msgs
+                            </span>
+                          )}
+                          {project.sessionStats.blockCategories.length > 0 && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/50 border border-[#222]/20 text-[#222]">
+                              🧩 {project.sessionStats.blockCategories.length}{" "}
+                              skills
+                            </span>
+                          )}
+                        </div>
+                      )}
                       <div className="mt-auto flex items-center gap-3">
                         <button
                           onClick={() => onOpen(project.id)}

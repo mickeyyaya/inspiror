@@ -512,12 +512,22 @@ export function EditorView({
   const showSuggestions =
     messages.length === 1 && messages[0]?.role === "assistant" && !isLoading;
 
+  const sessionStats = useMemo(
+    () => ({
+      totalBuilds: sessionBuildsRef.current,
+      totalMessages: messages.length,
+      blockCategories: [...new Set(blocks.map((b) => b.type))],
+    }),
+    [messages.length, blocks],
+  );
+
   usePersistProject({
     projectId: project.id,
     messages,
     currentCode,
     blocks,
     onUpdate,
+    sessionStats,
   });
 
   const blockCount = blocks.filter((b) => b.enabled).length;

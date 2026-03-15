@@ -1,5 +1,9 @@
 import { useEffect, useRef } from "react";
-import type { ChatMessage, Project } from "../types/project";
+import type {
+  ChatMessage,
+  Project,
+  ProjectSessionStats,
+} from "../types/project";
 import type { Block } from "../types/block";
 
 const SAVE_DEBOUNCE_MS = 300;
@@ -11,8 +15,11 @@ interface UsePersistProjectOptions {
   blocks: Block[];
   onUpdate: (
     projectId: string,
-    updates: Partial<Pick<Project, "messages" | "currentCode" | "blocks">>,
+    updates: Partial<
+      Pick<Project, "messages" | "currentCode" | "blocks" | "sessionStats">
+    >,
   ) => void;
+  sessionStats?: ProjectSessionStats;
 }
 
 export function usePersistProject({
@@ -21,6 +28,7 @@ export function usePersistProject({
   currentCode,
   blocks,
   onUpdate,
+  sessionStats,
 }: UsePersistProjectOptions): void {
   const saveTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
@@ -33,7 +41,7 @@ export function usePersistProject({
   useEffect(() => {
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     saveTimerRef.current = setTimeout(() => {
-      onUpdate(projectId, { currentCode, blocks });
+      onUpdate(projectId, { currentCode, blocks, sessionStats });
     }, SAVE_DEBOUNCE_MS);
     return () => {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);

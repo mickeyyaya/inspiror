@@ -5,6 +5,23 @@ import { VitePWA } from "vite-plugin-pwa";
 
 // https://vite.dev/config/
 export default defineConfig({
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Split heavy dependencies into separate chunks for parallel loading
+          "vendor-react": ["react", "react-dom"],
+          "vendor-ai": ["@ai-sdk/react"],
+          "vendor-dnd": [
+            "@dnd-kit/core",
+            "@dnd-kit/sortable",
+            "@dnd-kit/utilities",
+          ],
+          "vendor-icons": ["lucide-react"],
+        },
+      },
+    },
+  },
   plugins: [
     react(),
     tailwindcss(),
@@ -31,8 +48,10 @@ export default defineConfig({
         categories: ["education", "kids"],
       },
       workbox: {
-        // Precache app shell assets (JS, CSS, HTML, fonts)
-        globPatterns: ["**/*.{js,css,html,svg,ttf,woff,woff2,png,ico}"],
+        // Precache app shell assets (JS, CSS, HTML, fonts) — exclude large theme PNGs
+        globPatterns: ["**/*.{js,css,html,svg,ttf,woff,woff2,ico}"],
+        // Cache theme images at runtime instead of precaching
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
         // Runtime caching for API calls
         runtimeCaching: [
           {
