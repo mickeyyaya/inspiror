@@ -551,3 +551,38 @@
 - **Deploy:** SUCCESS (commit 1864b80, pushed to main)
 - **5-cycle innovate session complete.** Shipped: buddy personalities, personalized greetings, progress bar, session recap, daily challenges, sound blocks, play mode HUD.
 - **Remaining backlog:** Dark mode (multi-cycle refactor), "remix this" on templates, project card thumbnails, content moderation (COPPA deadline April 22), community gallery
+
+## Cycle 51 — 2026-03-15
+- **Tasks:** Critical LLM quality — self-verification allowlist, broken examples, API docs
+- **Type:** Fix (LLM quality — CRITICAL)
+- **Self-verification:** Expanded allowlist from 7 to 15 patterns. Previously ALL suggested check examples failed the allowlist — verification was a complete no-op. Now accepts: typeof game.get, entity property access (.width/.height/.x/.y/.value), game.get !== null, game.width()/height().
+- **Broken examples fixed:** tap-note had double-quoting (always played A4), collision-sound used wrong entity IDs (never fired). Replaced with 3 working sound examples.
+- **API docs:** Documented collision per-frame behavior, physics auto-step, timer stacking, onTap/onTapAnywhere identity, addEntity merge behavior. Added rules 7-9.
+- **Tests:** 563 frontend + 20 backend = 583 total. 4 new allowlist tests.
+
+## Cycle 52 — 2026-03-15
+- **Tasks:** Engine robustness — collision debouncing + timer idempotency
+- **Type:** Fix (engine — HIGH)
+- **Collision debouncing:** onCollision and onOverlap now fire once per contact, wait until entities separate before firing again. Eliminates score/pickup glitches from per-frame firing.
+- **Timer idempotency:** game.every() auto-clears existing intervals for the same blockId. Prevents exponential timer stacking on hot reload.
+- **API docs:** Updated collision and timer docs to reflect new behavior. Removed workaround instructions.
+
+## Cycle 53 — 2026-03-15
+- **Tasks:** 3 new block examples (tap-to-spawn, overlap collection, game over)
+- **Type:** Feature (LLM quality — examples)
+- **New examples:** Tap-to-spawn (entity creation at tap location with sound + particles), overlap collection (circle collision with repositioning), game over (win condition with victory screen + celebratory melody).
+- **Impact:** LLM now has correct worked examples for the 3 most commonly requested game patterns.
+
+## Cycle 54 — 2026-03-15
+- **Tasks:** Common mistakes section + expanded self-check in LLM prompt
+- **Type:** Fix (LLM quality — prompt)
+- **Common mistakes:** 8 explicit anti-patterns: double movement, wrong blockId, missing null checks, entity ID typos, string param double-quoting, empty canvas, collision without entities, physics on static elements.
+- **Self-check:** Expanded from 10 to 13 items: entity existence for collisions, double-movement, string param quoting.
+
+## Cycle 55 — 2026-03-15
+- **Tasks:** Canvas-relative coordinates for game.on mouse/touch events
+- **Type:** Fix (engine — MEDIUM)
+- **Fix:** game.on() now enriches mouse/touch events with e._canvasX and e._canvasY computed from canvas getBoundingClientRect. Fixes drawing apps and pointer-based games that used raw window coordinates.
+- **API docs:** Documented _canvasX/_canvasY properties.
+- **Tests:** 563 frontend + 20 backend = 583 total, all passing.
+- **5-cycle LLM quality session complete.** Fixed: self-verification (was no-op), broken examples, collision spam, timer stacking, missing game patterns, common mistake prevention, mouse coordinates.

@@ -679,6 +679,36 @@
       "date": "2026-03-14",
       "decision": "completed",
       "cycle": 50
+    },
+    {
+      "task": "Critical LLM quality — self-verification allowlist, broken examples, API docs",
+      "date": "2026-03-15",
+      "decision": "completed",
+      "cycle": 51
+    },
+    {
+      "task": "Engine robustness — collision debouncing + timer idempotency",
+      "date": "2026-03-15",
+      "decision": "completed",
+      "cycle": 52
+    },
+    {
+      "task": "3 new block examples (tap-to-spawn, overlap collection, game over)",
+      "date": "2026-03-15",
+      "decision": "completed",
+      "cycle": 53
+    },
+    {
+      "task": "Common mistakes section + expanded self-check in LLM prompt",
+      "date": "2026-03-15",
+      "decision": "completed",
+      "cycle": 54
+    },
+    {
+      "task": "Canvas-relative coordinates for game.on mouse/touch events",
+      "date": "2026-03-15",
+      "decision": "completed",
+      "cycle": 55
     }
   ],
   "failedApproaches": [],
