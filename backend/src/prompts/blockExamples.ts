@@ -171,6 +171,45 @@ export const BLOCK_EXAMPLES = `
   "order": 16
 }
 
+### Event Block (tap to spawn entities at tap location)
+{
+  "id": "tap-spawn",
+  "type": "event",
+  "label": "Tap to Create",
+  "emoji": "🎯",
+  "enabled": true,
+  "params": [
+    { "key": "emoji", "label": "Spawn Emoji", "type": "string", "value": "⭐" },
+    { "key": "size", "label": "Size", "type": "number", "value": 32, "min": 16, "max": 64, "step": 8 }
+  ],
+  "code": "var _spawnCount = 0;\\ngame.onTapAnywhere('tap-spawn', function(x, y) {\\n  _spawnCount++;\\n  var id = 'spawned-' + _spawnCount;\\n  game.addEntity(id, { text: {{emoji}}, x: x - {{size}}/2, y: y - {{size}}/2, width: {{size}}, height: {{size}}, fontSize: {{size}}, scaleX: 0, scaleY: 0 });\\n  game.tween(id, { scaleX: 1, scaleY: 1 }, 300, { easing: 'bounce' });\\n  game.burst(x, y, { count: 8, spread: 3, colors: ['#FDE047', '#C084FC'], shape: 'star' });\\n  game.playTone(400 + _spawnCount * 30, 100, { type: 'sine', volume: 0.3 });\\n});",
+  "order": 5
+}
+
+### Collision Block (overlap collection with repositioning)
+{
+  "id": "collect-coins",
+  "type": "collision",
+  "label": "Collect Coins",
+  "emoji": "🪙",
+  "enabled": true,
+  "params": [],
+  "code": "game.onOverlap('player', 'coin', 'collect-coins', function(p, c) {\\n  game.set('score', (game.get('score') || 0) + 1);\\n  game.burst(c.x + c.width/2, c.y + c.height/2, { count: 10, colors: ['#FDE047', '#FBBF24'], shape: 'circle' });\\n  game.playTone(800, 80, { type: 'sine', volume: 0.3 });\\n  c.x = game.randomRange(20, game.width() - 50);\\n  c.y = game.randomRange(20, game.height() - 50);\\n});",
+  "order": 5
+}
+
+### Event Block (game over when condition met)
+{
+  "id": "game-over",
+  "type": "event",
+  "label": "Game Over",
+  "emoji": "🏁",
+  "enabled": true,
+  "params": [{ "key": "target", "label": "Score to Win", "type": "number", "value": 10, "min": 1, "max": 100, "step": 1 }],
+  "code": "var _gameOver = false;\\ngame.onUpdate('game-over', function() {\\n  if (_gameOver) return;\\n  var score = game.get('score') || 0;\\n  if (score >= {{target}}) {\\n    _gameOver = true;\\n    game.addText('win-text', 'You Win!', game.width()/2, game.height()/2 - 30, { font: 'bold 48px sans-serif', color: '#FDE047', align: 'center', shadowBlur: 20, shadowColor: '#FDE047' });\\n    game.addText('win-score', 'Score: ' + score, game.width()/2, game.height()/2 + 30, { font: 'bold 24px sans-serif', color: '#ffffff', align: 'center' });\\n    game.burst(game.width()/2, game.height()/2, { count: 40, spread: 8, colors: ['#FF6B9D', '#FDE047', '#67E8F9', '#C084FC'], shape: 'star', life: 60 });\\n    game.playTone(523, 200, { type: 'sine' });\\n    game.after('game-over', 200, function() { game.playTone(659, 200, { type: 'sine' }); });\\n    game.after('game-over', 400, function() { game.playTone(784, 400, { type: 'sine' }); });\\n  }\\n});",
+  "order": 20
+}
+
 ### Sound Block (score increase celebration)
 {
   "id": "score-sound",
