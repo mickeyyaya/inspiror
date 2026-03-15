@@ -79,11 +79,20 @@ game.addText("scoreText", "Score: 0", 10, 10, {
   height: {{size}},
   fontSize: {{size}}
 });
+game.addText("tapHint", "Tap the star!", game.width() / 2, game.height() - 30, {
+  font: "bold 20px sans-serif",
+  color: "#ffe66d",
+  align: "center"
+});
 game.onTap("catch-star-entity", function(x, y, entity) {
   if (!entity || entity._id !== "star") return;
   var score = game.get("score") + 1;
   game.set("score", score);
   game.updateText("scoreText", "Score: " + score);
+  game.burst(star.x + {{size}}/2, star.y + {{size}}/2, { count: 12, spread: 4, colors: ["#FDE047", "#FBBF24", "#FB923C"], shape: "star", life: 30 });
+  game.tween(star, { scaleX: 1.4, scaleY: 1.4 }, 100, { easing: "easeOut", onComplete: function() { game.tween(star, { scaleX: 1, scaleY: 1 }, 100); } });
+  game.playTone(400 + score * 40, 120, { type: "sine", volume: 0.3 });
+  game.shake(2, 100);
   star.x = Math.random() * (game.width() - {{size}});
   star.y = Math.random() * (game.height() - {{size}});
 });`,
@@ -156,6 +165,17 @@ game.onTap("catch-star-entity", function(x, y, entity) {
     ball.y += ball._vy;
     if (ball.x <= 0 || ball.x >= game.width() - {{size}}) ball._vx *= -1;
     if (ball.y <= 0 || ball.y >= game.height() - {{size}}) ball._vy *= -1;
+    game.trail(ball.x + {{size}}/2, ball.y + {{size}}/2, { count: 1, color: "#FF6B9D", life: 10, size: 4 });
+  });
+  game.addText("tapHint", "Tap to burst!", game.width() / 2, game.height() - 30, {
+    font: "bold 18px sans-serif",
+    color: "#222",
+    align: "center"
+  });
+  game.onTapAnywhere("bounce-tap", function(x, y) {
+    game.burst(x, y, { count: 15, spread: 5, colors: ["#FF6B9D", "#FDE047", "#67E8F9"], shape: "circle", life: 25 });
+    game.playTone(500 + Math.random() * 300, 100, { type: "triangle", volume: 0.3 });
+    game.shake(3, 100);
   });
 })();`,
         order: 1,
@@ -220,6 +240,10 @@ game.onTap("catch-star-entity", function(x, y, entity) {
     for (var j = 0; j < colors.length; j++) {
       if (entity._id === "btn-" + j) {
         game.setBackground(colors[j]);
+        game.burst(x, y, { count: 10, spread: 4, color: colors[j], shape: "circle", life: 25 });
+        game.tween(entity, { scaleX: 1.2, scaleY: 1.2 }, 100, { easing: "easeOut", onComplete: function() { game.tween(entity, { scaleX: 1, scaleY: 1 }, 100); } });
+        game.playTone(300 + j * 80, 120, { type: "sine", volume: 0.3 });
+        game.shake(2, 80);
         break;
       }
     }
@@ -297,7 +321,7 @@ game.onTap("catch-star-entity", function(x, y, entity) {
     color: "#888",
     align: "center"
   });
-  game.onTapAnywhere("counting-display", function() {
+  game.onTapAnywhere("counting-display", function(x, y) {
     var c = game.get("count");
     if (c >= {{maxCount}}) {
       game.set("count", 0);
@@ -308,8 +332,14 @@ game.onTap("catch-star-entity", function(x, y, entity) {
     c = c + 1;
     game.set("count", c);
     game.updateText("countDisplay", String(c));
+    game.burst(x, y, { count: 8, spread: 3, colors: ["#FF6B9D", "#FDE047", "#67E8F9"], shape: "star", life: 20 });
+    game.playTone(300 + c * 50, 100, { type: "sine", volume: 0.3 });
+    var txt = game.getEntity("countDisplay");
+    if (txt) game.tween(txt, { scaleX: 1.3, scaleY: 1.3 }, 100, { easing: "easeOut", onComplete: function() { game.tween(txt, { scaleX: 1, scaleY: 1 }, 100); } });
     if (c >= {{maxCount}}) {
       game.updateText("tapHint", "You did it! Tap to restart!");
+      game.burst(game.width() / 2, game.height() / 2, { count: 30, spread: 8, colors: ["#FF6B9D", "#FDE047", "#67E8F9", "#C084FC"], shape: "star", life: 50 });
+      game.shake(5, 200);
     }
   });
 })();`,
@@ -474,6 +504,16 @@ game.onTap("catch-star-entity", function(x, y, entity) {
         drops[i].x = Math.random() * game.width();
       }
     }
+  });
+  game.addText("tapHint", "Tap for lightning!", game.width() / 2, game.height() - 30, {
+    font: "bold 18px sans-serif",
+    color: "#222",
+    align: "center"
+  });
+  game.onTapAnywhere("rain-tap", function(x, y) {
+    game.burst(x, y, { count: 12, spread: 5, colors: ["#FDE047", "#ffffff", "#67E8F9"], shape: "star", life: 20 });
+    game.playTone(200, 200, { type: "sawtooth", volume: 0.2 });
+    game.shake(4, 150);
   });
 })();`,
         order: 1,
