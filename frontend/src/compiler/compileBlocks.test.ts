@@ -159,6 +159,37 @@ describe("isSafeCheckExpression", () => {
     ).toBe(true);
   });
 
+  it("allows typeof game.get checks", () => {
+    expect(isSafeCheckExpression('typeof game.get("score") === "number"')).toBe(
+      true,
+    );
+    expect(
+      isSafeCheckExpression("typeof game.get('lives') === \"number\""),
+    ).toBe(true);
+  });
+
+  it("allows game.getEntity property comparisons", () => {
+    expect(isSafeCheckExpression('game.getEntity("ball").width > 0')).toBe(
+      true,
+    );
+    expect(isSafeCheckExpression("game.getEntity('player').x >= 50")).toBe(
+      true,
+    );
+    expect(isSafeCheckExpression('game.getEntity("bar").value === 100')).toBe(
+      true,
+    );
+  });
+
+  it("allows game.get !== null checks", () => {
+    expect(isSafeCheckExpression('game.get("score") !== null')).toBe(true);
+    expect(isSafeCheckExpression("game.get('level') !== undefined")).toBe(true);
+  });
+
+  it("allows game.width()/game.height() checks", () => {
+    expect(isSafeCheckExpression("game.width() > 0")).toBe(true);
+    expect(isSafeCheckExpression("game.height() >= 400")).toBe(true);
+  });
+
   it("rejects arbitrary code", () => {
     expect(isSafeCheckExpression("while(1){}")).toBe(false);
     expect(isSafeCheckExpression('eval("malicious")')).toBe(false);

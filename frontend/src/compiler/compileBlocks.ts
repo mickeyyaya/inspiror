@@ -34,17 +34,40 @@ const CMP = "(?:===|!==|==|!=|>=|<=|>|<)";
 
 /** Allowlist of safe check expression patterns (no arbitrary eval) */
 const SAFE_CHECK_PATTERNS = [
+  // game.getEntity('id') !== null
   new RegExp(`^game\\.getEntity\\("[^"]+?"\\)\\s*!==?\\s*(null|undefined)$`),
   new RegExp(`^game\\.getEntity\\('[^']+?'\\)\\s*!==?\\s*(null|undefined)$`),
+  // game.get('key') === 42
   new RegExp(`^game\\.get\\("[^"]+?"\\)\\s*${CMP}\\s*[\\d.]+$`),
   new RegExp(`^game\\.get\\('[^']+?'\\)\\s*${CMP}\\s*[\\d.]+$`),
+  // game.get('key') !== null/undefined
+  new RegExp(`^game\\.get\\("[^"]+?"\\)\\s*!==?\\s*(null|undefined)$`),
+  new RegExp(`^game\\.get\\('[^']+?'\\)\\s*!==?\\s*(null|undefined)$`),
+  // game.allEntities().length >= 3
   new RegExp(`^game\\.allEntities\\(\\)\\.length\\s*${CMP}\\s*\\d+$`),
+  // typeof game.getEntity('id') === "object"
   new RegExp(
     `^typeof\\s+game\\.getEntity\\("[^"]+?"\\)\\s*${CMP}\\s*"(object|undefined)"$`,
   ),
   new RegExp(
     `^typeof\\s+game\\.getEntity\\('[^']+?'\\)\\s*${CMP}\\s*"(object|undefined)"$`,
   ),
+  // typeof game.get('key') === "number"/"string"
+  new RegExp(
+    `^typeof\\s+game\\.get\\("[^"]+?"\\)\\s*${CMP}\\s*"(number|string|boolean|undefined)"$`,
+  ),
+  new RegExp(
+    `^typeof\\s+game\\.get\\('[^']+?'\\)\\s*${CMP}\\s*"(number|string|boolean|undefined)"$`,
+  ),
+  // game.getEntity('id').width > 0 (property access with numeric comparison)
+  new RegExp(
+    `^game\\.getEntity\\("[^"]+?"\\)\\.(width|height|x|y|opacity|value)\\s*${CMP}\\s*[\\d.]+$`,
+  ),
+  new RegExp(
+    `^game\\.getEntity\\('[^']+?'\\)\\.(width|height|x|y|opacity|value)\\s*${CMP}\\s*[\\d.]+$`,
+  ),
+  // game.width()/game.height() comparisons
+  new RegExp(`^game\\.(width|height)\\(\\)\\s*${CMP}\\s*\\d+$`),
 ];
 
 function isSafeCheckExpression(expr: string): boolean {

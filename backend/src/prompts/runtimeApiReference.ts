@@ -5,7 +5,7 @@ The app runs on a fullscreen <canvas>. All drawing is handled by the runtime eng
 You generate blocks — each block is self-contained JS using ONLY these APIs:
 
 ### Entity Management
-- game.addEntity(id, props) → Register/update a drawable entity.
+- game.addEntity(id, props) → Register/update a drawable entity. If the ID already exists, properties are MERGED (not replaced).
   Props: { x, y, width, height, color, shape, text, fontSize, opacity, angle, scaleX, scaleY, zIndex, visible, radius, shadowBlur, shadowColor, strokeColor, strokeWidth, points }
   - shape: "circle" renders a circle, "star" renders a star (set points for spikes), otherwise renders a rectangle
   - text: renders as emoji/text centered in the entity's bounds
@@ -29,6 +29,9 @@ You generate blocks — each block is self-contained JS using ONLY these APIs:
 ### Collision
 - game.onCollision(entityA_id, entityB_id, blockId, fn) → Check AABB overlap each frame. fn(entityA, entityB) called on collision.
   - No-op if either entity is missing.
+  - WARNING: Fires EVERY FRAME while entities overlap! To handle once, use a flag:
+    var _collected = false; game.onCollision('player','coin','pickup', function(p,c){ if(_collected) return; _collected = true; /* handle */ });
+  - Or immediately remove/reposition the entity to stop the overlap.
 
 ### State
 - game.set(key, val) → Store a value in the shared state
@@ -71,8 +74,10 @@ You generate blocks — each block is self-contained JS using ONLY these APIs:
 - game.pointerX() → Current pointer X position
 - game.pointerY() → Current pointer Y position
 - game.pointerDown() → Whether pointer is currently pressed
-- game.onTap(blockId, fn) → fn(x, y, entity) called on tap/click. entity is the tapped entity or null. To detect taps on a specific entity, check entity._id inside the callback.
-- game.onTapAnywhere(blockId, fn) → fn(x, y) called on any tap/click regardless of what was tapped. Use for "tap anywhere to continue" mechanics.
+- game.onTap(blockId, fn) → fn(x, y, entity) called on tap/click. entity is the tapped entity or null.
+  - To detect taps on a specific entity: if (entity && entity._id === 'myEntity') { /* handle */ }
+  - Always null-check entity before accessing ._id — it's null when tapping empty space.
+- game.onTapAnywhere(blockId, fn) → Same as onTap. fn(x, y, entity). Use either one for tap handling.
 - game.onDrag(entityId, blockId, opts) → Built-in drag-and-drop for an entity.
   - opts: { onStart: fn(entity, x, y), onMove: fn(entity, x, y), onEnd: fn(entity, x, y) }
   - The entity automatically follows the pointer during drag.
@@ -82,14 +87,17 @@ You generate blocks — each block is self-contained JS using ONLY these APIs:
 - game.after(blockId, ms, fn) → Run fn once after ms milliseconds. Auto-cleaned on game.off(blockId).
 - game.every(blockId, ms, fn) → Run fn repeatedly every ms milliseconds. Auto-cleaned on game.off(blockId).
   - PREFER game.every() over setInterval — it auto-cleans and has error handling!
+  - WARNING: game.every() is additive — calling it twice with the same blockId creates TWO intervals. Only call it once in block init, never inside onUpdate.
 
 ### Physics
 - Entity physics props: vx, vy (velocity), gravity, bounce, friction
-  - Entities with vx/vy are automatically moved each frame by the engine.
+  - Entities with vx/vy are automatically moved each frame by the engine — DO NOT also move them manually in onUpdate!
+  - If you set vx/vy, the engine handles movement. Do NOT also do e.x += speed in onUpdate — that causes double-speed.
+  - Only set vx/vy on entities that need physics. Static entities (HUD, text, backgrounds) should NOT have vx or vy.
   - gravity adds to vy each frame (e.g. 0.5 for falling)
-  - friction multiplies vx/vy each frame (e.g. 0.99 for air resistance)
+  - friction multiplies vx/vy each frame (e.g. 0.99 for air resistance) — do NOT also manually apply friction in onUpdate
   - bounce is used by bounceOffWalls (0-1, default 0.8)
-- game.bounceOffWalls(id) → Bounce entity off canvas edges using its bounce coefficient.
+- game.bounceOffWalls(id) → Bounce entity off canvas edges using its bounce coefficient. Does NOT fire onCollision events.
 - game.moveToward(id, x, y, speed) → Move entity toward point at given speed.
 
 ### UI Elements
@@ -122,7 +130,10 @@ You generate blocks — each block is self-contained JS using ONLY these APIs:
 1. Use ONLY game.* API — no document.createElement, no DOM manipulation, no raw canvas access.
 2. Always null-check game.getEntity() before using the result.
 3. Each block MUST be self-contained — NEVER reference variables from other blocks.
-4. The blockId in game.onUpdate/game.on/game.onCollision MUST match the block's own id field.
+4. The blockId in game.onUpdate/game.on/game.onCollision/game.onTap/game.every/game.after MUST match the block's own id field.
 5. Use {{key}} placeholders for editable parameters. The runtime substitutes them with values.
-6. For numbers, use {{key}} directly (no quotes). For strings/colors, use {{key}} (will be JSON-quoted automatically).
+6. For numbers, use {{key}} directly (no quotes). For strings/colors/enums, use {{key}} directly — they are JSON-quoted automatically. NEVER wrap {{key}} in extra quotes like '{{key}}' — that creates double-quoting.
+7. If an entity uses vx/vy, the engine moves it automatically — do NOT also move it manually in onUpdate.
+8. onCollision fires EVERY FRAME while overlapping — reposition or remove the entity, or use a flag to handle once.
+9. Call game.every() only ONCE in block init — never inside onUpdate or another callback, or it creates duplicate timers.
 `;
