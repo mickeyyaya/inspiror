@@ -633,3 +633,14 @@
 - **Item 2: Candy Dark Mode** — CSS variable-based dark mode via `[data-dark="true"]` selectors. Moon/sun toggle in ChatHeader. localStorage persistence + prefers-color-scheme default. FOUC prevention inline script. Deep navy surfaces (#1a1b2e) with vivid candy accents preserved.
 - **Tests:** 595 total, all passing
 - **Next cycle should consider:** Mobile layout bottom-sheet, per-block undo, session summary on catalog, bundle optimization
+
+## Cycle 64 — 2026-03-15
+- **Item 1: Mobile Tab Bar** — Bottom tab bar (Chat/Preview) on screens <640px. Both panels render but only active tab visible. Desktop layout unchanged. `flex-col sm:flex-row` approach.
+- **Item 2: Per-Block Undo** — 10-entry history stack. Each block change pushes state to history. Undo button in block panel footer. History managed via `blocksHistory` state array.
+- **Tests:** 595 total, all passing
+
+## Cycle 65 — 2026-03-15
+- **Item 1: Bundle Optimization** — 4 manual chunks: vendor-react (0KB tree-shaken), vendor-ai (125KB/36KB gzip), vendor-dnd (49KB/16KB gzip), vendor-icons (16KB/6KB gzip). App chunk: 394KB/120KB gzip. Workbox max file size increased for large theme PNGs.
+- **Item 2: Session Stats on Project Cards** — Projects now track totalBuilds, totalMessages, blockCategories. Stats badges on project cards in catalog. Persisted via usePersistProject.
+- **Tests:** 595 total, all passing
+- **5-cycle deep research session complete.** 10 features shipped across Cycles 61-65 covering co-creation, classroom, moderation, UX, and performance.
