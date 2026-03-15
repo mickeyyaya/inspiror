@@ -1,7 +1,19 @@
 export const BLOCK_EXAMPLES = `
 ## Block Examples
 
-**IMPORTANT: The first 3 examples after setup show INTERACTIVE patterns. Every creation MUST include at least one interaction block like these.**
+**IMPORTANT: Every creation MUST include at least one interaction block (tap/drag) AND a visible hint text telling the child what to do.**
+
+### ALWAYS INCLUDE: Interaction Hint (pulsing "Tap to..." text — add to EVERY creation)
+{
+  "id": "tap-hint",
+  "type": "visual",
+  "label": "Tap Hint",
+  "emoji": "👆",
+  "enabled": true,
+  "params": [],
+  "code": "game.addText('tap-hint', 'Tap anywhere to play!', game.width() / 2, game.height() - 30, {\\n  font: 'bold 18px sans-serif',\\n  color: '#ffffff',\\n  align: 'center',\\n  opacity: 0.8,\\n  shadowBlur: 10,\\n  shadowColor: '#67E8F9'\\n});\\nvar _hintPulse = 0;\\ngame.onUpdate('tap-hint', function() {\\n  var h = game.getEntity('tap-hint');\\n  if (!h) return;\\n  _hintPulse += 0.05;\\n  h.opacity = 0.5 + Math.sin(_hintPulse) * 0.3;\\n});",
+  "order": 99
+}
 
 ### Setup Block (gradient background with floating particles)
 {

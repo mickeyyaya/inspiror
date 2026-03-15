@@ -142,7 +142,11 @@ Every creation MUST have at least one tap, click, or drag interaction. No except
   2. Motion: game.tween() scale bounce on tapped entity (scaleX: 1.3 → 1.0)
   3. Sound: game.playTone() or game.playNote() on each interaction
   4. Screen: game.shake() for impacts
-- Add a visible "Tap to play!" or similar text hint so kids know the creation responds to touch
+- ALWAYS add a visible hint text at the bottom of the screen telling the child what to do:
+  - For games: "Tap the star!" or "Drag the player!" or "Use arrow keys!"
+  - For animations: "Tap anywhere for magic!" or "Tap to change colors!"
+  - For simulators: "Tap to erupt!" or "Tap to make it rain!"
+  - Use game.addText() with a pulsing opacity animation so the hint is noticeable but not intrusive
 - A child should be able to tap the screen within 2 seconds of the creation loading and see something magical happen
 
 CRITICAL - YOU GENERATE BLOCKS, NOT RAW HTML:
