@@ -610,3 +610,12 @@
 - **Tasks:** Pulsing interaction hint block example + context-aware hints
 - Added "ALWAYS INCLUDE: Interaction Hint" as first block example with pulsing opacity. System prompt now requires context-specific hints.
 - **5-cycle interactivity session complete.** Every layer now mandates interaction: prompt, examples, templates, defaults, chips.
+
+## Cycle 61 — 2026-03-15
+- **Theme:** Next-Gen LLM Co-Working Model & Training Class for Kids
+- **Deep research:** MIT Scratch Copilot (IDC 2025), Six Scaffolds framework, Stanford SCALE guardrails, AI education market ($7.57B→$112B), CSTA 2026 standards, classroom platform analysis
+- **Item 1: Block-Level Accept/Reject Negotiation** — After AI generates blocks, each arrives as "pending" with individual Accept/Reject buttons. Preview shows immediately; child reviews in auto-opened block panel. Accept All / Reject All banner. Addresses MIT finding that 50% of kids worry about losing originality.
+- **Item 2: Classroom Mode** — URL-parameter-driven (`?mode=class&lesson=physics`). 5 topics (physics/art/music/animals/space), 8 lesson-scoped chips per topic in 3 languages. Skips project catalog, shows lesson badge in header. No auth needed — COPPA-friendly.
+- **Docs updated:** PRD.md (Section 9: Next-Gen Co-Working Vision), TASKS.md (Phase 8: 9 new task groups), RESEARCH_FINDINGS.md (Section 9: 8 academic papers + market data)
+- **Tests:** 563 frontend + 20 backend = 583, all passing
+- **Next cycle should consider:** Content moderation pipeline (COPPA deadline April 22), dark mode ("candy dark"), mobile layout bottom-sheet, bundle optimization
